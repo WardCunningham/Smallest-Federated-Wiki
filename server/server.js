@@ -1,1 +1,0 @@
-// server-side javascript supporting drag & drop wiki editing
