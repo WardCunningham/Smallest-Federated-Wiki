@@ -15,5 +15,8 @@ configure do
 end
 
 get '/' do
-  "<h1>#{$identity['title']}</h1><pre>#{get_page($identity['root']).inspect}</pre>"
+  page = get_page($identity['root'])
+  title = page['title']
+  paragraphs = page['body'].collect {|each| "<p>#{each['text']}</p>"}
+  "<h1>#{$identity['title']}</h1><h2>#{title}</h2>#{paragraphs.join("\n")}</pre>"
 end
