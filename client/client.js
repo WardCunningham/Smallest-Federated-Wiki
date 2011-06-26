@@ -1,0 +1,1 @@
+// client side javascript for drag & drop wiki editor
