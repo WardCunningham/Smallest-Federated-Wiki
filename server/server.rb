@@ -20,3 +20,10 @@ get '/' do
   paragraphs = page['body'].collect {|each| "<p>#{each['text']}</p>"}
   "<h1>#{$identity['title']}</h1><h2>#{title}</h2>#{paragraphs.join("\n")}</pre>"
 end
+
+get '/page/:name' do |name|
+  page = get_page(name)
+  title = page['title']
+  paragraphs = page['body'].collect {|each| "<p>#{each['text']}</p>"}
+  "<h1>#{$identity['title']}</h1><h2>#{title}</h2>#{paragraphs.join("\n")}</pre>"
+end
