@@ -1,0 +1,60 @@
+{
+title: "Indie Web Camp"
+synopsys: "A 2-day dev camp in Portland, Oregon focused on building a more open Web.",
+body: 
+[
+{
+id: "98d59cb8cd72a394",
+type: "paragraph",
+text:
+"Rather than posting content on many third-party silos of data, we should all begin owning the data we're creating.
+Publish short status updates on your own domain, and syndicate to Twitter.
+Publish photos on your own domain, syndicate to Flickr, etc, etc."
+},
+{
+id: "12fb979dde3a8733",
+type: "paragraph",
+text:
+"This is the basis of the "Indie Web" movement (see [[why-indy-web]] for more).
+We'll get together for a weekend to talk about what has been done in the field, and what still needs to be done.
+There will be workshops and breakout sessions."
+},
+{
+id: "8d8a6cf94b72e848",
+type: "image",
+width: "300px",
+height: "200px",
+caption: "Inde Web Camp Attendees",
+url: "http://indiewebcamp.com/image/ICF_0023.jpg"
+}
+]
+trail:
+[
+"http://fw.indiewebcamp",
+"http://c2.com/~ward/fw"
+]
+journal:
+[
+{
+action: "move",
+item: "8d8a6cf94b72e848",
+from: "98d59cb8cd72a394",
+},
+{
+action: "edit",
+item: "12fb979dde3a8733"
+patch:
+"1c1
+-This is the basis of the "Indie Web" movement (see why for more).
++This is the basis of the "Indie Web" movement (see [[why-indy-web]] for more)."
+},
+{
+action: "resize",
+item: "8d8a6cf94b72e848"
+from:
+{
+width: "640px",
+height: "480px"
+}
+]
+}
