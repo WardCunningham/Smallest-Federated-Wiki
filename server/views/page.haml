@@ -1,0 +1,3 @@
+%h1= page['title']
+- page['body'].each do |item|
+	%p= resolve_links(item['text']) if item['type'] == 'paragraph'

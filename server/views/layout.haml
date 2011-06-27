@@ -1,0 +1,10 @@
+%html
+  %head
+    %title= $identity['title']
+    %meta(name="viewport" content="width=500;")
+    %link(href="style.css" rel="stylesheet" type="text/css")
+    %script(type="text/javascript" src="jquery.js")
+    %script(type="text/javascript" src="client.js")
+  %body
+    .main
+      =yield
