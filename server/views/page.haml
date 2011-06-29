@@ -6,4 +6,4 @@
 				%p= resolve_links(item['text'])
 			- if type == 'image'
 				%img{:src => item['url']}
-				%p= item['caption']
+				%p= resolve_links(item['caption'])
