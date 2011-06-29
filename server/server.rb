@@ -12,7 +12,9 @@ helpers do
     File.open("data/pages/#{name}", 'r') { |file| JSON.parse(file.read)}
   end
   def resolve_links string
-    string.gsub(/\[\[([a-z-]+)\]\]/, '<a href="/\1">\1</a>')
+    string.
+      gsub(/\[\[([a-z-]+)\]\]/, '<a href="/\1">\1</a>').
+      gsub(/\[(http.*?) (.*?)\]/, '<a href="\1">\2</a>')
   end
 end
 
