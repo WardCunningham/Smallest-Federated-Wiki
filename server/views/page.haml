@@ -1,8 +1,9 @@
 %h1= page['title']
-- page['body'].each do |item|
-	%div{:class => type=item['type']}
-		- if type == 'paragraph'
-			%p= resolve_links(item['text'])
-		- if type == 'image'
-			%img{:src => item['url']}
-			%p= item['caption']
+#sortable
+	- page['body'].each do |item|
+		%div{:class => type=item['type']}
+			- if type == 'paragraph'
+				%p= resolve_links(item['text'])
+			- if type == 'image'
+				%img{:src => item['url']}
+				%p= item['caption']
