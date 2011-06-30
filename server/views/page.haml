@@ -1,7 +1,7 @@
 %h1= page['title']
 #sortable
 	- page['body'].each do |item|
-		%div{:class => type=item['type']}
+		%div{:class => type=item['type'], :id => item['id']}
 			- if type == 'paragraph'
 				%p= resolve_links(item['text'])
 			- if type == 'image'
