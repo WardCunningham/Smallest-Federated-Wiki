@@ -1,4 +1,7 @@
-%h1= page['title']
+%h1
+	%a{:href => '/', :style => "text-decoration: none"}
+		%img{:src => 'favicon.png', :height => '32px'}
+	= page['title']
 #sortable
 	- page['body'].each do |item|
 		%div{:class => type=item['type'], :id => item['id']}
