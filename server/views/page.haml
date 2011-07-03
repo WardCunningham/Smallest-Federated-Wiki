@@ -4,8 +4,8 @@
 	%a{:href => '/', :style => "text-decoration: none"}
 		%img{:src => 'favicon.png', :height => '32px'}
 	= page['title']
-#sortable
-	- page['body'].each do |item|
+#story
+	- page['story'].each do |item|
 		%div{:class => type=item['type'], :id => item['id']}
 			- if type == 'paragraph'
 				%p= resolve_links(item['text'])

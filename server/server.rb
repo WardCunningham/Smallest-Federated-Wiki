@@ -46,7 +46,7 @@ end
 put %r{^/page/([a-z-]+)/edit$} do |name|
   page = get_page(name)
   edit = JSON.parse(params['edit'])
-  page['body'] = edit['order'].collect{ |id| page['body'].detect{ |item| item['id'] == id } }
+  page['story'] = edit['order'].collect{ |id| page['story'].detect{ |item| item['id'] == id } }
   ( page['journal'] ||= [] ) << edit # todo: journal undo, not redo
   put_page name, page
   "ok"
