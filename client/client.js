@@ -2,7 +2,7 @@
 
 $(function() {
 	$(document).ajaxError(function(event, request, settings){
-	  $('.main').prepend("<li><font color=red>Error handling " + settings.url + ", try reloading.</li>");
+	  $('.main').prepend("<li><font color=red>Error on " + settings.url + "</li>");
 	});
 	$( "#sortable" ).sortable({
 		update: function(event, ui) {
