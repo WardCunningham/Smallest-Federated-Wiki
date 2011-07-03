@@ -12,6 +12,9 @@
 			- if type == 'image'
 				%img{:src => item['url']}
 				%p= resolve_links(item['caption'])
+			- if type == 'chart'
+				%p.readout= item['data'].last || "0.0"
+				%p= resolve_links(item['caption'])
 #journal
 	- ( page['journal'] || [] ).reverse.each do |item|
 		%span{:class => ['edit', item['type']]}
