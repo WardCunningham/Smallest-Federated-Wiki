@@ -11,6 +11,9 @@ helpers do
   def get_page name
     File.open("data/pages/#{name}", 'r') { |file| JSON.parse(file.read)}
   end
+  def put_page name, page
+    File.open("data/pages/#{name}", 'w') { |file| file.write(JSON.generate(page)) }
+  end
   def resolve_links string
     string.
       gsub(/\[\[([a-z-]+)\]\]/, '<a href="/\1">\1</a>').
@@ -28,16 +31,23 @@ get '/style.css' do
 end
 
 get '/' do
-  haml :page, :locals => { :page => get_page($identity['root']) }
+  haml :page, :locals => { :page => get_page($identity['root']), :page_name => $identity['root'] }
 end
 
-get %r{/([a-z-]+)$} do |name|
-  haml :page, :locals => { :page => get_page(name) }
+get %r{^/([a-z-]+)$} do |name|
+  haml :page, :locals => { :page => get_page(name), :page_name => name }
 end
 
-put %r{/page/([a-z-]+)/sequence$} do |name|
-  puts params[:state].inspect
+get %r{^/([a-z-]+)/json$} do |name|
+  content_type 'text/plain'
+  JSON.pretty_generate(get_page(name))
+end
+
+put %r{^/page/([a-z-]+)/edit$} do |name|
   page = get_page(name)
-  body = page['body']
+  edit = JSON.parse(params['edit'])
+  page['body'] = edit['order'].collect{ |id| page['body'].detect{ |item| item['id'] == id } }
+  page['journal'] << edit
+  put_page name, page
   "ok"
 end

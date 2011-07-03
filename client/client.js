@@ -1,20 +1,13 @@
 // client side javascript for drag & drop wiki editor
 
 $(function() {
-	function where(item) {
-		prev = item.prev().attr('id');
-		return prev === undefined ? "top" : prev;
-	}
+	$(document).ajaxError(function(event, request, settings){
+	  $('.main').prepend("<li><font color=red>Error handling " + settings.url + ", try reloading.</li>");
+	});
 	$( "#sortable" ).sortable({
-		start: function(event, ui) {
-			ui.item.data('move_from', where(ui.item));
-		},
-		stop: function(event, ui) {
-			was = ui.item.data('move_from');
-			now = where(ui.item);
-			if (was == now) return;
-			console.log("move " + ui.item.attr('id') + " from " + was + " to " + now);
-			console.log(ui.item.siblings().map(function(k,v){return v.id}));
+		update: function(event, ui) {
+			edit = {"type": "move", "order": $(this).children().map(function(key,value){return value.id}).get()};
+			$.ajax({ type: 'PUT', url: 'page/'+page_name+'/edit', data: {'edit': JSON.stringify(edit)} });
 		}
 	});
 	$( "#sortable" ).disableSelection();

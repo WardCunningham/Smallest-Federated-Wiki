@@ -29,23 +29,20 @@
 "journal":
 [
 {
-"action": "move",
-"item": "8d8a6cf94b72e848",
-"from": "98d59cb8cd72a394"
+"order": [
+"8d8a6cf94b72e848",
+"15411293042b2735",
+"98d59cb8cd72a394"
+],
+"type": "move"
 },
 {
-"action": "edit",
-"item": "12fb979dde3a8733",
-"patch": "1c1\n-This is the basis of the \"Indie Web\" movement (see why for more).\n+This is the basis of the \"Indie Web\" movement (see [[why-indy-web]] for more)."
-},
-{
-"action": "resize",
-"item": "8d8a6cf94b72e848",
-"from":
-{
-"width": "640px",
-"height": "480px"
-}
+"order": [
+"8d8a6cf94b72e848",
+"98d59cb8cd72a394",
+"15411293042b2735"
+],
+"type": "move"
 }
 ]
 }
