@@ -7,7 +7,9 @@ $(function() {
 	$( "#story" ).sortable({
 		update: function(event, ui) {
 			edit = {"type": "move", "order": $(this).children().map(function(key,value){return value.id}).get()};
-			$.ajax({ type: 'PUT', url: 'page/'+page_name+'/edit', data: {'edit': JSON.stringify(edit)} });
+			$.ajax({ type: 'PUT', url: 'page/'+page_name+'/edit', data: {'edit': JSON.stringify(edit)}, success: function(){
+				$("#journal").prepend('<span class="edit move">m</a>')
+			} });
 		}
 	});
 	$( "#sortable" ).disableSelection();
