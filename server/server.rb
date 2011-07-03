@@ -9,7 +9,7 @@ set :haml, :format => :html5
 
 helpers do  
   def get_page name
-    File.open("data/pages/#{name}", 'r') { |file| JSON.parse(file.read)}
+    File.open("data/pages/#{name}", 'r') { |file| JSON.parse(file.read) }
   end
   def put_page name, page
     File.open("data/pages/#{name}", 'w') { |file| file.write(JSON.generate(page)) }
