@@ -31,6 +31,13 @@ get '/' do
   haml :page, :locals => { :page => get_page($identity['root']) }
 end
 
-get %r{/([a-z-]+)} do |name|
+get %r{/([a-z-]+)$} do |name|
   haml :page, :locals => { :page => get_page(name) }
+end
+
+put %r{/page/([a-z-]+)/sequence$} do |name|
+  puts params[:state].inspect
+  page = get_page(name)
+  body = page['body']
+  "ok"
 end
