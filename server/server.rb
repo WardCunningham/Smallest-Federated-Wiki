@@ -51,3 +51,7 @@ put %r{^/page/([a-z-]+)/edit$} do |name|
   put_page name, page
   "ok"
 end
+
+get %r{^/view/([a-z-]+)$} do |name|
+  haml :view, :locals => {:page_name => name}
+end
