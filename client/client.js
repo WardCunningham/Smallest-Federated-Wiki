@@ -56,10 +56,10 @@ $(function() {
 		})
 	}
 
-	if(!$('#story').length){
-		refresh(page_name);
-	} else {
+	if($('#story').length){
 		be_sortable();
+	} else {
+		refresh(page_name);
 	}
 
 });
