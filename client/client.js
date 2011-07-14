@@ -1,6 +1,10 @@
 // client side javascript for drag & drop wiki editor
 
+Array.prototype.last = function() {return this[this.length-1];}
+
 $(function() {
+	var page_name = $('.body').attr('id');
+
 	$(document).ajaxError(function(event, request, settings){
 	  $('.main').prepend("<li><font color=red>Error on " + settings.url + "</li>");
 	});
@@ -14,8 +18,6 @@ $(function() {
 	});
 	$( "#sortable" ).disableSelection();
 });
-
-Array.prototype.last = function() {return this[this.length-1];}
 
 function resolve_links(string){
     return string.
