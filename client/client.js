@@ -26,10 +26,10 @@ function resolve_links(string){
 function refresh(name) {
 	$.get('/'+name+'/json', '', function(page_json){
 		var page = JSON.parse(page_json);
-		$('.body').append('<h1><a href="/"><img src = "/favicon.png" height = "32px"></a> ' + page.title + '</h1><div class="story" /> <div class="journal" />')
+		$('.body').append('<h1><a href="/"><img src = "/favicon.png" height = "32px"></a> ' + page.title + '</h1><div id="story" /> <div id="journal" />')
 		for (var i in page.story){
 			var item = page.story[i];
-			var div = $('<div class="'+item.type+'" id="'+item.id+'" />').appendTo('.story');
+			var div = $('<div class="'+item.type+'" id="'+item.id+'" />').appendTo('#story');
 			try {
 				if (item.type == 'paragraph') {
 					div.append('<p>'+resolve_links(item.text)+'</p>');
@@ -44,6 +44,11 @@ function refresh(name) {
 			catch(err) {
 				$('#'+item.id).append('<p>'+err+'</p>');
 			}
+		}
+		var rev = page.journal.reverse();
+		for (var i in rev){
+			var item = rev[i];
+			var div = $('<span class="edit '+item.type+'">'+item.type[0]+'</span>').appendTo('#journal');
 		}
 	})
 }
