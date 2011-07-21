@@ -50,7 +50,7 @@ $(function() {
 				}
 			});
 			$.each(page.journal.reverse(), function (i, item) {
-				var div = $(' <span class="edit '+item.type+'"> '+item.type[0]+' </span> ').appendTo('#journal');
+				var div = $('<span> <span class="edit '+item.type+'">'+item.type[0]+'</span></span>').appendTo('#journal');
 			});
 			be_sortable();
 		})
