@@ -59,3 +59,7 @@ end
 get %r{^/view/([a-z-]+)/view/([a-z-]+)$} do |n1, n2|
   haml :view, :locals => {:page_names => [n1, n2], :page_name => n1}
 end
+
+get %r{^/view/([a-z-]+)/view/([a-z-]+)/view/([a-z-]+)$} do |n1, n2, n3|
+  haml :view, :locals => {:page_names => [n1, n2, n3], :page_name => n1}
+end
