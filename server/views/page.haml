@@ -1,19 +1,24 @@
-%h1
-	%a{:href => '/', :style => "text-decoration: none"}
-		%img{:src => '/favicon.png', :height => '32px'}
-	= page['title']
-#story
-	- page['story'].each do |item|
-		%div{:class => type=item['type'], :id => item['id']}
-			- if type == 'paragraph'
-				%p= resolve_links(item['text'])
-			- if type == 'image'
-				%img{:src => item['url']}
-				%p= resolve_links(item['caption'])
-			- if type == 'chart'
-				%p.readout= item['data'].last.last || "0.0"
-				%p= resolve_links(item['caption'])
-#journal
-	- ( page['journal'] || [] ).reverse.each do |item|
-		%span{:class => ['edit', item['type']]}
-			= item['type'][0..0]
+.page{:id => page_name}
+	%h1
+		%a{:href => '/', :style => "text-decoration: none"}
+			%img{:src => '/favicon.png', :height => '32px'}
+		= page['title']
+	.story
+		- page['story'].each do |item|
+			%div{:class => type=item['type'], :id => item['id']}
+				- if type == 'paragraph'
+					%p= resolve_links(item['text'])
+				- if type == 'image'
+					%img{:src => item['url']}
+					%p= resolve_links(item['caption'])
+				- if type == 'chart'
+					%p.readout= item['data'].last.last || "0.0"
+					%p= resolve_links(item['caption'])
+	.journal
+		- ( page['journal'] || [] ).reverse.each do |item|
+			%span{:class => ['edit', item['type']]}
+				= item['type'][0..0]
+	.footer
+		%a{:id => "license", :href => "http://creativecommons.org/licenses/by-sa/3.0/"} CC BY-SA 3.0
+		='.'
+		%a{:href => "/#{page_name}/json"} JSON

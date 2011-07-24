@@ -3,18 +3,18 @@
 Array.prototype.last = function() {return this[this.length-1];}
 
 $(function() {
-	var page_name = $('.body').attr('id');
 
 	$(document).ajaxError(function(event, request, settings){
 	  $('.main').prepend("<li><font color=red>Error on " + settings.url + "</li>");
 	});
 
 	function be_sortable(){
-		$( "#story" ).sortable({
+		var page_name = $('.page').attr('id');
+		$( ".story" ).sortable({
 			update: function(event, ui) {
 				edit = {"type": "move", "order": $(this).children().map(function(key,value){return value.id}).get()};
 				$.ajax({ type: 'PUT', url: '/page/'+page_name+'/edit', data: {'edit': JSON.stringify(edit)}, success: function(){
-					$("#journal").prepend('<span class="edit move">m</span>')
+					$(".journal").prepend('<span class="edit move">m</span>')
 				} });
 			}
 		});
@@ -27,13 +27,17 @@ $(function() {
 	      replace(/\[(http.*?) (.*?)\]/g, '<a href="$1">$2</a>')
 	}
 
-	function refresh(name) {
-		$.get('/'+name+'/json', '', function(page_json){
+	function refresh(i,each) {
+		var page_name = $(each).attr('id');
+		$.get('/'+page_name+'/json', '', function(page_json){
 			var page = JSON.parse(page_json);
-			$('.body').append('<h1><a href="/"><img src = "/favicon.png" height = "32px"></a> ' + page.title + '</h1><div id="story" /> <div id="journal" />')
+			$(each)
+				.append('<h1><a href="/"><img src = "/favicon.png" height = "32px"></a> ' + page.title + '</h1>')
+				.append('<div class="story" /> <div class="journal" /> <div class="footer" />');
 			$.each(page.story, function(i, item) {
 				var item = page.story[i];
-				var div = $('<div class="'+item.type+'" id="'+item.id+'" />').appendTo('#story');
+				var div = $('<div class="'+item.type+'" id="'+item.id+'" />');
+				$(each).children('.story').append(div);
 				try {
 					if (item.type == 'paragraph') {
 						div.append('<p>'+resolve_links(item.text)+'</p>');
@@ -49,18 +53,21 @@ $(function() {
 					$('#'+item.id).append('<p>'+err+'</p>');
 				}
 			});
+			var journal = $(each).children('.journal');
 			$.each(page.journal.reverse(), function (i, item) {
-				var div = $('<span> <span class="edit '+item.type+'">'+item.type[0]+'</span></span>').appendTo('#journal');
+				journal.append('<span> <span class="edit '+item.type+'">'+item.type[0]+'</span></span>');
 			});
+			$(each).children('.footer')
+				.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ')
+				.append('<a href="/'+page_name+'/json">JSON</a>');
 			be_sortable();
 		})
 	}
 
-	if($('#story').length){
+	if($('.story').length){
 		be_sortable();
 	} else {
-		refresh(page_name);
+		$('.page').each(refresh);
 	}
-
 });
 

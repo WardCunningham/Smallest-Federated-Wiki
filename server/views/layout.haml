@@ -1,16 +1,11 @@
 %html
-  %head
-    %title= $identity['title']
-    %meta(name="viewport" content="width=500")
-    %link(type="text/css" href="/style.css" rel="stylesheet")
-    %script(type="text/javascript" src="/js/jquery-1.5.1.min.js")
-    %script(type="text/javascript" src="/js/jquery-ui-1.8.14.custom.min.js")
-    %script(type="text/javascript" src="/client.js")
-  %body
-    .main
-      .body{:id => page_name}
-        =yield
-      .footer
-        %a{:id => "license", :href => "http://creativecommons.org/licenses/by-sa/3.0/"} CC BY-SA 3.0
-        ='.'
-        %a{:href => "/#{page_name}/json"} JSON
+	%head
+		%title= $identity['title']
+		%meta(name="viewport" content="width=500")
+		%link(type="text/css" href="/style.css" rel="stylesheet")
+		%script(type="text/javascript" src="/js/jquery-1.5.1.min.js")
+		%script(type="text/javascript" src="/js/jquery-ui-1.8.14.custom.min.js")
+		%script(type="text/javascript" src="/client.js")
+	%body
+		.main
+			=yield

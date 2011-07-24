@@ -53,5 +53,9 @@ put %r{^/page/([a-z-]+)/edit$} do |name|
 end
 
 get %r{^/view/([a-z-]+)$} do |name|
-  haml :view, :locals => {:page_name => name}
+  haml :view, :locals => {:page_names => name, :page_name => name}
+end
+
+get %r{^/view/([a-z-]+)/view/([a-z-]+)$} do |n1, n2|
+  haml :view, :locals => {:page_names => [n1, n2], :page_name => n1}
 end
