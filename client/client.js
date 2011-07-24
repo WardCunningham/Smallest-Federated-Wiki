@@ -8,8 +8,7 @@ $(function() {
 	  $('.main').prepend("<li><font color=red>Error on " + settings.url + "</li>");
 	});
 
-	function be_sortable(){
-		var page_name = $('.page').attr('id');
+	function be_sortable(page_name){
 		$( ".story" ).sortable({
 			update: function(event, ui) {
 				edit = {"type": "move", "order": $(this).children().map(function(key,value){return value.id}).get()};
@@ -61,12 +60,12 @@ $(function() {
 			$(each).children('.footer')
 				.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ')
 				.append('<a href="/'+page_name+'/json">JSON</a>');
-			be_sortable();
+			be_sortable(page_name);
 		})
 	}
 
 	if($('.story').length){
-		be_sortable();
+		be_sortable($('.page').attr('id'));
 	} else {
 		$('.page').each(refresh);
 	}
