@@ -30,7 +30,8 @@ $(function() {
 	function refresh(i,each) {
 		var page_name = $(each).attr('id');
 		$.get('/'+page_name+'/json', '', function(page_json){
-			var page = JSON.parse(page_json);
+			var empty = {title:"empty",synopsys:"empty",story:[],journal:[]};
+			var page = $.extend(empty, JSON.parse(page_json));
 			$(each)
 				.append('<h1><a href="/"><img src = "/favicon.png" height = "32px"></a> ' + page.title + '</h1>')
 				.append('<div class="story" /> <div class="journal" /> <div class="footer" />');
