@@ -23,6 +23,7 @@ end
 
 configure do
   $identity = File.open("data/status/local-identity", 'r') { |file| JSON.parse(file.read) }
+  `cd data/pages; cp default-welcome-visitors welcome-visitors` unless File.exists? 'data/pages/welcome-visitors'
 end
 
 get '/style.css' do
