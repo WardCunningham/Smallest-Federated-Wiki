@@ -18,6 +18,19 @@ $(function() {
 			}
 		});
 		$( "#sortable" ).disableSelection();
+
+		$('.readout').mousemove(function(e){
+			var item = $(e.target).parent('.chart').data('item');
+			var sample = item.data[Math.floor(item.data.length * e.offsetX/e.target.offsetWidth)];
+			var d = new Date(sample[0]);
+			var m = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()];
+			var h = d.getHours();
+			var am = h<12 ? "AM" : "PM";
+			h = h==0 ? 12 : h>12 ? h-12 : h;
+			var time = h + ":" + (d.getMinutes() < 10 ? "0" : "") + d.getMinutes() + " " + am + "<br>" + d.getDate() + " " + m + " " + d.getFullYear();
+			$(e.target).text(sample[1].toFixed(1));
+			$(e.target).siblings('p').last().html(time);
+	    });
 	}
 
 	function resolve_links(string){
@@ -47,6 +60,7 @@ $(function() {
 					}
 					if (item.type == 'chart') {
 						div.append('<p class="readout">'+item.data.last().last()+'</p> <p>'+resolve_links(item.caption)+'</p>');
+						div.data('item',item);
 					}
 				}
 				catch(err) {
