@@ -57,10 +57,11 @@ $(function() {
 					div.data('item',item);
 					div.dblclick(function(){
 						var paragraph = this;
+						console.log(paragraph);
 						var originalContent = $(this).data('item').text;
 						var textarea = $('<textarea>' + originalContent + '</textarea>');
 						textarea.focusout(function(){
-							$(paragraph).html(originalContent);
+							$(paragraph).last().html('<p>'+resolve_links(textarea.val())+'</p>');
 						});
 						$(this).html(textarea);
 						textarea.focus();
@@ -95,6 +96,5 @@ $(function() {
 	} else {
 		$('.page').each(refresh);
 	}
-
 });
 
