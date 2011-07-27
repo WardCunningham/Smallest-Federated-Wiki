@@ -76,7 +76,6 @@ $(function() {
 					}
 				}
 				catch(err) {
-					console.log("error!!!");
 					$('#'+item.id).append('<p>'+err+'</p>');
 				}
 			});
