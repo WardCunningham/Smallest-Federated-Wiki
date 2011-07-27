@@ -55,17 +55,17 @@ $(function() {
 				$(each).children('.story').append(div);
 				try {
 					div.data('item',item);
-					div.dblclick(function(){
-						var textarea = $('<textarea>' + item.text + '</textarea>');
-						textarea.focusout(function(){
-							item.text = textarea.val();
-							$(div).last('p').html('<p>'+resolve_links(item.text)+'</p>');
-						});
-						div.html(textarea);
-						textarea.focus();
-					});
 					if (item.type == 'paragraph') {
 						div.append('<p>'+resolve_links(item.text)+'</p>');
+						div.dblclick(function(){
+							var textarea = $('<textarea>' + item.text + '</textarea>');
+							textarea.focusout(function(){
+								item.text = textarea.val();
+								$(div).last('p').html('<p>'+resolve_links(item.text)+'</p>');
+							});
+							div.html(textarea);
+							textarea.focus();
+						});
 					}
 					if (item.type == 'image') {
 						div.append('<img src="'+item.url+'"> <p>'+resolve_links(item.caption)+'</p>');
