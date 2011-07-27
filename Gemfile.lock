@@ -1,0 +1,22 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    haml (3.1.2)
+    json (1.5.3)
+    json (1.5.3-java)
+    rack (1.3.2)
+    sass (3.1.5)
+    sinatra (1.2.6)
+      rack (~> 1.1)
+      tilt (< 2.0, >= 1.2.2)
+    tilt (1.3.2)
+
+PLATFORMS
+  java
+  ruby
+
+DEPENDENCIES
+  haml
+  json
+  sass
+  sinatra

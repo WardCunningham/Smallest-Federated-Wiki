@@ -1,8 +1,6 @@
 require 'rubygems'
-require 'sinatra'
-require 'haml'
-require 'sass'
-require 'json'
+require 'bundler'
+Bundler.require
 
 set :public, 'client'
 set :haml, :format => :html5
