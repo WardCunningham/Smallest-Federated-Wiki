@@ -54,6 +54,17 @@ $(function() {
 				var div = $('<div class="'+item.type+'" id="'+item.id+'" />');
 				$(each).children('.story').append(div);
 				try {
+					div.data('item',item);
+					div.dblclick(function(){
+						var paragraph = this;
+						var originalContent = $(this).data('item').text;
+						var textarea = $('<textarea>' + originalContent + '</textarea>');
+						textarea.focusout(function(){
+							$(paragraph).html(originalContent);
+						});
+						$(this).html(textarea);
+						textarea.focus();
+					});
 					if (item.type == 'paragraph') {
 						div.append('<p>'+resolve_links(item.text)+'</p>');
 					}
@@ -62,10 +73,10 @@ $(function() {
 					}
 					if (item.type == 'chart') {
 						div.append('<p class="readout">'+item.data.last().last()+'</p> <p>'+resolve_links(item.caption)+'</p>');
-						div.data('item',item);
 					}
 				}
 				catch(err) {
+					console.log("error!!!");
 					$('#'+item.id).append('<p>'+err+'</p>');
 				}
 			});
@@ -85,5 +96,6 @@ $(function() {
 	} else {
 		$('.page').each(refresh);
 	}
+
 });
 
