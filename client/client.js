@@ -56,14 +56,12 @@ $(function() {
 				try {
 					div.data('item',item);
 					div.dblclick(function(){
-						var paragraph = this;
-						console.log(paragraph);
-						var originalContent = $(this).data('item').text;
-						var textarea = $('<textarea>' + originalContent + '</textarea>');
+						var textarea = $('<textarea>' + item.text + '</textarea>');
 						textarea.focusout(function(){
-							$(paragraph).last().html('<p>'+resolve_links(textarea.val())+'</p>');
+							item.text = textarea.val();
+							$(div).last('p').html('<p>'+resolve_links(item.text)+'</p>');
 						});
-						$(this).html(textarea);
+						div.html(textarea);
 						textarea.focus();
 					});
 					if (item.type == 'paragraph') {
