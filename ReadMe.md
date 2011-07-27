@@ -17,7 +17,7 @@ This project should be judged by the degree that it can:
 
 This project has been founded within the community assembled in Portland at the Indie Web Camp:
 
-* [http://indiewebcamp.com/]
+* [http://IndieWebCamp.com]
 
 Looking For Code Bloat
 ======================
