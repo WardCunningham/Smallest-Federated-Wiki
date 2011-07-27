@@ -8,15 +8,15 @@ $(function() {
 	  $('.main').prepend("<li><font color=red>Error on " + settings.url + "</li>");
 	});
 
-	function be_sortable(page_name){
-		$( ".story" ).sortable({
+	function be_sortable(pageElement, page_name){
+	  pageElement.find('.story').sortable({
 			update: function(event, ui) {
 				edit = {"type": "move", "order": $(this).children().map(function(key,value){return value.id}).get()};
 				$.ajax({ type: 'PUT', url: '/page/'+page_name+'/edit', data: {'edit': JSON.stringify(edit)}, success: function(){
-					$(".journal").prepend('<span class="edit move">m</span>')
+					pageElement.find(".journal").prepend('<span class="edit move">m</span>');
 				} });
-			}
-		});
+		  }
+	  });
 		$( "#sortable" ).disableSelection();
 
 		$('.readout').mousemove(function(e){
@@ -40,7 +40,9 @@ $(function() {
 	}
 
 	function refresh(i,each) {
-		var page_name = $(each).attr('id');
+		var pageElement = $(this);
+		var page_name = $(pageElement).attr('id');
+
 		$.get('/'+page_name+'/json', '', function(page_json){
 			var empty = {title:"empty",synopsys:"empty",story:[],journal:[]};
 			var page = $.extend(empty, JSON.parse(page_json));
@@ -74,7 +76,7 @@ $(function() {
 			$(each).children('.footer')
 				.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ')
 				.append('<a href="/'+page_name+'/json">JSON</a>');
-			be_sortable(page_name);
+			be_sortable(pageElement, page_name);
 		})
 	}
 
