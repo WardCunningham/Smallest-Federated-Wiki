@@ -7,7 +7,7 @@
 		- page['story'].each do |item|
 			%div{:class => type=item['type'], :id => item['id']}
 				- if type == 'paragraph'
-					%p= resolve_links(item['text'])
+					%div= resolve_links(item['text'])
 				- if type == 'image'
 					%img{:src => item['url']}
 					%p= resolve_links(item['caption'])

@@ -33,6 +33,34 @@ $(function() {
 	    });
 	}
 
+  function be_editable(selector) {
+    $(selector).mouseover(function(e){
+      var parent = $(e.target).parents('div.paragraph');
+      if( parent.prev('div.edit-para').length == 0) {
+        var top = $(parent).position().top - 10;
+        parent.before('<div id="removeme" class="edit-para" style="cursor: pointer;z-index: 9999; position: absolute; background-color:red; width: 4em; top:'+top +';">edit me</div>');
+
+        $('.edit-para').click(function(e){
+          var config = {
+              toolbar:
+              [
+                ['Bold', 'Italic', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink'],
+                ['UIColor']
+              ]
+            };
+          $(e.target).next().children().ckeditor(config);          
+          $(e.target).next().children().after('<input type="button" value="Update"></input>');
+          $(e.target).next().children('input[type=button]').click(function(){
+            $(alert('here'));
+            });
+        });
+        }
+      parent.prev('div.edit-para').fadeOut(5000);
+      setTimeout("$('#removeme').remove()", 5000);
+    });
+
+  }
+
 	function resolve_links(string){
 	    return string.
 	      replace(/\[\[([a-z-]+)\]\]/g, '<a href="/$1">$1</a>').
@@ -90,9 +118,13 @@ $(function() {
 	}
 
 	if($('.story').length){
-		be_sortable($('.page').attr('id'));
+		be_sortable($('.page'));
 	} else {
 		$('.page').each(refresh);
 	}
+
+  $('.paragraph').css('position', 'relative');
+  $('.paragraph').css('z-index', '1');
+  be_editable('.paragraph');
 });
 
