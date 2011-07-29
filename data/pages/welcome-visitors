@@ -1,0 +1,13 @@
+{
+"title": "Welcome Visitors",
+"synopsys": "The first federated wiki page written and often first page viewed.",
+"story":
+[
+{
+"id": "7b56f22a4b9ee974",
+"type": "paragraph",
+"text":
+"Welcome to the federated wiki.\nThis page was first drafted Sunday, June 26th, 2011, at [[indie-web-camp]].\nYou are welcome to copy this page to any server you own and revise its welcoming message as you see fit.\nYou can assume this has happened many times already."
+}
+]
+}

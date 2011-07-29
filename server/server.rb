@@ -4,6 +4,7 @@ Bundler.require
 
 set :public, 'client'
 set :haml, :format => :html5
+set :port, 8888
 
 helpers do  
   def get_page name
