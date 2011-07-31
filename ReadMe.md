@@ -19,6 +19,32 @@ This project has been founded within the community assembled in Portland at the 
 
 * [http://IndieWebCamp.com]
 
+Install and Launch
+==================
+
+The server is distributed as a GitHub repository. The server distributes a web client to any visitor. You will need a git client. Learn more from GitHub:
+
+  http://help.github.com/
+
+When you have git. Use it to clone the repository:
+
+  git clone git@github.com:WardCunningham/Smallest-Federated-Wiki.git
+  cd Smallest-Federated-Wiki
+
+The server is a ruby bundle. Get the bundler and then use it to get everything else:
+
+  sudo gem install bundler
+  sudo bundle install
+
+You're ready to launch the server:
+
+  ruby server/server.rb
+
+Now go to your browser and browse your new wiki:
+
+  http://localhost:4567
+
+
 Looking For Code Bloat
 ======================
 
