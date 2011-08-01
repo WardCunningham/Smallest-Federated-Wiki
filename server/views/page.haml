@@ -1,11 +1,11 @@
-.page{:id => page_name}
+.page{:id => page_name, "data-server-generated" => "true"}
 	%h1
 		%a{:href => '/', :style => "text-decoration: none"}
 			%img{:src => '/favicon.png', :height => '32px'}
 		= page['title']
 	.story
 		- page['story'].each do |item|
-			%div{:class => type=item['type'], :id => item['id']}
+			%div{:class => type=item['type'], :id => item['id'], "data-static-item" => item.to_json}
 				- if type == 'paragraph'
 					%p= resolve_links(item['text'])
 				- if type == 'image'
