@@ -8,7 +8,7 @@
       return string.replace(/\[\[([a-z-]+)\]\]/g, "<a href=\"/$1\">$1</a>").replace(/\[(http.*?) (.*?)\]/g, "<a href=\"$1\">$2</a>");
     };
     refresh = function() {
-      var buildPage, getItem, initChartElement, initDragging, pageElement, page_name;
+      var buildPage, format, getItem, initChartElement, initDragging, pageElement, page_name;
       pageElement = $(this);
       page_name = $(pageElement).attr("id");
       getItem = function(element) {
@@ -21,7 +21,7 @@
         storyElement = pageElement.find(".story");
         return storyElement.sortable({
           update: function(evt, ui) {
-            var before, beforeElement, beforeId, destinationPageElement, edit, equals, item, itemElement, journalElement, moveFromPage, moveToPage, moveWithinPage, order, sourcePageElement, thisPageElement;
+            var before, beforeElement, destinationPageElement, edit, equals, item, itemElement, journalElement, moveFromPage, moveToPage, moveWithinPage, order, sourcePageElement, thisPageElement;
             itemElement = ui.item;
             item = getItem(itemElement);
             thisPageElement = $(this).parents(".page:first");
@@ -34,56 +34,45 @@
             moveWithinPage = !sourcePageElement || equals(sourcePageElement, destinationPageElement);
             moveFromPage = !moveWithinPage && equals(thisPageElement, sourcePageElement);
             moveToPage = !moveWithinPage && equals(thisPageElement, destinationPageElement);
-            if (moveWithinPage) {
-              order = $(this).children().map(function(key, value) {
-                return value.id;
-              }).get();
-              edit = {
-                type: "move",
-                order: order
-              };
-              return console.log(JSON.stringify(edit));
-            } else if (moveFromPage) {
-              edit = {
-                type: "remove",
-                id: item.id
-              };
-              console.log(JSON.stringify(edit));
-              return journalElement.prepend($("<span />").addClass("edit").addClass("remove").text("r"));
-            } else if (moveToPage) {
-              itemElement.data("pageElement", thisPageElement);
-              beforeElement = itemElement.prev(".item");
-              before = getItem(beforeElement);
-              beforeId = (before ? before.id : null);
-              edit = {
-                type: "add",
-                item: item,
-                previousSibling: beforeId
-              };
-              console.log(JSON.stringify(edit));
-              return journalElement.prepend($("<span />").addClass("edit").addClass("add").text("a"));
-            }
+            edit = moveWithinPage ? (order = $(this).children().map(function(_, value) {
+              return value.id;
+            }).get(), {
+              type: "move",
+              order: order
+            }) : moveFromPage ? (journalElement.prepend($("<span />").addClass("edit").addClass("remove").text("r")), {
+              type: "remove",
+              id: item.id
+            }) : moveToPage ? (itemElement.data("pageElement", thisPageElement), beforeElement = itemElement.prev(".item"), before = getItem(beforeElement), journalElement.prepend($("<span />").addClass("edit").addClass("add").text("a")), {
+              type: "add",
+              item: item,
+              previousSibling: before != null ? before.id : void 0
+            }) : void 0;
+            return console.log(JSON.stringify(edit));
           },
           connectWith: ".page .story"
         });
       };
+      format = function(time) {
+        var am, d, h, m;
+        d = new Date(time);
+        m = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][d.getMonth()];
+        h = d.getHours();
+        am = (h < 12 ? "AM" : "PM");
+        h = (h === 0 ? 12 : (h > 12 ? h - 12 : h));
+        return h + ":" + (d.getMinutes() < 10 ? "0" : "") + d.getMinutes() + " " + am + "<br>" + d.getDate() + " " + m + " " + d.getFullYear();
+      };
       initChartElement = function(chartElement) {
+        var item;
+        item = getItem($(chartElement).parent(".chart"));
         return $(chartElement).mousemove(function(e) {
-          var am, d, h, item, m, sample, time;
-          item = getItem($(e.target).parent(".chart"));
-          sample = item.data[Math.floor(item.data.length * e.offsetX / e.target.offsetWidth)];
-          d = new Date(sample[0]);
-          m = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][d.getMonth()];
-          h = d.getHours();
-          am = (h < 12 ? "AM" : "PM");
-          h = (h === 0 ? 12 : (h > 12 ? h - 12 : h));
-          time = h + ":" + (d.getMinutes() < 10 ? "0" : "") + d.getMinutes() + " " + am + "<br>" + d.getDate() + " " + m + " " + d.getFullYear();
-          $(e.target).text(sample[1].toFixed(1));
-          return $(e.target).siblings("p").last().html(time);
+          var sample, time, _ref;
+          _ref = item.data[Math.floor(item.data.length * e.offsetX / e.target.offsetWidth)], time = _ref[0], sample = _ref[1];
+          $(e.target).text(sample.toFixed(1));
+          return $(e.target).siblings("p").last().html(format(time));
         });
       };
       buildPage = function(data) {
-        var empty, journalElement, page, storyElement;
+        var empty, footerElement, journalElement, newPageElement, page, storyElement, _ref;
         empty = {
           title: "empty",
           synopsys: "empty",
@@ -92,9 +81,11 @@
         };
         page = $.extend(empty, data);
         $(pageElement).append("<h1><a href=\"/\"><img src = \"/favicon.png\" height = \"32px\"></a> " + page.title + "</h1>");
-        storyElement = $("<div />").addClass("story").appendTo(pageElement);
-        journalElement = $("<div />").addClass("journal").appendTo(pageElement);
-        pageElement.append("<div class=\"footer\" />");
+        newPageElement = function(className) {
+          return $("<div />").addClass(className).appendTo(pageElement);
+        };
+        _ref = ["story", "journal", "footer"].map(newPageElement), storyElement = _ref[0], journalElement = _ref[1], footerElement = _ref[2];
+        footerElement.append("<a id=\"license\" href=\"http://creativecommons.org/licenses/by-sa/3.0/\">CC BY-SA 3.0</a> . ").append("<a href=\"/" + page_name + "/json\">JSON</a>");
         $.each(page.story, function() {
           var captionElement, chartElement, div, item;
           item = this;
@@ -121,17 +112,16 @@
             }
             if (item.type === "chart") {
               chartElement = $("<p />").addClass("readout").appendTo(div).text(item.data.last().last());
-              captionElement = $("<p />").text(resolve_links(item.caption)).appendTo(div);
+              captionElement = $("<p />").html(resolve_links(item.caption)).appendTo(div);
               return initChartElement(chartElement);
             }
           } catch (err) {
-            return $("#" + item.id).append("<p>" + err + "</p>");
+            return div.append("<p class='error'>" + err + "</p>");
           }
         });
-        $.each(page.journal.reverse(), function(i, item) {
+        return $.each(page.journal.reverse(), function(i, item) {
           return journalElement.append("<span> <span class=\"edit " + item.type + "\">" + item.type[0] + "</span></span>");
         });
-        return $(pageElement).children(".footer").append("<a id=\"license\" href=\"http://creativecommons.org/licenses/by-sa/3.0/\">CC BY-SA 3.0</a> . ").append("<a href=\"/" + page_name + "/json\">JSON</a>");
       };
       if ($(pageElement).attr("data-server-generated") === "true") {
         initDragging();
