@@ -44,18 +44,6 @@ Now go to your browser and browse your new wiki:
 
 	http://localhost:4567
 
-Working with Coffee-Script
-==========================
-
-The client side is written in Coffee-Script. If you are not checking in changes you need not concern yourself with this. We've checked in generated Javascript for the client application.
-
-Should you modify the Coffee-Script you will need to translate it to JavaScript. The easy way to do this is to launch the coffee translator as follows:
-
-	cd client
-	coffee -wc .
-
-The `-wc` option asks coffee to recompile as you make changes.
-
 Looking For Code Bloat
 ======================
 

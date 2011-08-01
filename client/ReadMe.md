@@ -11,3 +11,23 @@ In summary, the server's client side exists to:
 
 * Offer to a user a browsing experience that is independent of any specific server.
 * Support writing, editing and curating of one server in a way that offers suitable influence over others.
+
+Working with CoffeeScript
+==========================
+
+The client side is written in CoffeeScript. If you are not checking in changes you need not concern yourself with this. We've checked in the generated Javascript for the client application.
+
+Should you modify the CoffeeScript you will need to translate it to JavaScript. The easy way to do this is to launch the coffee translator as follows:
+
+	cd client
+	coffee -wc .
+
+The `-wc` option asks coffee to recompile as you make changes.
+
+We recommend taking time to learn the CoffeeScript syntax and the rationale for the Javascript idioms it employes. Start here:
+
+  http://jashkenas.github.com/coffee-script/
+
+We used a Javascript to Coffeescript converter to create the first draft of client.coffee. You may find this converter useful for importing sample codes. 
+
+  http://ricostacruz.com/js2coffee/
