@@ -97,7 +97,8 @@ $ ->
 
               div.html textarea
               textarea.focus()
-          div.append "<img src=\"" + item.url + "\"> <p>" + resolve_links(item.caption) + "</p>"  if item.type == "image"
+          if item.type == "image"
+            div.append "<img src=\"" + item.url + "\"> <p>" + resolve_links(item.caption) + "</p>"
           if item.type == "chart"
             chartElement = $("<p />").addClass("readout").appendTo(div).text(item.data.last().last())
             captionElement = $("<p />").html(resolve_links(item.caption)).appendTo(div)
