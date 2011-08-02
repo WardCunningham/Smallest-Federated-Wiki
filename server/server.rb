@@ -58,7 +58,7 @@ class Controller < Sinatra::Base
   end
 
   get %r{^/view/([a-z-]+)$} do |name|
-    haml :view, :locals => {:page_names => name, :page_name => name}
+    haml :view, :locals => {:page_names => [name], :page_name => name}
   end
 
   get %r{^/view/([a-z-]+)/view/([a-z-]+)$} do |n1, n2|
