@@ -40,15 +40,15 @@
               type: "move",
               order: order
             }) : moveFromPage ? {
-              type: "remove",
-              id: item.id
+              type: "remove"
             } : moveToPage ? (itemElement.data("pageElement", thisPageElement), beforeElement = itemElement.prev(".item"), before = getItem(beforeElement), {
               type: "add",
               item: item,
-              previousSibling: before != null ? before.id : void 0
+              after: before != null ? before.id : void 0
             }) : void 0;
+            edit.id = item.id;
             console.log(JSON.stringify(edit));
-            return journalElement.prepend($("<span />").addClass("edit").addClass(edit.type).text(edit.type[0]));
+            return journalElement.prepend($("<span /> ").addClass("edit").addClass(edit.type).text(edit.type[0]));
           },
           connectWith: ".page .story"
         });
@@ -110,7 +110,7 @@
                     text: item.text
                   };
                   console.log(JSON.stringify(edit));
-                  return journalElement.prepend($("<span />").addClass("edit").addClass(edit.type).text(edit.type[0]));
+                  return journalElement.prepend($("<span /> ").addClass("edit").addClass(edit.type).text(edit.type[0]));
                 });
                 div.html(textarea);
                 return textarea.focus();

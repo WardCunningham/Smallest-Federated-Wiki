@@ -34,15 +34,16 @@ $ ->
             order = $(this).children().map((_, value) -> value.id).get()
             {type: "move", order: order}
           else if moveFromPage
-            {type: "remove", id: item.id}
+            {type: "remove"}
           else if moveToPage
             itemElement.data "pageElement", thisPageElement
             beforeElement = itemElement.prev(".item")
             before = getItem(beforeElement)
-            {type: "add", item: item, previousSibling: before?.id}
+            {type: "add", item: item, after: before?.id}
 
+          edit.id = item.id
           console.log(JSON.stringify(edit))
-          journalElement.prepend $("<span />").addClass("edit").addClass(edit.type).text(edit.type[0])
+          journalElement.prepend $("<span /> ").addClass("edit").addClass(edit.type).text(edit.type[0])
 
         connectWith: ".page .story"
 
@@ -96,7 +97,7 @@ $ ->
                 $(div).last("p").html "<p>" + resolve_links(item.text) + "</p>"
                 edit = {type: "edit", id: item.id, text: item.text}
                 console.log(JSON.stringify(edit))
-                journalElement.prepend $("<span />").addClass("edit").addClass(edit.type).text(edit.type[0])
+                journalElement.prepend $("<span /> ").addClass("edit").addClass(edit.type).text(edit.type[0])
               div.html textarea
               textarea.focus()
 
