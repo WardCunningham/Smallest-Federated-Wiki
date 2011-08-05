@@ -106,6 +106,9 @@ $ ->
             captionElement = $("<p />").html(resolve_links(item.caption)).appendTo(div)
             initChartElement chartElement
 
+          if item.type == "factory"
+            div.append "<p>Double-Click to Edit<br>Drop Text or Image to Insert</p>"
+
         catch err
           div.append "<p class='error'>" + err + "</p>"
 

@@ -113,7 +113,10 @@
             if (item.type === "chart") {
               chartElement = $("<p />").addClass("readout").appendTo(div).text(item.data.last().last());
               captionElement = $("<p />").html(resolve_links(item.caption)).appendTo(div);
-              return initChartElement(chartElement);
+              initChartElement(chartElement);
+            }
+            if (item.type === "factory") {
+              return div.append("<p>Double-Click to Edit<br>Drop Text or Image to Insert</p>");
             }
           } catch (err) {
             return div.append("<p class='error'>" + err + "</p>");
