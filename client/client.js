@@ -39,15 +39,16 @@
             }).get(), {
               type: "move",
               order: order
-            }) : moveFromPage ? (journalElement.prepend($("<span />").addClass("edit").addClass("remove").text("r")), {
+            }) : moveFromPage ? {
               type: "remove",
               id: item.id
-            }) : moveToPage ? (itemElement.data("pageElement", thisPageElement), beforeElement = itemElement.prev(".item"), before = getItem(beforeElement), journalElement.prepend($("<span />").addClass("edit").addClass("add").text("a")), {
+            } : moveToPage ? (itemElement.data("pageElement", thisPageElement), beforeElement = itemElement.prev(".item"), before = getItem(beforeElement), {
               type: "add",
               item: item,
               previousSibling: before != null ? before.id : void 0
             }) : void 0;
-            return console.log(JSON.stringify(edit));
+            console.log(JSON.stringify(edit));
+            return journalElement.prepend($("<span />").addClass("edit").addClass(edit.type).text(edit.type[0]));
           },
           connectWith: ".page .story"
         });
@@ -100,8 +101,16 @@
                 var textarea;
                 textarea = $("<textarea>" + item.text + "</textarea>");
                 textarea.focusout(function() {
+                  var edit;
                   item.text = textarea.val();
-                  return $(div).last("p").html("<p>" + resolve_links(item.text) + "</p>");
+                  $(div).last("p").html("<p>" + resolve_links(item.text) + "</p>");
+                  edit = {
+                    type: "edit",
+                    id: item.id,
+                    text: item.text
+                  };
+                  console.log(JSON.stringify(edit));
+                  return journalElement.prepend($("<span />").addClass("edit").addClass(edit.type).text(edit.type[0]));
                 });
                 div.html(textarea);
                 return textarea.focus();
