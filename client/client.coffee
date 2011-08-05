@@ -87,6 +87,7 @@ $ ->
         try
           div.data "pageElement", pageElement
           div.data "item", item
+
           if item.type == "paragraph"
             div.append "<p>" + resolve_links(item.text) + "</p>"
             div.dblclick ->
@@ -94,15 +95,17 @@ $ ->
               textarea.focusout ->
                 item.text = textarea.val()
                 $(div).last("p").html "<p>" + resolve_links(item.text) + "</p>"
-
               div.html textarea
               textarea.focus()
+
           if item.type == "image"
             div.append "<img src=\"" + item.url + "\"> <p>" + resolve_links(item.caption) + "</p>"
+
           if item.type == "chart"
             chartElement = $("<p />").addClass("readout").appendTo(div).text(item.data.last().last())
             captionElement = $("<p />").html(resolve_links(item.caption)).appendTo(div)
             initChartElement chartElement
+
         catch err
           div.append "<p class='error'>" + err + "</p>"
 
