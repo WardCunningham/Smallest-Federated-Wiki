@@ -111,6 +111,17 @@ $ ->
 
           if item.type == "factory"
             div.append "<p>Double-Click to Edit<br>Drop Text or Image to Insert</p>"
+            # adapted from http://html5demos.com/file-api
+            # not workig yet: missing something? interaction with sortable?
+            div.get(0).ondrop = (e) ->
+              e.preventDefault()
+              file = e.dataTransfer.files[0]
+              reader = new FileReader()
+              reader.onload = (event) ->
+                item.type = "image"
+                item.url = 'url(' + event.target.result + ')'
+              reader.readAsDataURL(file)
+              false
 
         catch err
           div.append "<p class='error'>" + err + "</p>"

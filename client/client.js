@@ -18,6 +18,7 @@
       };
       initDragging = function() {
         var storyElement;
+        return;
         storyElement = pageElement.find(".story");
         return storyElement.sortable({
           update: function(evt, ui) {
@@ -125,7 +126,19 @@
               initChartElement(chartElement);
             }
             if (item.type === "factory") {
-              return div.append("<p>Double-Click to Edit<br>Drop Text or Image to Insert</p>");
+              div.append("<p>Double-Click to Edit<br>Drop Text or Image to Insert</p>");
+              return div.get(0).ondrop = function(e) {
+                var file, reader;
+                e.preventDefault();
+                file = e.dataTransfer.files[0];
+                reader = new FileReader();
+                reader.onload = function(event) {
+                  item.type = "image";
+                  return item.url = 'url(' + event.target.result + ')';
+                };
+                reader.readAsDataURL(file);
+                return false;
+              };
             }
           } catch (err) {
             return div.append("<p class='error'>" + err + "</p>");
