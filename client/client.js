@@ -8,7 +8,7 @@
       return string.replace(/\[\[([a-z-]+)\]\]/g, "<a href=\"/$1\">$1</a>").replace(/\[(http.*?) (.*?)\]/g, "<a href=\"$1\">$2</a>");
     };
     refresh = function() {
-      var buildPage, format, getItem, initChartElement, initDragging, pageElement, page_name;
+      var addJournal, buildPage, format, getItem, initChartElement, initDragging, pageElement, page_name;
       pageElement = $(this);
       page_name = $(pageElement).attr("id");
       getItem = function(element) {
@@ -18,7 +18,6 @@
       };
       initDragging = function() {
         var storyElement;
-        return;
         storyElement = pageElement.find(".story");
         return storyElement.sortable({
           update: function(evt, ui) {
@@ -49,7 +48,7 @@
             }) : void 0;
             edit.id = item.id;
             console.log(JSON.stringify(edit));
-            return journalElement.prepend($("<span /> ").addClass("edit").addClass(edit.type).text(edit.type[0]));
+            return addJournal(journalElement, edit);
           },
           connectWith: ".page .story"
         });
@@ -71,6 +70,16 @@
           _ref = item.data[Math.floor(item.data.length * e.offsetX / e.target.offsetWidth)], time = _ref[0], sample = _ref[1];
           $(e.target).text(sample.toFixed(1));
           return $(e.target).siblings("p").last().html(format(time));
+        });
+      };
+      addJournal = function(journalElement, edit) {
+        var editElement;
+        editElement = $("<span><span class=\"edit " + edit.type + "\">" + edit.type[0] + "</span></span>").prependTo(journalElement);
+        editElement.mouseover(function() {
+          return $("[id=" + edit.id + "]").addClass("edited");
+        });
+        return editElement.mouseout(function() {
+          return $("[id=" + edit.id + "]").removeClass("edited");
         });
       };
       buildPage = function(data) {
@@ -111,7 +120,7 @@
                     text: item.text
                   };
                   console.log(JSON.stringify(edit));
-                  return journalElement.prepend($("<span /> ").addClass("edit").addClass(edit.type).text(edit.type[0]));
+                  return addJournal(journalElement, edit);
                 });
                 div.html(textarea);
                 return textarea.focus();
@@ -144,8 +153,8 @@
             return div.append("<p class='error'>" + err + "</p>");
           }
         });
-        return $.each(page.journal.reverse(), function(i, item) {
-          return journalElement.append("<span> <span class=\"edit " + item.type + "\">" + item.type[0] + "</span></span>");
+        return $.each(page.journal, function(i, edit) {
+          return addJournal(journalElement, edit);
         });
       };
       if ($(pageElement).attr("data-server-generated") === "true") {

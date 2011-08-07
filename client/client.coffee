@@ -43,7 +43,7 @@ $ ->
 
           edit.id = item.id
           console.log(JSON.stringify(edit))
-          journalElement.prepend $("<span /> ").addClass("edit").addClass(edit.type).text(edit.type[0])
+          addJournal journalElement, edit
 
         connectWith: ".page .story"
 
@@ -62,6 +62,12 @@ $ ->
         [time, sample] = item.data[Math.floor(item.data.length * e.offsetX / e.target.offsetWidth)]
         $(e.target).text sample.toFixed(1)
         $(e.target).siblings("p").last().html format(time)
+
+    addJournal = (journalElement, edit) ->
+       # journalElement.prepend $("<span /> ").addClass("edit").addClass(edit.type).text(edit.type[0])
+      editElement = $("<span><span class=\"edit " + edit.type + "\">" + edit.type[0] + "</span></span>").prependTo(journalElement)
+      editElement.mouseover () -> $("[id=" + edit.id + "]").addClass("edited")
+      editElement.mouseout -> $("[id=" + edit.id + "]").removeClass("edited")
 
     buildPage = (data) ->
       empty =
@@ -97,7 +103,7 @@ $ ->
                 $(div).last("p").html "<p>" + resolve_links(item.text) + "</p>"
                 edit = {type: "edit", id: item.id, text: item.text}
                 console.log(JSON.stringify(edit))
-                journalElement.prepend $("<span /> ").addClass("edit").addClass(edit.type).text(edit.type[0])
+                addJournal journalElement, edit
               div.html textarea
               textarea.focus()
 
@@ -126,8 +132,8 @@ $ ->
         catch err
           div.append "<p class='error'>" + err + "</p>"
 
-      $.each page.journal.reverse(), (i, item) ->
-        journalElement.append "<span> <span class=\"edit " + item.type + "\">" + item.type[0] + "</span></span>"
+      $.each page.journal, (i, edit) ->
+        addJournal journalElement, edit
 
     if $(pageElement).attr("data-server-generated") == "true"
       initDragging()
