@@ -3,19 +3,108 @@
     return this[this.length - 1];
   };
   $(function() {
-    var refresh, resolve_links;
+    var addJournal, format, getItem, plugins, refresh, resolve_links;
     resolve_links = function(string) {
       return string.replace(/\[\[([a-z-]+)\]\]/g, "<a href=\"/$1\">$1</a>").replace(/\[(http.*?) (.*?)\]/g, "<a href=\"$1\">$2</a>");
     };
+    addJournal = function(journalElement, edit) {
+      var editElement;
+      editElement = $("<span><span class=\"edit " + edit.type + "\">" + edit.type[0] + "</span></span>").prependTo(journalElement);
+      editElement.mouseover(function() {
+        return $("[id=" + edit.id + "]").addClass("edited");
+      });
+      return editElement.mouseout(function() {
+        return $("[id=" + edit.id + "]").removeClass("edited");
+      });
+    };
+    format = function(time) {
+      var am, d, h, m;
+      d = new Date(time);
+      m = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][d.getMonth()];
+      h = d.getHours();
+      am = (h < 12 ? "AM" : "PM");
+      h = (h === 0 ? 12 : (h > 12 ? h - 12 : h));
+      return h + ":" + (d.getMinutes() < 10 ? "0" : "") + d.getMinutes() + " " + am + "<br>" + d.getDate() + " " + m + " " + d.getFullYear();
+    };
+    getItem = function(element) {
+      if ($(element).length > 0) {
+        return $(element).data("item") || JSON.parse($(element).attr("data-static-item"));
+      }
+    };
+    plugins = {
+      paragraph: {
+        emit: function(div, item) {
+          return div.append("<p>" + resolve_links(item.text) + "</p>");
+        },
+        bind: function(div, item) {
+          return div.dblclick(function() {
+            var textarea;
+            textarea = $("<textarea>" + item.text + "</textarea>");
+            textarea.focusout(function() {
+              var edit, journalElement;
+              item.text = textarea.val();
+              $(div).last("p").html("<p>" + resolve_links(item.text) + "</p>");
+              edit = {
+                type: "edit",
+                id: item.id,
+                text: item.text
+              };
+              console.log(JSON.stringify(edit));
+              journalElement = div.parents(".page:first").find(".journal");
+              return addJournal(journalElement, edit);
+            });
+            div.html(textarea);
+            return textarea.focus();
+          });
+        }
+      },
+      image: {
+        emit: function(div, item) {
+          return div.append("<img src=\"" + item.url + "\"> <p>" + resolve_links(item.caption) + "</p>");
+        },
+        bind: function(div, item) {
+          return "";
+        }
+      },
+      chart: {
+        emit: function(div, item) {
+          var captionElement, chartElement;
+          chartElement = $("<p />").addClass("readout").appendTo(div).text(item.data.last().last());
+          return captionElement = $("<p />").html(resolve_links(item.caption)).appendTo(div);
+        },
+        bind: function(div, item) {
+          return div.find('p:first').mousemove(function(e) {
+            var sample, time, _ref;
+            _ref = item.data[Math.floor(item.data.length * e.offsetX / e.target.offsetWidth)], time = _ref[0], sample = _ref[1];
+            $(e.target).text(sample.toFixed(1));
+            return $(e.target).siblings("p").last().html(format(time));
+          });
+        }
+      },
+      factory: {
+        emit: function(div, item) {
+          return div.append("<p>Double-Click to Edit<br>Drop Text or Image to Insert</p>");
+        },
+        bind: function(div, item) {
+          return div.get(0).ondrop = function(e) {
+            var file, reader;
+            e.preventDefault();
+            file = e.dataTransfer.files[0];
+            reader = new FileReader();
+            reader.onload = function(event) {
+              item.type = "image";
+              return item.url = 'url(' + event.target.result + ')';
+            };
+            reader.readAsDataURL(file);
+            return false;
+          };
+        }
+      }
+    };
     refresh = function() {
-      var addJournal, buildPage, format, getItem, initChartElement, initDragging, pageElement, page_name;
+      var buildPage, initDragging, pageElement, page_name;
       pageElement = $(this);
       page_name = $(pageElement).attr("id");
-      getItem = function(element) {
-        if ($(element).length > 0) {
-          return $(element).data("item") || JSON.parse($(element).attr("data-static-item"));
-        }
-      };
       initDragging = function() {
         var storyElement;
         storyElement = pageElement.find(".story");
@@ -53,35 +142,6 @@
           connectWith: ".page .story"
         });
       };
-      format = function(time) {
-        var am, d, h, m;
-        d = new Date(time);
-        m = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][d.getMonth()];
-        h = d.getHours();
-        am = (h < 12 ? "AM" : "PM");
-        h = (h === 0 ? 12 : (h > 12 ? h - 12 : h));
-        return h + ":" + (d.getMinutes() < 10 ? "0" : "") + d.getMinutes() + " " + am + "<br>" + d.getDate() + " " + m + " " + d.getFullYear();
-      };
-      initChartElement = function(chartElement) {
-        var item;
-        item = getItem($(chartElement).parent(".chart"));
-        return $(chartElement).mousemove(function(e) {
-          var sample, time, _ref;
-          _ref = item.data[Math.floor(item.data.length * e.offsetX / e.target.offsetWidth)], time = _ref[0], sample = _ref[1];
-          $(e.target).text(sample.toFixed(1));
-          return $(e.target).siblings("p").last().html(format(time));
-        });
-      };
-      addJournal = function(journalElement, edit) {
-        var editElement;
-        editElement = $("<span><span class=\"edit " + edit.type + "\">" + edit.type[0] + "</span></span>").prependTo(journalElement);
-        editElement.mouseover(function() {
-          return $("[id=" + edit.id + "]").addClass("edited");
-        });
-        return editElement.mouseout(function() {
-          return $("[id=" + edit.id + "]").removeClass("edited");
-        });
-      };
       buildPage = function(data) {
         var empty, footerElement, journalElement, newPageElement, page, storyElement, _ref;
         empty = {
@@ -98,57 +158,16 @@
         _ref = ["story", "journal", "footer"].map(newPageElement), storyElement = _ref[0], journalElement = _ref[1], footerElement = _ref[2];
         footerElement.append("<a id=\"license\" href=\"http://creativecommons.org/licenses/by-sa/3.0/\">CC BY-SA 3.0</a> . ").append("<a href=\"/" + page_name + "/json\">JSON</a>");
         $.each(page.story, function() {
-          var captionElement, chartElement, div, item;
+          var div, item, plugin;
           item = this;
           div = $("<div class=\"item " + item.type + "\" id=\"" + item.id + "\" />");
           $(pageElement).children(".story").append(div);
           try {
             div.data("pageElement", pageElement);
             div.data("item", item);
-            if (item.type === "paragraph") {
-              div.append("<p>" + resolve_links(item.text) + "</p>");
-              div.dblclick(function() {
-                var textarea;
-                textarea = $("<textarea>" + item.text + "</textarea>");
-                textarea.focusout(function() {
-                  var edit;
-                  item.text = textarea.val();
-                  $(div).last("p").html("<p>" + resolve_links(item.text) + "</p>");
-                  edit = {
-                    type: "edit",
-                    id: item.id,
-                    text: item.text
-                  };
-                  console.log(JSON.stringify(edit));
-                  return addJournal(journalElement, edit);
-                });
-                div.html(textarea);
-                return textarea.focus();
-              });
-            }
-            if (item.type === "image") {
-              div.append("<img src=\"" + item.url + "\"> <p>" + resolve_links(item.caption) + "</p>");
-            }
-            if (item.type === "chart") {
-              chartElement = $("<p />").addClass("readout").appendTo(div).text(item.data.last().last());
-              captionElement = $("<p />").html(resolve_links(item.caption)).appendTo(div);
-              initChartElement(chartElement);
-            }
-            if (item.type === "factory") {
-              div.append("<p>Double-Click to Edit<br>Drop Text or Image to Insert</p>");
-              return div.get(0).ondrop = function(e) {
-                var file, reader;
-                e.preventDefault();
-                file = e.dataTransfer.files[0];
-                reader = new FileReader();
-                reader.onload = function(event) {
-                  item.type = "image";
-                  return item.url = 'url(' + event.target.result + ')';
-                };
-                reader.readAsDataURL(file);
-                return false;
-              };
-            }
+            plugin = plugins[item.type];
+            plugin.emit(div, item);
+            return plugin.bind(div, item);
           } catch (err) {
             return div.append("<p class='error'>" + err + "</p>");
           }
@@ -159,8 +178,10 @@
       };
       if ($(pageElement).attr("data-server-generated") === "true") {
         initDragging();
-        return $(".readout").each(function() {
-          return initChartElement(this);
+        return $(".chart").each(function(i, each) {
+          var div;
+          div = $(each);
+          return plugins.chart.bind(div, getItem(div));
         });
       } else {
         return $.get("/" + page_name + "/json", "", function(page_json) {

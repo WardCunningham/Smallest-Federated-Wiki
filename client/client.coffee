@@ -7,12 +7,68 @@ $ ->
       .replace(/\[\[([a-z-]+)\]\]/g, "<a href=\"/$1\">$1</a>")
       .replace /\[(http.*?) (.*?)\]/g, "<a href=\"$1\">$2</a>"
 
+  addJournal = (journalElement, edit) ->
+     # journalElement.prepend $("<span /> ").addClass("edit").addClass(edit.type).text(edit.type[0])
+    editElement = $("<span><span class=\"edit " + edit.type + "\">" + edit.type[0] + "</span></span>").prependTo(journalElement)
+    editElement.mouseover () -> $("[id=" + edit.id + "]").addClass("edited")
+    editElement.mouseout -> $("[id=" + edit.id + "]").removeClass("edited")
+
+  format = (time) ->
+    d = new Date(time)
+    m = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ][d.getMonth()]
+    h = d.getHours()
+    am = (if h < 12 then "AM" else "PM")
+    h = (if h == 0 then 12 else (if h > 12 then h - 12 else h))
+    h + ":" + (if d.getMinutes() < 10 then "0" else "") + d.getMinutes() + " " + am + "<br>" + d.getDate() + " " + m + " " + d.getFullYear()
+
+  getItem = (element) ->
+    $(element).data("item") or JSON.parse($(element).attr("data-static-item")) if $(element).length > 0
+
+  plugins =
+    paragraph:
+      emit: (div, item) -> div.append "<p>" + resolve_links(item.text) + "</p>"
+      bind: (div, item) ->
+        div.dblclick ->
+          textarea = $("<textarea>" + item.text + "</textarea>")
+          textarea.focusout ->
+            item.text = textarea.val()
+            $(div).last("p").html "<p>" + resolve_links(item.text) + "</p>"
+            edit = {type: "edit", id: item.id, text: item.text}
+            console.log(JSON.stringify(edit))
+            journalElement = div.parents(".page:first").find(".journal")
+            addJournal journalElement, edit
+          div.html textarea
+          textarea.focus()
+    image:
+      emit: (div, item) -> div.append "<img src=\"" + item.url + "\"> <p>" + resolve_links(item.caption) + "</p>"
+      bind: (div, item) -> ""
+    chart:
+      emit: (div, item) ->
+        chartElement = $("<p />").addClass("readout").appendTo(div).text(item.data.last().last())
+        captionElement = $("<p />").html(resolve_links(item.caption)).appendTo(div)
+      bind: (div, item) ->
+        div.find('p:first').mousemove (e) ->
+          [time, sample] = item.data[Math.floor(item.data.length * e.offsetX / e.target.offsetWidth)]
+          $(e.target).text sample.toFixed(1)
+          $(e.target).siblings("p").last().html format(time)
+    factory:
+      emit: (div, item) -> div.append "<p>Double-Click to Edit<br>Drop Text or Image to Insert</p>"
+      bind: (div, item) ->
+        # adapted from http://html5demos.com/file-api
+        # not workig yet: missing something? interaction with sortable?
+        div.get(0).ondrop = (e) ->
+          e.preventDefault()
+          file = e.dataTransfer.files[0]
+          reader = new FileReader()
+          reader.onload = (event) ->
+            item.type = "image"
+            item.url = 'url(' + event.target.result + ')'
+          reader.readAsDataURL(file)
+          false
+
   refresh = ->
     pageElement = $(this)
     page_name = $(pageElement).attr("id")
-
-    getItem = (element) ->
-      $(element).data("item") or JSON.parse($(element).attr("data-static-item")) if $(element).length > 0
 
     initDragging = ->
       storyElement = pageElement.find(".story")
@@ -47,28 +103,6 @@ $ ->
 
         connectWith: ".page .story"
 
-    format = (time) ->
-      d = new Date(time)
-      m = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ][d.getMonth()]
-      h = d.getHours()
-      am = (if h < 12 then "AM" else "PM")
-      h = (if h == 0 then 12 else (if h > 12 then h - 12 else h))
-      h + ":" + (if d.getMinutes() < 10 then "0" else "") + d.getMinutes() + " " + am + "<br>" + d.getDate() + " " + m + " " + d.getFullYear()
-
-    initChartElement = (chartElement) ->
-      item = getItem($(chartElement).parent(".chart"))
-
-      $(chartElement).mousemove (e) ->
-        [time, sample] = item.data[Math.floor(item.data.length * e.offsetX / e.target.offsetWidth)]
-        $(e.target).text sample.toFixed(1)
-        $(e.target).siblings("p").last().html format(time)
-
-    addJournal = (journalElement, edit) ->
-       # journalElement.prepend $("<span /> ").addClass("edit").addClass(edit.type).text(edit.type[0])
-      editElement = $("<span><span class=\"edit " + edit.type + "\">" + edit.type[0] + "</span></span>").prependTo(journalElement)
-      editElement.mouseover () -> $("[id=" + edit.id + "]").addClass("edited")
-      editElement.mouseout -> $("[id=" + edit.id + "]").removeClass("edited")
-
     buildPage = (data) ->
       empty =
         title: "empty"
@@ -93,42 +127,9 @@ $ ->
         try
           div.data "pageElement", pageElement
           div.data "item", item
-
-          if item.type == "paragraph"
-            div.append "<p>" + resolve_links(item.text) + "</p>"
-            div.dblclick ->
-              textarea = $("<textarea>" + item.text + "</textarea>")
-              textarea.focusout ->
-                item.text = textarea.val()
-                $(div).last("p").html "<p>" + resolve_links(item.text) + "</p>"
-                edit = {type: "edit", id: item.id, text: item.text}
-                console.log(JSON.stringify(edit))
-                addJournal journalElement, edit
-              div.html textarea
-              textarea.focus()
-
-          if item.type == "image"
-            div.append "<img src=\"" + item.url + "\"> <p>" + resolve_links(item.caption) + "</p>"
-
-          if item.type == "chart"
-            chartElement = $("<p />").addClass("readout").appendTo(div).text(item.data.last().last())
-            captionElement = $("<p />").html(resolve_links(item.caption)).appendTo(div)
-            initChartElement chartElement
-
-          if item.type == "factory"
-            div.append "<p>Double-Click to Edit<br>Drop Text or Image to Insert</p>"
-            # adapted from http://html5demos.com/file-api
-            # not workig yet: missing something? interaction with sortable?
-            div.get(0).ondrop = (e) ->
-              e.preventDefault()
-              file = e.dataTransfer.files[0]
-              reader = new FileReader()
-              reader.onload = (event) ->
-                item.type = "image"
-                item.url = 'url(' + event.target.result + ')'
-              reader.readAsDataURL(file)
-              false
-
+          plugin = plugins[item.type]
+          plugin.emit(div, item)
+          plugin.bind(div, item)
         catch err
           div.append "<p class='error'>" + err + "</p>"
 
@@ -137,7 +138,7 @@ $ ->
 
     if $(pageElement).attr("data-server-generated") == "true"
       initDragging()
-      $(".readout").each -> initChartElement this
+      $(".chart").each (i, each)-> div = $(each); plugins.chart.bind div, getItem(div)
     else
       $.get "/" + page_name + "/json", "", (page_json) ->
         buildPage JSON.parse(page_json)
