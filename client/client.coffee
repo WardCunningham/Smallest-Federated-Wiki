@@ -113,17 +113,12 @@ $ ->
       page = $.extend(empty, data)
       $(pageElement).append "<h1><a href=\"/\"><img src = \"/favicon.png\" height = \"32px\"></a> " + page.title + "</h1>"
 
-      newPageElement = (className) -> $("<div />").addClass(className).appendTo(pageElement)
-      [storyElement, journalElement, footerElement] = ["story", "journal", "footer"].map(newPageElement)
+      [storyElement, journalElement, footerElement] = ["story", "journal", "footer"].map (className) ->
+        $("<div />").addClass(className).appendTo(pageElement)
 
-      footerElement
-        .append("<a id=\"license\" href=\"http://creativecommons.org/licenses/by-sa/3.0/\">CC BY-SA 3.0</a> . ")
-        .append "<a href=\"/" + page_name + "/json\">JSON</a>"
-      
-      $.each page.story, ->
-        item = this
+      $.each page.story, (i, item) ->
         div = $("<div class=\"item " + item.type + "\" id=\"" + item.id + "\" />")
-        $(pageElement).children(".story").append div
+        storyElement.append div
         try
           div.data "pageElement", pageElement
           div.data "item", item
@@ -136,9 +131,16 @@ $ ->
       $.each page.journal, (i, edit) ->
         addJournal journalElement, edit
 
+      footerElement
+        .append("<a id=\"license\" href=\"http://creativecommons.org/licenses/by-sa/3.0/\">CC BY-SA 3.0</a> . ")
+        .append "<a href=\"/" + page_name + "/json\">JSON</a>"
+
     if $(pageElement).attr("data-server-generated") == "true"
       initDragging()
-      $(".chart").each (i, each)-> div = $(each); plugins.chart.bind div, getItem(div)
+      pageElement.find(".item").each (i, each) ->
+        div = $(each)
+        item = getItem(div)
+        plugins[item.type].bind div, item
     else
       $.get "/" + page_name + "/json", "", (page_json) ->
         buildPage JSON.parse(page_json)

@@ -143,7 +143,7 @@
         });
       };
       buildPage = function(data) {
-        var empty, footerElement, journalElement, newPageElement, page, storyElement, _ref;
+        var empty, footerElement, journalElement, page, storyElement, _ref;
         empty = {
           title: "empty",
           synopsys: "empty",
@@ -152,16 +152,13 @@
         };
         page = $.extend(empty, data);
         $(pageElement).append("<h1><a href=\"/\"><img src = \"/favicon.png\" height = \"32px\"></a> " + page.title + "</h1>");
-        newPageElement = function(className) {
+        _ref = ["story", "journal", "footer"].map(function(className) {
           return $("<div />").addClass(className).appendTo(pageElement);
-        };
-        _ref = ["story", "journal", "footer"].map(newPageElement), storyElement = _ref[0], journalElement = _ref[1], footerElement = _ref[2];
-        footerElement.append("<a id=\"license\" href=\"http://creativecommons.org/licenses/by-sa/3.0/\">CC BY-SA 3.0</a> . ").append("<a href=\"/" + page_name + "/json\">JSON</a>");
-        $.each(page.story, function() {
-          var div, item, plugin;
-          item = this;
+        }), storyElement = _ref[0], journalElement = _ref[1], footerElement = _ref[2];
+        $.each(page.story, function(i, item) {
+          var div, plugin;
           div = $("<div class=\"item " + item.type + "\" id=\"" + item.id + "\" />");
-          $(pageElement).children(".story").append(div);
+          storyElement.append(div);
           try {
             div.data("pageElement", pageElement);
             div.data("item", item);
@@ -172,16 +169,18 @@
             return div.append("<p class='error'>" + err + "</p>");
           }
         });
-        return $.each(page.journal, function(i, edit) {
+        $.each(page.journal, function(i, edit) {
           return addJournal(journalElement, edit);
         });
+        return footerElement.append("<a id=\"license\" href=\"http://creativecommons.org/licenses/by-sa/3.0/\">CC BY-SA 3.0</a> . ").append("<a href=\"/" + page_name + "/json\">JSON</a>");
       };
       if ($(pageElement).attr("data-server-generated") === "true") {
         initDragging();
-        return $(".chart").each(function(i, each) {
-          var div;
+        return pageElement.find(".item").each(function(i, each) {
+          var div, item;
           div = $(each);
-          return plugins.chart.bind(div, getItem(div));
+          item = getItem(div);
+          return plugins[item.type].bind(div, item);
         });
       } else {
         return $.get("/" + page_name + "/json", "", function(page_json) {
