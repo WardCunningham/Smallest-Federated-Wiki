@@ -8,10 +8,14 @@ $ ->
       .replace /\[(http.*?) (.*?)\]/g, "<a href=\"$1\">$2</a>"
 
   addJournal = (journalElement, edit) ->
-     # journalElement.prepend $("<span /> ").addClass("edit").addClass(edit.type).text(edit.type[0])
-    editElement = $("<span><span class=\"edit " + edit.type + "\">" + edit.type[0] + "</span></span>").prependTo(journalElement)
-    editElement.mouseover () -> $("[id=" + edit.id + "]").addClass("edited")
-    editElement.mouseout -> $("[id=" + edit.id + "]").removeClass("edited")
+    $("<span /> ").addClass("edit").addClass(edit.type)
+      .text(edit.type[0])
+      .attr("data-item-id", edit.id)
+      .mouseover () ->
+        $("[id=" + edit.id + "]").addClass("edited")
+      .mouseout () ->
+        $("[id=" + edit.id + "]").removeClass("edited")
+      .prependTo(journalElement)
 
   format = (time) ->
     d = new Date(time)

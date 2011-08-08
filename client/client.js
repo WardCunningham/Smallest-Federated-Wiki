@@ -8,14 +8,11 @@
       return string.replace(/\[\[([a-z-]+)\]\]/g, "<a href=\"/$1\">$1</a>").replace(/\[(http.*?) (.*?)\]/g, "<a href=\"$1\">$2</a>");
     };
     addJournal = function(journalElement, edit) {
-      var editElement;
-      editElement = $("<span><span class=\"edit " + edit.type + "\">" + edit.type[0] + "</span></span>").prependTo(journalElement);
-      editElement.mouseover(function() {
+      return $("<span /> ").addClass("edit").addClass(edit.type).text(edit.type[0]).attr("data-item-id", edit.id).mouseover(function() {
         return $("[id=" + edit.id + "]").addClass("edited");
-      });
-      return editElement.mouseout(function() {
+      }).mouseout(function() {
         return $("[id=" + edit.id + "]").removeClass("edited");
-      });
+      }).prependTo(journalElement);
     };
     format = function(time) {
       var am, d, h, m;
