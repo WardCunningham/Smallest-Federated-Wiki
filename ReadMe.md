@@ -36,9 +36,13 @@ The server is a ruby bundle. Get the bundler and then use it to get everything e
 	sudo gem install bundler
 	sudo bundle install
 
-You're ready to launch the server:
+We're now using Ruby 1.9.2 which we manage with rvm:
 
-	ruby server/server.rb
+	rvm 1.9.2
+
+Launch the server with this bundle command:
+
+	bundle exec rackup -s thin -p 4567
 
 Now go to your browser and browse your new wiki:
 
