@@ -13,7 +13,9 @@ class Controller < Sinatra::Base
 
   helpers do  
     def get_page name
-      File.open(File.join(APP_ROOT, "data/pages/#{name}"), 'r') { |file| JSON.parse(file.read) }
+      path = File.join(APP_ROOT, "data/pages/#{name}")
+      return {'title'=>name,'story'=>[{'type'=>'factory'}]} unless File.file? path
+      File.open(path, 'r') { |file| JSON.parse(file.read) }
     end
     def put_page name, page
       File.open(File.join(APP_ROOT, "data/pages/#{name}"), 'w') { |file| file.write(JSON.generate(page)) }
