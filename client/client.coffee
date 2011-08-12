@@ -17,6 +17,17 @@ $ ->
         $("[id=" + edit.id + "]").removeClass("edited")
       .prependTo(journalElement)
 
+  put_edit = (pageElement, edit) ->
+    $.ajax
+      type: 'PUT'
+      url: "/page/#{pageElement.attr('id')}/edit"
+      data:
+        'edit': JSON.stringify(edit)
+      success: () ->
+        addJournal pageElement.find(".journal"), edit
+      error: (xhr, type, msg) ->
+        console.log "ajax error type: #{type} msg: #{msg}"
+
   format = (time) ->
     d = new Date(time)
     m = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ][d.getMonth()]
@@ -37,10 +48,7 @@ $ ->
           textarea.focusout ->
             item.text = textarea.val()
             $(div).last("p").html "<p>" + resolve_links(item.text) + "</p>"
-            edit = {type: "edit", id: item.id, text: item.text}
-            console.log(JSON.stringify(edit))
-            journalElement = div.parents(".page:first").find(".journal")
-            addJournal journalElement, edit
+            put_edit div.parents(".page:first"), {type: "edit", id: item.id, text: item.text}
           div.html textarea
           textarea.focus()
     image:
@@ -102,8 +110,7 @@ $ ->
             {type: "add", item: item, after: before?.id}
 
           edit.id = item.id
-          console.log(JSON.stringify(edit))
-          addJournal journalElement, edit
+          put_edit pageElement, edit
 
         connectWith: ".page .story"
 

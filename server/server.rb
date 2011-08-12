@@ -51,11 +51,27 @@ class Controller < Sinatra::Base
   end
 
   put %r{^/page/([a-z0-9-]+)/edit$} do |name|
-    page = get_page(name)
-    edit = JSON.parse(params['edit'])
-    page['story'] = edit['order'].collect{ |id| page['story'].detect{ |item| item['id'] == id } }
+    page = get_page name
+    edit = JSON.parse params['edit']
+    puts edit.inspect
+    item = page['story'].detect{ |item| item['id'] == edit['id'] } if edit['id']
+    case edit['type']
+    when 'move'
+      page['story'] = edit['order'].collect{ |id| page['story'].detect{ |item| item['id'] == id } }
+    when 'add'
+      before = edit['after'] ? 1+page['story'].index{|item| item['id'] == edit['after']} : 0
+      page['story'].insert before, edit['item']
+    when 'remove'
+      page['story'].delete_at page['story'].index{ |item| item['id'] == edit['id'] }
+    when 'edit'
+      item['text'] = edit['text']
+    else
+      puts "unfamiliar edit: #{edit.inspect}"
+      status 501
+      return "unfamiliar edit"
+    end
     ( page['journal'] ||= [] ) << edit # todo: journal undo, not redo
-    # put_page name, page
+    put_page name, page
     "ok"
   end
 

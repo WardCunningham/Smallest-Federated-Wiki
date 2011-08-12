@@ -3,7 +3,7 @@
     return this[this.length - 1];
   };
   $(function() {
-    var addJournal, format, getItem, plugins, refresh, resolve_links;
+    var addJournal, format, getItem, plugins, put_edit, refresh, resolve_links;
     resolve_links = function(string) {
       return string.replace(/\[\[([a-z0-9-]+)\]\]/g, "<a href=\"/$1\">$1</a>").replace(/\[(http.*?) (.*?)\]/g, "<a href=\"$1\">$2</a>");
     };
@@ -13,6 +13,21 @@
       }).mouseout(function() {
         return $("[id=" + edit.id + "]").removeClass("edited");
       }).prependTo(journalElement);
+    };
+    put_edit = function(pageElement, edit) {
+      return $.ajax({
+        type: 'PUT',
+        url: "/page/" + (pageElement.attr('id')) + "/edit",
+        data: {
+          'edit': JSON.stringify(edit)
+        },
+        success: function() {
+          return addJournal(pageElement.find(".journal"), edit);
+        },
+        error: function(xhr, type, msg) {
+          return console.log("ajax error type: " + type + " msg: " + msg);
+        }
+      });
     };
     format = function(time) {
       var am, d, h, m;
@@ -38,17 +53,13 @@
             var textarea;
             textarea = $("<textarea>" + item.text + "</textarea>");
             textarea.focusout(function() {
-              var edit, journalElement;
               item.text = textarea.val();
               $(div).last("p").html("<p>" + resolve_links(item.text) + "</p>");
-              edit = {
+              return put_edit(div.parents(".page:first"), {
                 type: "edit",
                 id: item.id,
                 text: item.text
-              };
-              console.log(JSON.stringify(edit));
-              journalElement = div.parents(".page:first").find(".journal");
-              return addJournal(journalElement, edit);
+              });
             });
             div.html(textarea);
             return textarea.focus();
@@ -133,8 +144,7 @@
               after: before != null ? before.id : void 0
             }) : void 0;
             edit.id = item.id;
-            console.log(JSON.stringify(edit));
-            return addJournal(journalElement, edit);
+            return put_edit(pageElement, edit);
           },
           connectWith: ".page .story"
         });
