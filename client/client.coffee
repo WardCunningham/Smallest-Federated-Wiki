@@ -4,7 +4,7 @@ Array::last = ->
 $ ->
   resolve_links = (string) ->
     string
-      .replace(/\[\[([a-z-]+)\]\]/g, "<a href=\"/$1\">$1</a>")
+      .replace(/\[\[([a-z0-9-]+)\]\]/g, "<a href=\"/$1\">$1</a>")
       .replace /\[(http.*?) (.*?)\]/g, "<a href=\"$1\">$2</a>"
 
   addJournal = (journalElement, edit) ->

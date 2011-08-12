@@ -5,7 +5,7 @@
   $(function() {
     var addJournal, format, getItem, plugins, refresh, resolve_links;
     resolve_links = function(string) {
-      return string.replace(/\[\[([a-z-]+)\]\]/g, "<a href=\"/$1\">$1</a>").replace(/\[(http.*?) (.*?)\]/g, "<a href=\"$1\">$2</a>");
+      return string.replace(/\[\[([a-z0-9-]+)\]\]/g, "<a href=\"/$1\">$1</a>").replace(/\[(http.*?) (.*?)\]/g, "<a href=\"$1\">$2</a>");
     };
     addJournal = function(journalElement, edit) {
       return $("<span /> ").addClass("edit").addClass(edit.type).text(edit.type[0]).attr("data-item-id", edit.id).mouseover(function() {
