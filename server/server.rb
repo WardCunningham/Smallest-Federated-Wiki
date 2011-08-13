@@ -75,7 +75,7 @@ class Controller < Sinatra::Base
     "ok"
   end
 
-  get %r{^/view/([a-z0-9-]+(/view/[a-z0-9-]+)+)$} do |pages,extra|
+  get %r{^/view/([a-z0-9-]+(/view/[a-z0-9-]+)*)$} do |pages,extra|
     haml :view, :locals => {:page_names => pages.split('/view/')}
   end
 end
