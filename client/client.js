@@ -51,8 +51,7 @@
         bind: function(div, item) {
           return div.dblclick(function() {
             var textarea;
-            textarea = $("<textarea>" + item.text + "</textarea>");
-            textarea.focusout(function() {
+            textarea = $("<textarea>" + item.text + "</textarea>").focusout(function() {
               item.text = textarea.val();
               $(div).last("p").html("<p>" + resolve_links(item.text) + "</p>");
               return put_edit(div.parents(".page:first"), {
@@ -60,6 +59,10 @@
                 id: item.id,
                 text: item.text
               });
+            }).bind('keydown', function(e) {
+              if (e.which === 27) {
+                return textarea.focusout();
+              }
             });
             div.html(textarea);
             return textarea.focus();
