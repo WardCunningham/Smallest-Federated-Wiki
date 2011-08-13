@@ -12,7 +12,7 @@
         return $("[id=" + edit.id + "]").addClass("edited");
       }).mouseout(function() {
         return $("[id=" + edit.id + "]").removeClass("edited");
-      }).prependTo(journalElement);
+      }).appendTo(journalElement);
     };
     put_edit = function(pageElement, edit) {
       return $.ajax({

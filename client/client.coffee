@@ -15,7 +15,7 @@ $ ->
         $("[id=" + edit.id + "]").addClass("edited")
       .mouseout () ->
         $("[id=" + edit.id + "]").removeClass("edited")
-      .prependTo(journalElement)
+      .appendTo(journalElement)
 
   put_edit = (pageElement, edit) ->
     $.ajax
