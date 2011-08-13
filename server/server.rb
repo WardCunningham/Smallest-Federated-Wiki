@@ -11,14 +11,18 @@ class Controller < Sinatra::Base
   set :views , "#{APP_ROOT}/server/views"  
   set :haml, :format => :html5
 
-  helpers do  
+  helpers do
+    def gen_id
+      (0..15).collect{(rand*16).to_i.to_s(16)}.join
+    end
     def get_page name
       path = File.join(APP_ROOT, "data/pages/#{name}")
-      return {'title'=>name,'story'=>[{'type'=>'factory'}]} unless File.file? path
+      return put_page name, {'title'=>name,'story'=>[{'type'=>'factory', 'id'=>gen_id}]} unless File.file? path
       File.open(path, 'r') { |file| JSON.parse(file.read) }
     end
     def put_page name, page
       File.open(File.join(APP_ROOT, "data/pages/#{name}"), 'w') { |file| file.write(JSON.generate(page)) }
+      return page
     end
     def resolve_links string
       string.
