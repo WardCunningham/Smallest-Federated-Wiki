@@ -3,7 +3,7 @@
     return this[this.length - 1];
   };
   $(function() {
-    var addJournal, format, getItem, plugins, put_edit, refresh, resolve_links;
+    var addJournal, format, getItem, plugins, put_edit, refresh, resolve_links, text_editor;
     resolve_links = function(string) {
       return string.replace(/\[\[([a-z0-9-]+)\]\]/g, "<a href=\"/$1\">$1</a>").replace(/\[(http.*?) (.*?)\]/g, "<a href=\"$1\">$2</a>");
     };
@@ -29,6 +29,24 @@
         }
       });
     };
+    text_editor = function(div, item) {
+      var textarea, _ref;
+      textarea = $("<textarea>" + ((_ref = item.text) != null ? _ref : '') + "</textarea>").focusout(function() {
+        item.text = textarea.val();
+        $(div).last("p").html("<p>" + resolve_links(item.text) + "</p>");
+        return put_edit(div.parents(".page:first"), {
+          type: "edit",
+          id: item.id,
+          item: item
+        });
+      }).bind('keydown', function(e) {
+        if (e.which === 27) {
+          return textarea.focusout();
+        }
+      });
+      div.html(textarea);
+      return textarea.focus();
+    };
     format = function(time) {
       var am, d, h, m;
       d = new Date(time);
@@ -50,22 +68,7 @@
         },
         bind: function(div, item) {
           return div.dblclick(function() {
-            var textarea;
-            textarea = $("<textarea>" + item.text + "</textarea>").focusout(function() {
-              item.text = textarea.val();
-              $(div).last("p").html("<p>" + resolve_links(item.text) + "</p>");
-              return put_edit(div.parents(".page:first"), {
-                type: "edit",
-                id: item.id,
-                text: item.text
-              });
-            }).bind('keydown', function(e) {
-              if (e.which === 27) {
-                return textarea.focusout();
-              }
-            });
-            div.html(textarea);
-            return textarea.focus();
+            return text_editor(div, item);
           });
         }
       },
@@ -95,7 +98,7 @@
           return div.append("<p>Double-Click to Edit<br>Drop Text or Image to Insert</p>");
         },
         bind: function(div, item) {
-          return div.get(0).ondrop = function(e) {
+          div.get(0).ondrop = function(e) {
             var file, reader;
             e.preventDefault();
             file = e.dataTransfer.files[0];
@@ -107,6 +110,10 @@
             reader.readAsDataURL(file);
             return false;
           };
+          return div.dblclick(function() {
+            div.removeClass('factory').addClass(item.type = 'paragraph');
+            return text_editor(div, item);
+          });
         }
       }
     };

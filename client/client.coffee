@@ -28,6 +28,18 @@ $ ->
       error: (xhr, type, msg) ->
         console.log "ajax error type: #{type} msg: #{msg}"
 
+  text_editor = (div, item) ->
+    textarea = $("<textarea>#{item.text ? ''}</textarea>")
+      .focusout ->
+        item.text = textarea.val()
+        $(div).last("p").html "<p>" + resolve_links(item.text) + "</p>"
+        put_edit div.parents(".page:first"), {type: "edit", id: item.id, item: item}
+        # consider no change; empty text
+      .bind 'keydown', (e) ->
+        textarea.focusout() if e.which == 27 #esc
+    div.html textarea
+    textarea.focus()
+
   format = (time) ->
     d = new Date(time)
     m = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ][d.getMonth()]
@@ -43,16 +55,7 @@ $ ->
     paragraph:
       emit: (div, item) -> div.append "<p>" + resolve_links(item.text) + "</p>"
       bind: (div, item) ->
-        div.dblclick ->
-          textarea = $("<textarea>" + item.text + "</textarea>")
-            .focusout ->
-              item.text = textarea.val()
-              $(div).last("p").html "<p>" + resolve_links(item.text) + "</p>"
-              put_edit div.parents(".page:first"), {type: "edit", id: item.id, text: item.text}
-            .bind 'keydown', (e) ->
-              textarea.focusout() if e.which == 27 #esc
-          div.html textarea
-          textarea.focus()
+        div.dblclick -> text_editor div, item
     image:
       emit: (div, item) -> div.append "<img src=\"" + item.url + "\"> <p>" + resolve_links(item.caption) + "</p>"
       bind: (div, item) ->
@@ -79,6 +82,9 @@ $ ->
             item.url = 'url(' + event.target.result + ')'
           reader.readAsDataURL(file)
           false
+        div.dblclick ->
+          div.removeClass('factory').addClass(item.type='paragraph')
+          text_editor div, item
 
   refresh = ->
     pageElement = $(this)

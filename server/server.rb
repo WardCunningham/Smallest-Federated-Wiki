@@ -58,7 +58,6 @@ class Controller < Sinatra::Base
     page = get_page name
     edit = JSON.parse params['edit']
     puts edit.inspect
-    item = page['story'].detect{ |item| item['id'] == edit['id'] } if edit['id']
     case edit['type']
     when 'move'
       page['story'] = edit['order'].collect{ |id| page['story'].detect{ |item| item['id'] == id } }
@@ -68,7 +67,7 @@ class Controller < Sinatra::Base
     when 'remove'
       page['story'].delete_at page['story'].index{ |item| item['id'] == edit['id'] }
     when 'edit'
-      item['text'] = edit['text']
+      page['story'][page['story'].index{ |item| item['id'] == edit['id'] }] = edit['item']
     else
       puts "unfamiliar edit: #{edit.inspect}"
       status 501
