@@ -73,9 +73,7 @@
         emit: function(div, item) {
           return div.append("<img src=\"" + item.url + "\"> <p>" + resolve_links(item.caption) + "</p>");
         },
-        bind: function(div, item) {
-          return "";
-        }
+        bind: function(div, item) {}
       },
       chart: {
         emit: function(div, item) {

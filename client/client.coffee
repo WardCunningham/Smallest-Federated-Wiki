@@ -55,7 +55,7 @@ $ ->
           textarea.focus()
     image:
       emit: (div, item) -> div.append "<img src=\"" + item.url + "\"> <p>" + resolve_links(item.caption) + "</p>"
-      bind: (div, item) -> ""
+      bind: (div, item) ->
     chart:
       emit: (div, item) ->
         chartElement = $("<p />").addClass("readout").appendTo(div).text(item.data.last().last())
