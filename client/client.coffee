@@ -31,10 +31,15 @@ $ ->
   text_editor = (div, item) ->
     textarea = $("<textarea>#{item.text ? ''}</textarea>")
       .focusout ->
-        item.text = textarea.val()
-        $(div).last("p").html "<p>" + resolve_links(item.text) + "</p>"
-        put_edit div.parents(".page:first"), {type: "edit", id: item.id, item: item}
-        # consider no change; empty text
+        if textarea.val()
+          $(div).last("p").html "<p>" + resolve_links(textarea.val()) + "</p>"
+          return if textarea.val() == item.text
+          item.text = textarea.val()
+          put_edit div.parents(".page:first"), {type: "edit", id: item.id, item: item}
+        else
+          put_edit div.parents(".page:first"), {type: 'remove', id: item.id}
+          div.remove()
+        null
       .bind 'keydown', (e) ->
         textarea.focusout() if e.which == 27 #esc
     div.html textarea

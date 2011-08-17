@@ -32,13 +32,25 @@
     text_editor = function(div, item) {
       var textarea, _ref;
       textarea = $("<textarea>" + ((_ref = item.text) != null ? _ref : '') + "</textarea>").focusout(function() {
-        item.text = textarea.val();
-        $(div).last("p").html("<p>" + resolve_links(item.text) + "</p>");
-        return put_edit(div.parents(".page:first"), {
-          type: "edit",
-          id: item.id,
-          item: item
-        });
+        if (textarea.val()) {
+          $(div).last("p").html("<p>" + resolve_links(textarea.val()) + "</p>");
+          if (textarea.val() === item.text) {
+            return;
+          }
+          item.text = textarea.val();
+          put_edit(div.parents(".page:first"), {
+            type: "edit",
+            id: item.id,
+            item: item
+          });
+        } else {
+          put_edit(div.parents(".page:first"), {
+            type: 'remove',
+            id: item.id
+          });
+          div.remove();
+        }
+        return null;
       }).bind('keydown', function(e) {
         if (e.which === 27) {
           return textarea.focusout();
