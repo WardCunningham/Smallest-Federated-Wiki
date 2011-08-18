@@ -8,7 +8,7 @@
       return string.replace(/\[\[([a-z0-9-]+)\]\]/g, "<a href=\"/$1\">$1</a>").replace(/\[(http.*?) (.*?)\]/g, "<a href=\"$1\">$2</a>");
     };
     addJournal = function(journalElement, edit) {
-      return $("<span /> ").addClass("edit").addClass(edit.type).text(edit.type[0]).attr("data-item-id", edit.id).mouseover(function() {
+      return $("<span /> ").addClass("edit").addClass(edit.type).text(edit.type[0]).attr('data-item-id', edit.id).mouseover(function() {
         return $("[id=" + edit.id + "]").addClass("edited");
       }).mouseout(function() {
         return $("[id=" + edit.id + "]").removeClass("edited");
@@ -22,7 +22,7 @@
           'edit': JSON.stringify(edit)
         },
         success: function() {
-          return addJournal(pageElement.find(".journal"), edit);
+          return addJournal(pageElement.find('.journal'), edit);
         },
         error: function(xhr, type, msg) {
           return console.log("ajax error type: " + type + " msg: " + msg);
@@ -33,18 +33,18 @@
       var textarea, _ref;
       textarea = $("<textarea>" + ((_ref = item.text) != null ? _ref : '') + "</textarea>").focusout(function() {
         if (textarea.val()) {
-          $(div).last("p").html("<p>" + resolve_links(textarea.val()) + "</p>");
+          $(div).last('p').html("<p>" + (resolve_links(textarea.val())) + "</p>");
           if (textarea.val() === item.text) {
             return;
           }
           item.text = textarea.val();
-          put_edit(div.parents(".page:first"), {
-            type: "edit",
+          put_edit(div.parents('.page:first'), {
+            type: 'edit',
             id: item.id,
             item: item
           });
         } else {
-          put_edit(div.parents(".page:first"), {
+          put_edit(div.parents('.page:first'), {
             type: 'remove',
             id: item.id
           });
@@ -60,23 +60,24 @@
       return textarea.focus();
     };
     format = function(time) {
-      var am, d, h, m;
+      var am, d, h, mi, mo;
       d = new Date(time);
-      m = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][d.getMonth()];
+      mo = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()];
       h = d.getHours();
-      am = (h < 12 ? "AM" : "PM");
-      h = (h === 0 ? 12 : (h > 12 ? h - 12 : h));
-      return h + ":" + (d.getMinutes() < 10 ? "0" : "") + d.getMinutes() + " " + am + "<br>" + d.getDate() + " " + m + " " + d.getFullYear();
+      am = h < 12 ? 'AM' : 'PM';
+      h = h === 0 ? 12 : h > 12 ? h - 12 : h;
+      mi = (d.getMinutes() < 10 ? "0" : "") + d.getMinutes();
+      return "" + h + ":" + mi + " " + am + "<br>" + (d.getDate()) + " " + mo + " " + (d.getFullYear());
     };
     getItem = function(element) {
       if ($(element).length > 0) {
-        return $(element).data("item") || JSON.parse($(element).attr("data-static-item"));
+        return $(element).data("item") || JSON.parse($(element).attr('data-static-item'));
       }
     };
     plugins = {
       paragraph: {
         emit: function(div, item) {
-          return div.append("<p>" + resolve_links(item.text) + "</p>");
+          return div.append("<p>" + (resolve_links(item.text)) + "</p>");
         },
         bind: function(div, item) {
           return div.dblclick(function() {
@@ -86,15 +87,15 @@
       },
       image: {
         emit: function(div, item) {
-          return div.append("<img src=\"" + item.url + "\"> <p>" + resolve_links(item.caption) + "</p>");
+          return div.append("<img src=\"" + item.url + "\"> <p>" + (resolve_links(item.caption)) + "</p>");
         },
         bind: function(div, item) {}
       },
       chart: {
         emit: function(div, item) {
           var captionElement, chartElement;
-          chartElement = $("<p />").addClass("readout").appendTo(div).text(item.data.last().last());
-          return captionElement = $("<p />").html(resolve_links(item.caption)).appendTo(div);
+          chartElement = $('<p />').addClass('readout').appendTo(div).text(item.data.last().last());
+          return captionElement = $('<p />').html(resolve_links(item.caption)).appendTo(div);
         },
         bind: function(div, item) {
           return div.find('p:first').mousemove(function(e) {
@@ -107,7 +108,7 @@
       },
       factory: {
         emit: function(div, item) {
-          return div.append("<p>Double-Click to Edit<br>Drop Text or Image to Insert</p>");
+          return div.append('<p>Double-Click to Edit<br>Drop Text or Image to Insert</p>');
         },
         bind: function(div, item) {
           div.get(0).ondrop = function(e) {
@@ -116,8 +117,8 @@
             file = e.dataTransfer.files[0];
             reader = new FileReader();
             reader.onload = function(event) {
-              item.type = "image";
-              return item.url = 'url(' + event.target.result + ')';
+              item.type = 'image';
+              return item.url = "url(" + event.target.result + ")";
             };
             reader.readAsDataURL(file);
             return false;
@@ -132,19 +133,19 @@
     refresh = function() {
       var buildPage, initDragging, pageElement, page_name;
       pageElement = $(this);
-      page_name = $(pageElement).attr("id");
+      page_name = $(pageElement).attr('id');
       initDragging = function() {
         var storyElement;
-        storyElement = pageElement.find(".story");
+        storyElement = pageElement.find('.story');
         return storyElement.sortable({
           update: function(evt, ui) {
             var before, beforeElement, destinationPageElement, edit, equals, item, itemElement, journalElement, moveFromPage, moveToPage, moveWithinPage, order, sourcePageElement, thisPageElement;
             itemElement = ui.item;
             item = getItem(itemElement);
-            thisPageElement = $(this).parents(".page:first");
-            sourcePageElement = itemElement.data("pageElement");
-            destinationPageElement = itemElement.parents(".page:first");
-            journalElement = thisPageElement.find(".journal");
+            thisPageElement = $(this).parents('.page:first');
+            sourcePageElement = itemElement.data('pageElement');
+            destinationPageElement = itemElement.parents('.page:first');
+            journalElement = thisPageElement.find('.journal');
             equals = function(a, b) {
               return a && b && a.get(0) === b.get(0);
             };
@@ -154,32 +155,32 @@
             edit = moveWithinPage ? (order = $(this).children().map(function(_, value) {
               return value.id;
             }).get(), {
-              type: "move",
+              type: 'move',
               order: order
             }) : moveFromPage ? {
-              type: "remove"
-            } : moveToPage ? (itemElement.data("pageElement", thisPageElement), beforeElement = itemElement.prev(".item"), before = getItem(beforeElement), {
-              type: "add",
+              type: 'remove'
+            } : moveToPage ? (itemElement.data('pageElement', thisPageElement), beforeElement = itemElement.prev('.item'), before = getItem(beforeElement), {
+              type: 'add',
               item: item,
               after: before != null ? before.id : void 0
             }) : void 0;
             edit.id = item.id;
             return put_edit(pageElement, edit);
           },
-          connectWith: ".page .story"
+          connectWith: '.page .story'
         });
       };
       buildPage = function(data) {
         var empty, footerElement, journalElement, page, storyElement, _ref;
         empty = {
-          title: "empty",
-          synopsys: "empty",
+          title: 'empty',
+          synopsys: 'empty',
           story: [],
           journal: []
         };
         page = $.extend(empty, data);
-        $(pageElement).append("<h1><a href=\"/\"><img src = \"/favicon.png\" height = \"32px\"></a> " + page.title + "</h1>");
-        _ref = ["story", "journal", "footer"].map(function(className) {
+        $(pageElement).append('<h1><a href="/"><img src = "/favicon.png" height = "32px"></a> ' + page.title + '</h1>');
+        _ref = ['story', 'journal', 'footer'].map(function(className) {
           return $("<div />").addClass(className).appendTo(pageElement);
         }), storyElement = _ref[0], journalElement = _ref[1], footerElement = _ref[2];
         $.each(page.story, function(i, item) {
@@ -187,8 +188,8 @@
           div = $("<div class=\"item " + item.type + "\" id=\"" + item.id + "\" />");
           storyElement.append(div);
           try {
-            div.data("pageElement", pageElement);
-            div.data("item", item);
+            div.data('pageElement', pageElement);
+            div.data('item', item);
             plugin = plugins[item.type];
             plugin.emit(div, item);
             return plugin.bind(div, item);
@@ -199,11 +200,11 @@
         $.each(page.journal, function(i, edit) {
           return addJournal(journalElement, edit);
         });
-        return footerElement.append("<a id=\"license\" href=\"http://creativecommons.org/licenses/by-sa/3.0/\">CC BY-SA 3.0</a> . ").append("<a href=\"/" + page_name + "/json\">JSON</a>");
+        return footerElement.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ').append("<a href=\"/" + page_name + "/json\">JSON</a>");
       };
-      if ($(pageElement).attr("data-server-generated") === "true") {
+      if ($(pageElement).attr('data-server-generated') === 'true') {
         initDragging();
-        return pageElement.find(".item").each(function(i, each) {
+        return pageElement.find('.item').each(function(i, each) {
           var div, item;
           div = $(each);
           item = getItem(div);
@@ -217,8 +218,8 @@
       }
     };
     $(document).ajaxError(function(event, request, settings) {
-      return $(".main").prepend("<li><font color=red>Error on " + settings.url + "</li>");
+      return $('.main').prepend("<li><font color=red>Error on " + settings.url + "</li>");
     });
-    return $(".page").each(refresh);
+    return $('.page').each(refresh);
   });
 }).call(this);
