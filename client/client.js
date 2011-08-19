@@ -3,7 +3,7 @@
     return this[this.length - 1];
   };
   $(function() {
-    var addJournal, format, getItem, plugins, put_edit, refresh, resolve_links, text_editor;
+    var LOCAL_STORED_LIST, addJournal, addToLocalStored, format, getFromLocalStorage, getItem, localId, localStored, locallyStored, plugins, pushToLocal, pushToServer, put_edit, refresh, resolve_links, text_editor, useLocalStorage;
     resolve_links = function(string) {
       return string.replace(/\[\[([a-z0-9-]+)\]\]/g, "<a href=\"/$1\">$1</a>").replace(/\[(http.*?) (.*?)\]/g, "<a href=\"$1\">$2</a>");
     };
@@ -15,6 +15,51 @@
       }).appendTo(journalElement);
     };
     put_edit = function(pageElement, edit) {
+      if (useLocalStorage()) {
+        return pushToLocal(pageElement, edit);
+      } else {
+        return pushToServer(pageElement, edit);
+      }
+    };
+    getFromLocalStorage = function(element) {
+      var json;
+      json = localStorage[localId(element)];
+      if (json) {
+        return JSON.parse(json);
+      }
+    };
+    localId = function(element) {
+      return "sfw-" + (element.attr("id"));
+    };
+    LOCAL_STORED_LIST = 'SFW-locally-stored-list';
+    localStored = function() {
+      var stored;
+      stored = localStorage[LOCAL_STORED_LIST];
+      return (stored ? JSON.parse(stored) : void 0) || [];
+    };
+    addToLocalStored = function(id) {
+      var list, uniqueList;
+      list = localStored();
+      uniqueList = $.unique(list.concat(id));
+      return localStorage[LOCAL_STORED_LIST] = JSON.stringify(uniqueList);
+    };
+    pushToLocal = function(pageElement, edit) {
+      var id, page;
+      console.log(JSON.stringify(edit));
+      id = localId(pageElement);
+      page = window.localStorage[id];
+      if (page) {
+        page = JSON.parse(page);
+      }
+      page || (page = pageElement.data("data"));
+      page.journal.concat(edit);
+      page.story = $(pageElement).find(".item").map(function() {
+        return $(this).data("item");
+      }).get();
+      window.localStorage[id] = JSON.stringify(page);
+      return addToLocalStored(id);
+    };
+    pushToServer = function(pageElement, edit) {
       return $.ajax({
         type: 'PUT',
         url: "/page/" + (pageElement.attr('id')) + "/edit",
@@ -131,7 +176,7 @@
       }
     };
     refresh = function() {
-      var buildPage, initDragging, pageElement, page_name;
+      var buildPage, initDragging, local, pageElement, page_name;
       pageElement = $(this);
       page_name = $(pageElement).attr('id');
       initDragging = function() {
@@ -179,6 +224,7 @@
           journal: []
         };
         page = $.extend(empty, data);
+        $(pageElement).data("data", data);
         $(pageElement).append('<h1><a href="/"><img src = "/favicon.png" height = "32px"></a> ' + page.title + '</h1>');
         _ref = ['story', 'journal', 'footer'].map(function(className) {
           return $("<div />").addClass(className).appendTo(pageElement);
@@ -211,15 +257,39 @@
           return plugins[item.type].bind(div, item);
         });
       } else {
-        return $.get("/" + page_name + "/json", "", function(page_json) {
-          buildPage(JSON.parse(page_json));
+        local = getFromLocalStorage(pageElement);
+        if (local) {
+          pageElement.addClass("local");
+          buildPage(local);
           return initDragging();
-        });
+        } else {
+          return $.get("/" + page_name + "/json", "", function(page_json) {
+            buildPage(JSON.parse(page_json));
+            return initDragging();
+          });
+        }
       }
     };
     $(document).ajaxError(function(event, request, settings) {
       return $('.main').prepend("<li><font color=red>Error on " + settings.url + "</li>");
     });
-    return $('.page').each(refresh);
+    $('.page').each(refresh);
+    locallyStored = localStorage[LOCAL_STORED_LIST];
+    if (locallyStored) {
+      locallyStored = JSON.parse(locallyStored);
+    }
+    locallyStored || (locallyStored = []);
+    $(locallyStored).each(function() {
+      var link, name;
+      name = this.replace(/^sfw-/, "");
+      link = $("<a href='#' />").text(name);
+      link.click(function(evt) {
+        return evt.preventDefault();
+      });
+      return $("#locally-stored").append($("<li />").append(link));
+    });
+    return useLocalStorage = function() {
+      return $(".local-editing").is(":checked");
+    };
   });
 }).call(this);
