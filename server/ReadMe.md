@@ -8,6 +8,26 @@ In summary, the server's peer-to-peer side exists to:
 * Encourage the deployment of independently owned content stores.
 * Support community among owners through systematic sharing of content.
 
+Customizing your Server
+=======================
+
+The distribution contains default files that will be installed if you don't install your own.
+These are:
+
+  data/pages/default-welcome-visitors
+
+This is the usual welcome page offered as the server's home page.
+It becomes welcome-visitors unless that file already exists.
+You can revise it at your leisure.
+
+  client/default-favicon.png
+
+This is a 32x32 png gradient that is used to identify your server in bookmarks,
+browser tabs, page headings and journal entries.
+You're encouraged to create a distinctive gradient file to identify your server.
+Try generating something fun at http://tools.dynamicdrive.com/gradient/
+Save the result as client/favicon.png.
+
 Launching the Server
 ====================
 
