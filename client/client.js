@@ -2,17 +2,14 @@
   Array.prototype.last = function() {
     return this[this.length - 1];
   };
+
   $(function() {
     var LOCAL_STORED_LIST, addJournal, addToLocalStored, format, getFromLocalStorage, getItem, localId, localStored, locallyStored, plugins, pushToLocal, pushToServer, put_edit, refresh, resolve_links, text_editor, useLocalStorage;
     resolve_links = function(string) {
       return string.replace(/\[\[([a-z0-9-]+)\]\]/g, "<a href=\"/$1\">$1</a>").replace(/\[(http.*?) (.*?)\]/g, "<a href=\"$1\">$2</a>");
     };
     addJournal = function(journalElement, edit) {
-      return $("<span /> ").addClass("edit").addClass(edit.type).text(edit.type[0]).attr('data-item-id', edit.id).mouseover(function() {
-        return $("[id=" + edit.id + "]").addClass("edited");
-      }).mouseout(function() {
-        return $("[id=" + edit.id + "]").removeClass("edited");
-      }).appendTo(journalElement);
+      return $("<span /> ").addClass("edit").addClass(edit.type).text(edit.type[0]).attr('data-item-id', edit.id).appendTo(journalElement);
     };
     put_edit = function(pageElement, edit) {
       if (useLocalStorage()) {
@@ -291,5 +288,12 @@
     return useLocalStorage = function() {
       return $(".local-editing").is(":checked");
     };
-  });
-}).call(this);
+  });   
+}).call(this);  
+
+$(function(){
+  // Highlighting upon div.journal>span:hover
+  $(".journal").delegate(".action", "hover", function(){
+    $( "#" + $(this).data("itemId") ).toggleClass("edited");
+  }); 
+});
