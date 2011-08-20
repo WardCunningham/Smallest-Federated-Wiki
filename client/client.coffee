@@ -112,10 +112,13 @@ $ ->
           text_editor div, item
     changes:
       emit: (div, item) ->
-        div.append ul = $('<ul />')
+        div.append ul = $('<ul />').append $('<input type="button" value="clear" />')
         for i in [0...localStorage.length]
           ul.append($('<li />').append(localStorage.key(i)))
       bind: (div, item) ->
+        div.find('input').click ->
+          localStorage.clear()
+          div.find('li').remove()
 
   refresh = ->
     pageElement = $(this)

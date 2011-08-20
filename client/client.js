@@ -160,14 +160,19 @@
       changes: {
         emit: function(div, item) {
           var i, ul, _ref, _results;
-          div.append(ul = $('<ul />'));
+          div.append(ul = $('<ul />').append($('<input type="button" value="clear" />')));
           _results = [];
           for (i = 0, _ref = localStorage.length; 0 <= _ref ? i < _ref : i > _ref; 0 <= _ref ? i++ : i--) {
             _results.push(ul.append($('<li />').append(localStorage.key(i))));
           }
           return _results;
         },
-        bind: function(div, item) {}
+        bind: function(div, item) {
+          return div.find('input').click(function() {
+            localStorage.clear();
+            return div.find('li').remove();
+          });
+        }
       }
     };
     refresh = function() {
