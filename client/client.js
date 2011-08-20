@@ -3,7 +3,7 @@
     return this[this.length - 1];
   };
   $(function() {
-    var LOCAL_STORED_LIST, addJournal, addToLocalStored, format, getFromLocalStorage, getItem, localId, localStored, locallyStored, plugins, pushToLocal, pushToServer, put_edit, refresh, resolve_links, text_editor, useLocalStorage;
+    var addJournal, format, getFromLocalStorage, getItem, i, plugins, pushToLocal, pushToServer, put_edit, refresh, resolve_links, text_editor, useLocalStorage, _ref;
     resolve_links = function(string) {
       return string.replace(/\[\[([a-z0-9-]+)\]\]/g, "<a href=\"/$1\">$1</a>").replace(/\[(http.*?) (.*?)\]/g, "<a href=\"$1\">$2</a>");
     };
@@ -23,31 +23,15 @@
     };
     getFromLocalStorage = function(element) {
       var json;
-      json = localStorage[localId(element)];
+      json = localStorage[element.attr("id")];
       if (json) {
         return JSON.parse(json);
       }
     };
-    localId = function(element) {
-      return "sfw-" + (element.attr("id"));
-    };
-    LOCAL_STORED_LIST = 'SFW-locally-stored-list';
-    localStored = function() {
-      var stored;
-      stored = localStorage[LOCAL_STORED_LIST];
-      return (stored ? JSON.parse(stored) : void 0) || [];
-    };
-    addToLocalStored = function(id) {
-      var list, uniqueList;
-      list = localStored();
-      uniqueList = $.unique(list.concat(id));
-      return localStorage[LOCAL_STORED_LIST] = JSON.stringify(uniqueList);
-    };
     pushToLocal = function(pageElement, edit) {
-      var id, page;
+      var page;
       console.log(JSON.stringify(edit));
-      id = localId(pageElement);
-      page = window.localStorage[id];
+      page = localStorage[pageElement.attr("id")];
       if (page) {
         page = JSON.parse(page);
       }
@@ -56,8 +40,7 @@
       page.story = $(pageElement).find(".item").map(function() {
         return $(this).data("item");
       }).get();
-      window.localStorage[id] = JSON.stringify(page);
-      return addToLocalStored(id);
+      return localStorage[pageElement.attr("id")] = JSON.stringify(page);
     };
     pushToServer = function(pageElement, edit) {
       return $.ajax({
@@ -274,20 +257,9 @@
       return $('.main').prepend("<li><font color=red>Error on " + settings.url + "</li>");
     });
     $('.page').each(refresh);
-    locallyStored = localStorage[LOCAL_STORED_LIST];
-    if (locallyStored) {
-      locallyStored = JSON.parse(locallyStored);
+    for (i = 0, _ref = localStorage.length; 0 <= _ref ? i < _ref : i > _ref; 0 <= _ref ? i++ : i--) {
+      $("#locally-stored").append($("<li />").append(localStorage.key(i)));
     }
-    locallyStored || (locallyStored = []);
-    $(locallyStored).each(function() {
-      var link, name;
-      name = this.replace(/^sfw-/, "");
-      link = $("<a href='#' />").text(name);
-      link.click(function(evt) {
-        return evt.preventDefault();
-      });
-      return $("#locally-stored").append($("<li />").append(link));
-    });
     return useLocalStorage = function() {
       return $(".local-editing").is(":checked");
     };

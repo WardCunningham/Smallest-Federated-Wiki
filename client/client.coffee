@@ -24,34 +24,17 @@ $ ->
       pushToServer(pageElement, edit)
 
   getFromLocalStorage = (element) ->
-    json = localStorage[localId(element)]
+    json = localStorage[element.attr("id")]
     JSON.parse(json) if json
-
-  localId = (element) -> "sfw-#{element.attr("id")}"
-
-  LOCAL_STORED_LIST = 'SFW-locally-stored-list'
-  localStored = ->
-    stored = localStorage[LOCAL_STORED_LIST]
-    (JSON.parse(stored) if stored) || []
-
-  addToLocalStored = (id) ->
-    list = localStored()
-    uniqueList = $.unique(list.concat(id))
-    localStorage[LOCAL_STORED_LIST] = JSON.stringify(uniqueList)
 
   pushToLocal = (pageElement, edit) ->
     console.log(JSON.stringify(edit))
-    id = localId(pageElement)
-
-    page = window.localStorage[id]
+    page = localStorage[pageElement.attr("id")]
     page = JSON.parse(page) if page
     page ||= pageElement.data("data")
-
     page.journal.concat(edit)
     page.story = $(pageElement).find(".item").map(-> $(@).data("item")).get()
-
-    window.localStorage[id] = JSON.stringify(page)
-    addToLocalStored(id)
+    localStorage[pageElement.attr("id")] = JSON.stringify(page)
 
   pushToServer = (pageElement, edit) ->
     $.ajax
@@ -221,16 +204,7 @@ $ ->
 
   $('.page').each refresh
 
-  locallyStored = localStorage[LOCAL_STORED_LIST]
-  locallyStored = JSON.parse(locallyStored) if locallyStored
-  locallyStored ||= []
-
-  $(locallyStored).each ->
-    name = @.replace(/^sfw-/, "")
-    link = $("<a href='#' />").text(name)
-    link.click (evt) ->
-      evt.preventDefault()
-
-    $("#locally-stored").append($("<li />").append(link))
+  for i in [0...localStorage.length]
+    $("#locally-stored").append($("<li />").append(localStorage.key(i)))
 
   useLocalStorage = -> $(".local-editing").is(":checked")
