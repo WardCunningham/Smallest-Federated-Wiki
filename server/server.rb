@@ -55,26 +55,26 @@ class Controller < Sinatra::Base
     JSON.pretty_generate(get_page(name))
   end
 
-  put %r{^/page/([a-z0-9-]+)/edit$} do |name|
+  put %r{^/page/([a-z0-9-]+)/action$} do |name|
     page = get_page name
-    edit = JSON.parse params['edit']
-    puts edit.inspect
-    case edit['type']
+    action = JSON.parse params['action']
+    puts action.inspect
+    case action['type']
     when 'move'
-      page['story'] = edit['order'].collect{ |id| page['story'].detect{ |item| item['id'] == id } }
+      page['story'] = action['order'].collect{ |id| page['story'].detect{ |item| item['id'] == id } }
     when 'add'
-      before = edit['after'] ? 1+page['story'].index{|item| item['id'] == edit['after']} : 0
-      page['story'].insert before, edit['item']
+      before = action['after'] ? 1+page['story'].index{|item| item['id'] == action['after']} : 0
+      page['story'].insert before, action['item']
     when 'remove'
-      page['story'].delete_at page['story'].index{ |item| item['id'] == edit['id'] }
+      page['story'].delete_at page['story'].index{ |item| item['id'] == action['id'] }
     when 'edit'
-      page['story'][page['story'].index{ |item| item['id'] == edit['id'] }] = edit['item']
+      page['story'][page['story'].index{ |item| item['id'] == action['id'] }] = action['item']
     else
-      puts "unfamiliar edit: #{edit.inspect}"
+      puts "unfamiliar action: #{action.inspect}"
       status 501
-      return "unfamiliar edit"
+      return "unfamiliar action"
     end
-    ( page['journal'] ||= [] ) << edit # todo: journal undo, not redo
+    ( page['journal'] ||= [] ) << action # todo: journal undo, not redo
     put_page name, page
     "ok"
   end

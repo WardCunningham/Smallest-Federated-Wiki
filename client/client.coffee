@@ -7,43 +7,43 @@ $ ->
       .replace(/\[\[([a-z0-9-]+)\]\]/g, "<a href=\"/$1\">$1</a>")
       .replace /\[(http.*?) (.*?)\]/g, "<a href=\"$1\">$2</a>"
 
-  addJournal = (journalElement, edit) ->
-    $("<span /> ").addClass("action").addClass(edit.type)
-      .text(edit.type[0])
-      .attr('data-item-id', edit.id)
+  addJournal = (journalElement, action) ->
+    $("<span /> ").addClass("action").addClass(action.type)
+      .text(action.type[0])
+      .attr('data-item-id', action.id)
       .mouseover () ->
-        $("[id=#{edit.id}]").addClass("target")
+        $("[id=#{action.id}]").addClass("target")
       .mouseout () ->
-        $("[id=#{edit.id}]").removeClass("target")
+        $("[id=#{action.id}]").removeClass("target")
       .appendTo(journalElement)
 
-  put_edit = (pageElement, edit) ->
+  put_action = (pageElement, action) ->
     if useLocalStorage()
-      pushToLocal(pageElement, edit)
+      pushToLocal(pageElement, action)
     else
-      pushToServer(pageElement, edit)
+      pushToServer(pageElement, action)
 
   getFromLocalStorage = (element) ->
     json = localStorage[element.attr("id")]
     JSON.parse(json) if json
 
-  pushToLocal = (pageElement, edit) ->
-    console.log(JSON.stringify(edit))
+  pushToLocal = (pageElement, action) ->
+    console.log(JSON.stringify(action))
     page = localStorage[pageElement.attr("id")]
     page = JSON.parse(page) if page
     page ||= pageElement.data("data")
-    page.journal.concat(edit)
+    page.journal.concat(action)
     page.story = $(pageElement).find(".item").map(-> $(@).data("item")).get()
     localStorage[pageElement.attr("id")] = JSON.stringify(page)
 
-  pushToServer = (pageElement, edit) ->
+  pushToServer = (pageElement, action) ->
     $.ajax
       type: 'PUT'
-      url: "/page/#{pageElement.attr('id')}/edit"
+      url: "/page/#{pageElement.attr('id')}/action"
       data:
-        'edit': JSON.stringify(edit)
+        'action': JSON.stringify(action)
       success: () ->
-        addJournal pageElement.find('.journal'), edit
+        addJournal pageElement.find('.journal'), action
       error: (xhr, type, msg) ->
         console.log "ajax error type: #{type} msg: #{msg}"
 
@@ -54,9 +54,9 @@ $ ->
           $(div).last('p').html "<p>#{resolve_links(textarea.val())}</p>"
           return if textarea.val() == item.text
           item.text = textarea.val()
-          put_edit div.parents('.page:first'), {type: 'edit', id: item.id, item: item}
+          put_action div.parents('.page:first'), {type: 'edit', id: item.id, item: item}
         else
-          put_edit div.parents('.page:first'), {type: 'remove', id: item.id}
+          put_action div.parents('.page:first'), {type: 'remove', id: item.id}
           div.remove()
         null
       .bind 'keydown', (e) ->
@@ -140,7 +140,7 @@ $ ->
           moveFromPage = not moveWithinPage and equals(thisPageElement, sourcePageElement)
           moveToPage = not moveWithinPage and equals(thisPageElement, destinationPageElement)
 
-          edit = if moveWithinPage
+          action = if moveWithinPage
             order = $(this).children().map((_, value) -> value.id).get()
             {type: 'move', order: order}
           else if moveFromPage
@@ -151,8 +151,8 @@ $ ->
             before = getItem(beforeElement)
             {type: 'add', item: item, after: before?.id}
 
-          edit.id = item.id
-          put_edit pageElement, edit
+          action.id = item.id
+          put_action pageElement, action
 
         connectWith: '.page .story'
 
@@ -183,8 +183,8 @@ $ ->
         catch err
           div.append "<p class='error'>#{err}</p>"
 
-      $.each page.journal, (i, edit) ->
-        addJournal journalElement, edit
+      $.each page.journal, (i, action) ->
+        addJournal journalElement, action
 
       footerElement
         .append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ')

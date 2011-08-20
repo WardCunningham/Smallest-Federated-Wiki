@@ -3,22 +3,22 @@
     return this[this.length - 1];
   };
   $(function() {
-    var addJournal, format, getFromLocalStorage, getItem, plugins, pushToLocal, pushToServer, put_edit, refresh, resolve_links, text_editor, useLocalStorage;
+    var addJournal, format, getFromLocalStorage, getItem, plugins, pushToLocal, pushToServer, put_action, refresh, resolve_links, text_editor, useLocalStorage;
     resolve_links = function(string) {
       return string.replace(/\[\[([a-z0-9-]+)\]\]/g, "<a href=\"/$1\">$1</a>").replace(/\[(http.*?) (.*?)\]/g, "<a href=\"$1\">$2</a>");
     };
-    addJournal = function(journalElement, edit) {
-      return $("<span /> ").addClass("action").addClass(edit.type).text(edit.type[0]).attr('data-item-id', edit.id).mouseover(function() {
-        return $("[id=" + edit.id + "]").addClass("target");
+    addJournal = function(journalElement, action) {
+      return $("<span /> ").addClass("action").addClass(action.type).text(action.type[0]).attr('data-item-id', action.id).mouseover(function() {
+        return $("[id=" + action.id + "]").addClass("target");
       }).mouseout(function() {
-        return $("[id=" + edit.id + "]").removeClass("target");
+        return $("[id=" + action.id + "]").removeClass("target");
       }).appendTo(journalElement);
     };
-    put_edit = function(pageElement, edit) {
+    put_action = function(pageElement, action) {
       if (useLocalStorage()) {
-        return pushToLocal(pageElement, edit);
+        return pushToLocal(pageElement, action);
       } else {
-        return pushToServer(pageElement, edit);
+        return pushToServer(pageElement, action);
       }
     };
     getFromLocalStorage = function(element) {
@@ -28,29 +28,29 @@
         return JSON.parse(json);
       }
     };
-    pushToLocal = function(pageElement, edit) {
+    pushToLocal = function(pageElement, action) {
       var page;
-      console.log(JSON.stringify(edit));
+      console.log(JSON.stringify(action));
       page = localStorage[pageElement.attr("id")];
       if (page) {
         page = JSON.parse(page);
       }
       page || (page = pageElement.data("data"));
-      page.journal.concat(edit);
+      page.journal.concat(action);
       page.story = $(pageElement).find(".item").map(function() {
         return $(this).data("item");
       }).get();
       return localStorage[pageElement.attr("id")] = JSON.stringify(page);
     };
-    pushToServer = function(pageElement, edit) {
+    pushToServer = function(pageElement, action) {
       return $.ajax({
         type: 'PUT',
-        url: "/page/" + (pageElement.attr('id')) + "/edit",
+        url: "/page/" + (pageElement.attr('id')) + "/action",
         data: {
-          'edit': JSON.stringify(edit)
+          'action': JSON.stringify(action)
         },
         success: function() {
-          return addJournal(pageElement.find('.journal'), edit);
+          return addJournal(pageElement.find('.journal'), action);
         },
         error: function(xhr, type, msg) {
           return console.log("ajax error type: " + type + " msg: " + msg);
@@ -66,13 +66,13 @@
             return;
           }
           item.text = textarea.val();
-          put_edit(div.parents('.page:first'), {
+          put_action(div.parents('.page:first'), {
             type: 'edit',
             id: item.id,
             item: item
           });
         } else {
-          put_edit(div.parents('.page:first'), {
+          put_action(div.parents('.page:first'), {
             type: 'remove',
             id: item.id
           });
@@ -184,7 +184,7 @@
         storyElement = pageElement.find('.story');
         return storyElement.sortable({
           update: function(evt, ui) {
-            var before, beforeElement, destinationPageElement, edit, equals, item, itemElement, journalElement, moveFromPage, moveToPage, moveWithinPage, order, sourcePageElement, thisPageElement;
+            var action, before, beforeElement, destinationPageElement, equals, item, itemElement, journalElement, moveFromPage, moveToPage, moveWithinPage, order, sourcePageElement, thisPageElement;
             itemElement = ui.item;
             item = getItem(itemElement);
             thisPageElement = $(this).parents('.page:first');
@@ -197,7 +197,7 @@
             moveWithinPage = !sourcePageElement || equals(sourcePageElement, destinationPageElement);
             moveFromPage = !moveWithinPage && equals(thisPageElement, sourcePageElement);
             moveToPage = !moveWithinPage && equals(thisPageElement, destinationPageElement);
-            edit = moveWithinPage ? (order = $(this).children().map(function(_, value) {
+            action = moveWithinPage ? (order = $(this).children().map(function(_, value) {
               return value.id;
             }).get(), {
               type: 'move',
@@ -209,8 +209,8 @@
               item: item,
               after: before != null ? before.id : void 0
             }) : void 0;
-            edit.id = item.id;
-            return put_edit(pageElement, edit);
+            action.id = item.id;
+            return put_action(pageElement, action);
           },
           connectWith: '.page .story'
         });
@@ -243,8 +243,8 @@
             return div.append("<p class='error'>" + err + "</p>");
           }
         });
-        $.each(page.journal, function(i, edit) {
-          return addJournal(journalElement, edit);
+        $.each(page.journal, function(i, action) {
+          return addJournal(journalElement, action);
         });
         return footerElement.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ').append("<a href=\"/" + page_name + "/json\">JSON</a>");
       };
