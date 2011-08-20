@@ -8,7 +8,7 @@
       return string.replace(/\[\[([a-z0-9-]+)\]\]/g, "<a href=\"/$1\">$1</a>").replace(/\[(http.*?) (.*?)\]/g, "<a href=\"$1\">$2</a>");
     };
     addJournal = function(journalElement, edit) {
-      return $("<span /> ").addClass("edit").addClass(edit.type).text(edit.type[0]).attr('data-item-id', edit.id).mouseover(function() {
+      return $("<span /> ").addClass("action").addClass(edit.type).text(edit.type[0]).attr('data-item-id', edit.id).mouseover(function() {
         return $("[id=" + edit.id + "]").addClass("edited");
       }).mouseout(function() {
         return $("[id=" + edit.id + "]").removeClass("edited");
