@@ -20,7 +20,7 @@
 						%br Drop Text or Image to Insert
 	.journal
 		- ( page['journal'] || [] ).each do |item|
-			%span{:class => ['edit', item['type']], "data-item-id" => item['id'] }
+			%span{:class => ['action', item['type']], "data-item-id" => item['id'] }
 				= item['type'][0..0]
 	.footer
 		%a{:id => "license", :href => "http://creativecommons.org/licenses/by-sa/3.0/"} CC BY-SA 3.0

@@ -8,13 +8,13 @@ $ ->
       .replace /\[(http.*?) (.*?)\]/g, "<a href=\"$1\">$2</a>"
 
   addJournal = (journalElement, edit) ->
-    $("<span /> ").addClass("edit").addClass(edit.type)
+    $("<span /> ").addClass("action").addClass(edit.type)
       .text(edit.type[0])
       .attr('data-item-id', edit.id)
       .mouseover () ->
-        $("[id=#{edit.id}]").addClass("edited")
+        $("[id=#{edit.id}]").addClass("target")
       .mouseout () ->
-        $("[id=#{edit.id}]").removeClass("edited")
+        $("[id=#{edit.id}]").removeClass("target")
       .appendTo(journalElement)
 
   put_edit = (pageElement, edit) ->
