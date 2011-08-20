@@ -3,7 +3,7 @@
     return this[this.length - 1];
   };
   $(function() {
-    var addJournal, format, getFromLocalStorage, getItem, i, plugins, pushToLocal, pushToServer, put_edit, refresh, resolve_links, text_editor, useLocalStorage, _ref;
+    var addJournal, format, getFromLocalStorage, getItem, plugins, pushToLocal, pushToServer, put_edit, refresh, resolve_links, text_editor, useLocalStorage;
     resolve_links = function(string) {
       return string.replace(/\[\[([a-z0-9-]+)\]\]/g, "<a href=\"/$1\">$1</a>").replace(/\[(http.*?) (.*?)\]/g, "<a href=\"$1\">$2</a>");
     };
@@ -156,6 +156,18 @@
             return text_editor(div, item);
           });
         }
+      },
+      changes: {
+        emit: function(div, item) {
+          var i, ul, _ref, _results;
+          div.append(ul = $('<ul />'));
+          _results = [];
+          for (i = 0, _ref = localStorage.length; 0 <= _ref ? i < _ref : i > _ref; 0 <= _ref ? i++ : i--) {
+            _results.push(ul.append($('<li />').append(localStorage.key(i))));
+          }
+          return _results;
+        },
+        bind: function(div, item) {}
       }
     };
     refresh = function() {
@@ -257,9 +269,6 @@
       return $('.main').prepend("<li><font color=red>Error on " + settings.url + "</li>");
     });
     $('.page').each(refresh);
-    for (i = 0, _ref = localStorage.length; 0 <= _ref ? i < _ref : i > _ref; 0 <= _ref ? i++ : i--) {
-      $("#locally-stored").append($("<li />").append(localStorage.key(i)));
-    }
     return useLocalStorage = function() {
       return $(".local-editing").is(":checked");
     };

@@ -110,6 +110,12 @@ $ ->
         div.dblclick ->
           div.removeClass('factory').addClass(item.type='paragraph')
           text_editor div, item
+    changes:
+      emit: (div, item) ->
+        div.append ul = $('<ul />')
+        for i in [0...localStorage.length]
+          ul.append($('<li />').append(localStorage.key(i)))
+      bind: (div, item) ->
 
   refresh = ->
     pageElement = $(this)
@@ -203,8 +209,5 @@ $ ->
     $('.main').prepend "<li><font color=red>Error on #{settings.url}</li>"
 
   $('.page').each refresh
-
-  for i in [0...localStorage.length]
-    $("#locally-stored").append($("<li />").append(localStorage.key(i)))
 
   useLocalStorage = -> $(".local-editing").is(":checked")
