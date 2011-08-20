@@ -3,7 +3,7 @@
     return this[this.length - 1];
   };
   $(function() {
-    var addJournal, format, getFromLocalStorage, getItem, plugins, pushToLocal, pushToServer, put_action, refresh, resolve_links, text_editor, useLocalStorage;
+    var addJournal, format, getItem, plugins, pushToLocal, pushToServer, put_action, refresh, resolve_links, text_editor, useLocalStorage;
     resolve_links = function(string) {
       return string.replace(/\[\[([a-z0-9-]+)\]\]/g, "<a href=\"/$1\">$1</a>").replace(/\[(http.*?) (.*?)\]/g, "<a href=\"$1\">$2</a>");
     };
@@ -16,16 +16,10 @@
     };
     put_action = function(pageElement, action) {
       if (useLocalStorage()) {
-        return pushToLocal(pageElement, action);
+        pushToLocal(pageElement, action);
+        return pageElement.addClass("local");
       } else {
         return pushToServer(pageElement, action);
-      }
-    };
-    getFromLocalStorage = function(element) {
-      var json;
-      json = localStorage[element.attr("id")];
-      if (json) {
-        return JSON.parse(json);
       }
     };
     pushToLocal = function(pageElement, action) {
@@ -40,7 +34,8 @@
       page.story = $(pageElement).find(".item").map(function() {
         return $(this).data("item");
       }).get();
-      return localStorage[pageElement.attr("id")] = JSON.stringify(page);
+      localStorage[pageElement.attr("id")] = JSON.stringify(page);
+      return addJournal(pageElement.find('.journal'), action);
     };
     pushToServer = function(pageElement, action) {
       return $.ajax({
@@ -176,7 +171,7 @@
       }
     };
     refresh = function() {
-      var buildPage, initDragging, local, pageElement, page_name;
+      var buildPage, initDragging, pageElement, page_json, page_name;
       pageElement = $(this);
       page_name = $(pageElement).attr('id');
       initDragging = function() {
@@ -257,10 +252,9 @@
           return plugins[item.type].bind(div, item);
         });
       } else {
-        local = getFromLocalStorage(pageElement);
-        if (local) {
+        if (page_json = localStorage[pageElement.attr("id")]) {
           pageElement.addClass("local");
-          buildPage(local);
+          buildPage(JSON.parse(page_json));
           return initDragging();
         } else {
           return $.get("/" + page_name + "/json", "", function(page_json) {

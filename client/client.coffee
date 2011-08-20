@@ -20,12 +20,9 @@ $ ->
   put_action = (pageElement, action) ->
     if useLocalStorage()
       pushToLocal(pageElement, action)
+      pageElement.addClass("local")
     else
       pushToServer(pageElement, action)
-
-  getFromLocalStorage = (element) ->
-    json = localStorage[element.attr("id")]
-    JSON.parse(json) if json
 
   pushToLocal = (pageElement, action) ->
     console.log(JSON.stringify(action))
@@ -35,6 +32,7 @@ $ ->
     page.journal.concat(action)
     page.story = $(pageElement).find(".item").map(-> $(@).data("item")).get()
     localStorage[pageElement.attr("id")] = JSON.stringify(page)
+    addJournal pageElement.find('.journal'), action
 
   pushToServer = (pageElement, action) ->
     $.ajax
@@ -197,16 +195,14 @@ $ ->
         item = getItem(div)
         plugins[item.type].bind div, item
     else
-      local = getFromLocalStorage(pageElement)
-      if local
+      if page_json = localStorage[pageElement.attr("id")]
         pageElement.addClass("local")
-        buildPage(local)
+        buildPage JSON.parse(page_json)
         initDragging()
       else
         $.get "/#{page_name}/json", "", (page_json) ->
           buildPage JSON.parse(page_json)
           initDragging()
-
 
   $(document).ajaxError (event, request, settings) ->
     $('.main').prepend "<li><font color=red>Error on #{settings.url}</li>"
