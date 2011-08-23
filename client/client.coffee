@@ -4,7 +4,7 @@ Array::last = ->
 $ ->
   resolve_links = (string) ->
     string
-      .replace(/\[\[([a-z0-9-]+)\]\]/g, "<a href=\"/$1\">$1</a>")
+      .replace(/\[\[([a-z0-9-]+)\]\]/g, "<a href=\"/$1.html\">$1</a>")
       .replace /\[(http.*?) (.*?)\]/g, "<a href=\"$1\">$2</a>"
 
   addJournal = (journalElement, action) ->
@@ -186,7 +186,7 @@ $ ->
 
       footerElement
         .append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ')
-        .append "<a href=\"/#{page_name}/json\">JSON</a>"
+        .append "<a href=\"/#{page_name}.json\">JSON</a>"
 
     if $(pageElement).attr('data-server-generated') == 'true'
       initDragging()
@@ -200,8 +200,8 @@ $ ->
         buildPage JSON.parse(page_json)
         initDragging()
       else
-        $.get "/#{page_name}/json", "", (page_json) ->
-          buildPage JSON.parse(page_json)
+        $.get "/#{page_name}.json", "", (page) ->
+          buildPage page
           initDragging()
 
   $(document).ajaxError (event, request, settings) ->
