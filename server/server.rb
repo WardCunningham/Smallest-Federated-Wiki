@@ -26,8 +26,8 @@ class Controller < Sinatra::Base
     end
     def resolve_links string
       string.
-        gsub(/\[\[([a-z0-9-]+)\]\]/, '<a href="/\1">\1</a>').
-        gsub(/\[(http.*?) (.*?)\]/, '<a href="\1">\2</a>')
+        gsub(/\[\[([a-z0-9-]+)\]\]/, '<a class="internal" href="/\1.html" data-page-name="\1">\1</a>').
+        gsub(/\[(http.*?) (.*?)\]/, '<a class="external" href="\1">\2</a>')
     end
   end
 
