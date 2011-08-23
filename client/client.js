@@ -3,9 +3,16 @@
     return this[this.length - 1];
   };
   $(function() {
-    var addJournal, format, getItem, plugins, pushToLocal, pushToServer, put_action, refresh, resolve_links, text_editor, useLocalStorage;
+    var addJournal, format, getItem, newPage, plugins, pushToLocal, pushToServer, put_action, refresh, resolve_links, text_editor, useLocalStorage;
     resolve_links = function(string) {
-      return string.replace(/\[\[([a-z0-9-]+)\]\]/g, "<a href=\"/$1\">$1</a>").replace(/\[(http.*?) (.*?)\]/g, "<a href=\"$1\">$2</a>");
+      return string.replace(/\[\[([a-z0-9-]+)\]\]/g, "<a class=\"internal\" href=\"/$1.html\" data-page-name=\"$1\">$1</a>").replace(/\[(http.*?) (.*?)\]/g, "<a class=\"external\" href=\"$1\">$2</a>");
+    };
+    newPage = function(pageName) {
+      var pageElements;
+      console.log(pageName);
+      pageElements = $("<div id=\"" + pageName + "\"/>").addClass("page").appendTo($('.main'));
+      console.log(pageElements);
+      return pageElements.each(refresh);
     };
     addJournal = function(journalElement, action) {
       return $("<span /> ").addClass("action").addClass(action.type).text(action.type[0]).attr('data-item-id', action.id).mouseover(function() {
@@ -103,8 +110,12 @@
           return div.append("<p>" + (resolve_links(item.text)) + "</p>");
         },
         bind: function(div, item) {
-          return div.dblclick(function() {
+          div.dblclick(function() {
             return text_editor(div, item);
+          });
+          return div.find('.internal').click(function(e) {
+            e.preventDefault();
+            return newPage($(e.target).attr('data-page-name'));
           });
         }
       },
@@ -241,7 +252,7 @@
         $.each(page.journal, function(i, action) {
           return addJournal(journalElement, action);
         });
-        return footerElement.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ').append("<a href=\"/" + page_name + "/json\">JSON</a>");
+        return footerElement.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ').append("<a href=\"/" + page_name + ".json\">JSON</a>");
       };
       if ($(pageElement).attr('data-server-generated') === 'true') {
         initDragging();
@@ -257,8 +268,8 @@
           buildPage(JSON.parse(page_json));
           return initDragging();
         } else {
-          return $.get("/" + page_name + "/json", "", function(page_json) {
-            buildPage(JSON.parse(page_json));
+          return $.get("/" + page_name + ".json", "", function(page) {
+            buildPage(page);
             return initDragging();
           });
         }

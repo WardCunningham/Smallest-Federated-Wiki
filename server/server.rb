@@ -46,12 +46,12 @@ class Controller < Sinatra::Base
     haml :page, :locals => { :page => get_page($identity['root']), :page_name => $identity['root'] }
   end
 
-  get %r{^/([a-z0-9-]+)$} do |name|
+  get %r{^/([a-z0-9-]+)\.html$} do |name|
     haml :page, :locals => { :page => get_page(name), :page_name => name }
   end
 
-  get %r{^/([a-z0-9-]+)/json$} do |name|
-    content_type 'text/plain'
+  get %r{^/([a-z0-9-]+)\.json$} do |name|
+    content_type 'application/json'
     JSON.pretty_generate(get_page(name))
   end
 
