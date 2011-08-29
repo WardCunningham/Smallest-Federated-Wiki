@@ -67,7 +67,7 @@ $ ->
     textarea.focus()
 
   format = (time) ->
-    d = new Date(time)
+    d = new Date (if time > 100000000 then time else time*1000)
     mo = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()]
     h = d.getHours()
     am = if h < 12 then 'AM' else 'PM'
