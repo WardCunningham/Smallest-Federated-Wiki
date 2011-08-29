@@ -7,11 +7,10 @@ $ ->
       .replace(/\[\[([a-z0-9-]+)\]\]/g, "<a class=\"internal\" href=\"/$1.html\" data-page-name=\"$1\">$1</a>")
       .replace /\[(http.*?) (.*?)\]/g, "<a class=\"external\" href=\"$1\">$2</a>"
 
-  newPage = (pageName) ->
-    console.log(pageName)
-    pageElements = $("<div id=\"#{pageName}\"/>").addClass("page").appendTo($('.main'))
-    console.log(pageElements)
-    pageElements.each refresh
+  $('.main').delegate '.internal', 'click', (e) ->
+    e.preventDefault()
+    $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
+    $("<div id=\"#{$(e.target).attr('data-page-name')}\"/>").addClass("page").appendTo($('.main')).each refresh
 
   addJournal = (journalElement, action) ->
     $("<span /> ").addClass("action").addClass(action.type)
@@ -84,9 +83,6 @@ $ ->
       emit: (div, item) -> div.append "<p>#{resolve_links(item.text)}</p>"
       bind: (div, item) ->
         div.dblclick -> text_editor div, item
-        div.find('.internal').click (e) -> 
-          e.preventDefault()
-          newPage $(e.target).attr('data-page-name')
     image:
       emit: (div, item) -> div.append "<img src=\"#{item.url}\"> <p>#{resolve_links(item.caption)}</p>"
       bind: (div, item) ->

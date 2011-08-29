@@ -3,17 +3,17 @@
     return this[this.length - 1];
   };
   $(function() {
-    var addJournal, format, getItem, newPage, plugins, pushToLocal, pushToServer, put_action, refresh, resolve_links, text_editor, useLocalStorage;
+    var addJournal, format, getItem, plugins, pushToLocal, pushToServer, put_action, refresh, resolve_links, text_editor, useLocalStorage;
     resolve_links = function(string) {
       return string.replace(/\[\[([a-z0-9-]+)\]\]/g, "<a class=\"internal\" href=\"/$1.html\" data-page-name=\"$1\">$1</a>").replace(/\[(http.*?) (.*?)\]/g, "<a class=\"external\" href=\"$1\">$2</a>");
     };
-    newPage = function(pageName) {
-      var pageElements;
-      console.log(pageName);
-      pageElements = $("<div id=\"" + pageName + "\"/>").addClass("page").appendTo($('.main'));
-      console.log(pageElements);
-      return pageElements.each(refresh);
-    };
+    $('.main').delegate('.internal', 'click', function(e) {
+      e.preventDefault();
+      if (!e.shiftKey) {
+        $(e.target).parents('.page').nextAll().remove();
+      }
+      return $("<div id=\"" + ($(e.target).attr('data-page-name')) + "\"/>").addClass("page").appendTo($('.main')).each(refresh);
+    });
     addJournal = function(journalElement, action) {
       return $("<span /> ").addClass("action").addClass(action.type).text(action.type[0]).attr('data-item-id', action.id).appendTo(journalElement);
     };
@@ -109,12 +109,8 @@
           return div.append("<p>" + (resolve_links(item.text)) + "</p>");
         },
         bind: function(div, item) {
-          div.dblclick(function() {
+          return div.dblclick(function() {
             return text_editor(div, item);
-          });
-          return div.find('.internal').click(function(e) {
-            e.preventDefault();
-            return newPage($(e.target).attr('data-page-name'));
           });
         }
       },
