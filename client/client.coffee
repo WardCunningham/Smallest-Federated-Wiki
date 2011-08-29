@@ -17,11 +17,10 @@ $ ->
     $("<span /> ").addClass("action").addClass(action.type)
       .text(action.type[0])
       .attr('data-item-id', action.id)
-      .mouseover () ->
-        $("[id=#{action.id}]").addClass("target")
-      .mouseout () ->
-        $("[id=#{action.id}]").removeClass("target")
       .appendTo(journalElement)
+
+  $('.main').delegate '.action', 'hover', ->
+    $('#'+$(this).data('itemId')).toggleClass('target')
 
   put_action = (pageElement, action) ->
     if useLocalStorage()

@@ -15,12 +15,11 @@
       return pageElements.each(refresh);
     };
     addJournal = function(journalElement, action) {
-      return $("<span /> ").addClass("action").addClass(action.type).text(action.type[0]).attr('data-item-id', action.id).mouseover(function() {
-        return $("[id=" + action.id + "]").addClass("target");
-      }).mouseout(function() {
-        return $("[id=" + action.id + "]").removeClass("target");
-      }).appendTo(journalElement);
+      return $("<span /> ").addClass("action").addClass(action.type).text(action.type[0]).attr('data-item-id', action.id).appendTo(journalElement);
     };
+    $('.main').delegate('.action', 'hover', function() {
+      return $('#' + $(this).data('itemId')).toggleClass('target');
+    });
     put_action = function(pageElement, action) {
       if (useLocalStorage()) {
         pushToLocal(pageElement, action);
