@@ -42,11 +42,11 @@ We're now using Ruby 1.9.2 which we manage with rvm:
 
 Launch the server with this bundle command:
 
-	bundle exec rackup -s thin -p 4567
+	bundle exec rackup -s thin -p 1111
 
 Now go to your browser and browse your new wiki:
 
-	http://localhost:4567
+	http://localhost:1111
 
 Looking For Code Bloat
 ======================

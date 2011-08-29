@@ -34,7 +34,7 @@ Launching the Server
 We're now using Ruby 1.9.2 which we manage with rvm. Launch the server with the following bundler commands:
 
 	rvm 1.9.2
-	bundle exec rackup -s thin -p 4567
+	bundle exec rackup -s thin -p 1111
 
 
 Notes On Using Bundler

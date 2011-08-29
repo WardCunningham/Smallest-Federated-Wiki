@@ -7,6 +7,7 @@ class Controller < Sinatra::Base
   root_path = File.dirname(File.dirname(__FILE__))
   APP_ROOT = Pathname.new(root_path).realpath.to_s #find full path to this file
 
+  set :port, 1111
   set :public, "#{APP_ROOT}/client"
   set :views , "#{APP_ROOT}/server/views"  
   set :haml, :format => :html5
