@@ -3,7 +3,7 @@
     return this[this.length - 1];
   };
   $(function() {
-    var addJournal, format, getItem, plugins, pushToLocal, pushToServer, put_action, refresh, resolve_links, text_editor, useLocalStorage;
+    var S4, addJournal, format, getItem, plugins, pushToLocal, pushToServer, put_action, refresh, resolve_links, text_editor, useLocalStorage;
     resolve_links = function(string) {
       return string.replace(/\[\[([a-z0-9-]+)\]\]/g, "<a class=\"internal\" href=\"/$1.html\" data-page-name=\"$1\">$1</a>").replace(/\[(http.*?) (.*?)\]/g, "<a class=\"external\" href=\"$1\">$2</a>");
     };
@@ -102,6 +102,9 @@
       if ($(element).length > 0) {
         return $(element).data("item") || JSON.parse($(element).attr('data-static-item'));
       }
+    };
+    S4 = function() {
+      return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
     };
     plugins = {
       paragraph: {
@@ -247,7 +250,7 @@
         $.each(page.journal, function(i, action) {
           return addJournal(journalElement, action);
         });
-        return footerElement.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ').append("<a href=\"/" + page_name + ".json\">JSON</a>");
+        return footerElement.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ').append(("<a href=\"/" + page_name + ".json?random=") + S4() + "\">JSON</a>");
       };
       if ($(pageElement).attr('data-server-generated') === 'true') {
         initDragging();
@@ -263,7 +266,7 @@
           buildPage(JSON.parse(page_json));
           return initDragging();
         } else {
-          return $.get("/" + page_name + ".json", "", function(page) {
+          return $.get(("/" + page_name + ".json?random=") + S4(), "", function(page) {
             buildPage(page);
             return initDragging();
           });

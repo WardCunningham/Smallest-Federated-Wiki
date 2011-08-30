@@ -78,6 +78,9 @@ $ ->
   getItem = (element) ->
     $(element).data("item") or JSON.parse($(element).attr('data-static-item')) if $(element).length > 0
 
+  S4 = () ->
+    (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+
   plugins =
     paragraph:
       emit: (div, item) -> div.append "<p>#{resolve_links(item.text)}</p>"
@@ -190,7 +193,7 @@ $ ->
 
       footerElement
         .append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ')
-        .append "<a href=\"/#{page_name}.json\">JSON</a>"
+        .append "<a href=\"/#{page_name}.json?random="+S4()+"\">JSON</a>"
 
     if $(pageElement).attr('data-server-generated') == 'true'
       initDragging()
@@ -204,7 +207,7 @@ $ ->
         buildPage JSON.parse(page_json)
         initDragging()
       else
-        $.get "/#{page_name}.json", "", (page) ->
+        $.get "/#{page_name}.json?random="+S4(), "", (page) ->
           buildPage page
           initDragging()
 
