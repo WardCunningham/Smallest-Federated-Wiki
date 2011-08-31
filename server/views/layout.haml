@@ -12,5 +12,5 @@
 		.main
 			=yield
 		%br{:clear => 'all'}
-		%input.local-editing{:type => "checkbox"}
-			Local editing
+		%input{:type => "checkbox", :id => "localEditing", :class => "local_editing clickable"}
+		%label{:for => "localEditing",  :class => "clickable"} Local editing
