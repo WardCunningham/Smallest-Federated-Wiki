@@ -29,7 +29,6 @@ $ ->
       pushToServer(pageElement, action)
 
   pushToLocal = (pageElement, action) ->
-    console.log(JSON.stringify(action))
     page = localStorage[pageElement.attr("id")]
     page = JSON.parse(page) if page
     page ||= pageElement.data("data")
@@ -88,10 +87,14 @@ $ ->
       file = e.originalEvent.dataTransfer.files[0]
       majorType = file.type.split("/")[0]
 
+      persistNewItem = ->
+        pageDiv = div.parents('.page:first')
+        action = {type: 'edit', id: item.id, item: item}
+        put_action(pageDiv, action)
+
       if allowedTypes.filter((t) -> t == majorType).length == 0
         alert("Uploads of type #{majorType} not supported for this item")
       else
-        pageDiv = div.parents('.page:first')
         if majorType == "image"
           reader = new FileReader()
           reader.onload = (event) ->
@@ -100,17 +103,17 @@ $ ->
             item.caption ||= "Uploaded image"
             div.empty()
             div.removeClass("factory").addClass("image")
-            put_action pageDiv, {type: 'edit', id: item.id, item: item}
+            persistNewItem()
             plugins.image.emit(div, item)
           reader.readAsDataURL(file)
         else if majorType == "text"
           reader = new FileReader()
           reader.onload = (event) ->
-            item.type == "paragraph"
+            item.type = "paragraph"
             item.text = event.target.result
             div.empty()
             div.removeClass("factory").addClass("paragraph")
-            put_action pageDiv, {type: 'edit', id: item.id, item: item}
+            persistNewItem()
             plugins.paragraph.emit(div, item)
           reader.readAsText(file)
 
@@ -151,6 +154,22 @@ $ ->
   refresh = ->
     pageElement = $(this)
     page_name = $(pageElement).attr('id')
+
+    idGenerator = () -> "newId"
+    pageElement.find(".add-factory").live "click", (evt) ->
+      evt.preventDefault()
+      item = {
+        type: "factory"
+        id: idGenerator()
+      }
+      itemElement = $("<div />", class: "item factory", id: item.id)
+      pageElement.find(".story").append(itemElement)
+      plugins.factory.emit itemElement, item
+      plugins.factory.bind itemElement, item
+
+      beforeElement = itemElement.prev('.item')
+      before = getItem(beforeElement)
+      put_action pageElement, {item: item, id: item.id, type: "add", after: before?.id} 
 
     initDragging = ->
       storyElement = pageElement.find('.story')
@@ -216,7 +235,8 @@ $ ->
 
       footerElement
         .append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ')
-        .append "<a href=\"/#{page_name}.json\">JSON</a>"
+        .append("<a href=\"/#{page_name}.json\">JSON</a> . ")
+        .append("<a href=\"#\" class=\"add-factory\">[+]</a>")
 
     if $(pageElement).attr('data-server-generated') == 'true'
       initDragging()

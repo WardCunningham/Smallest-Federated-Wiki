@@ -30,7 +30,6 @@
     };
     pushToLocal = function(pageElement, action) {
       var page;
-      console.log(JSON.stringify(action));
       page = localStorage[pageElement.attr("id")];
       if (page) {
         page = JSON.parse(page);
@@ -113,16 +112,25 @@
         });
       });
       return div.bind("drop", function(e) {
-        var file, majorType, pageDiv, reader;
+        var file, majorType, persistNewItem, reader;
         e.preventDefault();
         file = e.originalEvent.dataTransfer.files[0];
         majorType = file.type.split("/")[0];
+        persistNewItem = function() {
+          var action, pageDiv;
+          pageDiv = div.parents('.page:first');
+          action = {
+            type: 'edit',
+            id: item.id,
+            item: item
+          };
+          return put_action(pageDiv, action);
+        };
         if (allowedTypes.filter(function(t) {
           return t === majorType;
         }).length === 0) {
           return alert("Uploads of type " + majorType + " not supported for this item");
         } else {
-          pageDiv = div.parents('.page:first');
           if (majorType === "image") {
             reader = new FileReader();
             reader.onload = function(event) {
@@ -131,26 +139,18 @@
               item.caption || (item.caption = "Uploaded image");
               div.empty();
               div.removeClass("factory").addClass("image");
-              put_action(pageDiv, {
-                type: 'edit',
-                id: item.id,
-                item: item
-              });
+              persistNewItem();
               return plugins.image.emit(div, item);
             };
             return reader.readAsDataURL(file);
           } else if (majorType === "text") {
             reader = new FileReader();
             reader.onload = function(event) {
-              item.type === "paragraph";
+              item.type = "paragraph";
               item.text = event.target.result;
               div.empty();
               div.removeClass("factory").addClass("paragraph");
-              put_action(pageDiv, {
-                type: 'edit',
-                id: item.id,
-                item: item
-              });
+              persistNewItem();
               return plugins.paragraph.emit(div, item);
             };
             return reader.readAsText(file);
@@ -223,9 +223,35 @@
       }
     };
     refresh = function() {
-      var buildPage, initDragging, pageElement, page_json, page_name;
+      var buildPage, idGenerator, initDragging, pageElement, page_json, page_name;
       pageElement = $(this);
       page_name = $(pageElement).attr('id');
+      idGenerator = function() {
+        return "newId";
+      };
+      pageElement.find(".add-factory").live("click", function(evt) {
+        var before, beforeElement, item, itemElement;
+        evt.preventDefault();
+        item = {
+          type: "factory",
+          id: idGenerator()
+        };
+        itemElement = $("<div />", {
+          "class": "item factory",
+          id: item.id
+        });
+        pageElement.find(".story").append(itemElement);
+        plugins.factory.emit(itemElement, item);
+        plugins.factory.bind(itemElement, item);
+        beforeElement = itemElement.prev('.item');
+        before = getItem(beforeElement);
+        return put_action(pageElement, {
+          item: item,
+          id: item.id,
+          type: "add",
+          after: before != null ? before.id : void 0
+        });
+      });
       initDragging = function() {
         var storyElement;
         storyElement = pageElement.find('.story');
@@ -293,7 +319,7 @@
         $.each(page.journal, function(i, action) {
           return addJournal(journalElement, action);
         });
-        return footerElement.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ').append("<a href=\"/" + page_name + ".json\">JSON</a>");
+        return footerElement.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ').append("<a href=\"/" + page_name + ".json\">JSON</a> . ").append("<a href=\"#\" class=\"add-factory\">[+]</a>");
       };
       if ($(pageElement).attr('data-server-generated') === 'true') {
         initDragging();
