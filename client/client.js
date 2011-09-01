@@ -90,7 +90,7 @@
     };
     format = function(time) {
       var am, d, h, mi, mo;
-      d = new Date((time > 100000000 ? time : time * 1000));
+      d = new Date((time > 10000000000 ? time : time * 1000));
       mo = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()];
       h = d.getHours();
       am = h < 12 ? 'AM' : 'PM';
