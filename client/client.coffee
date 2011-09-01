@@ -5,7 +5,7 @@ $ ->
   resolve_links = (string) ->
     string
       .replace(/\[\[([a-z0-9-]+)\]\]/g, "<a class=\"internal\" href=\"/$1.html\" data-page-name=\"$1\">$1</a>")
-      .replace /\[(http.*?) (.*?)\]/g, "<a class=\"external\" href=\"$1\">$2</a>"
+      .replace(/\[(http.*?) (.*?)\]/g, "<a class=\"external\" href=\"$1\">$2</a>")
 
   $('.main').delegate '.internal', 'click', (e) ->
     e.preventDefault()
