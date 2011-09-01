@@ -3,7 +3,7 @@
     return this[this.length - 1];
   };
   $(function() {
-    var addJournal, format, getItem, plugins, pushToLocal, pushToServer, put_action, refresh, resolve_links, text_editor, useLocalStorage;
+    var addJournal, bindDragAndDrop, format, getItem, plugins, pushToLocal, pushToServer, put_action, refresh, resolve_links, text_editor, useLocalStorage;
     resolve_links = function(string) {
       return string.replace(/\[\[([a-z0-9-]+)\]\]/g, "<a class=\"internal\" href=\"/$1.html\" data-page-name=\"$1\">$1</a>").replace(/\[(http.*?) (.*?)\]/g, "<a class=\"external\" href=\"$1\">$2</a>");
     };
@@ -103,6 +103,61 @@
         return $(element).data("item") || JSON.parse($(element).attr('data-static-item'));
       }
     };
+    bindDragAndDrop = function(div, item, allowedTypes) {
+      if (allowedTypes == null) {
+        allowedTypes = [];
+      }
+      ["dragenter", "dragover"].map(function(eventName) {
+        return div.bind(eventName, function(evt) {
+          return evt.preventDefault();
+        });
+      });
+      return div.bind("drop", function(e) {
+        var file, majorType, pageDiv, reader;
+        e.preventDefault();
+        file = e.originalEvent.dataTransfer.files[0];
+        majorType = file.type.split("/")[0];
+        if (allowedTypes.filter(function(t) {
+          return t === majorType;
+        }).length === 0) {
+          return alert("Uploads of type " + majorType + " not supported for this item");
+        } else {
+          pageDiv = div.parents('.page:first');
+          if (majorType === "image") {
+            reader = new FileReader();
+            reader.onload = function(event) {
+              item.type = "image";
+              item.url = event.target.result;
+              item.caption || (item.caption = "Uploaded image");
+              div.empty();
+              div.removeClass("factory").addClass("image");
+              put_action(pageDiv, {
+                type: 'edit',
+                id: item.id,
+                item: item
+              });
+              return plugins.image.emit(div, item);
+            };
+            return reader.readAsDataURL(file);
+          } else if (majorType === "text") {
+            reader = new FileReader();
+            reader.onload = function(event) {
+              item.type === "paragraph";
+              item.text = event.target.result;
+              div.empty();
+              div.removeClass("factory").addClass("paragraph");
+              put_action(pageDiv, {
+                type: 'edit',
+                id: item.id,
+                item: item
+              });
+              return plugins.paragraph.emit(div, item);
+            };
+            return reader.readAsText(file);
+          }
+        }
+      });
+    };
     plugins = {
       paragraph: {
         emit: function(div, item) {
@@ -118,7 +173,9 @@
         emit: function(div, item) {
           return div.append("<img src=\"" + item.url + "\"> <p>" + (resolve_links(item.caption)) + "</p>");
         },
-        bind: function(div, item) {}
+        bind: function(div, item) {
+          return bindDragAndDrop(div, item, ["image"]);
+        }
       },
       chart: {
         emit: function(div, item) {
@@ -140,18 +197,7 @@
           return div.append('<p>Double-Click to Edit<br>Drop Text or Image to Insert</p>');
         },
         bind: function(div, item) {
-          div.get(0).ondrop = function(e) {
-            var file, reader;
-            e.preventDefault();
-            file = e.dataTransfer.files[0];
-            reader = new FileReader();
-            reader.onload = function(event) {
-              item.type = 'image';
-              return item.url = "url(" + event.target.result + ")";
-            };
-            reader.readAsDataURL(file);
-            return false;
-          };
+          bindDragAndDrop(div, item, ["image", "text"]);
           return div.dblclick(function() {
             div.removeClass('factory').addClass(item.type = 'paragraph');
             return text_editor(div, item);
