@@ -28,6 +28,9 @@ You're encouraged to create a distinctive gradient file to identify your server.
 Try generating something fun at http://tools.dynamicdrive.com/gradient/
 Save the result as client/favicon.png.
 
+We found another very simple gradient generator which has the advantage of being written in ruby.
+Read the blog post, http://blog.jpoz.net/2009/07/27/ruby-gradients.html, or run the generator, http://gradient.jpoz.net/
+
 Launching the Server
 ====================
 
