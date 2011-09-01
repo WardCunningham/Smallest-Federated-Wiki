@@ -78,6 +78,42 @@ $ ->
   getItem = (element) ->
     $(element).data("item") or JSON.parse($(element).attr('data-static-item')) if $(element).length > 0
 
+  bindDragAndDrop = (div, item, allowedTypes = []) ->
+    ["dragenter", "dragover"].map (eventName) ->
+      div.bind eventName, (evt) -> evt.preventDefault()
+
+    div.bind "drop", (e) ->
+      e.preventDefault()
+
+      file = e.originalEvent.dataTransfer.files[0]
+      majorType = file.type.split("/")[0]
+
+      if allowedTypes.filter((t) -> t == majorType).length == 0
+        alert("Uploads of type #{majorType} not supported for this item")
+      else
+        pageDiv = div.parents('.page:first')
+        if majorType == "image"
+          reader = new FileReader()
+          reader.onload = (event) ->
+            item.type = "image"
+            item.url = event.target.result
+            item.caption ||= "Uploaded image"
+            div.empty()
+            div.removeClass("factory").addClass("image")
+            put_action pageDiv, {type: 'edit', id: item.id, item: item}
+            plugins.image.emit(div, item)
+          reader.readAsDataURL(file)
+        else if majorType == "text"
+          reader = new FileReader()
+          reader.onload = (event) ->
+            item.type == "paragraph"
+            item.text = event.target.result
+            div.empty()
+            div.removeClass("factory").addClass("paragraph")
+            put_action pageDiv, {type: 'edit', id: item.id, item: item}
+            plugins.paragraph.emit(div, item)
+          reader.readAsText(file)
+
   plugins =
     paragraph:
       emit: (div, item) -> div.append "<p>#{resolve_links(item.text)}</p>"
@@ -85,7 +121,7 @@ $ ->
         div.dblclick -> text_editor div, item
     image:
       emit: (div, item) -> div.append "<img src=\"#{item.url}\"> <p>#{resolve_links(item.caption)}</p>"
-      bind: (div, item) ->
+      bind: (div, item) -> bindDragAndDrop(div, item, ["image"])
     chart:
       emit: (div, item) ->
         chartElement = $('<p />').addClass('readout').appendTo(div).text(item.data.last().last())
@@ -98,17 +134,7 @@ $ ->
     factory:
       emit: (div, item) -> div.append '<p>Double-Click to Edit<br>Drop Text or Image to Insert</p>'
       bind: (div, item) ->
-        # adapted from http://html5demos.com/file-api
-        # not workig yet: missing something? interaction with sortable?
-        div.get(0).ondrop = (e) ->
-          e.preventDefault()
-          file = e.dataTransfer.files[0]
-          reader = new FileReader()
-          reader.onload = (event) ->
-            item.type = 'image'
-            item.url = "url(#{event.target.result})"
-          reader.readAsDataURL(file)
-          false
+        bindDragAndDrop(div, item, ["image", "text"])
         div.dblclick ->
           div.removeClass('factory').addClass(item.type='paragraph')
           text_editor div, item
