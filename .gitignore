@@ -2,3 +2,5 @@
 *.swp
 .sass-cache/*
 .rvmrc
+client/favicon.png
+data/pages/welcome-visitors
