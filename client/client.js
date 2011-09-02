@@ -3,7 +3,20 @@
     return this[this.length - 1];
   };
   $(function() {
-    var addJournal, bindDragAndDrop, format, getItem, plugins, pushToLocal, pushToServer, put_action, refresh, resolve_links, text_editor, useLocalStorage;
+    var addJournal, bindDragAndDrop, format, getItem, plugins, pushToLocal, pushToServer, put_action, randomByte, randomBytes, refresh, resolve_links, text_editor, useLocalStorage;
+    randomByte = function() {
+      return (((1 + Math.random()) * 0x100) | 0).toString(16).substring(1);
+    };
+    randomBytes = function(n) {
+      return ((function() {
+        var _i, _results;
+        _results = [];
+        for (_i = 1; 1 <= n ? _i <= n : _i >= n; 1 <= n ? _i++ : _i--) {
+          _results.push(randomByte());
+        }
+        return _results;
+      })()).join('');
+    };
     resolve_links = function(string) {
       return string.replace(/\[\[([a-z0-9-]+)\]\]/g, "<a class=\"internal\" href=\"/$1.html\" data-page-name=\"$1\">$1</a>").replace(/\[(http.*?) (.*?)\]/g, "<a class=\"external\" href=\"$1\">$2</a>");
     };
@@ -319,7 +332,7 @@
         $.each(page.journal, function(i, action) {
           return addJournal(journalElement, action);
         });
-        return footerElement.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ').append("<a href=\"/" + page_name + ".json\">JSON</a> . ").append("<a href=\"#\" class=\"add-factory\">[+]</a>");
+        return footerElement.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ').append("<a href=\"/" + page_name + ".json?random=" + (randomBytes(4)) + "\">JSON</a> . ").append("<a href=\"#\" class=\"add-factory\">[+]</a>");
       };
       if ($(pageElement).attr('data-server-generated') === 'true') {
         initDragging();
@@ -335,7 +348,7 @@
           buildPage(JSON.parse(page_json));
           return initDragging();
         } else {
-          return $.get("/" + page_name + ".json", "", function(page) {
+          return $.get("/" + page_name + ".json?random=" + (randomBytes(4)), "", function(page) {
             buildPage(page);
             return initDragging();
           });

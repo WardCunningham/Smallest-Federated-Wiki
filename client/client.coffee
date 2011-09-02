@@ -2,6 +2,9 @@ Array::last = ->
   this[@length - 1]
 
 $ ->
+  randomByte = -> (((1+Math.random())*0x100)|0).toString(16).substring(1)
+  randomBytes = (n) -> (randomByte() for [1..n]).join('')
+
   resolve_links = (string) ->
     string
       .replace(/\[\[([a-z0-9-]+)\]\]/g, "<a class=\"internal\" href=\"/$1.html\" data-page-name=\"$1\">$1</a>")
@@ -235,7 +238,7 @@ $ ->
 
       footerElement
         .append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ')
-        .append("<a href=\"/#{page_name}.json\">JSON</a> . ")
+        .append("<a href=\"/#{page_name}.json?random=#{randomBytes(4)}\">JSON</a> . ")
         .append("<a href=\"#\" class=\"add-factory\">[+]</a>")
 
     if $(pageElement).attr('data-server-generated') == 'true'
@@ -250,7 +253,7 @@ $ ->
         buildPage JSON.parse(page_json)
         initDragging()
       else
-        $.get "/#{page_name}.json", "", (page) ->
+        $.get "/#{page_name}.json?random=#{randomBytes(4)}", "", (page) ->
           buildPage page
           initDragging()
 
