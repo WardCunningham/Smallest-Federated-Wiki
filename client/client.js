@@ -240,7 +240,7 @@
       pageElement = $(this);
       page_name = $(pageElement).attr('id');
       idGenerator = function() {
-        return "newId";
+        return randomBytes(8);
       };
       pageElement.find(".add-factory").live("click", function(evt) {
         var before, beforeElement, item, itemElement;

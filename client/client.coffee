@@ -158,7 +158,8 @@ $ ->
     pageElement = $(this)
     page_name = $(pageElement).attr('id')
 
-    idGenerator = () -> "newId"
+    idGenerator = () -> randomBytes(8)
+
     pageElement.find(".add-factory").live "click", (evt) ->
       evt.preventDefault()
       item = {
