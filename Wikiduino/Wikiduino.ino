@@ -34,6 +34,7 @@ struct Temp {
 } temp[4] = {{0,0}};
 
 unsigned int last = 100;
+unsigned int powersave = 0;
 unsigned long crc_errs = 0;
 
 // Arduino Setup and Loop
@@ -58,8 +59,18 @@ void sample() {
   unsigned int now = millis();
   if ((now-last) >= 1000) {
     last = now;
+    powerClock();
     analogSample();
     tempSample();
+  }
+}
+
+void powerClock() {
+  boolean poweron = powersave == 0;
+  pinMode(2,OUTPUT);
+  digitalWrite(2,poweron);
+  if (!poweron) {
+    powersave--;
   }
 }
 
@@ -170,6 +181,8 @@ void report(char code) {
     jsonReport();
   } else if (code == 'f') {
     faviconReport();
+  } else if (code == 'p') {
+    powersave = 55*60;
   } else {
     errorReport();
   }
