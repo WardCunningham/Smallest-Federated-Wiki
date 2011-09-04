@@ -4,3 +4,5 @@
 .rvmrc
 client/favicon.png
 data/pages/welcome-visitors
+
+/data/status/local-identity
