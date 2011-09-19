@@ -3,7 +3,7 @@
     return this[this.length - 1];
   };
   $(function() {
-    var addJournal, bindDragAndDrop, format, getItem, plugins, pushToLocal, pushToServer, put_action, randomByte, randomBytes, refresh, resolve_links, text_editor, useLocalStorage;
+    var addToJournal, bindDragAndDrop, formatTime, getItem, plugins, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveLinks, textEditor, useLocalStorage;
     randomByte = function() {
       return (((1 + Math.random()) * 0x100) | 0).toString(16).substring(1);
     };
@@ -17,7 +17,7 @@
         return _results;
       })()).join('');
     };
-    resolve_links = function(string) {
+    resolveLinks = function(string) {
       return string.replace(/\[\[([a-z0-9-]+)\]\]/g, "<a class=\"internal\" href=\"/$1.html\" data-page-name=\"$1\">$1</a>").replace(/\[(http.*?) (.*?)\]/g, "<a class=\"external\" href=\"$1\">$2</a>");
     };
     $('.main').delegate('.internal', 'click', function(e) {
@@ -27,12 +27,12 @@
       }
       return $("<div id=\"" + ($(e.target).attr('data-page-name')) + "\"/>").addClass("page").appendTo($('.main')).each(refresh);
     });
-    addJournal = function(journalElement, action) {
-      var actionElement, page;
-      page = journalElement.parents('.page:first');
+    addToJournal = function(journalElement, action) {
+      var actionElement, pageElement;
+      pageElement = journalElement.parents('.page:first');
       actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(action.type[0]).attr('data-item-id', action.id || "0").appendTo(journalElement);
       if (action.type === 'fork') {
-        return actionElement.css("background-image", "url(//" + action.site + "/favicon.png)").attr("href", "//" + action.site + "/" + (page.attr('id')) + ".html").attr("data-site", action.site).attr("data-slug", page.attr('id'));
+        return actionElement.css("background-image", "url(//" + action.site + "/favicon.png)").attr("href", "//" + action.site + "/" + (pageElement.attr('id')) + ".html").attr("data-site", action.site).attr("data-slug", pageElement.attr('id'));
       }
     };
     $('.main').delegate('.action', 'hover', function() {
@@ -45,7 +45,7 @@
       }
       return $("<div />").attr('id', $(e.target).attr('data-slug')).attr('data-site', $(e.target).attr('data-site')).addClass("page").appendTo($('.main')).each(refresh);
     });
-    put_action = function(pageElement, action) {
+    putAction = function(pageElement, action) {
       if (useLocalStorage()) {
         pushToLocal(pageElement, action);
         return pageElement.addClass("local");
@@ -65,7 +65,7 @@
         return $(this).data("item");
       }).get();
       localStorage[pageElement.attr("id")] = JSON.stringify(page);
-      return addJournal(pageElement.find('.journal'), action);
+      return addToJournal(pageElement.find('.journal'), action);
     };
     pushToServer = function(pageElement, action) {
       return $.ajax({
@@ -75,29 +75,29 @@
           'action': JSON.stringify(action)
         },
         success: function() {
-          return addJournal(pageElement.find('.journal'), action);
+          return addToJournal(pageElement.find('.journal'), action);
         },
         error: function(xhr, type, msg) {
           return console.log("ajax error type: " + type + " msg: " + msg);
         }
       });
     };
-    text_editor = function(div, item) {
+    textEditor = function(div, item) {
       var textarea, _ref;
       textarea = $("<textarea>" + ((_ref = item.text) != null ? _ref : '') + "</textarea>").focusout(function() {
         if (textarea.val()) {
-          $(div).last('p').html("<p>" + (resolve_links(textarea.val())) + "</p>");
+          $(div).last('p').html("<p>" + (resolveLinks(textarea.val())) + "</p>");
           if (textarea.val() === item.text) {
             return;
           }
           item.text = textarea.val();
-          put_action(div.parents('.page:first'), {
+          putAction(div.parents('.page:first'), {
             type: 'edit',
             id: item.id,
             item: item
           });
         } else {
-          put_action(div.parents('.page:first'), {
+          putAction(div.parents('.page:first'), {
             type: 'remove',
             id: item.id
           });
@@ -112,7 +112,7 @@
       div.html(textarea);
       return textarea.focus();
     };
-    format = function(time) {
+    formatTime = function(time) {
       var am, d, h, mi, mo;
       d = new Date((time > 10000000000 ? time : time * 1000));
       mo = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()];
@@ -151,7 +151,7 @@
               id: item.id,
               item: item
             };
-            put_action(pageDiv, action);
+            putAction(pageDiv, action);
             return plugins[type].emit(div, item);
           };
         };
@@ -182,17 +182,17 @@
     plugins = {
       paragraph: {
         emit: function(div, item) {
-          return div.append("<p>" + (resolve_links(item.text)) + "</p>");
+          return div.append("<p>" + (resolveLinks(item.text)) + "</p>");
         },
         bind: function(div, item) {
           return div.dblclick(function() {
-            return text_editor(div, item);
+            return textEditor(div, item);
           });
         }
       },
       image: {
         emit: function(div, item) {
-          return div.append("<img src=\"" + item.url + "\"> <p>" + (resolve_links(item.caption)) + "</p>");
+          return div.append("<img src=\"" + item.url + "\"> <p>" + (resolveLinks(item.caption)) + "</p>");
         },
         bind: function(div, item) {
           return bindDragAndDrop(div, item, ["image"]);
@@ -202,14 +202,14 @@
         emit: function(div, item) {
           var captionElement, chartElement;
           chartElement = $('<p />').addClass('readout').appendTo(div).text(item.data.last().last());
-          return captionElement = $('<p />').html(resolve_links(item.caption)).appendTo(div);
+          return captionElement = $('<p />').html(resolveLinks(item.caption)).appendTo(div);
         },
         bind: function(div, item) {
           return div.find('p:first').mousemove(function(e) {
             var sample, time, _ref;
             _ref = item.data[Math.floor(item.data.length * e.offsetX / e.target.offsetWidth)], time = _ref[0], sample = _ref[1];
             $(e.target).text(sample.toFixed(1));
-            return $(e.target).siblings("p").last().html(format(time));
+            return $(e.target).siblings("p").last().html(formatTime(time));
           });
         }
       },
@@ -221,7 +221,7 @@
           bindDragAndDrop(div, item, ["image", "text"]);
           return div.dblclick(function() {
             div.removeClass('factory').addClass(item.type = 'paragraph');
-            return text_editor(div, item);
+            return textEditor(div, item);
           });
         }
       },
@@ -244,19 +244,16 @@
       }
     };
     refresh = function() {
-      var buildPage, idGenerator, initDragging, pageElement, page_json, page_name, remote_site, resource;
+      var buildPage, initDragging, json, pageElement, resource, site, slug;
       pageElement = $(this);
-      page_name = $(pageElement).attr('id');
-      remote_site = $(pageElement).attr('data-site');
-      idGenerator = function() {
-        return randomBytes(8);
-      };
+      slug = $(pageElement).attr('id');
+      site = $(pageElement).attr('data-site');
       pageElement.find(".add-factory").live("click", function(evt) {
         var before, beforeElement, item, itemElement;
         evt.preventDefault();
         item = {
           type: "factory",
-          id: idGenerator()
+          id: randomBytes(8)
         };
         itemElement = $("<div />", {
           "class": "item factory",
@@ -267,7 +264,7 @@
         plugins.factory.bind(itemElement, item);
         beforeElement = itemElement.prev('.item');
         before = getItem(beforeElement);
-        return put_action(pageElement, {
+        return putAction(pageElement, {
           item: item,
           id: item.id,
           type: "add",
@@ -305,7 +302,7 @@
               after: before != null ? before.id : void 0
             }) : void 0;
             action.id = item.id;
-            return put_action(pageElement, action);
+            return putAction(pageElement, action);
           },
           connectWith: '.page .story'
         });
@@ -320,7 +317,7 @@
         };
         page = $.extend(empty, data);
         $(pageElement).data("data", data);
-        icon = remote_site != null ? "/remote/" + remote_site + "/favicon.png" : "/favicon.png";
+        icon = site != null ? "/remote/" + site + "/favicon.png" : "/favicon.png";
         $(pageElement).append('<h1><a href="/"><img src = "' + icon + '" height = "32px"></a> ' + page.title + '</h1>');
         _ref = ['story', 'journal', 'footer'].map(function(className) {
           return $("<div />").addClass(className).appendTo(pageElement);
@@ -340,9 +337,9 @@
           }
         });
         $.each(page.journal, function(i, action) {
-          return addJournal(journalElement, action);
+          return addToJournal(journalElement, action);
         });
-        return footerElement.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ').append("<a href=\"/" + page_name + ".json?random=" + (randomBytes(4)) + "\">JSON</a> . ").append("<a href=\"#\" class=\"add-factory\">[+]</a>");
+        return footerElement.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ').append("<a href=\"/" + slug + ".json?random=" + (randomBytes(4)) + "\">JSON</a> . ").append("<a href=\"#\" class=\"add-factory\">[+]</a>");
       };
       if ($(pageElement).attr('data-server-generated') === 'true') {
         initDragging();
@@ -353,12 +350,12 @@
           return plugins[item.type].bind(div, item);
         });
       } else {
-        if (page_json = localStorage[pageElement.attr("id")]) {
+        if (json = localStorage[pageElement.attr("id")]) {
           pageElement.addClass("local");
-          buildPage(JSON.parse(page_json));
+          buildPage(JSON.parse(json));
           return initDragging();
         } else {
-          resource = remote_site != null ? "remote/" + remote_site + "/" + page_name : page_name;
+          resource = site != null ? "remote/" + site + "/" + slug : slug;
           return $.get("/" + resource + ".json?random=" + (randomBytes(4)), "", function(page) {
             buildPage(page);
             return initDragging();

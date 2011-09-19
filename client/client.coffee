@@ -5,7 +5,7 @@ $ ->
   randomByte = -> (((1+Math.random())*0x100)|0).toString(16).substring(1)
   randomBytes = (n) -> (randomByte() for [1..n]).join('')
 
-  resolve_links = (string) ->
+  resolveLinks = (string) ->
     string
       .replace(/\[\[([a-z0-9-]+)\]\]/g, "<a class=\"internal\" href=\"/$1.html\" data-page-name=\"$1\">$1</a>")
       .replace(/\[(http.*?) (.*?)\]/g, "<a class=\"external\" href=\"$1\">$2</a>")
@@ -15,8 +15,8 @@ $ ->
     $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
     $("<div id=\"#{$(e.target).attr('data-page-name')}\"/>").addClass("page").appendTo($('.main')).each refresh
 
-  addJournal = (journalElement, action) ->
-    page = journalElement.parents('.page:first')
+  addToJournal = (journalElement, action) ->
+    pageElement = journalElement.parents('.page:first')
     actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type)
       .text(action.type[0])
       .attr('data-item-id', action.id || "0")
@@ -24,9 +24,9 @@ $ ->
     if action.type == 'fork'
       actionElement
         .css("background-image", "url(//#{action.site}/favicon.png)")
-        .attr("href", "//#{action.site}/#{page.attr('id')}.html")
+        .attr("href", "//#{action.site}/#{pageElement.attr('id')}.html")
         .attr("data-site", action.site)
-        .attr("data-slug", page.attr('id'))
+        .attr("data-slug", pageElement.attr('id'))
 
   $('.main').delegate '.action', 'hover', ->
     $('#'+$(this).data('itemId')).toggleClass('target')
@@ -41,7 +41,7 @@ $ ->
       .appendTo($('.main'))
       .each refresh
 
-  put_action = (pageElement, action) ->
+  putAction = (pageElement, action) ->
     if useLocalStorage()
       pushToLocal(pageElement, action)
       pageElement.addClass("local")
@@ -55,7 +55,7 @@ $ ->
     page.journal.concat(action)
     page.story = $(pageElement).find(".item").map(-> $(@).data("item")).get()
     localStorage[pageElement.attr("id")] = JSON.stringify(page)
-    addJournal pageElement.find('.journal'), action
+    addToJournal pageElement.find('.journal'), action
 
   pushToServer = (pageElement, action) ->
     $.ajax
@@ -64,20 +64,20 @@ $ ->
       data:
         'action': JSON.stringify(action)
       success: () ->
-        addJournal pageElement.find('.journal'), action
+        addToJournal pageElement.find('.journal'), action
       error: (xhr, type, msg) ->
         console.log "ajax error type: #{type} msg: #{msg}"
 
-  text_editor = (div, item) ->
+  textEditor = (div, item) ->
     textarea = $("<textarea>#{item.text ? ''}</textarea>")
       .focusout ->
         if textarea.val()
-          $(div).last('p').html "<p>#{resolve_links(textarea.val())}</p>"
+          $(div).last('p').html "<p>#{resolveLinks(textarea.val())}</p>"
           return if textarea.val() == item.text
           item.text = textarea.val()
-          put_action div.parents('.page:first'), {type: 'edit', id: item.id, item: item}
+          putAction div.parents('.page:first'), {type: 'edit', id: item.id, item: item}
         else
-          put_action div.parents('.page:first'), {type: 'remove', id: item.id}
+          putAction div.parents('.page:first'), {type: 'remove', id: item.id}
           div.remove()
         null
       .bind 'keydown', (e) ->
@@ -85,7 +85,7 @@ $ ->
     div.html textarea
     textarea.focus()
 
-  format = (time) ->
+  formatTime = (time) ->
     d = new Date (if time > 10000000000 then time else time*1000)
     mo = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()]
     h = d.getHours()
@@ -111,7 +111,7 @@ $ ->
           div.removeClass("factory").addClass(type)
           pageDiv = div.parents('.page:first')
           action = {type: 'edit', id: item.id, item: item}
-          put_action(pageDiv, action)
+          putAction(pageDiv, action)
           plugins[type].emit(div, item)
 
       dropEvent.preventDefault()
@@ -134,28 +134,28 @@ $ ->
 
   plugins =
     paragraph:
-      emit: (div, item) -> div.append "<p>#{resolve_links(item.text)}</p>"
+      emit: (div, item) -> div.append "<p>#{resolveLinks(item.text)}</p>"
       bind: (div, item) ->
-        div.dblclick -> text_editor div, item
+        div.dblclick -> textEditor div, item
     image:
-      emit: (div, item) -> div.append "<img src=\"#{item.url}\"> <p>#{resolve_links(item.caption)}</p>"
+      emit: (div, item) -> div.append "<img src=\"#{item.url}\"> <p>#{resolveLinks(item.caption)}</p>"
       bind: (div, item) -> bindDragAndDrop(div, item, ["image"])
     chart:
       emit: (div, item) ->
         chartElement = $('<p />').addClass('readout').appendTo(div).text(item.data.last().last())
-        captionElement = $('<p />').html(resolve_links(item.caption)).appendTo(div)
+        captionElement = $('<p />').html(resolveLinks(item.caption)).appendTo(div)
       bind: (div, item) ->
         div.find('p:first').mousemove (e) ->
           [time, sample] = item.data[Math.floor(item.data.length * e.offsetX / e.target.offsetWidth)]
           $(e.target).text sample.toFixed(1)
-          $(e.target).siblings("p").last().html format(time)
+          $(e.target).siblings("p").last().html formatTime(time)
     factory:
       emit: (div, item) -> div.append '<p>Double-Click to Edit<br>Drop Text or Image to Insert</p>'
       bind: (div, item) ->
         bindDragAndDrop(div, item, ["image", "text"])
         div.dblclick ->
           div.removeClass('factory').addClass(item.type='paragraph')
-          text_editor div, item
+          textEditor div, item
     changes:
       emit: (div, item) ->
         div.append ul = $('<ul />').append $('<input type="button" value="clear" />')
@@ -168,16 +168,14 @@ $ ->
 
   refresh = ->
     pageElement = $(this)
-    page_name = $(pageElement).attr('id')
-    remote_site = $(pageElement).attr('data-site')
-
-    idGenerator = () -> randomBytes(8)
+    slug = $(pageElement).attr('id')
+    site = $(pageElement).attr('data-site')
 
     pageElement.find(".add-factory").live "click", (evt) ->
       evt.preventDefault()
       item = {
         type: "factory"
-        id: idGenerator()
+        id: randomBytes(8)
       }
       itemElement = $("<div />", class: "item factory", id: item.id)
       pageElement.find(".story").append(itemElement)
@@ -186,7 +184,7 @@ $ ->
 
       beforeElement = itemElement.prev('.item')
       before = getItem(beforeElement)
-      put_action pageElement, {item: item, id: item.id, type: "add", after: before?.id} 
+      putAction pageElement, {item: item, id: item.id, type: "add", after: before?.id} 
 
     initDragging = ->
       storyElement = pageElement.find('.story')
@@ -216,7 +214,7 @@ $ ->
             {type: 'add', item: item, after: before?.id}
 
           action.id = item.id
-          put_action pageElement, action
+          putAction pageElement, action
 
         connectWith: '.page .story'
 
@@ -230,7 +228,7 @@ $ ->
       page = $.extend(empty, data)
       $(pageElement).data("data", data)
 
-      icon = if remote_site? then "/remote/#{remote_site}/favicon.png" else "/favicon.png"
+      icon = if site? then "/remote/#{site}/favicon.png" else "/favicon.png"
       $(pageElement).append '<h1><a href="/"><img src = "'+icon+'" height = "32px"></a> ' + page.title + '</h1>'
 
       [storyElement, journalElement, footerElement] = ['story', 'journal', 'footer'].map (className) ->
@@ -249,11 +247,11 @@ $ ->
           div.append "<p class='error'>#{err}</p>"
 
       $.each page.journal, (i, action) ->
-        addJournal journalElement, action
+        addToJournal journalElement, action
 
       footerElement
         .append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ')
-        .append("<a href=\"/#{page_name}.json?random=#{randomBytes(4)}\">JSON</a> . ")
+        .append("<a href=\"/#{slug}.json?random=#{randomBytes(4)}\">JSON</a> . ")
         .append("<a href=\"#\" class=\"add-factory\">[+]</a>")
 
     if $(pageElement).attr('data-server-generated') == 'true'
@@ -263,12 +261,12 @@ $ ->
         item = getItem(div)
         plugins[item.type].bind div, item
     else
-      if page_json = localStorage[pageElement.attr("id")]
+      if json = localStorage[pageElement.attr("id")]
         pageElement.addClass("local")
-        buildPage JSON.parse(page_json)
+        buildPage JSON.parse(json)
         initDragging()
       else
-        resource = if remote_site? then "remote/#{remote_site}/#{page_name}" else page_name
+        resource = if site? then "remote/#{site}/#{slug}" else slug
         $.get "/#{resource}.json?random=#{randomBytes(4)}", "", (page) ->
           buildPage page
           initDragging()
