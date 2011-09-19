@@ -40,7 +40,6 @@
     });
     $('.main').delegate('.action.fork', 'click', function(e) {
       e.preventDefault();
-      console.log(e.target);
       if (!e.shiftKey) {
         $(e.target).parents('.page').nextAll().remove();
       }

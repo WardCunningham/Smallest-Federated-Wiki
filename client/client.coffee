@@ -33,7 +33,6 @@ $ ->
 
   $('.main').delegate '.action.fork', 'click', (e) ->
     e.preventDefault()
-    console.log e.target
     $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
     $("<div />")
       .attr('id',$(e.target).attr('data-slug'))
