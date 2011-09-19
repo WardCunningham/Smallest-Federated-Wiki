@@ -136,48 +136,44 @@
           return evt.preventDefault();
         });
       });
-      return div.bind("drop", function(e) {
-        var file, majorType, persistNewItem, reader;
-        e.preventDefault();
-        file = e.originalEvent.dataTransfer.files[0];
-        majorType = file.type.split("/")[0];
-        persistNewItem = function() {
-          var action, pageDiv;
-          pageDiv = div.parents('.page:first');
-          action = {
-            type: 'edit',
-            id: item.id,
-            item: item
+      return div.bind("drop", function(dropEvent) {
+        var file, finishDrop, majorType, minorType, reader, _ref;
+        finishDrop = function(type, handler) {
+          return function(loadEvent) {
+            var action, pageDiv;
+            item.type = type;
+            handler(loadEvent);
+            div.empty();
+            div.removeClass("factory").addClass(type);
+            pageDiv = div.parents('.page:first');
+            action = {
+              type: 'edit',
+              id: item.id,
+              item: item
+            };
+            put_action(pageDiv, action);
+            return plugins[type].emit(div, item);
           };
-          return put_action(pageDiv, action);
         };
+        dropEvent.preventDefault();
+        file = dropEvent.originalEvent.dataTransfer.files[0];
+        _ref = file.type.split("/"), majorType = _ref[0], minorType = _ref[1];
         if (allowedTypes.filter(function(t) {
           return t === majorType;
         }).length === 0) {
           return alert("Uploads of type " + majorType + " not supported for this item");
         } else {
+          reader = new FileReader();
           if (majorType === "image") {
-            reader = new FileReader();
-            reader.onload = function(event) {
-              item.type = "image";
-              item.url = event.target.result;
-              item.caption || (item.caption = "Uploaded image");
-              div.empty();
-              div.removeClass("factory").addClass("image");
-              persistNewItem();
-              return plugins.image.emit(div, item);
-            };
+            reader.onload = finishDrop("image", function(loadEvent) {
+              item.url = loadEvent.target.result;
+              return item.caption || (item.caption = "Uploaded image");
+            });
             return reader.readAsDataURL(file);
           } else if (majorType === "text") {
-            reader = new FileReader();
-            reader.onload = function(event) {
-              item.type = "paragraph";
-              item.text = event.target.result;
-              div.empty();
-              div.removeClass("factory").addClass("paragraph");
-              persistNewItem();
-              return plugins.paragraph.emit(div, item);
-            };
+            reader.onload = finishDrop("paragraph", function(loadEvent) {
+              return item.text = loadEvent.target.result;
+            });
             return reader.readAsText(file);
           }
         }

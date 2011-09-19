@@ -101,40 +101,35 @@ $ ->
     ["dragenter", "dragover"].map (eventName) ->
       div.bind eventName, (evt) -> evt.preventDefault()
 
-    div.bind "drop", (e) ->
-      e.preventDefault()
+    div.bind "drop", (dropEvent) ->
 
-      file = e.originalEvent.dataTransfer.files[0]
-      majorType = file.type.split("/")[0]
+      finishDrop = (type, handler) ->
+        (loadEvent) ->
+          item.type = type
+          handler loadEvent
+          div.empty()
+          div.removeClass("factory").addClass(type)
+          pageDiv = div.parents('.page:first')
+          action = {type: 'edit', id: item.id, item: item}
+          put_action(pageDiv, action)
+          plugins[type].emit(div, item)
 
-      persistNewItem = ->
-        pageDiv = div.parents('.page:first')
-        action = {type: 'edit', id: item.id, item: item}
-        put_action(pageDiv, action)
+      dropEvent.preventDefault()
+      file = dropEvent.originalEvent.dataTransfer.files[0]
+      [majorType, minorType] = file.type.split("/")
 
       if allowedTypes.filter((t) -> t == majorType).length == 0
         alert("Uploads of type #{majorType} not supported for this item")
       else
+        reader = new FileReader()
         if majorType == "image"
-          reader = new FileReader()
-          reader.onload = (event) ->
-            item.type = "image"
-            item.url = event.target.result
+          reader.onload = finishDrop "image", (loadEvent) ->
+            item.url = loadEvent.target.result
             item.caption ||= "Uploaded image"
-            div.empty()
-            div.removeClass("factory").addClass("image")
-            persistNewItem()
-            plugins.image.emit(div, item)
           reader.readAsDataURL(file)
         else if majorType == "text"
-          reader = new FileReader()
-          reader.onload = (event) ->
-            item.type = "paragraph"
-            item.text = event.target.result
-            div.empty()
-            div.removeClass("factory").addClass("paragraph")
-            persistNewItem()
-            plugins.paragraph.emit(div, item)
+          reader.onload = finishDrop "paragraph", (loadEvent) ->
+            item.text = loadEvent.target.result
           reader.readAsText(file)
 
   plugins =
