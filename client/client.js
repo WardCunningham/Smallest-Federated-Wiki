@@ -20,13 +20,6 @@
     resolveLinks = function(string) {
       return string.replace(/\[\[([a-z0-9-]+)\]\]/g, "<a class=\"internal\" href=\"/$1.html\" data-page-name=\"$1\">$1</a>").replace(/\[(http.*?) (.*?)\]/g, "<a class=\"external\" href=\"$1\">$2</a>");
     };
-    $('.main').delegate('.internal', 'click', function(e) {
-      e.preventDefault();
-      if (!e.shiftKey) {
-        $(e.target).parents('.page').nextAll().remove();
-      }
-      return $("<div id=\"" + ($(e.target).attr('data-page-name')) + "\"/>").addClass("page").appendTo($('.main')).each(refresh);
-    });
     addToJournal = function(journalElement, action) {
       var actionElement, pageElement;
       pageElement = journalElement.parents('.page:first');
@@ -35,16 +28,6 @@
         return actionElement.css("background-image", "url(//" + action.site + "/favicon.png)").attr("href", "//" + action.site + "/" + (pageElement.attr('id')) + ".html").attr("data-site", action.site).attr("data-slug", pageElement.attr('id'));
       }
     };
-    $('.main').delegate('.action', 'hover', function() {
-      return $('#' + $(this).data('itemId')).toggleClass('target');
-    });
-    $('.main').delegate('.action.fork', 'click', function(e) {
-      e.preventDefault();
-      if (!e.shiftKey) {
-        $(e.target).parents('.page').nextAll().remove();
-      }
-      return $("<div />").attr('id', $(e.target).attr('data-slug')).attr('data-site', $(e.target).attr('data-site')).addClass("page").appendTo($('.main')).each(refresh);
-    });
     putAction = function(pageElement, action) {
       if (useLocalStorage()) {
         pushToLocal(pageElement, action);
@@ -60,6 +43,9 @@
         page = JSON.parse(page);
       }
       page || (page = pageElement.data("data"));
+      if (page.journal == null) {
+        page.journal = [];
+      }
       page.journal.concat(action);
       page.story = $(pageElement).find(".item").map(function() {
         return $(this).data("item");
@@ -367,8 +353,23 @@
       return $('.main').prepend("<li><font color=red>Error on " + settings.url + "</li>");
     });
     $('.page').each(refresh);
+    $('.main').delegate('.internal', 'click', function(e) {
+      e.preventDefault();
+      if (!e.shiftKey) {
+        $(e.target).parents('.page').nextAll().remove();
+      }
+      return $("<div id=\"" + ($(e.target).attr('data-page-name')) + "\"/>").addClass("page").appendTo($('.main')).each(refresh);
+    }).delegate('.action', 'hover', function() {
+      return $('#' + $(this).data('itemId')).toggleClass('target');
+    }).delegate('.action.fork', 'click', function(e) {
+      e.preventDefault();
+      if (!e.shiftKey) {
+        $(e.target).parents('.page').nextAll().remove();
+      }
+      return $("<div />").attr('id', $(e.target).attr('data-slug')).attr('data-site', $(e.target).attr('data-site')).addClass("page").appendTo($('.main')).each(refresh);
+    });
     return useLocalStorage = function() {
-      return $(".local-editing").is(":checked");
+      return $('#localEditing').is(':checked');
     };
   });
 }).call(this);

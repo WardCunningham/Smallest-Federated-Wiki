@@ -2,6 +2,9 @@ Array::last = ->
   this[@length - 1]
 
 $ ->
+
+# FUNCTIONS used by plugins and elsewhere
+
   randomByte = -> (((1+Math.random())*0x100)|0).toString(16).substring(1)
   randomBytes = (n) -> (randomByte() for [1..n]).join('')
 
@@ -9,11 +12,6 @@ $ ->
     string
       .replace(/\[\[([a-z0-9-]+)\]\]/g, "<a class=\"internal\" href=\"/$1.html\" data-page-name=\"$1\">$1</a>")
       .replace(/\[(http.*?) (.*?)\]/g, "<a class=\"external\" href=\"$1\">$2</a>")
-
-  $('.main').delegate '.internal', 'click', (e) ->
-    e.preventDefault()
-    $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
-    $("<div id=\"#{$(e.target).attr('data-page-name')}\"/>").addClass("page").appendTo($('.main')).each refresh
 
   addToJournal = (journalElement, action) ->
     pageElement = journalElement.parents('.page:first')
@@ -28,19 +26,6 @@ $ ->
         .attr("data-site", action.site)
         .attr("data-slug", pageElement.attr('id'))
 
-  $('.main').delegate '.action', 'hover', ->
-    $('#'+$(this).data('itemId')).toggleClass('target')
-
-  $('.main').delegate '.action.fork', 'click', (e) ->
-    e.preventDefault()
-    $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
-    $("<div />")
-      .attr('id',$(e.target).attr('data-slug'))
-      .attr('data-site',$(e.target).attr('data-site'))
-      .addClass("page")
-      .appendTo($('.main'))
-      .each refresh
-
   putAction = (pageElement, action) ->
     if useLocalStorage()
       pushToLocal(pageElement, action)
@@ -52,6 +37,7 @@ $ ->
     page = localStorage[pageElement.attr("id")]
     page = JSON.parse(page) if page
     page ||= pageElement.data("data")
+    page.journal = [] unless page.journal?
     page.journal.concat(action)
     page.story = $(pageElement).find(".item").map(-> $(@).data("item")).get()
     localStorage[pageElement.attr("id")] = JSON.stringify(page)
@@ -132,6 +118,8 @@ $ ->
             item.text = loadEvent.target.result
           reader.readAsText(file)
 
+# PLUGINS for each story item type
+
   plugins =
     paragraph:
       emit: (div, item) -> div.append "<p>#{resolveLinks(item.text)}</p>"
@@ -166,6 +154,8 @@ $ ->
           localStorage.clear()
           div.find('li').remove()
 
+# RENDERING for a page when found or retrieved
+
   refresh = ->
     pageElement = $(this)
     slug = $(pageElement).attr('id')
@@ -173,15 +163,13 @@ $ ->
 
     pageElement.find(".add-factory").live "click", (evt) ->
       evt.preventDefault()
-      item = {
+      item =
         type: "factory"
         id: randomBytes(8)
-      }
       itemElement = $("<div />", class: "item factory", id: item.id)
       pageElement.find(".story").append(itemElement)
       plugins.factory.emit itemElement, item
       plugins.factory.bind itemElement, item
-
       beforeElement = itemElement.prev('.item')
       before = getItem(beforeElement)
       putAction pageElement, {item: item, id: item.id, type: "add", after: before?.id} 
@@ -271,9 +259,31 @@ $ ->
           buildPage page
           initDragging()
 
+# HANDLERS for jQuery events
+
   $(document).ajaxError (event, request, settings) ->
     $('.main').prepend "<li><font color=red>Error on #{settings.url}</li>"
 
   $('.page').each refresh
 
-  useLocalStorage = -> $(".local-editing").is(":checked")
+  $('.main')
+
+    .delegate '.internal', 'click', (e) ->
+      e.preventDefault()
+      $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
+      $("<div id=\"#{$(e.target).attr('data-page-name')}\"/>").addClass("page").appendTo($('.main')).each refresh
+
+    .delegate '.action', 'hover', ->
+      $('#'+$(this).data('itemId')).toggleClass('target')
+
+    .delegate '.action.fork', 'click', (e) ->
+      e.preventDefault()
+      $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
+      $("<div />")
+        .attr('id',$(e.target).attr('data-slug'))
+        .attr('data-site',$(e.target).attr('data-site'))
+        .addClass("page")
+        .appendTo($('.main'))
+        .each refresh
+
+  useLocalStorage = () -> $('#localEditing').is(':checked')
