@@ -28,10 +28,23 @@
       return $("<div id=\"" + ($(e.target).attr('data-page-name')) + "\"/>").addClass("page").appendTo($('.main')).each(refresh);
     });
     addJournal = function(journalElement, action) {
-      return $("<span /> ").addClass("action").addClass(action.type).text(action.type[0]).attr('data-item-id', action.id).appendTo(journalElement);
+      var actionElement, page;
+      page = journalElement.parents('.page:first');
+      actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(action.type[0]).attr('data-item-id', action.id || "0").appendTo(journalElement);
+      if (action.type === 'fork') {
+        return actionElement.css("background-image", "url(//" + action.site + "/favicon.png)").attr("href", "//" + action.site + "/" + (page.attr('id')) + ".html").attr("data-site", action.site).attr("data-slug", page.attr('id'));
+      }
     };
     $('.main').delegate('.action', 'hover', function() {
       return $('#' + $(this).data('itemId')).toggleClass('target');
+    });
+    $('.main').delegate('.action.fork', 'click', function(e) {
+      e.preventDefault();
+      console.log(e.target);
+      if (!e.shiftKey) {
+        $(e.target).parents('.page').nextAll().remove();
+      }
+      return $("<div />").attr('id', $(e.target).attr('data-slug')).attr('data-site', $(e.target).attr('data-site')).addClass("page").appendTo($('.main')).each(refresh);
     });
     put_action = function(pageElement, action) {
       if (useLocalStorage()) {
@@ -236,9 +249,10 @@
       }
     };
     refresh = function() {
-      var buildPage, idGenerator, initDragging, pageElement, page_json, page_name;
+      var buildPage, idGenerator, initDragging, pageElement, page_json, page_name, remote_site, resource;
       pageElement = $(this);
       page_name = $(pageElement).attr('id');
+      remote_site = $(pageElement).attr('data-site');
       idGenerator = function() {
         return randomBytes(8);
       };
@@ -302,7 +316,7 @@
         });
       };
       buildPage = function(data) {
-        var empty, footerElement, journalElement, page, storyElement, _ref;
+        var empty, footerElement, icon, journalElement, page, storyElement, _ref;
         empty = {
           title: 'empty',
           synopsys: 'empty',
@@ -311,7 +325,8 @@
         };
         page = $.extend(empty, data);
         $(pageElement).data("data", data);
-        $(pageElement).append('<h1><a href="/"><img src = "/favicon.png" height = "32px"></a> ' + page.title + '</h1>');
+        icon = remote_site != null ? "/remote/" + remote_site + "/favicon.png" : "/favicon.png";
+        $(pageElement).append('<h1><a href="/"><img src = "' + icon + '" height = "32px"></a> ' + page.title + '</h1>');
         _ref = ['story', 'journal', 'footer'].map(function(className) {
           return $("<div />").addClass(className).appendTo(pageElement);
         }), storyElement = _ref[0], journalElement = _ref[1], footerElement = _ref[2];
@@ -348,7 +363,8 @@
           buildPage(JSON.parse(page_json));
           return initDragging();
         } else {
-          return $.get("/" + page_name + ".json?random=" + (randomBytes(4)), "", function(page) {
+          resource = remote_site != null ? "remote/" + remote_site + "/" + page_name : page_name;
+          return $.get("/" + resource + ".json?random=" + (randomBytes(4)), "", function(page) {
             buildPage(page);
             return initDragging();
           });

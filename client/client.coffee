@@ -16,13 +16,31 @@ $ ->
     $("<div id=\"#{$(e.target).attr('data-page-name')}\"/>").addClass("page").appendTo($('.main')).each refresh
 
   addJournal = (journalElement, action) ->
-    $("<span /> ").addClass("action").addClass(action.type)
+    page = journalElement.parents('.page:first')
+    actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type)
       .text(action.type[0])
-      .attr('data-item-id', action.id)
+      .attr('data-item-id', action.id || "0")
       .appendTo(journalElement)
+    if action.type == 'fork'
+      actionElement
+        .css("background-image", "url(//#{action.site}/favicon.png)")
+        .attr("href", "//#{action.site}/#{page.attr('id')}.html")
+        .attr("data-site", action.site)
+        .attr("data-slug", page.attr('id'))
 
   $('.main').delegate '.action', 'hover', ->
     $('#'+$(this).data('itemId')).toggleClass('target')
+
+  $('.main').delegate '.action.fork', 'click', (e) ->
+    e.preventDefault()
+    console.log e.target
+    $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
+    $("<div />")
+      .attr('id',$(e.target).attr('data-slug'))
+      .attr('data-site',$(e.target).attr('data-site'))
+      .addClass("page")
+      .appendTo($('.main'))
+      .each refresh
 
   put_action = (pageElement, action) ->
     if useLocalStorage()
@@ -157,6 +175,7 @@ $ ->
   refresh = ->
     pageElement = $(this)
     page_name = $(pageElement).attr('id')
+    remote_site = $(pageElement).attr('data-site')
 
     idGenerator = () -> randomBytes(8)
 
@@ -217,7 +236,8 @@ $ ->
       page = $.extend(empty, data)
       $(pageElement).data("data", data)
 
-      $(pageElement).append '<h1><a href="/"><img src = "/favicon.png" height = "32px"></a> ' + page.title + '</h1>'
+      icon = if remote_site? then "/remote/#{remote_site}/favicon.png" else "/favicon.png"
+      $(pageElement).append '<h1><a href="/"><img src = "'+icon+'" height = "32px"></a> ' + page.title + '</h1>'
 
       [storyElement, journalElement, footerElement] = ['story', 'journal', 'footer'].map (className) ->
         $("<div />").addClass(className).appendTo(pageElement)
@@ -254,7 +274,8 @@ $ ->
         buildPage JSON.parse(page_json)
         initDragging()
       else
-        $.get "/#{page_name}.json?random=#{randomBytes(4)}", "", (page) ->
+        resource = if remote_site? then "remote/#{remote_site}/#{page_name}" else page_name
+        $.get "/#{resource}.json?random=#{randomBytes(4)}", "", (page) ->
           buildPage page
           initDragging()
 

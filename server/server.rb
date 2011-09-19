@@ -84,4 +84,15 @@ class Controller < Sinatra::Base
   get %r{^/view/([a-z0-9-]+(/view/[a-z0-9-]+)*)$} do |pages,extra|
     haml :view, :locals => {:page_names => pages.split('/view/')}
   end
+
+  get %r{^/remote/([a-zA-Z0-9:\.-]+)/([a-z0-9-]+)\.json$} do |site, name|
+    content_type 'application/json'
+    `curl -s #{site}/#{name}.json`
+  end
+
+  get %r{^/remote/([a-zA-Z0-9:\.-]+)/favicon.png$} do |site|
+    content_type 'image/png'
+    `curl -s #{site}/favicon.png`
+  end
+
 end
