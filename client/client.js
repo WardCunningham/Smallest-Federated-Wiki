@@ -213,11 +213,13 @@
       },
       changes: {
         emit: function(div, item) {
-          var i, ul, _ref, _results;
-          div.append(ul = $('<ul />').append($('<input type="button" value="clear" />')));
+          var a, i, key, ul, _ref, _results;
+          div.append(ul = $('<ul />').append(localStorage.length ? $('<input type="button" value="discard all" />').css('margin-top', '10px') : $('<p>empty</p>')));
           _results = [];
           for (i = 0, _ref = localStorage.length; 0 <= _ref ? i < _ref : i > _ref; 0 <= _ref ? i++ : i--) {
-            _results.push(ul.append($('<li />').append(localStorage.key(i))));
+            key = localStorage.key(i);
+            a = $('<a class="internal" href="#" />').append(key).attr('data-page-name', key);
+            _results.push(ul.prepend($('<li />').append(a)));
           }
           return _results;
         },

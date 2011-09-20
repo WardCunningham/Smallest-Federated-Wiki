@@ -146,9 +146,11 @@ $ ->
           textEditor div, item
     changes:
       emit: (div, item) ->
-        div.append ul = $('<ul />').append $('<input type="button" value="clear" />')
+        div.append ul = $('<ul />').append if localStorage.length then $('<input type="button" value="discard all" />').css('margin-top','10px') else $('<p>empty</p>')
         for i in [0...localStorage.length]
-          ul.append($('<li />').append(localStorage.key(i)))
+          key = localStorage.key(i)
+          a = $('<a class="internal" href="#" />').append(key).attr('data-page-name',key)
+          ul.prepend($('<li />').append(a))
       bind: (div, item) ->
         div.find('input').click ->
           localStorage.clear()
