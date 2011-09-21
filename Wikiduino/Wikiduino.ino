@@ -35,6 +35,7 @@ struct Temp {
 
 unsigned int last = 100;
 unsigned int powersave = 0;
+unsigned long now = 0;
 unsigned long topOfHour = 0;
 unsigned long crc_errs = 0;
 
@@ -57,7 +58,7 @@ void loop() {
 // Sample and Hold Analog and One-Wire Temperature Data
 
 void sample() {
-  unsigned int now = millis();
+  now = millis();
   if ((now-last) >= 1000) {
     last = now;
     powerClock();
@@ -183,7 +184,7 @@ void report(char code) {
   } else if (code == 'f') {
     faviconReport();
   } else if (code == 's') {
-    topOfHour = millis();
+    topOfHour = now = millis();
   } else if (code == 'p') {
     powersave = 55*60;
   } else {
