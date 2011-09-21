@@ -33,7 +33,7 @@ struct Temp {
   int data;
 } temp[4] = {{0,0}};
 
-unsigned int last = 100;
+unsigned long lastSample = 100;
 unsigned int powersave = 0;
 unsigned long now = 0;
 unsigned long topOfHour = 0;
@@ -59,8 +59,8 @@ void loop() {
 
 void sample() {
   now = millis();
-  if ((now-last) >= 1000) {
-    last = now;
+  if ((now-lastSample) >= 1000) {
+    lastSample = now;
     manageRadioPower();
     analogSample();
     tempSample();
