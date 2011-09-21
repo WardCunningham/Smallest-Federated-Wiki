@@ -61,13 +61,13 @@ void sample() {
   now = millis();
   if ((now-last) >= 1000) {
     last = now;
-    powerClock();
+    manageRadioPower();
     analogSample();
     tempSample();
   }
 }
 
-void powerClock() {
+void manageRadioPower() {
   boolean poweron = powersave == 0;
   pinMode(2,OUTPUT);
   digitalWrite(2,poweron);
