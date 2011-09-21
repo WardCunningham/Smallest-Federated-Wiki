@@ -35,6 +35,7 @@ struct Temp {
 
 unsigned int last = 100;
 unsigned int powersave = 0;
+unsigned long topOfHour = 0;
 unsigned long crc_errs = 0;
 
 // Arduino Setup and Loop
@@ -181,6 +182,8 @@ void report(char code) {
     jsonReport();
   } else if (code == 'f') {
     faviconReport();
+  } else if (code == 's') {
+    topOfHour = millis();
   } else if (code == 'p') {
     powersave = 55*60;
   } else {
