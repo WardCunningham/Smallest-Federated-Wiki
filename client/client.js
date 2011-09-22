@@ -3,7 +3,7 @@
     return this[this.length - 1];
   };
   $(function() {
-    var addToJournal, bindDragAndDrop, formatTime, getItem, plugins, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveLinks, textEditor, useLocalStorage;
+    var addToJournal, bindDragAndDrop, formatTime, getData, getItem, plugins, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveLinks, textEditor, useLocalStorage;
     randomByte = function() {
       return (((1 + Math.random()) * 0x100) | 0).toString(16).substring(1);
     };
@@ -112,6 +112,10 @@
       if ($(element).length > 0) {
         return $(element).data("item") || JSON.parse($(element).attr('data-static-item'));
       }
+    };
+    getData = function() {
+      var chart;
+      return chart = $('.chart:first').data('item').data;
     };
     bindDragAndDrop = function(div, item, allowedTypes) {
       if (allowedTypes == null) {
@@ -234,7 +238,16 @@
         emit: function(div, item) {},
         bind: function(div, item) {
           var bars, data, h, rules, vis, w, x, y;
-          data = d3.range(10).map(Math.random);
+          data = (function() {
+            var _i, _len, _ref, _results, _step;
+            _ref = getData();
+            _results = [];
+            for (_i = 0, _len = _ref.length, _step = 5; _i < _len; _i += _step) {
+              x = _ref[_i];
+              _results.push(x[1] / 100.0);
+            }
+            return _results;
+          })();
           w = 380;
           h = 230;
           x = d3.scale.linear().domain([0, 1]).range([0, w]);

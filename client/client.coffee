@@ -83,6 +83,9 @@ $ ->
   getItem = (element) ->
     $(element).data("item") or JSON.parse($(element).attr('data-static-item')) if $(element).length > 0
 
+  getData = ->
+    chart = $('.chart:first').data('item').data
+
   bindDragAndDrop = (div, item, allowedTypes = []) ->
     ["dragenter", "dragover"].map (eventName) ->
       div.bind eventName, (evt) -> evt.preventDefault()
@@ -158,7 +161,7 @@ $ ->
     bars:
       emit: (div, item) ->
       bind: (div, item) ->
-        data = d3.range(10).map(Math.random)
+        data = (x[1]/100.0 for x in getData() by 5)
         w = 380
         h = 230
         x = d3.scale.linear().domain([0, 1]).range([0, w])
