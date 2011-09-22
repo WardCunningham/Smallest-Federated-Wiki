@@ -338,7 +338,8 @@ $ ->
 # HANDLERS for jQuery events
 
   $(document).ajaxError (event, request, settings) ->
-    $('.main').prepend "<li><font color=red>Error on #{settings.url}</li>"
+    console.log [event,request,settings]
+    $('.main').prepend "<li class='error'>Error on #{settings.url}<br/>#{request.responseText}</li>"
 
   $('.page').each refresh
 
