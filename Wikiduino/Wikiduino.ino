@@ -15,8 +15,8 @@ byte radioPowerPin = 2;
 // Ethernet Configuration
 
 byte mac[] = { 0xEE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED   };
-//byte ip[] = { 10, 94, 54, 2   };
-//byte gateway[] = { 10, 94, 54, 1 };
+//IPAddress ip[] = { 10, 94, 54, 2   };
+//IPAddress gateway[] = { 10, 94, 54, 1 };
 IPAddress ip(10, 0, 3, 201 );
 IPAddress gateway( 10, 0, 3, 1 );
 IPAddress subnet( 255, 255, 255, 0 );
