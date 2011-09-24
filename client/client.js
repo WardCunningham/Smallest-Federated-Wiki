@@ -1,9 +1,10 @@
 (function() {
+  var __slice = Array.prototype.slice;
   Array.prototype.last = function() {
     return this[this.length - 1];
   };
   $(function() {
-    var addToJournal, bindDragAndDrop, formatTime, getItem, getPlugin, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveLinks, textEditor, useLocalStorage;
+    var addToJournal, bindDragAndDrop, formatTime, getItem, getPlugin, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveLinks, scripts, textEditor, useLocalStorage;
     window.wiki = {};
     randomByte = function() {
       return (((1 + Math.random()) * 0x100) | 0).toString(16).substring(1);
@@ -118,14 +119,20 @@
       var chart;
       return chart = $('.chart:first').data('item').data;
     };
-    wiki.getScript = function(path) {
-      var clean;
-      clean = path.replace(/[^a-zA-Z0-9_.\/-]/, '');
-      return $('<script type="text/javascript"/>').attr('src', "/" + clean + ".js").prependTo($('script:first'));
+    scripts = {};
+    wiki.getScript = function() {
+      var path, paths, _i, _len, _results;
+      paths = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+      _results = [];
+      for (_i = 0, _len = paths.length; _i < _len; _i++) {
+        path = paths[_i];
+        _results.push(scripts[path] == null ? (scripts[path] = true, $('<script type="text/javascript"/>').attr('src', "/" + path).prependTo($('script:first'))) : void 0);
+      }
+      return _results;
     };
     getPlugin = function(plugin) {
       if (window.plugins[plugin] == null) {
-        wiki.getScript("plugins/" + plugin);
+        wiki.getScript("plugins/" + plugin + ".js");
       }
       return window.plugins[plugin];
     };
@@ -154,7 +161,7 @@
               item: item
             };
             putAction(pageDiv, action);
-            return plugins[type].emit(div, item);
+            return getPlugin(type).emit(div, item);
           };
         };
         dropEvent.preventDefault();
@@ -351,7 +358,7 @@
           var div, item;
           div = $(each);
           item = getItem(div);
-          return plugins[item.type].bind(div, item);
+          return getPlugin(item.type).bind(div, item);
         });
       } else {
         if (json = localStorage[pageElement.attr("id")]) {

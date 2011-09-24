@@ -1,7 +1,7 @@
 window.plugins.bars =
   emit: (div, item) ->
+    wiki.getScript 'js/d3/d3.js'
   bind: (div, item) ->
-    console.log $
     data = (x[1]/100.0 for x in wiki.getData() by 5)
     w = 380
     h = 230

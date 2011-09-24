@@ -87,12 +87,15 @@ $ ->
   wiki.getData = ->
     chart = $('.chart:first').data('item').data
 
-  wiki.getScript = (path) ->
-    clean = path.replace /[^a-zA-Z0-9_.\/-]/, ''
-    $('<script type="text/javascript"/>').attr('src',"/#{clean}.js").prependTo($('script:first'))
+  scripts = {}
+  wiki.getScript = (paths...) ->
+    for path in paths
+      unless scripts[path]?
+        scripts[path] = true
+        $('<script type="text/javascript"/>').attr('src',"/#{path}").prependTo($('script:first'))
 
   getPlugin = (plugin) ->
-    wiki.getScript "plugins/#{plugin}" unless window.plugins[plugin]?
+    wiki.getScript "plugins/#{plugin}.js" unless window.plugins[plugin]?
     window.plugins[plugin]
 
   bindDragAndDrop = (div, item, allowedTypes = []) ->
@@ -110,7 +113,7 @@ $ ->
           pageDiv = div.parents('.page:first')
           action = {type: 'edit', id: item.id, item: item}
           putAction(pageDiv, action)
-          plugins[type].emit(div, item)
+          getPlugin(type).emit(div, item)
 
       dropEvent.preventDefault()
       file = dropEvent.originalEvent.dataTransfer.files[0]
@@ -261,7 +264,7 @@ $ ->
       pageElement.find('.item').each (i, each) ->
         div = $(each)
         item = getItem(div)
-        plugins[item.type].bind div, item
+        getPlugin(item.type).bind div, item
     else
       if json = localStorage[pageElement.attr("id")]
         pageElement.addClass("local")
