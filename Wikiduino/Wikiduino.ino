@@ -1,8 +1,11 @@
+
 // Copyright (c) 2011, Ward Cunningham
 // Released under MIT and GPLv2
 
 #include <SPI.h>
 #include <Ethernet.h>
+#include <EthernetClient.h>
+#include <EthernetServer.h>
 #include <OneWire.h>
 #define num(array) (sizeof(array)/sizeof(array[0]))
 
@@ -11,12 +14,12 @@
 byte mac[] = { 0xEE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED   };
 //byte ip[] = { 10, 94, 54, 2   };
 //byte gateway[] = { 10, 94, 54, 1 };
-byte ip[] = { 10, 0, 3, 201   };
-byte gateway[] = { 10, 0, 3, 1 };
-byte subnet[] = { 255, 255, 255, 0 };
+IPAddress ip(10, 0, 3, 201 );
+IPAddress gateway( 10, 0, 3, 1 );
+IPAddress subnet( 255, 255, 255, 0 );
 
-Server server(80);
-Client client(255);
+EthernetServer server(1111);
+EthernetClient client(255);
 
 unsigned long requests = 0;
 
@@ -43,10 +46,10 @@ void setup() {
 
 void loop() {
   sample();    // every second or so
-  pinMode(4,OUTPUT);
-  digitalWrite(4,HIGH);
+  pinMode(13,OUTPUT);
+  digitalWrite(13,HIGH);
   serve();     // whenever web requests come in
-  digitalWrite(4,LOW);
+  digitalWrite(13,LOW);
 }
 
 // Sample and Hold Analog and One-Wire Temperature Data
@@ -92,7 +95,7 @@ void startTempSample() {
     } else {
       crc_errs++;
       Serial.print(id);
-      Serial.println(" a-err");
+      Serial.println(F(" a-err"));
     }
   }
 }
@@ -111,7 +114,7 @@ void finishTempSample() {
     } else {
       crc_errs++;
       Serial.print(id);
-      Serial.println(" d-err");
+      Serial.println(F(" d-err"));
     }
   }
 }
@@ -165,41 +168,43 @@ void report(char code) {
     htmlReport();
   } else if (code == 'g') {
     jsonReport();
+  } else if (code == 'f') {
+    faviconReport();
   } else {
     errorReport();
   }
 }
 
 void p(char s) { client.print(s); }
-void p(char *s) { client.print(s); }
-void n(char s) { p(s); p("\r\n"); }
-void n(char *s) { p(s); p("\r\n"); }
-void a() { p("http://wiki.org/"); }
+void p(__FlashStringHelper* s) { client.print(s); }
+void n(char s) { p(s); p(F("\r\n")); }
+void n(__FlashStringHelper* s) { p(s); p(F("\r\n")); }
+void a() { p(F("http://wiki.org/")); }
 
-void code(char *s) { p("HTTP/1.1 "); n(s);}
-void mime(char *s) { p("Content-Type: "); n(s); n(""); }
-void link(char *s) { p("<link href='"); a(); p(s); n("' rel='stylesheet' type='text/css'>"); }
-void scpt(char *s) { p("<script src='"); a(); p(s); n("' type='text/javascript'></script>"); }
-void stag(char *s) { p('<'); p(s); p('>'); }
-void etag(char *s) { p('<'); p('/'); p(s); p('>'); }
+void code(__FlashStringHelper* s) { p(F("HTTP/1.1 ")); n(s);}
+void mime(__FlashStringHelper* s) { p(F("Content-Type: ")); n(s); n(F("")); }
+void link(__FlashStringHelper* s) { p(F("<link href='")); a(); p(s); n(F("' rel='stylesheet' type='text/css'>")); }
+void scpt(__FlashStringHelper* s) { p(F("<script src='")); a(); p(s); n(F("' type='text/javascript'></script>")); }
+void stag(__FlashStringHelper* s) { p('<'); p(s); p('>'); }
+void etag(__FlashStringHelper* s) { p('<'); p('/'); p(s); p('>'); }
 
 void htmlReport () {
-  code("200 OK");
-  mime("text/html");
-  stag("html");
-    stag("head");
-      link("style.css");
-      scpt("js/jquery.min.js");
-      scpt("js/jquery-ui.custom.min.js");
-      scpt("client.js");
-    etag("head");
-    stag("body");
-      p("<div class='"); p("main"); n("'>");
-        p("<div class='"); p("page"); p("' id='"); p("garden-report"); p("'>");
-        etag("div"); 
-      etag("div");
-    etag("body");
-  etag("html");
+  code(F("200 OK"));
+  mime(F("text/html"));
+  stag(F("html"));
+    stag(F("head"));
+      link(F("style.css"));
+      scpt(F("js/jquery.min.js"));
+      scpt(F("js/jquery-ui.custom.min.js"));
+      scpt(F("client.js"));
+    etag(F("head"));
+    stag(F("body"));
+      p(F("<div class='")); p(F("main")); n(F("'>"));
+        p(F("<div class='")); p(F("page")); p(F("' id='")); p(F("garden-report")); p(F("'>"));
+        etag(F("div")); 
+      etag(F("div"));
+    etag(F("body"));
+  etag(F("html"));
 }
 
 boolean more;
@@ -208,33 +213,39 @@ void sh () { if (more) { p(','); } p('{'); more = false; }
 void sa () { if (more) { p(','); } p('['); more = false; }
 void eh () { p('}'); more = true; }
 void ea () { p(']'); more = true; }
-void k (char* s) {  if (more) { p(','); } p('"'); p(s); p('"'); p(':'); more = false; }
-void v (char* s) {  if (more) { p(','); } p('"'); p(s); p('"'); more = true; }
+void k (__FlashStringHelper* s) {  if (more) { p(','); } p('"'); p(s); p('"'); p(':'); more = false; }
+void v (__FlashStringHelper* s) {  if (more) { p(','); } p('"'); p(s); p('"'); more = true; }
 void v (long  s) {  if (more) { p(','); } client.print(s); more = true; }
+void v (int   s) {  if (more) { p(','); } client.print(s); more = true; }
 void v (float s) {  if (more) { p(','); } client.print(s); more = true; }
   
 void jsonReport () {
   more = false;
   long id = 472647400L;
   
-  code("200 OK");
-  mime("application/json");
+  code(F("200 OK"));
+  mime(F("application/json"));
   sh();
-    k("title"); v("garden-report");
-    k("story");
+    k(F("title")); v(F("garden-report"));
+    k(F("logo"));
+      sh();
+        k(F("nw")); sa(); v(127); v(255); v(127); ea();
+        k(F("se")); sa(); v(63); v(63); v(16); ea();
+      eh();
+    k(F("story"));
       sa();
         sh();
-          k("type"); v("paragraph");
-          k("id"); v(id++);
-          k("text"); v("Experimental data from Nike's Community Garden.");
+          k(F("type")); v(F("paragraph"));
+          k(F("id")); v(id++);
+          k(F("text")); v(F("Experimental data from Nike's Community Garden. This content is being served on the open-source hardware Arduino platform running the [[smallest-federated-wiki]] server application."));
         eh();
         for (int ch=0; ch<num(temp); ch++) {
           if (temp[ch].code == 0) {break;}
           sh();
-            k("type"); v("chart");
-            k("id"); v((long)temp[ch].code);
-            k("caption"); v("Fahrenheit");
-            k("data");
+            k(F("type")); v(F("chart"));
+            k(F("id")); v((long)temp[ch].code);
+            k(F("caption")); v(F("Degrees Fahrenheit<br>Updated in Seconds"));
+            k(F("data"));
               sa();
                 sa(); v(1314306006L); v(temp[ch].data * (9.0F/5/16) + 32); ea();
               ea();
@@ -242,34 +253,39 @@ void jsonReport () {
         }
         for (int ch=0; ch<num(analog); ch++) {
           sh();
-            k("type"); v("chart");
-            k("id"); v(201100L+ch);
-            k("caption"); v("Percent");
-            k("data");
+            k(F("type")); v(F("chart"));
+            k(F("id")); v(201100L+ch);
+            k(F("caption")); (ch == 1 ? v(F("Battery<br>Volts")) : v(F("Daylight<br>Percent")));
+            k(F("data"));
               sa();
-                sa(); v(1314306006L); v(analog[ch] * (100.0F/1024)); ea();
+                sa(); v(1314306006L); v(analog[ch] * (ch==1 ? (1347.0F/89.45F/1024) : (100.0F/1024))); ea();
               ea();
           eh();
         }
         sh();
-          k("type"); v("chart");
-          k("id"); v(id++);
-          k("caption"); v("Requests");
-          k("data");
+          k(F("type")); v(F("chart"));
+          k(F("id")); v(id++);
+          k(F("caption")); v(F("Wiki Server<br>Requests"));
+          k(F("data"));
             sa();
               sa(); v(1314306006L); v((long)requests); ea();
             ea();
         eh();
       ea();
-    k("journal");
+    k(F("journal"));
       sa();
       ea();
   eh();
 }
 
 void errorReport () {
-  code("404 Not Found");
-  mime("text/html");
-  n("404 Not Found");
+  code(F("404 Not Found"));
+  mime(F("text/html"));
+  n(F("404 Not Found"));
 }
 
+void faviconReport () {
+  code(F("200 OK"));
+  mime(F("image/png"));
+  client.write((uint8_t*)F("\0211\0120\0116\0107\015\012\032\012\0\0\0\015\0111\0110\0104\0122\0\0\0\05\0\0\0\010\010\02\0\0\0\0276\0223\0242\0154\0\0\0\025\0111\0104\0101\0124\010\0231\0143\0374\0377\0277\0203\01\011\0260\074\0370\0372\0236\0236\0174\0\0366\0225\026\0\0105\030\0216\0134\0\0\0\0\0111\0105\0116\0104\0256\0102\0140\0202"), 78);
+}
