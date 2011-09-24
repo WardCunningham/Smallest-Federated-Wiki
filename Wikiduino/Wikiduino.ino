@@ -9,6 +9,9 @@
 #include <OneWire.h>
 #define num(array) (sizeof(array)/sizeof(array[0]))
 
+// pin assignments
+byte radioPowerPin = 2;
+
 // Ethernet Configuration
 
 byte mac[] = { 0xEE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED   };
@@ -22,6 +25,8 @@ EthernetServer server(1111);
 EthernetClient client(255);
 
 unsigned long requests = 0;
+unsigned long lastRequest = 0; // records the request number at time of the most recent radio powerup
+unsigned byte radioPowerMode = 1; // indicates which power management algorith to use
 
 // Sensor Configuration
 
@@ -34,9 +39,10 @@ struct Temp {
 } temp[4] = {{0,0}};
 
 unsigned long lastSample = 100;
-unsigned int powersave = 0;
+unsigned long lastRadioOn = 0; // records time the radio was last powered on
 unsigned long now = 0;
 unsigned long topOfHour = 0;
+boolean radioOn = false; // status of radio power
 unsigned long crc_errs = 0;
 
 // Arduino Setup and Loop
@@ -45,6 +51,9 @@ void setup() {
   Serial.begin(115200L);
   Ethernet.begin(mac, ip, gateway, subnet);
   server.begin();
+  // configure radio power control pin
+  pinMode(radioPowerPin,OUTPUT);
+  powerRadio(true);
 }
 
 void loop() {
@@ -68,14 +77,41 @@ void sample() {
 }
 
 void manageRadioPower() {
-  boolean poweron = powersave == 0;
-  pinMode(2,OUTPUT);
-  digitalWrite(2,poweron);
-  if (!poweron) {
-    powersave--;
+  if(radioOn && (lastRequest == requests) && (now-lastRadioOn >= 3600*1000))) {
+    // radio has been on for a while, but received no requests, may be wedged, try rebooting
+    powerRadio(false);
+    delay(2000);
+    powerRadio(true);
+  } else {
+    if(radioPowerMode == 0 || !topOfHour { // stay on
+      if(!radioOn) {
+        powerRadio(true);
+      } 
+    } else if(radioPowerMode == 1) { // on at 58m30s, off at 4m15s after hour
+      // remove integer hours from time, just interested in phase ... not needed if we get a sync often enough relative to wrapping
+      while(now-topOfHour > (3600*1000)) {
+        topOfHour += 3600*1000;
+      }
+      unsigned long time_after_hour = (now-topOfHour) % (3600*1000);
+      if(radioOn && (time_after_hour > (4*60+15)*1000)) {
+        powerRadio(false);
+      } else if (!radioOn && (time_after_hour > (58*60+30)*1000)) {
+        powerRadio(true);
+    }
   }
 }
 
+void powerRadio(boolean power) {
+  digitalWrite(radioPowerPin,power);
+  radioOn = power;
+  if(power && !lastRadioOn) {
+    lastRadioOn = now;
+    lastRequest = requests;
+  } else if(!power && lastRadioOn) {
+    lastRadioOn = 0;
+  }
+}
+  
 void analogSample() {
   for (int i = 0; i < num(analog); i++) {
     analog[i] = analogRead(i);
@@ -185,8 +221,10 @@ void report(char code) {
     faviconReport();
   } else if (code == 's') {
     topOfHour = now = millis();
-  } else if (code == 'p') {
-    powersave = 55*60;
+  } else if (code == '0') {
+    radioPowerMode = 0;
+  } else if (code == '1') {
+    radioPowerMode = 1;
   } else {
     errorReport();
   }
