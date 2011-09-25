@@ -377,6 +377,7 @@ void jsonReport () {
       sa();
       ea();
   eh();
+  n(F(""));
 }
 
 void errorReport () {
