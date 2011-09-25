@@ -27,7 +27,7 @@ unsigned long requests = 0;
 
 OneWire ds(8);
 
-int analog[2];
+int analog[3];
 struct Temp {
   unsigned int code; 
   int data;
@@ -268,10 +268,10 @@ void jsonReport () {
           sh();
             k(F("type")); v(F("chart"));
             k(F("id")); v(201100L+ch);
-            k(F("caption")); (ch == 1 ? v(F("Battery<br>Volts")) : v(F("Daylight<br>Percent")));
+            k(F("caption")); (ch == 1 ? v(F("Battery<br>Volts")) : ch == 2 ? v(F("Solar Panel<br>Volts")) : v(F("Daylight<br>Percent")));
             k(F("data"));
               sa();
-                sa(); v(1314306006L); v(analog[ch] * (ch==1 ? (1347.0F/89.45F/1024) : (100.0F/1024))); ea();
+                sa(); v(1314306006L); v(analog[ch] * (ch>=1 ? (1347.0F/89.45F/1024) : (100.0F/1024))); ea();
               ea();
           eh();
         }
