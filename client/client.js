@@ -4,7 +4,7 @@
     return this[this.length - 1];
   };
   $(function() {
-    var addToJournal, bindDragAndDrop, formatTime, getItem, getPlugin, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveLinks, scripts, textEditor, useLocalStorage;
+    var addToJournal, bindDragAndDrop, formatTime, getItem, getPlugin, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, renderInternalLink, resolveLinks, scripts, textEditor, useLocalStorage;
     window.wiki = {};
     randomByte = function() {
       return (((1 + Math.random()) * 0x100) | 0).toString(16).substring(1);
@@ -19,8 +19,11 @@
         return _results;
       })()).join('');
     };
+    renderInternalLink = function(match, name) {
+      return "<a class=\"internal\" href=\"/" + name.toLowerCase() + ".html\" data-page-name=\"" + name.toLowerCase() + "\">" + name + "</a>";
+    };
     resolveLinks = function(string) {
-      return string.replace(/\[\[([a-z0-9-]+)\]\]/g, "<a class=\"internal\" href=\"/$1.html\" data-page-name=\"$1\">$1</a>").replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" href=\"$1\">$2</a>");
+      return string.replace(/\[\[([a-z0-9-]+)\]\]/gi, renderInternalLink).replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" href=\"$1\">$2</a>");
     };
     addToJournal = function(journalElement, action) {
       var actionElement, pageElement;
