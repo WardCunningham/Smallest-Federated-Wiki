@@ -28,6 +28,10 @@ $ ->
         .attr("data-slug", pageElement.attr('id'))
 
   putAction = (pageElement, action) ->
+    now = new Date();
+    action['date'] = now.toJSON()
+    action['userTZ'] = now.getTimezoneOffset()
+
     if useLocalStorage()
       pushToLocal(pageElement, action)
       pageElement.addClass("local")

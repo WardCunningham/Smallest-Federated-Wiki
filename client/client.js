@@ -31,6 +31,10 @@
       }
     };
     putAction = function(pageElement, action) {
+      var now;
+      now = new Date();
+      action['date'] = now.toJSON();
+      action['userTZ'] = now.getTimezoneOffset();
       if (useLocalStorage()) {
         pushToLocal(pageElement, action);
         return pageElement.addClass("local");
