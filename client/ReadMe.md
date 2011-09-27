@@ -22,7 +22,7 @@ Should you modify the CoffeeScript you will need to translate it to JavaScript. 
 	cd client
 	coffee -wc .
 
-The `-wc` option asks coffee to recompile as you make changes.
+The `-wc` option asks coffee not terminate, watch the source files and recompile as you make changes.
 
 We recommend taking time to learn the CoffeeScript syntax and the rationale for the Javascript idioms it employes. Start here:
 
@@ -31,3 +31,9 @@ We recommend taking time to learn the CoffeeScript syntax and the rationale for 
 We used a Javascript to Coffeescript converter to create the first draft of client.coffee. You may find this converter useful for importing sample codes. 
 
   http://ricostacruz.com/js2coffee/
+
+CoffeeScript hints
+==================
+The coffee translator is a node.js package, so you'll need to install a recent version from http://nodejs.org/#download
+and then the npm package manager from http://npmjs.org/
+and then install coffee http://jashkenas.github.com/coffee-script/

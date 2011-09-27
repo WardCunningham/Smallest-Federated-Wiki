@@ -61,3 +61,14 @@ License
 You may use the Smallest Federated Wiki under either the
 [MIT License](https://github.com/WardCunningham/Smallest-Federated-Wiki/blob/master/mit-license.txt) or the
 [GNU General Public License](https://github.com/WardCunningham/Smallest-Federated-Wiki/blob/master/gpl-license.txt) (GPL) Version 2.
+
+Debian Squeeze quick hints 
+==========================
+for those not using Ruby much, but using Debian:
+
+sudo apt-get install ruby1.9.1 rubygems ruby1.9.1-examples debian-keyring ri1.9.1 ruby1.9.1-dev rubygems-doc 
+sudo gem install bundle
+sudo /var/lib/gems/1.8/bin/bundle install
+rvm 1.9.2
+/var/lib/gems/1.8/bin/bundle exec rackup -s thin -p 1111
+
