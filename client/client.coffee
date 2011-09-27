@@ -256,8 +256,8 @@ $ ->
 
       footerElement
         .append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ')
-        .append("<a href=\"/#{slug}.json?random=#{randomBytes(4)}\">JSON</a> . ")
-        .append("<a href=\"#\" class=\"add-factory\">[+]</a>")
+        .append("<a href=\"/#{slug}.json?random=#{randomBytes(4)}\" title=\"source\">JSON</a> . ")
+        .append("<a href=\"#\" class=\"add-factory\" title=\"add paragraph\">[+]</a>")
 
     if $(pageElement).attr('data-server-generated') == 'true'
       initDragging()
