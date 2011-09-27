@@ -18,8 +18,11 @@ class Controller < Sinatra::Base
     end
     def get_page name
       path = File.join(APP_ROOT, "data/pages/#{name}")
-      return put_page name, {'title'=>name,'story'=>[{'type'=>'factory', 'id'=>gen_id}]} unless File.file? path
-      File.open(path, 'r') { |file| JSON.parse(file.read) }
+      return put_page name, {'title'=>name,'type'=>'title', 'id'=>gen_id, 'story'=>[{'type'=>'factory', 'id'=>gen_id}]} unless File.file? path
+      page = File.open(path, 'r') { |file| JSON.parse(file.read) }
+      page['type'] ||= 'title'
+      page['id'] ||= gen_id
+      page
     end
     def put_page name, page
       File.open(File.join(APP_ROOT, "data/pages/#{name}"), 'w') { |file| file.write(JSON.generate(page)) }

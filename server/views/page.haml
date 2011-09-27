@@ -1,8 +1,9 @@
 .page{:id => page_name, "data-server-generated" => "true"}
 	%h1
-		%a{:href => '/', :style => "text-decoration: none"}
-			%img{:src => '/favicon.png', :height => '32px'}
-		= page['title']
+		%div{:class => ['item', type='title'], :id => page['id'], "data-static-item" => page.to_json}
+			%a{:href => '/', :style => "text-decoration: none"}
+				%img{:src => '/favicon.png', :height => '32px'}
+			= page['title']
 	.story
 		- page['story'].each do |item|
 			%div{:class => ['item', type=item['type']], :id => item['id'], "data-static-item" => item.to_json}

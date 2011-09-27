@@ -148,6 +148,12 @@ $ ->
 # PLUGINS for each story item type
 
   window.plugins =
+    title:
+      emit: (div, item) -> 
+        icon = if site? then "/remote/#{site}/favicon.png" else "/favicon.png"
+        div.append '<h1><a href="/"><img src = "'+icon+'" height = "32px"></a> ' + item.title + '</h1>'
+      bind: (div, item) ->  #ok, so this won't work yet
+#        div.dblclick -> textEditor div, item
     paragraph:
       emit: (div, item) -> div.append "<p>#{renderMarkup(resolveLinks(item.text))}</p>"
       bind: (div, item) ->
@@ -245,8 +251,13 @@ $ ->
       page = $.extend(empty, data)
       $(pageElement).data("data", data)
 
-      icon = if site? then "/remote/#{site}/favicon.png" else "/favicon.png"
-      $(pageElement).append '<h1><a href="/"><img src = "'+icon+'" height = "32px"></a> ' + page.title + '</h1>'
+      data.id = data.title
+      data.type = "title"
+      div = $("<div class=\"item #{data.type}\" id=\"#{data.id}\" />")
+      plugin = getPlugin "title"
+      plugin.emit div, page
+      plugin.bind div, page
+      $(pageElement).append div
 
       [storyElement, journalElement, footerElement] = ['story', 'journal', 'footer'].map (className) ->
         $("<div />").addClass(className).appendTo(pageElement)
@@ -292,7 +303,7 @@ $ ->
 
   $(document).ajaxError (event, request, settings) ->
     console.log [event,request,settings]
-    $('.main').prepend "<li class='error'>Error on #{settings.url}<br/>#{request.responseText}</li>"
+    $('.error').prepend "<li class='error'>Error on #{settings.url}<br/>#{request.responseText}</li>"
 
   $('.page').each refresh
 

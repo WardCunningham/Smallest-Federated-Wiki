@@ -198,6 +198,14 @@
       });
     };
     window.plugins = {
+      title: {
+        emit: function(div, item) {
+          var icon;
+          icon = typeof site !== "undefined" && site !== null ? "/remote/" + site + "/favicon.png" : "/favicon.png";
+          return div.append('<h1><a href="/"><img src = "' + icon + '" height = "32px"></a> ' + item.title + '</h1>');
+        },
+        bind: function(div, item) {}
+      },
       paragraph: {
         emit: function(div, item) {
           return div.append("<p>" + (renderMarkup(resolveLinks(item.text))) + "</p>");
@@ -328,7 +336,7 @@
         });
       };
       buildPage = function(data) {
-        var empty, footerElement, icon, journalElement, page, storyElement, _ref;
+        var div, empty, footerElement, journalElement, page, plugin, storyElement, _ref;
         empty = {
           title: 'empty',
           synopsys: 'empty',
@@ -337,13 +345,17 @@
         };
         page = $.extend(empty, data);
         $(pageElement).data("data", data);
-        icon = site != null ? "/remote/" + site + "/favicon.png" : "/favicon.png";
-        $(pageElement).append('<h1><a href="/"><img src = "' + icon + '" height = "32px"></a> ' + page.title + '</h1>');
+        data.id = data.title;
+        data.type = "title";
+        div = $("<div class=\"item " + data.type + "\" id=\"" + data.id + "\" />");
+        plugin = getPlugin("title");
+        plugin.emit(div, page);
+        plugin.bind(div, page);
+        $(pageElement).append(div);
         _ref = ['story', 'journal', 'footer'].map(function(className) {
           return $("<div />").addClass(className).appendTo(pageElement);
         }), storyElement = _ref[0], journalElement = _ref[1], footerElement = _ref[2];
         $.each(page.story, function(i, item) {
-          var div, plugin;
           div = $("<div class=\"item " + item.type + "\" id=\"" + item.id + "\" />");
           storyElement.append(div);
           try {
@@ -385,7 +397,7 @@
     };
     $(document).ajaxError(function(event, request, settings) {
       console.log([event, request, settings]);
-      return $('.main').prepend("<li class='error'>Error on " + settings.url + "<br/>" + request.responseText + "</li>");
+      return $('.error').prepend("<li class='error'>Error on " + settings.url + "<br/>" + request.responseText + "</li>");
     });
     $('.page').each(refresh);
     $('.main').delegate('.internal', 'click', function(e) {
