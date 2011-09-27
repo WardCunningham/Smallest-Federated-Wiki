@@ -292,8 +292,6 @@ $ ->
     console.log [event,request,settings]
     $('.main').prepend "<li class='error'>Error on #{settings.url}<br/>#{request.responseText}</li>"
 
-  $('.page').each refresh
-
   $('.main')
 
     .delegate '.internal', 'click', (e) ->
@@ -315,3 +313,5 @@ $ ->
         .each refresh
 
   useLocalStorage = () -> $('#localEditing').is(':checked')
+
+  $('.page').each refresh

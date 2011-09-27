@@ -387,7 +387,6 @@
       console.log([event, request, settings]);
       return $('.main').prepend("<li class='error'>Error on " + settings.url + "<br/>" + request.responseText + "</li>");
     });
-    $('.page').each(refresh);
     $('.main').delegate('.internal', 'click', function(e) {
       e.preventDefault();
       if (!e.shiftKey) {
@@ -403,8 +402,9 @@
       }
       return $("<div />").attr('id', $(e.target).attr('data-slug')).attr('data-site', $(e.target).attr('data-site')).addClass("page").appendTo($('.main')).each(refresh);
     });
-    return useLocalStorage = function() {
+    useLocalStorage = function() {
       return $('#localEditing').is(':checked');
     };
+    return $('.page').each(refresh);
   });
 }).call(this);
