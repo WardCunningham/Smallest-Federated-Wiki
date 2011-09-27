@@ -103,7 +103,16 @@
         return null;
       }).bind('keydown', function(e) {
         if (e.which === 27) {
-          return textarea.focusout();
+          textarea.focusout();
+          return false;
+        }
+        if (e.altKey && e.which === 83) {
+          textarea.focusout();
+          return false;
+        }
+        if (e.ctlKey && e.which === 83) {
+          textarea.focusout();
+          return false;
         }
       });
       div.html(textarea);
