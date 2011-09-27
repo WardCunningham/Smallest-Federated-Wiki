@@ -7,13 +7,13 @@
 		- page['story'].each do |item|
 			%div{:class => ['item', type=item['type']], :id => item['id'], "data-static-item" => item.to_json}
 				- if type == 'paragraph'
-					%p= resolve_links(item['text'])
+					%p= render_markup(resolve_links(item['text']))
 				- if type == 'image'
 					%img{:src => item['url']}
-					%p= resolve_links(item['caption'])
+					%p= render_markup(resolve_links(item['caption']))
 				- if type == 'chart'
 					%p.readout= item['data'].last.last || "0.0"
-					%p= resolve_links(item['caption'])
+					%p= render_markup(resolve_links(item['caption']))
 				- if type == 'factory'
 					%p
 						Double-Click to Edit

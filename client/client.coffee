@@ -14,6 +14,11 @@ $ ->
       .replace(/\[\[([a-z0-9-]+)\]\]/g, "<a class=\"internal\" href=\"/$1.html\" data-page-name=\"$1\">$1</a>")
       .replace(/\[(http.*?) (.*?)\]/g, "<a class=\"external\" href=\"$1\">$2</a>")
 
+  renderMarkup = (string) ->
+    string
+# begin a line with Star-Space and you get an (invalid) but functional html bullet list
+      .replace(/^\*\s(.*)$/gm, "<li>$1</li>")
+
   addToJournal = (journalElement, action) ->
     pageElement = journalElement.parents('.page:first')
     actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type)
@@ -144,7 +149,7 @@ $ ->
 
   window.plugins =
     paragraph:
-      emit: (div, item) -> div.append "<p>#{resolveLinks(item.text)}</p>"
+      emit: (div, item) -> div.append "<p>#{renderMarkup(resolveLinks(item.text))}</p>"
       bind: (div, item) ->
         div.dblclick -> textEditor div, item
     image:

@@ -4,7 +4,7 @@
     return this[this.length - 1];
   };
   $(function() {
-    var addToJournal, bindDragAndDrop, formatTime, getItem, getPlugin, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveLinks, scripts, textEditor, useLocalStorage;
+    var addToJournal, bindDragAndDrop, formatTime, getItem, getPlugin, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, renderMarkup, resolveLinks, scripts, textEditor, useLocalStorage;
     window.wiki = {};
     randomByte = function() {
       return (((1 + Math.random()) * 0x100) | 0).toString(16).substring(1);
@@ -21,6 +21,9 @@
     };
     resolveLinks = function(string) {
       return string.replace(/\[\[([a-z0-9-]+)\]\]/g, "<a class=\"internal\" href=\"/$1.html\" data-page-name=\"$1\">$1</a>").replace(/\[(http.*?) (.*?)\]/g, "<a class=\"external\" href=\"$1\">$2</a>");
+    };
+    renderMarkup = function(string) {
+      return string.replace(/^\*\s(.*)$/gm, "<li>$1</li>");
     };
     addToJournal = function(journalElement, action) {
       var actionElement, pageElement;
@@ -197,7 +200,7 @@
     window.plugins = {
       paragraph: {
         emit: function(div, item) {
-          return div.append("<p>" + (resolveLinks(item.text)) + "</p>");
+          return div.append("<p>" + (renderMarkup(resolveLinks(item.text))) + "</p>");
         },
         bind: function(div, item) {
           return div.dblclick(function() {
