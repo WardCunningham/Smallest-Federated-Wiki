@@ -63,11 +63,12 @@ $ ->
     textarea = $("<textarea>#{item.text ? ''}</textarea>")
       .focusout ->
         if textarea.val()
-          return if textarea.val() == item.text
+          $(div).last('p').html ''
+          if textarea.val() == item.text
+            getPlugin(item.type).emit(div, item)
+            return
           item.text = textarea.val()
           putAction div.parents('.page:first'), {type: 'edit', id: item.id, item: item}
-          
-          $(div).last('p').html ''
           getPlugin(item.type).emit(div, item)
         else
           putAction div.parents('.page:first'), {type: 'remove', id: item.id}

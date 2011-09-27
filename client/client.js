@@ -78,7 +78,9 @@
       var textarea, _ref;
       textarea = $("<textarea>" + ((_ref = item.text) != null ? _ref : '') + "</textarea>").focusout(function() {
         if (textarea.val()) {
+          $(div).last('p').html('');
           if (textarea.val() === item.text) {
+            getPlugin(item.type).emit(div, item);
             return;
           }
           item.text = textarea.val();
@@ -87,7 +89,6 @@
             id: item.id,
             item: item
           });
-          $(div).last('p').html('');
           getPlugin(item.type).emit(div, item);
         } else {
           putAction(div.parents('.page:first'), {
