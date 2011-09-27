@@ -270,7 +270,7 @@ $ ->
         item = getItem(div)
         getPlugin(item.type).bind div, item
     else
-      if json = localStorage[pageElement.attr("id")]
+      if useLocalStorage() and json = localStorage[pageElement.attr("id")]
         pageElement.addClass("local")
         buildPage JSON.parse(json)
         initDragging()
