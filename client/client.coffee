@@ -63,10 +63,12 @@ $ ->
     textarea = $("<textarea>#{item.text ? ''}</textarea>")
       .focusout ->
         if textarea.val()
-          $(div).last('p').html "<p>#{resolveLinks(textarea.val())}</p>"
           return if textarea.val() == item.text
           item.text = textarea.val()
           putAction div.parents('.page:first'), {type: 'edit', id: item.id, item: item}
+          
+          $(div).last('p').html ''
+          getPlugin(item.type).emit(div, item)
         else
           putAction div.parents('.page:first'), {type: 'remove', id: item.id}
           div.remove()
