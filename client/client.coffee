@@ -68,14 +68,7 @@ $ ->
           div.remove()
         null
       .bind 'keydown', (e) ->
-        if e.which == 27 #esc 
-          #THIS SHOULD REALLY BE A CANCEL EDIT!
-          textarea.focusout()
-          return false
-        if e.altKey and e.which == 83 #alt-s
-          textarea.focusout()
-          return false
-        if e.ctlKey and e.which == 83 #ctl-s (doesn't work for me tho) 
+        if (e.altKey || e.ctlKey || e.metaKey) and e.which == 83 #alt-s
           textarea.focusout()
           return false
 

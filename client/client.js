@@ -93,15 +93,7 @@
         }
         return null;
       }).bind('keydown', function(e) {
-        if (e.which === 27) {
-          textarea.focusout();
-          return false;
-        }
-        if (e.altKey && e.which === 83) {
-          textarea.focusout();
-          return false;
-        }
-        if (e.ctlKey && e.which === 83) {
+        if ((e.altKey || e.ctlKey || e.metaKey) && e.which === 83) {
           textarea.focusout();
           return false;
         }
