@@ -66,9 +66,9 @@ Debian Squeeze quick hints
 ==========================
 for those not using Ruby much, but using Debian:
 
-sudo apt-get install ruby1.9.1 rubygems ruby1.9.1-examples debian-keyring ri1.9.1 ruby1.9.1-dev rubygems-doc 
-sudo gem install bundle
-sudo /var/lib/gems/1.8/bin/bundle install
-rvm 1.9.2
-/var/lib/gems/1.8/bin/bundle exec rackup -s thin -p 1111
+    sudo apt-get install ruby1.9.1 rubygems ruby1.9.1-examples debian-keyring ri1.9.1 ruby1.9.1-dev rubygems-doc 
+    sudo gem install bundle
+    sudo /var/lib/gems/1.8/bin/bundle install
+    rvm 1.9.2
+    /var/lib/gems/1.8/bin/bundle exec rackup -s thin -p 1111
 
