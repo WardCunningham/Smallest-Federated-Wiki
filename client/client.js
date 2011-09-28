@@ -97,6 +97,8 @@
           textarea.focusout();
           return false;
         }
+      }).bind('dblclick', function(e) {
+        return false;
       });
       div.html(textarea);
       return textarea.focus();
