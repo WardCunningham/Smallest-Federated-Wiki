@@ -138,6 +138,21 @@
       }
       return _results;
     };
+    wiki.log = function() {
+      var i, p, _i, _j, _len, _len2, _ref, _ref2;
+      _ref = $('.page');
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        p = _ref[_i];
+        console.log(p);
+        _ref2 = $(p).find('.item');
+        for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
+          i = _ref2[_j];
+          console.log(i);
+          console.dir($(i).data('item'));
+        }
+      }
+      return null;
+    };
     getPlugin = function(plugin) {
       if (window.plugins[plugin] == null) {
         wiki.getScript("plugins/" + plugin + ".js");

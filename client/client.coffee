@@ -104,6 +104,14 @@ $ ->
         scripts[path] = true
         $('<script type="text/javascript"/>').attr('src',"/#{path}").prependTo($('script:first'))
 
+  wiki.log = ->
+    for p in $('.page')
+      console.log p
+      for i in $(p).find('.item')
+        console.log i
+        console.dir $(i).data('item')
+    null
+
   getPlugin = (plugin) ->
     wiki.getScript "plugins/#{plugin}.js" unless window.plugins[plugin]?
     window.plugins[plugin]
