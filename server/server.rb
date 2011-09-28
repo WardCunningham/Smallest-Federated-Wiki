@@ -18,8 +18,11 @@ class Controller < Sinatra::Base
     end
     def get_page name
       path = File.join(APP_ROOT, "data/pages/#{name}")
-      return put_page name, {'title'=>name,'story'=>[{'type'=>'factory', 'id'=>gen_id}]} unless File.file? path
-      File.open(path, 'r') { |file| JSON.parse(file.read) }
+      return put_page name, {'title'=>name,'type'=>'title', 'id'=>gen_id, 'story'=>[{'type'=>'factory', 'id'=>gen_id}]} unless File.file? path
+      page = File.open(path, 'r') { |file| JSON.parse(file.read) }
+      page['type'] ||= 'title'
+      page['id'] ||= gen_id
+      page
     end
     def put_page name, page
       File.open(File.join(APP_ROOT, "data/pages/#{name}"), 'w') { |file| file.write(JSON.generate(page)) }
@@ -27,8 +30,17 @@ class Controller < Sinatra::Base
     end
     def resolve_links string
       string.
-        gsub(/\[\[([a-z0-9-]+)\]\]/, '<a class="internal" href="/\1.html" data-page-name="\1">\1</a>').
-        gsub(/\[(http.*?) (.*?)\]/, '<a class="external" href="\1">\2</a>')
+#        gsub(/\[\[([a-z0-9-]+)\]\]/, '<a class="internal" href="/\1.html" data-page-name="\1">\1</a>').
+        gsub(/\[\[([a-z0-9-]+)\]\]/i) {
+                    |name| 
+                    link = name.gsub!(/^\[\[(.*)\]\]/, '\1').downcase
+                    '<a class="internal" href="/'+link+'.html" data-page-name="'+link+'">'+name+'</a>'
+                }.
+        gsub(/\[(http.*?) (.*?)\]/i, '<a class="external" href="\1">\2</a>')
+    end
+    def render_markup string
+      string.
+        gsub(/^\*\s(.*)$/, '<li>\1</li>')
     end
   end
 

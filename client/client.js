@@ -4,7 +4,7 @@
     return this[this.length - 1];
   };
   $(function() {
-    var addToJournal, bindDragAndDrop, formatTime, getItem, getPlugin, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveLinks, scripts, textEditor, useLocalStorage;
+    var addToJournal, bindDragAndDrop, formatTime, getItem, getPlugin, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, renderInternalLink, renderMarkup, resolveLinks, scripts, textEditor, useLocalStorage;
     window.wiki = {};
     randomByte = function() {
       return (((1 + Math.random()) * 0x100) | 0).toString(16).substring(1);
@@ -19,8 +19,14 @@
         return _results;
       })()).join('');
     };
+    renderInternalLink = function(match, name) {
+      return "<a class=\"internal\" href=\"/" + name.toLowerCase() + ".html\" data-page-name=\"" + name.toLowerCase() + "\">" + name + "</a>";
+    };
     resolveLinks = function(string) {
-      return string.replace(/\[\[([a-z0-9-]+)\]\]/g, "<a class=\"internal\" href=\"/$1.html\" data-page-name=\"$1\">$1</a>").replace(/\[(http.*?) (.*?)\]/g, "<a class=\"external\" href=\"$1\">$2</a>");
+      return string.replace(/\[\[([a-z0-9-]+)\]\]/gi, renderInternalLink).replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" href=\"$1\">$2</a>");
+    };
+    renderMarkup = function(string) {
+      return string.replace(/^\*\s(.*)$/gm, "<li>$1</li>");
     };
     addToJournal = function(journalElement, action) {
       var actionElement, pageElement;
@@ -31,6 +37,10 @@
       }
     };
     putAction = function(pageElement, action) {
+      var now;
+      now = new Date();
+      action['date'] = now.toJSON();
+      action['userTZ'] = now.getTimezoneOffset();
       if (useLocalStorage()) {
         pushToLocal(pageElement, action);
         return pageElement.addClass("local");
@@ -74,8 +84,9 @@
       var textarea, _ref;
       textarea = $("<textarea>" + ((_ref = item.text) != null ? _ref : '') + "</textarea>").focusout(function() {
         if (textarea.val()) {
-          $(div).last('p').html("<p>" + (resolveLinks(textarea.val())) + "</p>");
+          $(div).last('p').html('');
           if (textarea.val() === item.text) {
+            getPlugin(item.type).emit(div, item);
             return;
           }
           item.text = textarea.val();
@@ -84,6 +95,7 @@
             id: item.id,
             item: item
           });
+          getPlugin(item.type).emit(div, item);
         } else {
           putAction(div.parents('.page:first'), {
             type: 'remove',
@@ -190,9 +202,17 @@
       });
     };
     window.plugins = {
+      title: {
+        emit: function(div, item) {
+          var icon;
+          icon = typeof site !== "undefined" && site !== null ? "/remote/" + site + "/favicon.png" : "/favicon.png";
+          return div.append('<h1><a href="/"><img src = "' + icon + '" height = "32px"></a> ' + item.title + '</h1>');
+        },
+        bind: function(div, item) {}
+      },
       paragraph: {
         emit: function(div, item) {
-          return div.append("<p>" + (resolveLinks(item.text)) + "</p>");
+          return div.append("<p>" + (renderMarkup(resolveLinks(item.text))) + "</p>");
         },
         bind: function(div, item) {
           return div.dblclick(function() {
@@ -320,7 +340,7 @@
         });
       };
       buildPage = function(data) {
-        var empty, footerElement, icon, journalElement, page, storyElement, _ref;
+        var div, empty, footerElement, journalElement, page, plugin, storyElement, _ref;
         empty = {
           title: 'empty',
           synopsys: 'empty',
@@ -329,13 +349,17 @@
         };
         page = $.extend(empty, data);
         $(pageElement).data("data", data);
-        icon = site != null ? "/remote/" + site + "/favicon.png" : "/favicon.png";
-        $(pageElement).append('<h1><a href="/"><img src = "' + icon + '" height = "32px"></a> ' + page.title + '</h1>');
+        data.id = data.title;
+        data.type = "title";
+        div = $("<div class=\"item " + data.type + "\" id=\"" + data.id + "\" />");
+        plugin = getPlugin("title");
+        plugin.emit(div, page);
+        plugin.bind(div, page);
+        $(pageElement).append(div);
         _ref = ['story', 'journal', 'footer'].map(function(className) {
           return $("<div />").addClass(className).appendTo(pageElement);
         }), storyElement = _ref[0], journalElement = _ref[1], footerElement = _ref[2];
         $.each(page.story, function(i, item) {
-          var div, plugin;
           div = $("<div class=\"item " + item.type + "\" id=\"" + item.id + "\" />");
           storyElement.append(div);
           try {
@@ -377,7 +401,7 @@
     };
     $(document).ajaxError(function(event, request, settings) {
       console.log([event, request, settings]);
-      return $('.main').prepend("<li class='error'>Error on " + settings.url + "<br/>" + request.responseText + "</li>");
+      return $('.error').prepend("<li class='error'>Error on " + settings.url + "<br/>" + request.responseText + "</li>");
     });
     $('.main').delegate('.internal', 'click', function(e) {
       e.preventDefault();
