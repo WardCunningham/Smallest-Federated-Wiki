@@ -8,11 +8,16 @@ $ ->
 
   randomByte = -> (((1+Math.random())*0x100)|0).toString(16).substring(1)
   randomBytes = (n) -> (randomByte() for [1..n]).join('')
+  
+  renderInternalLink = (match, name) ->
+    # spaces become 'slugs', non-alpha-num get removed
+    slug = name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase()
+    "<a class=\"internal\" href=\"/"+slug+".html\" data-page-name=\""+slug+"\">"+name+"</a>"
 
   resolveLinks = (string) ->
     string
-      .replace(/\[\[([a-z0-9-]+)\]\]/g, "<a class=\"internal\" href=\"/$1.html\" data-page-name=\"$1\">$1</a>")
-      .replace(/\[(http.*?) (.*?)\]/g, "<a class=\"external\" href=\"$1\">$2</a>")
+      .replace(/\[\[([^\]]+)\]\]/gi, renderInternalLink)
+      .replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" href=\"$1\">$2</a>")
 
   addToJournal = (journalElement, action) ->
     pageElement = journalElement.parents('.page:first')
