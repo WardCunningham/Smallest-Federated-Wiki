@@ -71,6 +71,8 @@ $ ->
         if (e.altKey || e.ctlKey || e.metaKey) and e.which == 83 #alt-s
           textarea.focusout()
           return false
+      .bind 'dblclick', (e) ->
+        return false; #don't pass dblclick on to the div, as it'll reload
 
     div.html textarea
     textarea.focus()
