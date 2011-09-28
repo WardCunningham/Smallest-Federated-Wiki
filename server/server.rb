@@ -27,11 +27,13 @@ class Controller < Sinatra::Base
     end
     def resolve_links string
       string.
-#        gsub(/\[\[([a-z0-9-]+)\]\]/, '<a class="internal" href="/\1.html" data-page-name="\1">\1</a>').
-        gsub(/\[\[([a-z0-9-]+)\]\]/i) {
+        gsub(/\[\[([^\]]+)\]\]/i) {
                     |name| 
-                    link = name.gsub!(/^\[\[(.*)\]\]/, '\1').downcase
-                    '<a class="internal" href="/'+link+'.html" data-page-name="'+link+'">'+name+'</a>'
+                    name.gsub!(/^\[\[(.*)\]\]/, '\1')
+
+                    slug = name.gsub(/\s/, '-')
+                    slug = slug.gsub(/[^A-Za-z0-9-]/, '').downcase
+                    '<a class="internal" href="/'+slug+'.html" data-page-name="'+slug+'">'+name+'</a>'
                 }.
         gsub(/\[(http.*?) (.*?)\]/i, '<a class="external" href="\1">\2</a>')
     end

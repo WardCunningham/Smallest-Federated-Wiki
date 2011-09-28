@@ -20,10 +20,12 @@
       })()).join('');
     };
     renderInternalLink = function(match, name) {
-      return "<a class=\"internal\" href=\"/" + name.toLowerCase() + ".html\" data-page-name=\"" + name.toLowerCase() + "\">" + name + "</a>";
+      var slug;
+      slug = name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase();
+      return "<a class=\"internal\" href=\"/" + slug + ".html\" data-page-name=\"" + slug + "\">" + name + "</a>";
     };
     resolveLinks = function(string) {
-      return string.replace(/\[\[([a-z0-9-]+)\]\]/gi, renderInternalLink).replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" href=\"$1\">$2</a>");
+      return string.replace(/\[\[([^\]]+)\]\]/gi, renderInternalLink).replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" href=\"$1\">$2</a>");
     };
     addToJournal = function(journalElement, action) {
       var actionElement, pageElement;
