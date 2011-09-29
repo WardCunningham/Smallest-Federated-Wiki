@@ -1,4 +1,3 @@
-
 // Copyright (c) 2011, Ward Cunningham
 // Released under MIT and GPLv2
 
@@ -17,8 +16,8 @@ byte radioPowerPin = 2;
 byte mac[] = { 0xEE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED   };
 //IPAddress ip[] = { 10, 94, 54, 2   };
 //IPAddress gateway[] = { 10, 94, 54, 1 };
-IPAddress ip(10, 0, 3, 201 );
-IPAddress gateway( 10, 0, 3, 1 );
+IPAddress ip(192, 168, 0, 201 );
+IPAddress gateway( 192, 168, 0, 1 );
 IPAddress subnet( 255, 255, 255, 0 );
 
 EthernetServer server(1111);
@@ -26,7 +25,7 @@ EthernetClient client(255);
 
 unsigned long requests = 0;
 unsigned long lastRequest = 0; // records the request number at time of the most recent radio powerup
-unsigned byte radioPowerMode = 1; // indicates which power management algorith to use
+byte radioPowerMode = 1; // indicates which power management algorith to use
 
 // Sensor Configuration
 
@@ -76,29 +75,55 @@ void sample() {
   }
 }
 
+unsigned long modeOneOnTime = (58*60+30) * 1000UL;
+unsigned long modeOneOffTime = (4*60+15) * 1000UL;
+unsigned long longestOnTimeWithoutRequest = 3600*1000UL;
+
 void manageRadioPower() {
-  if(radioOn && (lastRequest == requests) && (now-lastRadioOn >= 3600*1000))) {
+  if(radioOn && (lastRequest == requests) && ((now-lastRadioOn) >= longestOnTimeWithoutRequest)) {
     // radio has been on for a while, but received no requests, may be wedged, try rebooting
+    printTime(now,0); Serial.println(" Resetting radio");
     powerRadio(false);
     delay(2000);
+    now = millis();
     powerRadio(true);
   } else {
-    if(radioPowerMode == 0 || !topOfHour { // stay on
+    if(radioPowerMode == 0 || !topOfHour) { // stay on
       if(!radioOn) {
         powerRadio(true);
-      } 
+      }
     } else if(radioPowerMode == 1) { // on at 58m30s, off at 4m15s after hour
       // remove integer hours from time, just interested in phase ... not needed if we get a sync often enough relative to wrapping
-      while(now-topOfHour > (3600*1000)) {
-        topOfHour += 3600*1000;
+      while((now-topOfHour) > (3600*1000UL)) {
+        topOfHour += 3600*1000UL;
       }
-      unsigned long time_after_hour = (now-topOfHour) % (3600*1000);
-      if(radioOn && (time_after_hour > (4*60+15)*1000)) {
+      unsigned long timeAfterHour = (now-topOfHour) % (3600*1000UL);
+      boolean duringOffTime = (timeAfterHour > modeOneOffTime) && (timeAfterHour < modeOneOnTime);
+      if(radioOn && duringOffTime) {
         powerRadio(false);
-      } else if (!radioOn && (time_after_hour > (58*60+30)*1000)) {
+      } else if (!radioOn && !duringOffTime) {
         powerRadio(true);
+      }
     }
   }
+}
+
+void printTime(unsigned long t,unsigned long ref) {
+  unsigned long hour;
+  unsigned long minute;
+  unsigned long second;
+  
+  t -= ref;
+  hour = t / (3600 * 1000UL);
+  minute = t % (3600 * 1000UL);
+  second = minute % (60 * 1000UL);
+  minute -= second;
+  if(ref) {
+    Serial.print("Sync'd: ");
+  }
+  Serial.print(hour); Serial.print(":");
+  Serial.print(minute/60000UL); Serial.print(":");
+  Serial.print(second/1000.0,3);
 }
 
 void powerRadio(boolean power) {
@@ -110,6 +135,7 @@ void powerRadio(boolean power) {
   } else if(!power && lastRadioOn) {
     lastRadioOn = 0;
   }
+  printTime(now,0); Serial.print(" "); printTime(now,topOfHour); Serial.print(" "); Serial.println(radioOn);
 }
   
 void analogSample() {
@@ -221,6 +247,9 @@ void report(char code) {
     faviconReport();
   } else if (code == 's') {
     topOfHour = now = millis();
+  } else if (code == 'p') {
+    now = millis();
+    topOfHour = now - (4*60*1000UL);
   } else if (code == '0') {
     radioPowerMode = 0;
   } else if (code == '1') {
