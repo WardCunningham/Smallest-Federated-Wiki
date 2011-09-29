@@ -28,7 +28,7 @@ The server is distributed as a GitHub repository. The server distributes a web c
 
 When you have git. Use it to clone the repository:
 
-	git clone git@github.com:WardCunningham/Smallest-Federated-Wiki.git
+	git clone git://github.com/WardCunningham/Smallest-Federated-Wiki.git
 	cd Smallest-Federated-Wiki
 
 The server is a ruby bundle. Get the bundler and then use it to get everything else:
