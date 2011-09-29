@@ -95,7 +95,7 @@ $ ->
     $(element).data("item") or JSON.parse($(element).attr('data-static-item')) if $(element).length > 0
 
   wiki.getData = ->
-    chart = $('.chart:first').data('item').data
+    $('.chart,.data').last().data('item').data
 
   scripts = {}
   wiki.getScript = (paths...) ->

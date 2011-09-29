@@ -124,8 +124,7 @@
       }
     };
     wiki.getData = function() {
-      var chart;
-      return chart = $('.chart:first').data('item').data;
+      return $('.chart,.data').last().data('item').data;
     };
     scripts = {};
     wiki.getScript = function() {
