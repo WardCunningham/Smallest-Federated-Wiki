@@ -15,10 +15,10 @@ byte radioPowerPin = 2;
 // Ethernet Configuration
 
 byte mac[] = { 0xEE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED   };
-//IPAddress ip[] = { 10, 94, 54, 2   };
-//IPAddress gateway[] = { 10, 94, 54, 1 };
-IPAddress ip(10, 0, 3, 201 );
-IPAddress gateway( 10, 0, 3, 1 );
+IPAddress ip[] = { 10, 94, 54, 2   };
+IPAddress gateway[] = { 10, 94, 54, 1 };
+//IPAddress ip(10, 0, 3, 201 );
+//IPAddress gateway( 10, 0, 3, 1 );
 IPAddress subnet( 255, 255, 255, 0 );
 
 EthernetServer server(1111);
@@ -40,7 +40,9 @@ struct Temp {
 
 unsigned long lastSample = 100;
 unsigned long lastRadioOn = 0; // records time the radio was last powered on
+unsigned long totalRadioOn = 0; // records total time the radio has been on
 unsigned long now = 0;
+unsigned long rollOvers = 0;
 unsigned long topOfHour = 0;
 boolean radioOn = false; // status of radio power
 unsigned long crc_errs = 0;
@@ -69,6 +71,9 @@ void loop() {
 void sample() {
   now = millis();
   if ((now-lastSample) >= 1000) {
+    if(now < lastSample) {
+      rollOvers++;
+    }
     lastSample = now;
     manageRadioPower();
     analogSample();
@@ -127,6 +132,16 @@ void printTime(unsigned long t,unsigned long ref) {
   Serial.print(second/1000.0,3);
 }
 
+float uptime() { // returns uptime as a floating point day
+  return (4294967296.0 * rollOvers + now) / (86400.0 * 1000);
+}
+
+float radioOnTime() {
+  unsigned long r = totalRadioOn;
+  if(lastRadioOn) { r += (now-lastRadioOn); }
+  return (float) r / (86400.0 * 1000);
+}
+
 void powerRadio(boolean power) {
   digitalWrite(radioPowerPin,power);
   radioOn = power;
@@ -134,6 +149,7 @@ void powerRadio(boolean power) {
     lastRadioOn = now;
     lastRequest = requests;
   } else if(!power && lastRadioOn) {
+    totalRadioOn += (now-lastRadioOn);
     lastRadioOn = 0;
   }
   printTime(now,0); Serial.print(" "); printTime(now,topOfHour); Serial.print(" "); Serial.println(radioOn);
