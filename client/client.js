@@ -292,6 +292,7 @@
           "class": "item factory",
           id: item.id
         }).data('item', item);
+        itemElement.data('pageElement', pageElement);
         pageElement.find(".story").append(itemElement);
         plugins.factory.emit(itemElement, item);
         plugins.factory.bind(itemElement, item);
