@@ -15,10 +15,10 @@ byte radioPowerPin = 2;
 // Ethernet Configuration
 
 byte mac[] = { 0xEE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED   };
-IPAddress ip[] = { 10, 94, 54, 2   };
-IPAddress gateway[] = { 10, 94, 54, 1 };
-//IPAddress ip(10, 0, 3, 201 );
-//IPAddress gateway( 10, 0, 3, 1 );
+IPAddress ip(10, 94, 54, 2);
+IPAddress gateway(10, 94, 54, 1);
+//IPAddress ip(192, 168, 0, 201 );
+//IPAddress gateway( 192, 168, 0, 1 );
 IPAddress subnet( 255, 255, 255, 0 );
 
 EthernetServer server(1111);
@@ -132,23 +132,23 @@ void printTime(unsigned long t,unsigned long ref) {
   Serial.print(second/1000.0,3);
 }
 
-float uptime() { // returns uptime as a floating point day
-  return (4294967296.0 * rollOvers + now) / (86400.0 * 1000);
+float uptime() { // returns uptime as a floating point hour
+  return (4294967296.0 * rollOvers + now) / (3600.0 * 1000);
 }
 
-float radioOnTime() {
+float radioOnTime() { // returns time radio has been on in hours
   unsigned long r = totalRadioOn;
   if(lastRadioOn) { r += (now-lastRadioOn); }
-  return (float) r / (86400.0 * 1000);
+  return (float) r / (3600.0 * 1000);
 }
 
 void powerRadio(boolean power) {
   digitalWrite(radioPowerPin,power);
   radioOn = power;
-  if(power && !lastRadioOn) {
+  if(power) {
     lastRadioOn = now;
     lastRequest = requests;
-  } else if(!power && lastRadioOn) {
+  } else {
     totalRadioOn += (now-lastRadioOn);
     lastRadioOn = 0;
   }
@@ -370,6 +370,42 @@ void jsonReport () {
           k(F("data"));
             sa();
               sa(); v(1314306006L); v((long)requests); ea();
+            ea();
+        eh();
+        sh();
+          k(F("type")); v(F("chart"));
+          k(F("id")); v(id++);
+          k(F("caption")); v(F("Uptime<br>Hours"));
+          k(F("data"));
+            sa();
+              sa(); v(1314306006L); v(uptime()); ea();
+            ea();
+        eh();
+        sh();
+          k(F("type")); v(F("chart"));
+          k(F("id")); v(id++);
+          k(F("caption")); v(F("Link Radio<br>Hours"));
+          k(F("data"));
+            sa();
+              sa(); v(1314306006L); v(radioOnTime()); ea();
+            ea();
+        eh();
+        sh();
+          k(F("type")); v(F("chart"));
+          k(F("id")); v(id++);
+          k(F("caption")); v(F("Time After Hour<br>Minutes"));
+          k(F("data"));
+            sa();
+              sa(); v(1314306006L); v((float)(((now-topOfHour) % (3600*1000UL))/60000.0)); ea();
+            ea();
+        eh();
+        sh();
+          k(F("type")); v(F("chart"));
+          k(F("id")); v(id++);
+          k(F("caption")); v(F("Radio Power Mode"));
+          k(F("data"));
+            sa();
+              sa(); v(1314306006L); v(radioPowerMode); ea();
             ea();
         eh();
       ea();
