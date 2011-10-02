@@ -43,6 +43,7 @@ unsigned long lastRadioOn = 0; // records time the radio was last powered on
 unsigned long totalRadioOn = 0; // records total time the radio has been on
 unsigned long now = 0;
 unsigned long rollOvers = 0;
+boolean topOfHourFlag = false;
 unsigned long topOfHour = 0;
 boolean radioOn = false; // status of radio power
 unsigned long crc_errs = 0;
@@ -83,6 +84,8 @@ void sample() {
 
 unsigned long modeOneOnTime = (58*60+30) * 1000UL;
 unsigned long modeOneOffTime = (4*60+15) * 1000UL;
+unsigned long modeTwoOnTime = (2*60+30) * 1000UL;
+unsigned long modeTwoOffTime = (4*60+5) * 1000UL;
 unsigned long longestOnTimeWithoutRequest = 3600*1000UL;
 
 void manageRadioPower() {
@@ -94,21 +97,30 @@ void manageRadioPower() {
     now = millis();
     powerRadio(true);
   } else {
-    if(radioPowerMode == 0 || !topOfHour) { // stay on
+    if(radioPowerMode == 0 || !topOfHourFlag) { // stay on
       if(!radioOn) {
         powerRadio(true);
       }
-    } else if(radioPowerMode == 1) { // on at 58m30s, off at 4m15s after hour
+    } else {
       // remove integer hours from time, just interested in phase ... not needed if we get a sync often enough relative to wrapping
       while((now-topOfHour) > (3600*1000UL)) {
         topOfHour += 3600*1000UL;
       }
       unsigned long timeAfterHour = (now-topOfHour) % (3600*1000UL);
-      boolean duringOffTime = (timeAfterHour > modeOneOffTime) && (timeAfterHour < modeOneOnTime);
-      if(radioOn && duringOffTime) {
-        powerRadio(false);
-      } else if (!radioOn && !duringOffTime) {
-        powerRadio(true);
+      if(radioPowerMode == 1) { // on at 58m30s, off at 4m15s after hour
+        boolean duringOffTime = (timeAfterHour > modeOneOffTime) && (timeAfterHour < modeOneOnTime);
+        if(radioOn && duringOffTime) {
+          powerRadio(false);
+        } else if (!radioOn && !duringOffTime) {
+          powerRadio(true);
+        }
+      } else if(radioPowerMode == 2) { // minimal radio uptime on at 2m30s, off at 4m5s after hour
+        boolean duringOnTime = (timeAfterHour > modeTwoOnTime) && (timeAfterHour < modeTwoOffTime);
+        if(radioOn && !duringOnTime) {
+          powerRadio(false);
+        } else if (!radioOn && duringOnTime) {
+          powerRadio(true);
+        }
       }
     }
   }
@@ -124,7 +136,7 @@ void printTime(unsigned long t,unsigned long ref) {
   minute = t % (3600 * 1000UL);
   second = minute % (60 * 1000UL);
   minute -= second;
-  if(ref) {
+  if(topOfHourFlag) {
     Serial.print("Sync'd: ");
   }
   Serial.print(hour); Serial.print(":");
@@ -137,9 +149,7 @@ float uptime() { // returns uptime as a floating point hour
 }
 
 float radioOnTime() { // returns time radio has been on in hours
-  unsigned long r = totalRadioOn;
-  if(lastRadioOn) { r += (now-lastRadioOn); }
-  return (float) r / (3600.0 * 1000);
+  return (float) (totalRadioOn + (radioOn ? (now-lastRadioOn) : 0)) / (3600.0 * 1000);
 }
 
 void powerRadio(boolean power) {
@@ -264,13 +274,17 @@ void report(char code) {
     faviconReport();
   } else if (code == 's') {
     topOfHour = now = millis();
+    topOfHourFlag = true;
   } else if (code == 'p') {
     now = millis();
     topOfHour = now - (4*60*1000UL);
+    topOfHourFlag = true;
   } else if (code == '0') {
     radioPowerMode = 0;
   } else if (code == '1') {
     radioPowerMode = 1;
+  } else if (code == '2') {
+    radioPowerMode = 2;
   } else {
     errorReport();
   }
@@ -375,7 +389,7 @@ void jsonReport () {
         sh();
           k(F("type")); v(F("chart"));
           k(F("id")); v(id++);
-          k(F("caption")); v(F("Uptime<br>Hours"));
+          k(F("caption")); v(F("Arduino Uptime<br>Hours"));
           k(F("data"));
             sa();
               sa(); v(1314306006L); v(uptime()); ea();
@@ -384,7 +398,7 @@ void jsonReport () {
         sh();
           k(F("type")); v(F("chart"));
           k(F("id")); v(id++);
-          k(F("caption")); v(F("Link Radio<br>Hours"));
+          k(F("caption")); v(F("Radio Uptime<br>Hours"));
           k(F("data"));
             sa();
               sa(); v(1314306006L); v(radioOnTime()); ea();
@@ -393,10 +407,10 @@ void jsonReport () {
         sh();
           k(F("type")); v(F("chart"));
           k(F("id")); v(id++);
-          k(F("caption")); v(F("Time After Hour<br>Minutes"));
+          k(F("caption")); v(F("Minutes After Hour"));
           k(F("data"));
             sa();
-              sa(); v(1314306006L); v((float)(((now-topOfHour) % (3600*1000UL))/60000.0)); ea();
+              sa(); v(1314306006L); v((float) (topOfHourFlag ? ((now-topOfHour) % (3600*1000UL))/60000.0 : 0.0)); ea();
             ea();
         eh();
         sh();
