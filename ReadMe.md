@@ -31,14 +31,14 @@ When you have git. Use it to clone the repository:
 	git clone git://github.com/WardCunningham/Smallest-Federated-Wiki.git
 	cd Smallest-Federated-Wiki
 
+We're using Ruby 1.9.2 which we manage with rvm:
+
+	rvm 1.9.2
+
 The server is a ruby bundle. Get the bundler and then use it to get everything else:
 
 	sudo gem install bundler
 	sudo bundle install
-
-We're now using Ruby 1.9.2 which we manage with rvm:
-
-	rvm 1.9.2
 
 Launch the server with this bundle command:
 
