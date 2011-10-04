@@ -342,7 +342,7 @@
         });
       };
       buildPage = function(data) {
-        var empty, footerElement, icon, journalElement, page, storyElement, _ref;
+        var empty, footerElement, journalElement, page, storyElement, _ref;
         empty = {
           title: 'empty',
           synopsys: 'empty',
@@ -351,8 +351,11 @@
         };
         page = $.extend(empty, data);
         $(pageElement).data("data", data);
-        icon = site != null ? "/remote/" + site + "/favicon.png" : "/favicon.png";
-        $(pageElement).append('<h1><a href="/"><img src = "' + icon + '" height = "32px"></a> ' + page.title + '</h1>');
+        if (site != null) {
+          $(pageElement).append("<h1><a href=\"//" + site + "\"><img src = \"/remote/" + site + "/favicon.png\" height = \"32px\"></a> " + page.title + "</h1>");
+        } else {
+          $(pageElement).append("<h1><a href=\"/\"><img src = \"/favicon.png\" height = \"32px\"></a> " + page.title + "</h1>");
+        }
         _ref = ['story', 'journal', 'footer'].map(function(className) {
           return $("<div />").addClass(className).appendTo(pageElement);
         }), storyElement = _ref[0], journalElement = _ref[1], footerElement = _ref[2];

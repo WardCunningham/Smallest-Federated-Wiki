@@ -252,8 +252,10 @@ $ ->
       page = $.extend(empty, data)
       $(pageElement).data("data", data)
 
-      icon = if site? then "/remote/#{site}/favicon.png" else "/favicon.png"
-      $(pageElement).append '<h1><a href="/"><img src = "'+icon+'" height = "32px"></a> ' + page.title + '</h1>'
+      if site?
+        $(pageElement).append "<h1><a href=\"//#{site}\"><img src = \"/remote/#{site}/favicon.png\" height = \"32px\"></a> #{page.title}</h1>"
+      else
+        $(pageElement).append "<h1><a href=\"/\"><img src = \"/favicon.png\" height = \"32px\"></a> #{page.title}</h1>"
 
       [storyElement, journalElement, footerElement] = ['story', 'journal', 'footer'].map (className) ->
         $("<div />").addClass(className).appendTo(pageElement)
