@@ -306,7 +306,11 @@ $ ->
     .delegate '.internal', 'click', (e) ->
       e.preventDefault()
       $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
-      $("<div id=\"#{$(e.target).attr('data-page-name')}\"/>").addClass("page").appendTo($('.main')).each refresh
+      $("<div/>").attr('id', $(e.target).data 'pageName').addClass("page").appendTo('.main').each refresh
+      
+      if History.enabled
+        pages = $.makeArray $(".page").map (_, el) -> el.id
+        History.pushState {pages: pages}, name, ("/view/#{page}" for page in pages).join ''
 
     .delegate '.action', 'hover', ->
       $('#'+$(this).data('itemId')).toggleClass('target')

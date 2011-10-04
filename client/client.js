@@ -402,11 +402,28 @@
       return $('.main').prepend("<li class='error'>Error on " + settings.url + "<br/>" + request.responseText + "</li>");
     });
     $('.main').delegate('.internal', 'click', function(e) {
+      var page, pages;
       e.preventDefault();
       if (!e.shiftKey) {
         $(e.target).parents('.page').nextAll().remove();
       }
-      return $("<div id=\"" + ($(e.target).attr('data-page-name')) + "\"/>").addClass("page").appendTo($('.main')).each(refresh);
+      $("<div/>").attr('id', $(e.target).data('pageName')).addClass("page").appendTo('.main').each(refresh);
+      if (History.enabled) {
+        pages = $.makeArray($(".page").map(function(_, el) {
+          return el.id;
+        }));
+        return History.pushState({
+          pages: pages
+        }, name, ((function() {
+          var _i, _len, _results;
+          _results = [];
+          for (_i = 0, _len = pages.length; _i < _len; _i++) {
+            page = pages[_i];
+            _results.push("/view/" + page);
+          }
+          return _results;
+        })()).join(''));
+      }
     }).delegate('.action', 'hover', function() {
       return $('#' + $(this).data('itemId')).toggleClass('target');
     }).delegate('.action.fork', 'click', function(e) {
