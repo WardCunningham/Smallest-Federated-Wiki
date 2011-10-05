@@ -307,8 +307,9 @@ $ ->
 
     .delegate '.internal', 'click', (e) ->
       e.preventDefault()
+      name = $(e.target).data 'pageName'
       $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
-      $("<div/>").attr('id', $(e.target).data 'pageName').addClass("page").appendTo('.main').each refresh
+      $("<div/>").attr('id', name).addClass("page").appendTo('.main').each refresh
       
       if History.enabled
         pages = $.makeArray $(".page").map (_, el) -> el.id
