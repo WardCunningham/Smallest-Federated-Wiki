@@ -23,14 +23,14 @@ $ ->
     pageElement = journalElement.parents('.page:first')
     actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type)
       .text(action.type[0])
-      .attr('data-item-id', action.id || "0")
+      .data('itemId', action.id || "0")
       .appendTo(journalElement)
     if action.type == 'fork'
       actionElement
         .css("background-image", "url(//#{action.site}/favicon.png)")
         .attr("href", "//#{action.site}/#{pageElement.attr('id')}.html")
-        .attr("data-site", action.site)
-        .attr("data-slug", pageElement.attr('id'))
+        .data("site", action.site)
+        .data("slug", pageElement.attr('id'))
 
   putAction = (pageElement, action) ->
     if useLocalStorage()
@@ -92,7 +92,7 @@ $ ->
     "#{h}:#{mi} #{am}<br>#{d.getDate()} #{mo} #{d.getFullYear()}"
 
   getItem = (element) ->
-    $(element).data("item") or JSON.parse($(element).attr('data-static-item')) if $(element).length > 0
+    $(element).data("item") or JSON.parse($(element).data('staticItem')) if $(element).length > 0
 
   wiki.getData = ->
     $('.chart,.data').last().data('item').data
@@ -194,7 +194,7 @@ $ ->
   refresh = ->
     pageElement = $(this)
     slug = $(pageElement).attr('id')
-    site = $(pageElement).attr('data-site')
+    site = $(pageElement).data('site')
 
     pageElement.find(".add-factory").live "click", (evt) ->
       evt.preventDefault()
@@ -280,7 +280,7 @@ $ ->
         .append("<a href=\"/#{slug}.json?random=#{randomBytes(4)}\" title=\"source\">JSON</a> . ")
         .append("<a href=\"#\" class=\"add-factory\" title=\"add paragraph\">[+]</a>")
 
-    if $(pageElement).attr('data-server-generated') == 'true'
+    if $(pageElement).data('serverGenerated') == 'true'
       initDragging()
       pageElement.find('.item').each (i, each) ->
         div = $(each)
@@ -321,8 +321,8 @@ $ ->
       e.preventDefault()
       $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
       $("<div />")
-        .attr('id',$(e.target).attr('data-slug'))
-        .attr('data-site',$(e.target).attr('data-site'))
+        .attr('id',$(e.target).data('slug'))
+        .data('site',$(e.target).data('site'))
         .addClass("page")
         .appendTo($('.main'))
         .each refresh
