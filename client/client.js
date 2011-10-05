@@ -30,9 +30,9 @@
     addToJournal = function(journalElement, action) {
       var actionElement, pageElement;
       pageElement = journalElement.parents('.page:first');
-      actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(action.type[0]).attr('data-item-id', action.id || "0").appendTo(journalElement);
+      actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(action.type[0]).data('itemId', action.id || "0").appendTo(journalElement);
       if (action.type === 'fork') {
-        return actionElement.css("background-image", "url(//" + action.site + "/favicon.png)").attr("href", "//" + action.site + "/" + (pageElement.attr('id')) + ".html").attr("data-site", action.site).attr("data-slug", pageElement.attr('id'));
+        return actionElement.css("background-image", "url(//" + action.site + "/favicon.png)").attr("href", "//" + action.site + "/" + (pageElement.attr('id')) + ".html").data("site", action.site).data("slug", pageElement.attr('id'));
       }
     };
     putAction = function(pageElement, action) {
@@ -120,7 +120,7 @@
     };
     getItem = function(element) {
       if ($(element).length > 0) {
-        return $(element).data("item") || JSON.parse($(element).attr('data-static-item'));
+        return $(element).data("item") || JSON.parse($(element).data('staticItem'));
       }
     };
     wiki.getData = function() {
@@ -280,7 +280,7 @@
       var buildPage, initDragging, json, pageElement, resource, site, slug;
       pageElement = $(this);
       slug = $(pageElement).attr('id');
-      site = $(pageElement).attr('data-site');
+      site = $(pageElement).data('site');
       pageElement.find(".add-factory").live("click", function(evt) {
         var before, beforeElement, item, itemElement;
         evt.preventDefault();
@@ -378,7 +378,7 @@
         });
         return footerElement.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ').append("<a href=\"/" + slug + ".json?random=" + (randomBytes(4)) + "\" title=\"source\">JSON</a> . ").append("<a href=\"#\" class=\"add-factory\" title=\"add paragraph\">[+]</a>");
       };
-      if ($(pageElement).attr('data-server-generated') === 'true') {
+      if ($(pageElement).data('serverGenerated') === 'true') {
         initDragging();
         return pageElement.find('.item').each(function(i, each) {
           var div, item;
@@ -435,7 +435,7 @@
       if (!e.shiftKey) {
         $(e.target).parents('.page').nextAll().remove();
       }
-      return $("<div />").attr('id', $(e.target).attr('data-slug')).attr('data-site', $(e.target).attr('data-site')).addClass("page").appendTo($('.main')).each(refresh);
+      return $("<div />").attr('id', $(e.target).data('slug')).data('site', $(e.target).data('site')).addClass("page").appendTo($('.main')).each(refresh);
     });
     useLocalStorage = function() {
       return $('#localEditing').is(':checked');
