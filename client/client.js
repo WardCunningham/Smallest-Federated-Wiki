@@ -405,12 +405,13 @@
       return $('.main').prepend("<li class='error'>Error on " + settings.url + "<br/>" + request.responseText + "</li>");
     });
     $('.main').delegate('.internal', 'click', function(e) {
-      var page, pages;
+      var name, page, pages;
       e.preventDefault();
+      name = $(e.target).data('pageName');
       if (!e.shiftKey) {
         $(e.target).parents('.page').nextAll().remove();
       }
-      $("<div/>").attr('id', $(e.target).data('pageName')).addClass("page").appendTo('.main').each(refresh);
+      $("<div/>").attr('id', name).addClass("page").appendTo('.main').each(refresh);
       if (History.enabled) {
         pages = $.makeArray($(".page").map(function(_, el) {
           return el.id;
