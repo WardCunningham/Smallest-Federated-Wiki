@@ -263,7 +263,7 @@
           _results = [];
           for (i = 0, _ref = localStorage.length; 0 <= _ref ? i < _ref : i > _ref; 0 <= _ref ? i++ : i--) {
             key = localStorage.key(i);
-            a = $('<a class="internal" href="#" />').append(key).attr('data-page-name', key);
+            a = $('<a class="internal" href="#" />').append(key).data('pageName', key);
             _results.push(ul.prepend($('<li />').append(a)));
           }
           return _results;
