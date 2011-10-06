@@ -4,7 +4,7 @@
     return this[this.length - 1];
   };
   $(function() {
-    var addToJournal, bindDragAndDrop, formatTime, getItem, getPlugin, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, renderInternalLink, resolveLinks, scripts, textEditor, useLocalStorage;
+    var addToJournal, bindDragAndDrop, formatTime, getItem, getPlugin, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, renderInternalLink, resolveLinks, scripts, scrollTo, textEditor, useLocalStorage;
     window.wiki = {};
     randomByte = function() {
       return (((1 + Math.random()) * 0x100) | 0).toString(16).substring(1);
@@ -210,6 +210,27 @@
         }
       });
     };
+    scrollTo = function(el) {
+      var contentWidth, maxX, minX, target, width;
+      minX = $("body").scrollLeft();
+      maxX = minX + $("body").width();
+      target = el.position().left;
+      width = el.outerWidth();
+      contentWidth = $(".page").outerWidth() * $(".page").size();
+      if (target < minX) {
+        return $("body").animate({
+          scrollLeft: target - 10
+        });
+      } else if (target + width > maxX) {
+        return $("body").animate({
+          scrollLeft: target - ($("body").width() - width) + 20
+        });
+      } else if (maxX > $(".pages").outerWidth()) {
+        return $("body").animate({
+          scrollLeft: contentWidth - $("body").width() + 60
+        });
+      }
+    };
     window.plugins = {
       paragraph: {
         emit: function(div, item) {
@@ -411,7 +432,7 @@
       if (!e.shiftKey) {
         $(e.target).parents('.page').nextAll().remove();
       }
-      $("<div/>").attr('id', name).addClass("page").appendTo('.main').each(refresh);
+      scrollTo($("<div/>").attr('id', name).addClass("page").appendTo('.main').each(refresh));
       if (History.enabled) {
         pages = $.makeArray($(".page").map(function(_, el) {
           return el.id;
@@ -426,7 +447,7 @@
             _results.push("/view/" + page);
           }
           return _results;
-        })()).join(''));
+        })()).join('') + ("#" + name));
       }
     }).delegate('.action', 'hover', function() {
       return $('#' + $(this).data('itemId')).toggleClass('target');

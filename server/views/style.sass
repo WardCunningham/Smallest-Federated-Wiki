@@ -1,14 +1,39 @@
+$bgcolor: #eee
+
 .error
   color: #b00
 
+@mixin full-size
+  top: 0
+  left: 0
+  right: 0
+  bottom: 0
+  position: absolute
+
 body
-  background-color: #eee
+  @include full-size
+  background-color: $bgcolor
+  overflow: hidden
+  padding: 0
+  margin: 0
+  font-family: Verdana, Arial, Sans
 
 .main
-  font-family: Verdana, Arial, Sans
-  margin-left: auto
-  margin-right: auto
-  margin-top: 3em
+  @include full-size
+  bottom: 60px
+  margin: 0
+  width: 10000%
+  
+.tools 
+  position: fixed
+  bottom: 0
+  left: 0
+  right: 0
+  height: 20px
+  background: darken($bgcolor, 10%)
+  padding: 10px
+  font-size: 85%
+  color: #666
 
 .story
   padding-bottom: 5px
@@ -17,7 +42,7 @@ body
 .image
   float: right
   margin-left: .4em
-  background: #eee
+  background: $bgcolor
   padding: .8em
   width: 40%
 
@@ -25,7 +50,7 @@ body
   width: 100%
 
 .journal
-  background-color: #eee
+  background-color: $bgcolor
   overflow: auto
   padding: 3px
 
@@ -67,13 +92,12 @@ p.readout
 
 .page
   float: left
-  margin: 1em
-  padding: 2em
+  margin: .5em
+  padding: 0 2em
   width: 26em
   background-color: #fff
-  -moz-box-shadow: 5px 8px 10px 5px #ccc
-  -webkit-box-shadow:  5px 8px 10px 5px #ccc
-  box-shadow: 5px 8px 10px 5px #ccc
+  height: 100%
+  overflow: auto
 
 .page.local
   background-color: #FBFBEF
@@ -88,7 +112,7 @@ textarea
   clear: both
   margin-top: 5px
   margin-bottom: 5px
-  background-color: #eee
+  background-color: $bgcolor
 
 .factory p
   padding: 10px

@@ -151,6 +151,21 @@ $ ->
             item.text = loadEvent.target.result
           reader.readAsText(file)
 
+  scrollTo = (el) ->
+    minX = $("body").scrollLeft()
+    maxX = minX + $("body").width()
+    target = el.position().left
+    width = el.outerWidth()
+    contentWidth = $(".page").outerWidth() * $(".page").size()
+  
+    if target < minX
+      $("body").animate scrollLeft: target - 10
+    else if target + width > maxX
+      $("body").animate scrollLeft: target - ($("body").width() - width) + 20
+    else if maxX > $(".pages").outerWidth()
+      $("body").animate scrollLeft: contentWidth - $("body").width() + 60
+      
+      
 # PLUGINS for each story item type
 
   window.plugins =
@@ -309,11 +324,12 @@ $ ->
       e.preventDefault()
       name = $(e.target).data 'pageName'
       $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
-      $("<div/>").attr('id', name).addClass("page").appendTo('.main').each refresh
+      scrollTo $("<div/>").attr('id', name).addClass("page").appendTo('.main').each refresh
+      # FIXME: can open page multiple times with shift key
       
       if History.enabled
         pages = $.makeArray $(".page").map (_, el) -> el.id
-        History.pushState {pages: pages}, name, ("/view/#{page}" for page in pages).join ''
+        History.pushState {pages: pages}, name, ("/view/#{page}" for page in pages).join('') + "##{name}"
 
     .delegate '.action', 'hover', ->
       $('#'+$(this).data('itemId')).toggleClass('target')
