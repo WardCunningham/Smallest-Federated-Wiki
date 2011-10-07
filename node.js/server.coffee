@@ -29,22 +29,16 @@ process.serve_url = (req, res) ->
     console.log req.method, req.url
     
     file = req.url[1..]
+    
     if file == ''
       console.log 'getting / == welcome-visitors.html topic'
       file = 'welcome-visitors.html'
-    #TODO: security, don't allow non-topic id chars - avoid ../ etc
-    file = file.replace(/[\/\\]/g, '')    #take unescaped unix and windows slashes in a request, and throw them away
-    
-    #remove ?random= - or other urlparams
-    file = file.replace(/\?.*$/i, '')
-    
       
-    filePath = file
-    contentType =  'application/json'
-    encoding = 'ascii'
-
+    #TODO: security, don't allow non-topic id chars - avoid ../ etc
+    file = file.replace(/\.\.[\/\\]/g, '')    #remove all instances of ../ and ..\ (talk about brutish and a tad simplistic
+    file = file.replace(/\?.*$/i, '')     #remove ?random= - or other urlparams
+      
     file_extension = file.match(/\.([^\.]*)$/i)
-    console.log file_extension
     if !file_extension[0]
       file_extension = 'json'
     else
@@ -62,7 +56,7 @@ process.serve_url = (req, res) ->
     #and here's a pointless exception to the filename.extension :(
     filePath = filePath.replace(/\.json/, '') if file_extension == 'json'
     
-    console.log 'reading: '+filePath
+    console.log req.method+filePath
     
     fs.readFile filePath, encoding, (err, data) ->
       status = 200
