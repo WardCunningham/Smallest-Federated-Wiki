@@ -3,46 +3,64 @@ fs = require 'fs'
     
 port = 8888
 
+#where to find what - yes, cfg file.
+filetype = {
+  json: {
+      content_type: 'application/json', encoding: 'ascii', dir: '../data/pages/'
+    },
+  index: {
+      content_type: 'text/html', encoding: 'ascii', dir: './'
+    },
+  css: {
+      content_type: 'text/css', encoding: 'ascii', dir: './'
+    },
+  js: {
+      content_type: 'text/javascript', encoding: 'ascii', dir: '../client/'
+    },
+  jpg: {
+      content_type: 'image/jpg', encoding: 'binary', dir: '../client/'
+    },
+  png: {
+      content_type: 'image/png', encoding: 'binary', dir: '../client/'
+    },
+}
+
 process.serve_url = (req, res) ->
     console.log req.method, req.url
     
     file = req.url[1..]
+    if file == ''
+      console.log 'getting / == welcome-visitors.html topic'
+      file = 'welcome-visitors.html'
+    #TODO: security, don't allow non-topic id chars - avoid ../ etc
+    file = file.replace(/[\/\\]/g, '')    #take unescaped unix and windows slashes in a request, and throw them away
+    
+    #remove ?random= - or other urlparams
+    file = file.replace(/\?.*$/i, '')
+    
       
     filePath = file
     contentType =  'application/json'
     encoding = 'ascii'
 
-    if file == ''
-      console.log 'getting index file: '+file
-      contentType =  'text/html'
-      filePath = './index.html'
-    else 
-      file_extension = file.match(/\.([^\.]*)$/i)
-      console.log file_extension
-      if file_extension[0]
-        file_extension = file_extension[1].toLowerCase()
-        
-        if file_extension == 'css'
-          console.log 'getting style.css file: '+file
-          contentType =  'text/css'
-          filePath = './style.css'
-        if file_extension == 'js'
-          console.log 'getting js file: '+file
-          contentType =  'text/javascript'
-          filePath = '../client/'+file
-        if file_extension == 'png' || file_extension == 'jpg'
-          encoding = 'binary'
-          console.log 'getting image file: '+file
-          contentType =  'image/'+file_extension
-          filePath = '../client/'+file
-        else if file.match(/\.json\?random=........$/i)
-          file = file.replace(/\.json\?random=........$/i, '')
-          console.log 'getting wiki page: '+file
-          filePath = '../data/pages/'+file
-      else
-        #a wiki page in json
-        filePath = '../data/pages/'+file
+    file_extension = file.match(/\.([^\.]*)$/i)
+    console.log file_extension
+    if !file_extension[0]
+      file_extension = 'json'
+    else
+      file_extension = file_extension[1].toLowerCase()
     
+    if ! filetype[file_extension]
+      file_extension = 'index'
+      file = 'index.html'
+      #TODO: do something to load the right page (and here we start with html templating
+    
+    encoding = filetype[file_extension]['encoding']
+    contentType =  filetype[file_extension]['content_type']
+    filePath = filetype[file_extension]['dir']+file
+    
+    #and here's a pointless exception to the filename.extension :(
+    filePath = filePath.replace(/\.json/, '') if file_extension == 'json'
     
     console.log 'reading: '+filePath
     
