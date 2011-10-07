@@ -26,9 +26,13 @@ filetype = {
 }
 
 process.serve_url = (req, res) ->
-    console.log req.method, req.url
-    
+#work out what resource the request is about
     file = req.url[1..]
+
+    if req.method == 'PUT'
+       #nasty hack, as we're only putting pages atm, and the URI's are :(
+       file = file.replace(/^page\//, '')    #TODO: mmm, substring anyone?
+       file = file.replace(/\/action$/, '')
     
     if file == ''
       console.log 'getting / == welcome-visitors.html topic'
@@ -39,15 +43,15 @@ process.serve_url = (req, res) ->
     file = file.replace(/\?.*$/i, '')     #remove ?random= - or other urlparams
       
     file_extension = file.match(/\.([^\.]*)$/i)
-    if !file_extension[0]
-      file_extension = 'json'
-    else
+    if file_extension && file_extension[0]
       file_extension = file_extension[1].toLowerCase()
+    else
+      file_extension = 'json'
     
     if ! filetype[file_extension]
       file_extension = 'index'
       file = 'index.html'
-      #TODO: do something to load the right page (and here we start with html templating
+      #TODO: modify the index.html page div id
     
     encoding = filetype[file_extension]['encoding']
     contentType =  filetype[file_extension]['content_type']
@@ -56,8 +60,10 @@ process.serve_url = (req, res) ->
     #and here's a pointless exception to the filename.extension :(
     filePath = filePath.replace(/\.json/, '') if file_extension == 'json'
     
-    console.log req.method+filePath
+    console.log req.method+' '+req.url+': '+filePath
     
+#fulfil the request
+    #read
     fs.readFile filePath, encoding, (err, data) ->
       status = 200
       if err
