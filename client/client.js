@@ -4,7 +4,7 @@
     return this[this.length - 1];
   };
   $(function() {
-    var addToJournal, bindDragAndDrop, formatTime, getItem, getPlugin, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, renderInternalLink, resolveLinks, scripts, scrollTo, textEditor, useLocalStorage;
+    var LEFTARROW, RIGHTARROW, addToJournal, bindDragAndDrop, formatTime, getItem, getPlugin, pagesInDom, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, renderInternalLink, resolveLinks, scripts, scrollTo, setActive, setState, showState, startPages, textEditor, useLocalStorage;
     window.wiki = {};
     randomByte = function() {
       return (((1 + Math.random()) * 0x100) | 0).toString(16).substring(1);
@@ -215,19 +215,19 @@
       minX = $("body").scrollLeft();
       maxX = minX + $("body").width();
       target = el.position().left;
-      width = el.outerWidth();
-      contentWidth = $(".page").outerWidth() * $(".page").size();
+      width = el.outerWidth(true);
+      contentWidth = $(".page").outerWidth(true) * $(".page").size();
       if (target < minX) {
         return $("body").animate({
-          scrollLeft: target - 10
+          scrollLeft: target
         });
       } else if (target + width > maxX) {
         return $("body").animate({
-          scrollLeft: target - ($("body").width() - width) + 20
+          scrollLeft: target - ($("body").width() - width)
         });
       } else if (maxX > $(".pages").outerWidth()) {
         return $("body").animate({
-          scrollLeft: contentWidth - $("body").width() + 60
+          scrollLeft: Math.min(target, contentWidth - $("body").width())
         });
       }
     };
@@ -421,12 +421,75 @@
         }
       }
     };
-    $(document).ajaxError(function(event, request, settings) {
-      console.log([event, request, settings]);
-      return $('.main').prepend("<li class='error'>Error on " + settings.url + "<br/>" + request.responseText + "</li>");
+    setState = function(state) {
+      var page, url;
+      if (History.enabled) {
+        url = ((function() {
+          var _i, _len, _ref, _results;
+          _ref = state.pages;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            page = _ref[_i];
+            _results.push("/view/" + page);
+          }
+          return _results;
+        })()).join('');
+        return History.pushState(state, state.active, url);
+      }
+    };
+    setActive = function(page) {
+      var state;
+      if (History.enabled) {
+        state = History.getState().data;
+        state.active = page;
+        return setState(state);
+      }
+    };
+    showState = function(state) {
+      $(".active").removeClass("active");
+      return scrollTo($("#" + state.active).addClass("active"));
+    };
+    History.Adapter.bind(window, 'statechange', function() {
+      var state;
+      if (state = History.getState().data) {
+        return showState(state);
+      }
     });
-    $('.main').delegate('.internal', 'click', function(e) {
-      var name, page, pages;
+    LEFTARROW = 37;
+    RIGHTARROW = 39;
+    $(document).ajaxError(function(event, request, settings) {
+      if (console && console.log) {
+        console.log([event, request, settings]);
+      }
+      return $('.main').prepend("<li class='error'>Error on " + settings.url + "<br/>" + request.responseText + "</li>");
+    }).keydown(function(event) {
+      var direction, newIndex, state;
+      direction = (function() {
+        switch (event.which) {
+          case LEFTARROW:
+            return -1;
+          case RIGHTARROW:
+            return +1;
+        }
+      })();
+      if (!direction) {
+        return;
+      }
+      if (History.enabled) {
+        state = History.getState().data;
+        newIndex = state.pages.indexOf(state.active) + direction;
+        if ((0 <= newIndex && newIndex < state.pages.length)) {
+          state.active = state.pages[newIndex];
+        }
+        return setState(state);
+      }
+    });
+    $('.main').delegate('.page', 'click', function(e) {
+      if (!$(e.target).is("a")) {
+        return setActive(this.id);
+      }
+    }).delegate('.internal', 'click', function(e) {
+      var name;
       e.preventDefault();
       name = $(e.target).data('pageName');
       if (!e.shiftKey) {
@@ -434,20 +497,10 @@
       }
       scrollTo($("<div/>").attr('id', name).addClass("page").appendTo('.main').each(refresh));
       if (History.enabled) {
-        pages = $.makeArray($(".page").map(function(_, el) {
-          return el.id;
-        }));
-        return History.pushState({
-          pages: pages
-        }, name, ((function() {
-          var _i, _len, _results;
-          _results = [];
-          for (_i = 0, _len = pages.length; _i < _len; _i++) {
-            page = pages[_i];
-            _results.push("/view/" + page);
-          }
-          return _results;
-        })()).join('') + ("#" + name));
+        return setState({
+          pages: pagesInDom(),
+          active: name
+        });
       }
     }).delegate('.action', 'hover', function() {
       return $('#' + $(this).data('itemId')).toggleClass('target');
@@ -461,6 +514,16 @@
     useLocalStorage = function() {
       return $('#localEditing').is(':checked');
     };
-    return $('.page').each(refresh);
+    pagesInDom = function() {
+      return $.makeArray($(".page").map(function(_, el) {
+        return el.id;
+      }));
+    };
+    $('.page').each(refresh);
+    startPages = pagesInDom();
+    return setState({
+      pages: startPages,
+      active: startPages[startPages.length - 1]
+    });
   });
 }).call(this);

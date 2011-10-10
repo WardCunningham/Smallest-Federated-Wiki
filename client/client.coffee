@@ -150,20 +150,20 @@ $ ->
           reader.onload = finishDrop "paragraph", (loadEvent) ->
             item.text = loadEvent.target.result
           reader.readAsText(file)
-
+    
   scrollTo = (el) ->
     minX = $("body").scrollLeft()
     maxX = minX + $("body").width()
     target = el.position().left
-    width = el.outerWidth()
-    contentWidth = $(".page").outerWidth() * $(".page").size()
+    width = el.outerWidth(true)
+    contentWidth = $(".page").outerWidth(true) * $(".page").size()
   
     if target < minX
-      $("body").animate scrollLeft: target - 10
+      $("body").animate scrollLeft: target
     else if target + width > maxX
-      $("body").animate scrollLeft: target - ($("body").width() - width) + 20
+      $("body").animate scrollLeft: target - ($("body").width() - width)
     else if maxX > $(".pages").outerWidth()
-      $("body").animate scrollLeft: contentWidth - $("body").width() + 60
+      $("body").animate scrollLeft: Math.min(target, contentWidth - $("body").width())
       
       
 # PLUGINS for each story item type
@@ -312,13 +312,55 @@ $ ->
           buildPage page
           initDragging()
 
-# HANDLERS for jQuery events
+  setState = (state) ->
+    if History.enabled
+      url = ("/view/#{page}" for page in state.pages).join('') # + "##{state.active}"
+      History.pushState state, state.active, url
+      
+  setActive = (page) ->
+    if History.enabled
+      state = History.getState().data
+      state.active = page
+      setState state
+        
+  showState = (state) ->
+    # show and refresh correct pages
+    
+    # scroll to active
+    $(".active").removeClass("active")
+    scrollTo $("#"+state.active).addClass("active")
+    
+  
+  History.Adapter.bind window, 'statechange', () ->
+    showState state if state = History.getState().data
 
-  $(document).ajaxError (event, request, settings) ->
-    console.log [event,request,settings]
-    $('.main').prepend "<li class='error'>Error on #{settings.url}<br/>#{request.responseText}</li>"
+# HANDLERS for jQuery events
+  LEFTARROW = 37
+  RIGHTARROW = 39
+
+  $(document)
+    .ajaxError (event, request, settings) ->
+      console.log [event,request,settings] if console && console.log
+      $('.main').prepend "<li class='error'>Error on #{settings.url}<br/>#{request.responseText}</li>"
+        
+    .keydown (event) ->
+      direction = switch event.which
+        when LEFTARROW then -1
+        when RIGHTARROW then +1
+      return unless direction
+      
+      if History.enabled
+        state = History.getState().data;
+        newIndex = state.pages.indexOf(state.active) + direction
+        if 0 <= newIndex < state.pages.length
+          state.active = state.pages[newIndex]
+        setState state
+        
 
   $('.main')
+  
+    .delegate '.page', 'click', (e) ->
+      setActive this.id unless $(e.target).is("a")
 
     .delegate '.internal', 'click', (e) ->
       e.preventDefault()
@@ -328,8 +370,7 @@ $ ->
       # FIXME: can open page multiple times with shift key
       
       if History.enabled
-        pages = $.makeArray $(".page").map (_, el) -> el.id
-        History.pushState {pages: pages}, name, ("/view/#{page}" for page in pages).join('') + "##{name}"
+        setState {pages: pagesInDom(), active: name}
 
     .delegate '.action', 'hover', ->
       $('#'+$(this).data('itemId')).toggleClass('target')
@@ -345,5 +386,11 @@ $ ->
         .each refresh
 
   useLocalStorage = () -> $('#localEditing').is(':checked')
+  
+  pagesInDom = () ->
+    $.makeArray $(".page").map (_, el) -> el.id
 
   $('.page').each refresh
+  
+  startPages = pagesInDom()
+  setState { pages: startPages, active: startPages[startPages.length-1]}
