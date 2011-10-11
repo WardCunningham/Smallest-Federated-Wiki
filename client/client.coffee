@@ -280,7 +280,7 @@ $ ->
         .append("<a href=\"/#{slug}.json?random=#{randomBytes(4)}\" title=\"source\">JSON</a> . ")
         .append("<a href=\"#\" class=\"add-factory\" title=\"add paragraph\">[+]</a>")
 
-    if $(pageElement).data('serverGenerated') == 'true'
+    if $(pageElement).attr('data-server-generated') == 'true'
       initDragging()
       pageElement.find('.item').each (i, each) ->
         div = $(each)
