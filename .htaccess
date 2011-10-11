@@ -15,7 +15,8 @@ RewriteRule ^(.*)\.json$ /data/pages/$1
 #should really use the 404 for 'topic does not exist' and then have the client create it locally
 RewriteCond %{REQUEST_URI} ^/data/
 RewriteCond %{REQUEST_URI} !^/data/pages/missing-page
-RewriteRule !-f /data/pages/missing-page
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule .* /data/pages/missing-page
 
 RewriteCond %{REQUEST_URI} ^/data/
 RewriteRule .* - [T=application/json]
