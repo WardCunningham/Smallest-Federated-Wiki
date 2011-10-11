@@ -1,0 +1,18 @@
+
+RewriteEngine On
+
+RewriteRule ^$ /server/views/static.html
+RewriteRule ^style.css$ /server/views/style.css
+
+RewriteCond %{REQUEST_URI} !^/client/
+RewriteRule ^(.*\.js)$ /client/$1
+
+
+RewriteCond %{REQUEST_URI} !^/data/
+RewriteRule ^(.*)\.json$ /data/pages/$1 [T=application/json]
+
+RewriteCond %{REQUEST_URI} ^/data/
+RewriteRule .* - [T=application/json]
+
+RewriteRule ^favicon.png$ http://en.gravatar.com/userimage/3255925/c3addcadf86caced332408a2e0b4d68b.jpeg
+
