@@ -10,10 +10,10 @@ filetype = {
       content_type: 'application/json', encoding: 'ascii', dir: '../data/pages/'
     },
   index: {
-      content_type: 'text/html', encoding: 'ascii', dir: './'
+      content_type: 'text/html', encoding: 'ascii', dir: '../server/views/static.html'
     },
   css: {
-      content_type: 'text/css', encoding: 'ascii', dir: './'
+      content_type: 'text/css', encoding: 'ascii', dir: '../server/views/'
     },
   js: {
       content_type: 'text/javascript', encoding: 'ascii', dir: '../client/'
@@ -29,7 +29,7 @@ filetype = {
 process.serve_url = (req, res) ->
     file = req.url[1..]
 
-    if req.method == 'PUT'itemitem
+    if req.method == 'PUT'
        #nasty hack, as we're only putting pages atm, and the URI's are :(
        file = file.replace(/^page\//, '')    #TODO: mmm, substring anyone?
        file = file.replace(/\/action$/, '')
@@ -58,8 +58,8 @@ process.serve_url = (req, res) ->
     
     if ! filetype[file_extension]
       file_extension = 'index'
-      file = 'index.html'
-      #TODO: modify the index.html page div id
+      file = ''
+      #TODO: modify the index.html page div id (I think I'll get client.coffee to update it)
     
     encoding = filetype[file_extension]['encoding']
     contentType =  filetype[file_extension]['content_type']
