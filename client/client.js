@@ -6,6 +6,12 @@
   $(function() {
     var addToJournal, bindDragAndDrop, formatTime, getItem, getPlugin, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, renderInternalLink, resolveLinks, scripts, textEditor, useLocalStorage;
     window.wiki = {};
+    window.dialog = $('<div></div>').html('This dialog will show every time!').dialog({
+      autoOpen: false,
+      title: 'Basic Dialog',
+      height: 600,
+      width: 800
+    });
     randomByte = function() {
       return (((1 + Math.random()) * 0x100) | 0).toString(16).substring(1);
     };
@@ -376,7 +382,7 @@
         $.each(page.journal, function(i, action) {
           return addToJournal(journalElement, action);
         });
-        return footerElement.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ').append("<a href=\"/" + slug + ".json?random=" + (randomBytes(4)) + "\" title=\"source\">JSON</a> . ").append("<a href=\"#\" class=\"add-factory\" title=\"add paragraph\">[+]</a>");
+        return footerElement.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ').append("<a class=\"show-page-source\" href=\"/" + slug + ".json?random=" + (randomBytes(4)) + "\" title=\"source\">JSON</a> . ").append("<a href=\"#\" class=\"add-factory\" title=\"add paragraph\">[+]</a>");
       };
       if ($(pageElement).data('serverGenerated') === 'true') {
         initDragging();
@@ -404,7 +410,23 @@
       console.log([event, request, settings]);
       return $('.main').prepend("<li class='error'>Error on " + settings.url + "<br/>" + request.responseText + "</li>");
     });
-    $('.main').delegate('.internal', 'click', function(e) {
+    $('.main').delegate('.show-page-source', 'click', function(e) {
+      var json, pageElement, resource, site, slug;
+      e.preventDefault();
+      if (useLocalStorage() && (json = localStorage[pageElement.attr("id")])) {
+        return window.dialog.dialog('open');
+      } else {
+        pageElement = $(this).parent().parent();
+        slug = $(pageElement).attr('id');
+        site = $(pageElement).data('site');
+        resource = site != null ? "remote/" + site + "/" + slug : slug;
+        return $.get("/" + resource + ".json?random=" + (randomBytes(4)), "", function(page) {
+          window.dialog.html('<pre>' + JSON.stringify(page, null, 2) + '</pre>');
+          window.dialog.dialog("option", "title", "Source for: " + slug);
+          return window.dialog.dialog('open');
+        });
+      }
+    }).delegate('.internal', 'click', function(e) {
       var name, page, pages;
       e.preventDefault();
       name = $(e.target).data('pageName');
