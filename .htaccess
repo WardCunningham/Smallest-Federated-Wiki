@@ -4,9 +4,13 @@ RewriteEngine On
 RewriteRule ^$ /server/views/static.html
 RewriteRule ^style.css$ /server/views/style.css
 
+#jquery stuff - css, images, js
 RewriteCond %{REQUEST_URI} !^/client/
-RewriteRule ^(.*\.js)$ /client/$1
+RewriteRule ^(js/.*)$ /client/$1
 
+#client.js
+RewriteCond %{REQUEST_URI} !^/client/
+RewriteRule ^client.js$ /client/client.js
 
 RewriteCond %{REQUEST_URI} !^/data/
 RewriteRule ^(.*)\.json$ /data/pages/$1 
