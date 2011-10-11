@@ -14,5 +14,6 @@ RewriteRule ^(.*)\.json$ /data/pages/$1 [T=application/json]
 RewriteCond %{REQUEST_URI} ^/data/
 RewriteRule .* - [T=application/json]
 
+#SvenDowideit@fosiki.com's gravatar - you'll want to change this :)
 RewriteRule ^favicon.png$ http://en.gravatar.com/userimage/3255925/c3addcadf86caced332408a2e0b4d68b.jpeg
 
