@@ -1,5 +1,6 @@
 http = require 'http'
 fs = require 'fs'
+qs = require 'querystring'
     
 port = 8888
 
@@ -26,18 +27,25 @@ filetype = {
 }
 
 process.serve_url = (req, res) ->
-#work out what resource the request is about
     file = req.url[1..]
 
-    if req.method == 'PUT'
+    if req.method == 'PUT'itemitem
        #nasty hack, as we're only putting pages atm, and the URI's are :(
        file = file.replace(/^page\//, '')    #TODO: mmm, substring anyone?
        file = file.replace(/\/action$/, '')
+       body = ''
+       req.on 'data', (data) -> body +=data;
+       req.on 'end', ->
+         POST =  qs.parse(body, true);
+         console.log(POST);
+
     
     if file == ''
       console.log 'getting / == welcome-visitors.html topic'
       file = 'welcome-visitors.html'
       
+    #TODO: use require('url').parse(request.url, true) to parse the url
+    
     #TODO: security, don't allow non-topic id chars - avoid ../ etc
     file = file.replace(/\.\.[\/\\]/g, '')    #remove all instances of ../ and ..\ (talk about brutish and a tad simplistic
     file = file.replace(/\?.*$/i, '')     #remove ?random= - or other urlparams
@@ -62,7 +70,7 @@ process.serve_url = (req, res) ->
     
     console.log req.method+' '+req.url+': '+filePath
     
-#fulfil the request
+    #fulfil the request
     #read
     fs.readFile filePath, encoding, (err, data) ->
       status = 200
@@ -73,16 +81,16 @@ process.serve_url = (req, res) ->
           status = 404
         data = ""
       console.log 'status: '+ status
-      console.log ' contentType: '+ contentType
+      #console.log ' contentType: '+ contentType
       if status is 200
           res.writeHead 200,
               'Content-Type': contentType
               'Content-Length': data.length + 1
           if encoding == 'binary'
-            console.log 'sending binary'
+            #console.log 'sending binary'
             res.write data, encoding
           else
-            console.log 'sending string'
+            #console.log 'sending string'
             data = data.toString()
             res.write data + '\n'
           
