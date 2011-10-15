@@ -4,6 +4,11 @@ Array::last = ->
 $ ->
   window.wiki = {}
 
+#prepare a Dialog to popup
+  window.dialog = $('<div></div>')
+	  .html('This dialog will show every time!')
+	  .dialog { autoOpen: false, title: 'Basic Dialog', height: 600, width: 800 }
+
 # FUNCTIONS used by plugins and elsewhere
 
   randomByte = -> (((1+Math.random())*0x100)|0).toString(16).substring(1)
@@ -292,10 +297,10 @@ $ ->
 
       footerElement
         .append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ')
-        .append("<a href=\"/#{slug}.json?random=#{randomBytes(4)}\" title=\"source\">JSON</a> . ")
+        .append("<a class=\"show-page-source\" href=\"/#{slug}.json?random=#{randomBytes(4)}\" title=\"source\">JSON</a> . ")
         .append("<a href=\"#\" class=\"add-factory\" title=\"add paragraph\">[+]</a>")
 
-    if $(pageElement).data('serverGenerated') == 'true'
+    if $(pageElement).attr('data-server-generated') == 'true'
       initDragging()
       pageElement.find('.item').each (i, each) ->
         div = $(each)
@@ -352,18 +357,18 @@ $ ->
 # HANDLERS for jQuery events
   LEFTARROW = 37
   RIGHTARROW = 39
-
+  
   $(document)
     .ajaxError (event, request, settings) ->
-      console.log [event,request,settings] if console && console.log
+      console.log [event,request,settings]
       $('.main').prepend "<li class='error'>Error on #{settings.url}<br/>#{request.responseText}</li>"
-        
+    
     .keydown (event) ->
       direction = switch event.which
         when LEFTARROW then -1
         when RIGHTARROW then +1
       return unless direction
-      
+    
       if History.enabled
         state = History.getState().data;
         newIndex = state.pages.indexOf(state.active) + direction
@@ -371,9 +376,24 @@ $ ->
           state.active = state.pages[newIndex]
         setState state
         
-
   $('.main')
-  
+    .delegate '.show-page-source', 'click', (e) ->
+      e.preventDefault()
+      #TODO: this is a cut,paste&hack from a few lines above - refactor out 
+      if useLocalStorage() and json = localStorage[pageElement.attr("id")]
+        #set the dialog content..
+        window.dialog.dialog('open');
+      else
+        pageElement = $(this).parent().parent()
+        slug = $(pageElement).attr('id')
+        site = $(pageElement).data('site')
+
+        resource = if site? then "remote/#{site}/#{slug}" else slug
+        $.get "/#{resource}.json?random=#{randomBytes(4)}", "", (page) -> 
+          window.dialog.html('<pre>'+JSON.stringify(page, null, 2)+'</pre>')
+          window.dialog.dialog( "option", "title", "Source for: "+slug );
+          window.dialog.dialog('open')
+
     .delegate '.page', 'click', (e) ->
       setActive this.id unless $(e.target).is("a")
 

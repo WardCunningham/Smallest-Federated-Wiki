@@ -58,6 +58,9 @@ class Controller < Sinatra::Base
   get %r{^/([a-z0-9-]+)\.html$} do |name|
     haml :view, :locals => {:page_names => [name]}
   end
+  get %r{^/view/([a-z0-9-]+(/view/[a-z0-9-]+)*)$} do |pages,extra|
+    haml :view, :locals => {:page_names => pages.split('/view/')}
+  end
 
   get %r{^/([a-z0-9-]+)\.json$} do |name|
     content_type 'application/json'
@@ -86,10 +89,6 @@ class Controller < Sinatra::Base
     ( page['journal'] ||= [] ) << action # todo: journal undo, not redo
     put_page name, page
     "ok"
-  end
-
-  get %r{^/view/([a-z0-9-]+(/view/[a-z0-9-]+)*)$} do |pages,extra|
-    haml :view, :locals => {:page_names => pages.split('/view/')}
   end
 
   get %r{^/remote/([a-zA-Z0-9:\.-]+)/([a-z0-9-]+)\.json$} do |site, name|
