@@ -1,6 +1,7 @@
 http = require 'http'
 fs = require 'fs'
 qs = require 'querystring'
+url = require 'url'
     
 port = 8888
 
@@ -28,6 +29,11 @@ filetype = {
 
 process.serve_url = (req, res) ->
     file = req.url[1..]
+    
+    urlparams = url.parse(req.url, true)
+    console.log urlparams
+    jsonpCallback = urlparams.query.callback
+    console.log 'callback='+jsonpCallback
 
     if req.method == 'PUT'
        #nasty hack, as we're only putting pages atm, and the URI's are :(
@@ -81,8 +87,13 @@ process.serve_url = (req, res) ->
           status = 404
         data = ""
       console.log 'status: '+ status
-      #console.log ' contentType: '+ contentType
+      if jsonpCallback
+        contentType = 'text/javascript'
+      console.log ' contentType: '+ contentType
       if status is 200
+          if jsonpCallback
+            data = jsonpCallback+'( '+data+' )'
+
           res.writeHead 200,
               'Content-Type': contentType
               'Content-Length': data.length + 1

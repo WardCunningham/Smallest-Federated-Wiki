@@ -26,9 +26,20 @@
       })()).join('');
     };
     renderInternalLink = function(match, name) {
-      var slug;
+      var link, m, site, slug;
+      site = null;
+      m = name.match(/^(.*)\|(.*)$/);
+      if (m) {
+        site = m[1];
+        name = m[2];
+      }
       slug = name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase();
-      return "<a class=\"internal\" href=\"/" + slug + ".html\" data-page-name=\"" + slug + "\">" + name + "</a>";
+      link = $('<a>' + name + '</a>').addClass('internal').attr('href', '/' + slug + '.html').attr('data-page-name', slug).data("slug", slug);
+      if (site != null) {
+        link.attr("site", site);
+        link.data("site", site);
+      }
+      return $('<div>').append(link).remove().html();
     };
     resolveLinks = function(string) {
       return string.replace(/\[\[([^\]]+)\]\]/gi, renderInternalLink).replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" href=\"$1\">$2</a>");
@@ -358,7 +369,7 @@
         page = $.extend(empty, data);
         $(pageElement).data("data", data);
         if (site != null) {
-          $(pageElement).append("<h1><a href=\"//" + site + "\"><img src = \"/remote/" + site + "/favicon.png\" height = \"32px\"></a> " + page.title + "</h1>");
+          $(pageElement).append("<h1><a href=\"//" + site + "\"><img src = \"http://" + site + "/favicon.png\" height = \"32px\"></a> " + page.title + "</h1>");
         } else {
           $(pageElement).append("<h1><a href=\"/\"><img src = \"/favicon.png\" height = \"32px\"></a> " + page.title + "</h1>");
         }
@@ -398,8 +409,8 @@
           buildPage(JSON.parse(json));
           return initDragging();
         } else {
-          resource = site != null ? "remote/" + site + "/" + slug : slug;
-          return $.get("/" + resource + ".json?random=" + (randomBytes(4)), "", function(page) {
+          resource = site != null ? "http://" + site + "/" + slug : '/' + slug;
+          return $.getJSON("" + resource + ".json?random=" + (randomBytes(4)) + "&callback=?", function(page) {
             buildPage(page);
             return initDragging();
           });
@@ -419,21 +430,26 @@
         pageElement = $(this).parent().parent();
         slug = $(pageElement).attr('id');
         site = $(pageElement).data('site');
-        resource = site != null ? "remote/" + site + "/" + slug : slug;
-        return $.get("/" + resource + ".json?random=" + (randomBytes(4)), "", function(page) {
+        resource = site != null ? "http://" + site + "/" + slug : '/' + slug;
+        return $.get("" + resource + ".json?random=" + (randomBytes(4)), "", function(page) {
           window.dialog.html('<pre>' + JSON.stringify(page, null, 2) + '</pre>');
           window.dialog.dialog("option", "title", "Source for: " + slug);
           return window.dialog.dialog('open');
         });
       }
     }).delegate('.internal', 'click', function(e) {
-      var name, page, pages;
+      var name, newPage, page, pages, site;
       e.preventDefault();
       name = $(e.target).data('pageName');
+      site = $(e.target).attr('site');
       if (!e.shiftKey) {
         $(e.target).parents('.page').nextAll().remove();
       }
-      $("<div/>").attr('id', name).addClass("page").appendTo('.main').each(refresh);
+      newPage = $("<div/>").attr('id', name).addClass("page");
+      if (site) {
+        newPage = newPage.data('site', site);
+      }
+      newPage.appendTo('.main').each(refresh);
       if (History.enabled) {
         pages = $.makeArray($(".page").map(function(_, el) {
           return el.id;

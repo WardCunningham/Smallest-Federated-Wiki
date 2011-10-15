@@ -15,9 +15,23 @@ $ ->
   randomBytes = (n) -> (randomByte() for [1..n]).join('')
   
   renderInternalLink = (match, name) ->
+    #if there is a | in the link, treat it as a remote wiki server link
+    site=null
+    m = name.match(/^(.*)\|(.*)$/)
+    if m
+      site = m[1]
+      name = m[2]
     # spaces become 'slugs', non-alpha-num get removed
     slug = name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase()
-    "<a class=\"internal\" href=\"/"+slug+".html\" data-page-name=\""+slug+"\">"+name+"</a>"
+    link = $('<a>'+name+'</a>')
+      .addClass('internal')
+      .attr('href', '/'+slug+'.html')
+      .attr('data-page-name', slug)
+      .data("slug", slug)
+    if site?
+      link.attr("site", site)
+      link.data("site", site)
+    $('<div>').append(link).remove().html()
 
   resolveLinks = (string) ->
     string
@@ -258,7 +272,7 @@ $ ->
       $(pageElement).data("data", data)
 
       if site?
-        $(pageElement).append "<h1><a href=\"//#{site}\"><img src = \"/remote/#{site}/favicon.png\" height = \"32px\"></a> #{page.title}</h1>"
+        $(pageElement).append "<h1><a href=\"//#{site}\"><img src = \"http://#{site}/favicon.png\" height = \"32px\"></a> #{page.title}</h1>"
       else
         $(pageElement).append "<h1><a href=\"/\"><img src = \"/favicon.png\" height = \"32px\"></a> #{page.title}</h1>"
 
@@ -297,8 +311,9 @@ $ ->
         buildPage JSON.parse(json)
         initDragging()
       else
-        resource = if site? then "remote/#{site}/#{slug}" else slug
-        $.get "/#{resource}.json?random=#{randomBytes(4)}", "", (page) ->
+        resource = if site? then "http://#{site}/#{slug}" else '/'+slug
+        ####TODO: need to know if the server supports jsonp - and if not, use a normal get
+        $.getJSON "#{resource}.json?random=#{randomBytes(4)}&callback=?", (page) ->
           buildPage page
           initDragging()
 
@@ -320,8 +335,8 @@ $ ->
         slug = $(pageElement).attr('id')
         site = $(pageElement).data('site')
 
-        resource = if site? then "remote/#{site}/#{slug}" else slug
-        $.get "/#{resource}.json?random=#{randomBytes(4)}", "", (page) -> 
+        resource = if site? then "http://#{site}/#{slug}" else '/'+slug
+        $.get "#{resource}.json?random=#{randomBytes(4)}", "", (page) -> 
           window.dialog.html('<pre>'+JSON.stringify(page, null, 2)+'</pre>')
           window.dialog.dialog( "option", "title", "Source for: "+slug );
           window.dialog.dialog('open')
@@ -329,8 +344,14 @@ $ ->
     .delegate '.internal', 'click', (e) ->
       e.preventDefault()
       name = $(e.target).data 'pageName'
+      site = $(e.target).attr 'site'
       $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
-      $("<div/>").attr('id', name).addClass("page").appendTo('.main').each refresh
+      newPage = $("<div/>")
+        .attr('id', name)
+        .addClass("page")
+      if site
+        newPage = newPage.data('site', site)
+      newPage.appendTo('.main').each refresh
       
       if History.enabled
         pages = $.makeArray $(".page").map (_, el) -> el.id
