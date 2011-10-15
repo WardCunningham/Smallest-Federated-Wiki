@@ -1,10 +1,15 @@
 (function() {
-  var __slice = Array.prototype.slice;
+  var __slice = Array.prototype.slice, __indexOf = Array.prototype.indexOf || function(item) {
+    for (var i = 0, l = this.length; i < l; i++) {
+      if (this[i] === item) return i;
+    }
+    return -1;
+  };
   Array.prototype.last = function() {
     return this[this.length - 1];
   };
   $(function() {
-    var LEFTARROW, RIGHTARROW, addToJournal, bindDragAndDrop, formatTime, getItem, getPlugin, pagesInDom, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, renderInternalLink, resolveLinks, scripts, scrollTo, setActive, setState, showState, startPages, textEditor, useLocalStorage;
+    var LEFTARROW, RIGHTARROW, addToJournal, bindDragAndDrop, createPage, findPage, formatTime, getItem, getPlugin, pagesInDom, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, renderInternalLink, resolveLinks, scripts, scrollTo, setActive, setState, showState, startPages, textEditor, useLocalStorage;
     window.wiki = {};
     randomByte = function() {
       return (((1 + Math.random()) * 0x100) | 0).toString(16).substring(1);
@@ -446,6 +451,26 @@
       }
     };
     showState = function(state) {
+      var name, newPages, oldPages, previousPage, _i, _j, _len, _len2;
+      oldPages = pagesInDom();
+      newPages = state.pages;
+      previousPage = newPages;
+      if (!newPages) {
+        return;
+      }
+      for (_i = 0, _len = newPages.length; _i < _len; _i++) {
+        name = newPages[_i];
+        if (__indexOf.call(oldPages, name) >= 0) {
+          delete oldPages[oldPages.indexOf(name)];
+        } else {
+          createPage(name).insertAfter(previousPage).each(refresh);
+        }
+        previousPage = findPage(name);
+      }
+      for (_j = 0, _len2 = oldPages.length; _j < _len2; _j++) {
+        name = oldPages[_j];
+        name && findPage(name).remove();
+      }
       $(".active").removeClass("active");
       return scrollTo($("#" + state.active).addClass("active"));
     };
@@ -495,7 +520,7 @@
       if (!e.shiftKey) {
         $(e.target).parents('.page').nextAll().remove();
       }
-      scrollTo($("<div/>").attr('id', name).addClass("page").appendTo('.main').each(refresh));
+      scrollTo(createPage(name).appendTo('.main').each(refresh));
       if (History.enabled) {
         return setState({
           pages: pagesInDom(),
@@ -518,6 +543,12 @@
       return $.makeArray($(".page").map(function(_, el) {
         return el.id;
       }));
+    };
+    createPage = function(name) {
+      return $("<div/>").attr('id', name).addClass("page");
+    };
+    findPage = function(name) {
+      return $("#" + name);
     };
     $('.page').each(refresh);
     startPages = pagesInDom();

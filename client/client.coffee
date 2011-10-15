@@ -325,6 +325,21 @@ $ ->
         
   showState = (state) ->
     # show and refresh correct pages
+    oldPages = pagesInDom()
+    newPages = state.pages
+    previousPage = newPages
+    
+    return unless newPages
+    
+    for name in newPages
+      if name in oldPages
+        delete oldPages[oldPages.indexOf(name)]
+      else
+        createPage(name).insertAfter(previousPage).each refresh
+      previousPage = findPage(name)
+    
+    name && findPage(name).remove() for name in oldPages
+        
     
     # scroll to active
     $(".active").removeClass("active")
@@ -366,7 +381,7 @@ $ ->
       e.preventDefault()
       name = $(e.target).data 'pageName'
       $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
-      scrollTo $("<div/>").attr('id', name).addClass("page").appendTo('.main').each refresh
+      scrollTo createPage(name).appendTo('.main').each refresh
       # FIXME: can open page multiple times with shift key
       
       if History.enabled
@@ -389,6 +404,12 @@ $ ->
   
   pagesInDom = () ->
     $.makeArray $(".page").map (_, el) -> el.id
+    
+  createPage = (name) ->
+    $("<div/>").attr('id', name).addClass("page")
+  
+  findPage = (name) ->
+    $("#"+name)
 
   $('.page').each refresh
   
