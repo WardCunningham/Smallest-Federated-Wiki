@@ -12,11 +12,13 @@ $bgcolor: #eee
 
 body
   @include full-size
-  background-color: $bgcolor
+  background: $bgcolor url("/crosses.png")
   overflow: hidden
   padding: 0
   margin: 0
-  font-family: Verdana, Arial, Sans
+  font-family: "Helvetica Neue", helvetica, Verdana, Arial, Sans
+  line-height: 1.3
+  color: #333
 
 .main
   @include full-size
@@ -24,16 +26,22 @@ body
   margin: 0
   width: 10000%
   
-.tools 
+header,
+footer
   position: fixed
-  bottom: 0
   left: 0
   right: 0
   height: 20px
-  background: darken($bgcolor, 10%)
   padding: 10px
-  font-size: 85%
-  color: #666
+  font-size: 80%
+  z-index: 1000
+  color: #556
+  
+header
+  top: 0
+  
+footer
+  bottom: 0
 
 .story
   padding-bottom: 5px
@@ -98,10 +106,11 @@ p.readout
   background-color: #fff
   height: 100%
   overflow: auto
-  border: 1px solid #ccc
+  box-shadow: 2px 1px 4px rgba(0,0,0,0.2)
   
-.page.active 
-  border: 1px solid #f00
+  &.active 
+    box-shadow: 2px 1px 24px rgba(0,0,0,0.4)
+    z-index: 10
 
 .page.local
   background-color: #FBFBEF
@@ -123,3 +132,34 @@ textarea
 
 .clickable:hover
   cursor: pointer
+
+// Mobile styles
+@media all and (max-width: 400px) 
+  .page
+    width: .9%
+    margin: .01%
+    padding: .04%
+
+
+// Fancy scrollbars in WebKit
+::-webkit-scrollbar
+  width: 10px
+  height: 10px
+  margin-right: 10px
+
+::-webkit-scrollbar-button:start:decrement,
+::-webkit-scrollbar-button:end:increment
+  height: 30px
+  display: block
+  background-color: transparent
+
+
+::-webkit-scrollbar-track-piece
+  background-color: #eee
+  -webkit-border-radius: 6px
+
+::-webkit-scrollbar-thumb:vertical
+  height: 50px
+  background-color: #ccc
+  border: 1px solid #eee
+  -webkit-border-radius: 6px

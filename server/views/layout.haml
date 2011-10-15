@@ -3,7 +3,7 @@
 	%head
 		%title= $identity['title']
 		%meta(http-equiv="Content-Type" content="text/html; charset=UTF-8")
-		%meta(name="viewport" content="width=530, maximum-scale=0.65")
+		%meta(name="viewport" content="width=device-width; height=device-height; initial-scale=1.0; user-scalable=no")
 		%link(type="image/png" href="/favicon.png" rel="icon")
 		%link(type="text/css" href="/style.css" rel="stylesheet")
 		%script(type="text/javascript" src="/js/jquery-1.6.2.min.js")
@@ -12,8 +12,9 @@
 		%script(type="text/javascript" src="/js/history.jquery.min.js")
 		%script(type="text/javascript" src="/client.js")
 	%body
-		.main
+		%header
+		%section.main
 			=yield
-		.tools
+		%footer
 			%input{:type => "checkbox", :id => "localEditing", :class => "local_editing clickable"}
 			%label{:for => "localEditing",  :class => "clickable"} Local editing
