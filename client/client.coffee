@@ -322,7 +322,7 @@ $ ->
 
         resource = if site? then "remote/#{site}/#{slug}" else slug
         $.get "/#{resource}.json?random=#{randomBytes(4)}", "", (page) -> 
-          window.dialog.html('<pre>'+JSON.stringify(page, null, 2)+'</pre>')
+          window.dialog.html($('<pre/>').text(JSON.stringify(page, null, 2)))
           window.dialog.dialog( "option", "title", "Source for: "+slug );
           window.dialog.dialog('open')
 

@@ -421,7 +421,7 @@
         site = $(pageElement).data('site');
         resource = site != null ? "remote/" + site + "/" + slug : slug;
         return $.get("/" + resource + ".json?random=" + (randomBytes(4)), "", function(page) {
-          window.dialog.html('<pre>' + JSON.stringify(page, null, 2) + '</pre>');
+          window.dialog.html($('<pre/>').text(JSON.stringify(page, null, 2)));
           window.dialog.dialog("option", "title", "Source for: " + slug);
           return window.dialog.dialog('open');
         });
