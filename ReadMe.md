@@ -19,10 +19,45 @@ This project has been founded within the community assembled in Portland at the 
 
 * [http://IndieWebCamp.com]
 
+How to Participate
+==================
+
+First you will want to get caught up with some project history. We've been recording screencast videos for as long as we've had something to demo. You should watch them all. They're short:
+
+* http://wardcunningham.github.com
+
+Then you will want to read through the project roadmap. This and a number of other forward looking pages are kept in the project's GitHub wiki:
+
+* [Project Roadmap](https://github.com/WardCunningham/Smallest-Federated-Wiki/wiki)
+* [List of Wiki Pages](https://github.com/WardCunningham/Smallest-Federated-Wiki/wiki/_pages)
+
+When you start reading code you're want to start with the "reference" server implementation. This is coded in ruby as a Sinatra application. There are other server implementations but the ruby code is as close as we have to a specification as to what it means to be a federated wiki server:
+
+* [/server](https://github.com/WardCunningham/Smallest-Federated-Wiki/tree/master/server)
+
+The next code reading stop is the client side javascript which is coded in the punctuation friendly dialect [CoffeeScript](http://jashkenas.github.com/coffee-script/):
+
+* [/client](https://github.com/WardCunningham/Smallest-Federated-Wiki/tree/master/client)
+
+Code contributions are always welcome. We're developing using the `fork and pull request` model supported so well by GitHub. Please read through their excellent help to make sure you know what's expected of you:
+
+* http://help.github.com/send-pull-requests/
+
+If you'd like to know what we think of your programming idea before you program it, just write up an Issue here on GitHub. You're save us all some time if you read through open issues first:
+
+* [Open Issues](https://github.com/WardCunningham/Smallest-Federated-Wiki/issues?sort=created&direction=desc&state=open&page=1)
+
+For that matter, there is lots of coding and project philosophy in the comment history of closed issues. Read through the issues with lots of comments. GitHub will sort closed issues by number of comments to make this easy:
+
+* [Closed Issues](https://github.com/WardCunningham/Smallest-Federated-Wiki/issues?sort=comments&direction=desc&state=closed&page=1)
+
+We're proud to be forked frequently. Go ahead and fork this project now. We're glad to have you. 
+
+
 Install and Launch
 ==================
 
-The server is distributed as a GitHub repository. The server distributes a web client to any visitor. You will need a git client. Learn more from GitHub:
+The reference server is distributed as a GitHub repository. You will need a git client. Learn more from GitHub:
 
 	http://help.github.com/
 
@@ -33,6 +68,7 @@ When you have git. Use it to clone the repository:
 
 We're using Ruby 1.9.2 which we manage with rvm:
 
+	rvm install 1.9.2
 	rvm 1.9.2
 
 The server is a ruby bundle. Get the bundler and then use it to get everything else:
