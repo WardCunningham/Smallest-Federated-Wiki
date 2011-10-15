@@ -63,8 +63,13 @@ class Controller < Sinatra::Base
   end
 
   get %r{^/([a-z0-9-]+)\.json$} do |name|
-    content_type 'application/json'
-    JSON.pretty_generate(get_page(name))
+    if defined? params['callback'] then
+      content_type 'text/javascript'
+      params['callback'] + '( ' + JSON.pretty_generate(get_page(name)) + ' )'
+    else
+      content_type 'application/json'
+      JSON.pretty_generate(get_page(name))
+    end
   end
 
   put %r{^/page/([a-z0-9-]+)/action$} do |name|
