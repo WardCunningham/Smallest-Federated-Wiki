@@ -101,4 +101,9 @@ class Controller < Sinatra::Base
     `curl -s #{site}/favicon.png`
   end
 
+  get '/pages' do 
+    content_type 'application/json'
+    JSON.pretty_generate([ Dir[APP_ROOT + '/data/pages/*'].map{|f| File.basename(f)} ])
+  end
+
 end
