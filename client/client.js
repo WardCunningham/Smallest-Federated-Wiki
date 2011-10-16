@@ -9,7 +9,7 @@
     return this[this.length - 1];
   };
   $(function() {
-    var LEFTARROW, RIGHTARROW, addToJournal, bindDragAndDrop, createPage, findPage, formatTime, getItem, getPlugin, pagesInDom, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, renderInternalLink, resolveLinks, scripts, scrollTo, setActive, setState, showState, startPages, textEditor, useLocalStorage;
+    var LEFTARROW, RIGHTARROW, addToJournal, createPage, findPage, formatTime, getItem, getPlugin, pagesInDom, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, renderInternalLink, resolveLinks, scripts, scrollTo, setActive, setState, showState, startPages, textEditor, useLocalStorage;
     window.wiki = {};
     window.dialog = $('<div></div>').html('This dialog will show every time!').dialog({
       autoOpen: false,
@@ -46,7 +46,7 @@
         return actionElement.css("background-image", "url(//" + action.site + "/favicon.png)").attr("href", "//" + action.site + "/" + (pageElement.attr('id')) + ".html").data("site", action.site).data("slug", pageElement.attr('id'));
       }
     };
-    putAction = function(pageElement, action) {
+    putAction = wiki.putAction = function(pageElement, action) {
       if (useLocalStorage()) {
         pushToLocal(pageElement, action);
         return pageElement.addClass("local");
@@ -163,63 +163,11 @@
       }
       return null;
     };
-    getPlugin = function(plugin) {
+    getPlugin = wiki.getPlugin = function(plugin) {
       if (window.plugins[plugin] == null) {
         wiki.getScript("plugins/" + plugin + ".js");
       }
       return window.plugins[plugin];
-    };
-    bindDragAndDrop = function(div, item, allowedTypes) {
-      if (allowedTypes == null) {
-        allowedTypes = [];
-      }
-      ["dragenter", "dragover"].map(function(eventName) {
-        return div.bind(eventName, function(evt) {
-          return evt.preventDefault();
-        });
-      });
-      return div.bind("drop", function(dropEvent) {
-        var file, finishDrop, majorType, minorType, reader, _ref;
-        finishDrop = function(type, handler) {
-          return function(loadEvent) {
-            var action, pageDiv;
-            item.type = type;
-            handler(loadEvent);
-            div.empty();
-            div.removeClass("factory").addClass(type);
-            pageDiv = div.parents('.page:first');
-            action = {
-              type: 'edit',
-              id: item.id,
-              item: item
-            };
-            putAction(pageDiv, action);
-            return getPlugin(type).emit(div, item);
-          };
-        };
-        dropEvent.preventDefault();
-        file = dropEvent.originalEvent.dataTransfer.files[0];
-        _ref = file.type.split("/"), majorType = _ref[0], minorType = _ref[1];
-        if (allowedTypes.filter(function(t) {
-          return t === majorType;
-        }).length === 0) {
-          return alert("Uploads of type " + majorType + " not supported for this item");
-        } else {
-          reader = new FileReader();
-          if (majorType === "image") {
-            reader.onload = finishDrop("image", function(loadEvent) {
-              item.url = loadEvent.target.result;
-              return item.caption || (item.caption = "Uploaded image");
-            });
-            return reader.readAsDataURL(file);
-          } else if (majorType === "text") {
-            reader.onload = finishDrop("paragraph", function(loadEvent) {
-              return item.text = loadEvent.target.result;
-            });
-            return reader.readAsText(file);
-          }
-        }
-      });
     };
     scrollTo = function(el) {
       var contentWidth, maxX, minX, target, width;
@@ -257,9 +205,7 @@
         emit: function(div, item) {
           return div.append("<img src=\"" + item.url + "\"> <p>" + (resolveLinks(item.caption)) + "</p>");
         },
-        bind: function(div, item) {
-          return bindDragAndDrop(div, item, ["image"]);
-        }
+        bind: function(div, item) {}
       },
       chart: {
         emit: function(div, item) {
@@ -273,18 +219,6 @@
             _ref = item.data[Math.floor(item.data.length * e.offsetX / e.target.offsetWidth)], time = _ref[0], sample = _ref[1];
             $(e.target).text(sample.toFixed(1));
             return $(e.target).siblings("p").last().html(formatTime(time));
-          });
-        }
-      },
-      factory: {
-        emit: function(div, item) {
-          return div.append('<p>Double-Click to Edit<br>Drop Text or Image to Insert</p>');
-        },
-        bind: function(div, item) {
-          bindDragAndDrop(div, item, ["image", "text"]);
-          return div.dblclick(function() {
-            div.removeClass('factory').addClass(item.type = 'paragraph');
-            return textEditor(div, item);
           });
         }
       },
@@ -314,7 +248,7 @@
       slug = $(pageElement).attr('id');
       site = $(pageElement).data('site');
       pageElement.find(".add-factory").live("click", function(evt) {
-        var before, beforeElement, item, itemElement;
+        var before, beforeElement, factory, item, itemElement;
         evt.preventDefault();
         item = {
           type: "factory",
@@ -326,8 +260,9 @@
         }).data('item', item);
         itemElement.data('pageElement', pageElement);
         pageElement.find(".story").append(itemElement);
-        plugins.factory.emit(itemElement, item);
-        plugins.factory.bind(itemElement, item);
+        factory = getPlugin('factory');
+        factory.emit(itemElement, item);
+        factory.bind(itemElement, item);
         beforeElement = itemElement.prev('.item');
         before = getItem(beforeElement);
         return putAction(pageElement, {

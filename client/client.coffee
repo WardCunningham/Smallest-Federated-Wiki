@@ -37,7 +37,7 @@ $ ->
         .data("site", action.site)
         .data("slug", pageElement.attr('id'))
 
-  putAction = (pageElement, action) ->
+  putAction = wiki.putAction = (pageElement, action) ->
     if useLocalStorage()
       pushToLocal(pageElement, action)
       pageElement.addClass("local")
@@ -117,45 +117,10 @@ $ ->
         console.dir $(i).data('item')
     null
 
-  getPlugin = (plugin) ->
+  getPlugin = wiki.getPlugin = (plugin) ->
     wiki.getScript "plugins/#{plugin}.js" unless window.plugins[plugin]?
     window.plugins[plugin]
 
-  bindDragAndDrop = (div, item, allowedTypes = []) ->
-    ["dragenter", "dragover"].map (eventName) ->
-      div.bind eventName, (evt) -> evt.preventDefault()
-
-    div.bind "drop", (dropEvent) ->
-
-      finishDrop = (type, handler) ->
-        (loadEvent) ->
-          item.type = type
-          handler loadEvent
-          div.empty()
-          div.removeClass("factory").addClass(type)
-          pageDiv = div.parents('.page:first')
-          action = {type: 'edit', id: item.id, item: item}
-          putAction(pageDiv, action)
-          getPlugin(type).emit(div, item)
-
-      dropEvent.preventDefault()
-      file = dropEvent.originalEvent.dataTransfer.files[0]
-      [majorType, minorType] = file.type.split("/")
-
-      if allowedTypes.filter((t) -> t == majorType).length == 0
-        alert("Uploads of type #{majorType} not supported for this item")
-      else
-        reader = new FileReader()
-        if majorType == "image"
-          reader.onload = finishDrop "image", (loadEvent) ->
-            item.url = loadEvent.target.result
-            item.caption ||= "Uploaded image"
-          reader.readAsDataURL(file)
-        else if majorType == "text"
-          reader.onload = finishDrop "paragraph", (loadEvent) ->
-            item.text = loadEvent.target.result
-          reader.readAsText(file)
-    
   scrollTo = (el) ->
     minX = $("body").scrollLeft()
     maxX = minX + $("body").width()
@@ -180,7 +145,7 @@ $ ->
         div.dblclick -> textEditor div, item
     image:
       emit: (div, item) -> div.append "<img src=\"#{item.url}\"> <p>#{resolveLinks(item.caption)}</p>"
-      bind: (div, item) -> bindDragAndDrop(div, item, ["image"])
+      bind: (div, item) ->
     chart:
       emit: (div, item) ->
         chartElement = $('<p />').addClass('readout').appendTo(div).text(item.data.last().last())
@@ -190,13 +155,6 @@ $ ->
           [time, sample] = item.data[Math.floor(item.data.length * e.offsetX / e.target.offsetWidth)]
           $(e.target).text sample.toFixed(1)
           $(e.target).siblings("p").last().html formatTime(time)
-    factory:
-      emit: (div, item) -> div.append '<p>Double-Click to Edit<br>Drop Text or Image to Insert</p>'
-      bind: (div, item) ->
-        bindDragAndDrop(div, item, ["image", "text"])
-        div.dblclick ->
-          div.removeClass('factory').addClass(item.type='paragraph')
-          textEditor div, item
     changes:
       emit: (div, item) ->
         div.append ul = $('<ul />').append if localStorage.length then $('<input type="button" value="discard all" />').css('margin-top','10px') else $('<p>empty</p>')
@@ -224,8 +182,9 @@ $ ->
       itemElement = $("<div />", class: "item factory", id: item.id).data('item',item)
       itemElement.data 'pageElement', pageElement
       pageElement.find(".story").append(itemElement)
-      plugins.factory.emit itemElement, item
-      plugins.factory.bind itemElement, item
+      factory = getPlugin('factory')
+      factory.emit itemElement, item
+      factory.bind itemElement, item
       beforeElement = itemElement.prev('.item')
       before = getItem(beforeElement)
       putAction pageElement, {item: item, id: item.id, type: "add", after: before?.id} 
