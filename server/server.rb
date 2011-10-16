@@ -104,7 +104,9 @@ class Controller < Sinatra::Base
   get '/pages' do 
     #content_type 'application/json'
     #JSON.pretty_generate([ Dir[APP_ROOT + '/data/pages/*'].map{|f| File.basename(f)} ])
-    haml :pages
+    haml :pages, :locals => {:page_names => [ Dir[APP_ROOT + '/data/pages/*'].map{|f| File.basename(f)} ],
+                             :text       => Dir[APP_ROOT + '/data/pages/*'].map{|f| '[[' + File.basename(f) + ']]'}.join("\n")
+                            }
   end
 
 end

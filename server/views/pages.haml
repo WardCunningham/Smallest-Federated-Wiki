@@ -4,5 +4,7 @@
 			%img{:src => '/favicon.png', :height => '32px'}
 		= "List of known pages"
 	.story
+		%div{:class => ['item', type='paragraph']}
+			%p=resolve_links( text )
 	.footer
 		%a{:id => "license", :href => "http://creativecommons.org/licenses/by-sa/3.0/"} CC BY-SA 3.0
