@@ -423,10 +423,7 @@
     });
     LEFTARROW = 37;
     RIGHTARROW = 39;
-    $(document).ajaxError(function(event, request, settings) {
-      console.log([event, request, settings]);
-      return $('.main').prepend("<li class='error'>Error on " + settings.url + "<br/>" + request.responseText + "</li>");
-    }).keydown(function(event) {
+    $(document).keydown(function(event) {
       var direction, newIndex, state;
       direction = (function() {
         switch (event.which) {
@@ -436,10 +433,7 @@
             return +1;
         }
       })();
-      if (!direction) {
-        return;
-      }
-      if (History.enabled) {
+      if (direction && History.enabled) {
         state = History.getState().data;
         newIndex = state.pages.indexOf(state.active) + direction;
         if ((0 <= newIndex && newIndex < state.pages.length)) {
@@ -447,6 +441,21 @@
         }
         return setState(state);
       }
+    });
+    pagesInDom = function() {
+      return $.makeArray($(".page").map(function(_, el) {
+        return el.id;
+      }));
+    };
+    createPage = function(name) {
+      return $("<div/>").attr('id', name).addClass("page");
+    };
+    findPage = function(name) {
+      return $("#" + name);
+    };
+    $(document).ajaxError(function(event, request, settings) {
+      console.log([event, request, settings]);
+      return $('.main').prepend("<li class='error'>Error on " + settings.url + "<br/>" + request.responseText + "</li>");
     });
     $('.main').delegate('.show-page-source', 'click', function(e) {
       var json, pageElement, resource, site, slug;
@@ -493,17 +502,6 @@
     });
     useLocalStorage = function() {
       return $('#localEditing').is(':checked');
-    };
-    pagesInDom = function() {
-      return $.makeArray($(".page").map(function(_, el) {
-        return el.id;
-      }));
-    };
-    createPage = function(name) {
-      return $("<div/>").attr('id', name).addClass("page");
-    };
-    findPage = function(name) {
-      return $("#" + name);
     };
     $('.page').each(refresh);
     startPages = pagesInDom();

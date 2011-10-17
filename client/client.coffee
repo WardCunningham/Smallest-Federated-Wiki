@@ -276,6 +276,8 @@ $ ->
           buildPage page
           initDragging()
 
+# FUNCTIONS and HANDLERS to manage location bar and back button
+
   setState = (state) ->
     if History.enabled
       url = ("/view/#{page}" for page in state.pages).join('') # + "##{state.active}"
@@ -301,40 +303,46 @@ $ ->
       else
         createPage(name).insertAfter(previousPage).each refresh
       previousPage = findPage(name)
-    
+
     name && findPage(name).remove() for name in oldPages
-        
-    
+
     # scroll to active
     $(".active").removeClass("active")
     scrollTo $("#"+state.active).addClass("active")
-    
-  
+
   History.Adapter.bind window, 'statechange', () ->
     showState state if state = History.getState().data
 
-# HANDLERS for jQuery events
   LEFTARROW = 37
   RIGHTARROW = 39
-  
+
+  $(document).keydown (event) ->
+    direction = switch event.which
+      when LEFTARROW then -1
+      when RIGHTARROW then +1
+    if direction && History.enabled
+      state = History.getState().data;
+      newIndex = state.pages.indexOf(state.active) + direction
+      if 0 <= newIndex < state.pages.length
+        state.active = state.pages[newIndex]
+      setState state
+
+  pagesInDom = () ->
+    $.makeArray $(".page").map (_, el) -> el.id
+
+  createPage = (name) ->
+    $("<div/>").attr('id', name).addClass("page")
+
+  findPage = (name) ->
+    $("#"+name)
+
+# HANDLERS for jQuery events
+
   $(document)
     .ajaxError (event, request, settings) ->
       console.log [event,request,settings]
       $('.main').prepend "<li class='error'>Error on #{settings.url}<br/>#{request.responseText}</li>"
     
-    .keydown (event) ->
-      direction = switch event.which
-        when LEFTARROW then -1
-        when RIGHTARROW then +1
-      return unless direction
-    
-      if History.enabled
-        state = History.getState().data;
-        newIndex = state.pages.indexOf(state.active) + direction
-        if 0 <= newIndex < state.pages.length
-          state.active = state.pages[newIndex]
-        setState state
-        
   $('.main')
     .delegate '.show-page-source', 'click', (e) ->
       e.preventDefault()
@@ -381,15 +389,6 @@ $ ->
 
   useLocalStorage = () -> $('#localEditing').is(':checked')
   
-  pagesInDom = () ->
-    $.makeArray $(".page").map (_, el) -> el.id
-    
-  createPage = (name) ->
-    $("<div/>").attr('id', name).addClass("page")
-  
-  findPage = (name) ->
-    $("#"+name)
-
   $('.page').each refresh
   
   startPages = pagesInDom()
