@@ -19,7 +19,7 @@ $ ->
     slug = name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase()
     "<a class=\"internal\" href=\"/"+slug+".html\" data-page-name=\""+slug+"\">"+name+"</a>"
 
-  resolveLinks = (string) ->
+  resolveLinks = wiki.resolveLinks = (string) ->
     string
       .replace(/\[\[([^\]]+)\]\]/gi, renderInternalLink)
       .replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" href=\"$1\">$2</a>")
@@ -377,7 +377,7 @@ $ ->
     .delegate '.action', 'hover', ->
       $('#'+$(this).data('itemId')).toggleClass('target')
 
-    .delegate '.action.fork', 'click', (e) ->
+    .delegate '.action.fork, .remote', 'click', (e) ->
       e.preventDefault()
       $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
       $("<div />")

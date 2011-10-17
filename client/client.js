@@ -35,7 +35,7 @@
       slug = name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase();
       return "<a class=\"internal\" href=\"/" + slug + ".html\" data-page-name=\"" + slug + "\">" + name + "</a>";
     };
-    resolveLinks = function(string) {
+    resolveLinks = wiki.resolveLinks = function(string) {
       return string.replace(/\[\[([^\]]+)\]\]/gi, renderInternalLink).replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" href=\"$1\">$2</a>");
     };
     addToJournal = function(journalElement, action) {
@@ -493,7 +493,7 @@
       }
     }).delegate('.action', 'hover', function() {
       return $('#' + $(this).data('itemId')).toggleClass('target');
-    }).delegate('.action.fork', 'click', function(e) {
+    }).delegate('.action.fork, .remote', 'click', function(e) {
       e.preventDefault();
       if (!e.shiftKey) {
         $(e.target).parents('.page').nextAll().remove();
