@@ -18,19 +18,27 @@
         var file, finishDrop, majorType, minorType, reader, _ref;
         finishDrop = function(type, handler) {
           return function(loadEvent) {
-            var action, pageDiv;
+            var action, pageElement, plugin;
             item.type = type;
             handler(loadEvent);
-            div.empty();
+            div.empty().unbind();
             div.removeClass("factory").addClass(type);
-            pageDiv = div.parents('.page:first');
+            pageElement = div.parents('.page:first');
+            try {
+              div.data('pageElement', pageElement);
+              div.data('item', item);
+              plugin = wiki.getPlugin(item.type);
+              plugin.emit(div, item);
+              plugin.bind(div, item);
+            } catch (err) {
+              div.append("<p class='error'>" + err + "</p>");
+            }
             action = {
               type: 'edit',
               id: item.id,
               item: item
             };
-            wiki.putAction(pageDiv, action);
-            return wiki.getPlugin(type).emit(div, item);
+            return wiki.putAction(pageElement, action);
           };
         };
         dropEvent.preventDefault();

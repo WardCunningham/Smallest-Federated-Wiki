@@ -12,12 +12,19 @@ window.plugins.factory =
         (loadEvent) ->
           item.type = type
           handler loadEvent
-          div.empty()
+          div.empty().unbind()
           div.removeClass("factory").addClass(type)
-          pageDiv = div.parents('.page:first')
+          pageElement = div.parents('.page:first')
+          try
+            div.data 'pageElement', pageElement
+            div.data 'item', item
+            plugin = wiki.getPlugin item.type
+            plugin.emit div, item
+            plugin.bind div, item
+          catch err
+            div.append "<p class='error'>#{err}</p>"
           action = {type: 'edit', id: item.id, item: item}
-          wiki.putAction(pageDiv, action)
-          wiki.getPlugin(type).emit(div, item)
+          wiki.putAction(pageElement, action)
 
       dropEvent.preventDefault()
       if dropEvent.originalEvent.dataTransfer?
