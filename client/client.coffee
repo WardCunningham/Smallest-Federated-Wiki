@@ -13,7 +13,7 @@ $ ->
 
   randomByte = -> (((1+Math.random())*0x100)|0).toString(16).substring(1)
   randomBytes = (n) -> (randomByte() for [1..n]).join('')
-  
+
   renderInternalLink = (match, name) ->
     # spaces become 'slugs', non-alpha-num get removed
     slug = name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase()
@@ -127,15 +127,15 @@ $ ->
     target = el.position().left
     width = el.outerWidth(true)
     contentWidth = $(".page").outerWidth(true) * $(".page").size()
-  
+
     if target < minX
       $("body").animate scrollLeft: target
     else if target + width > maxX
       $("body").animate scrollLeft: target - ($("body").width() - width)
     else if maxX > $(".pages").outerWidth()
       $("body").animate scrollLeft: Math.min(target, contentWidth - $("body").width())
-      
-      
+
+
 # PLUGINS for each story item type
 
   window.plugins =
@@ -187,7 +187,7 @@ $ ->
       factory.bind itemElement, item
       beforeElement = itemElement.prev('.item')
       before = getItem(beforeElement)
-      putAction pageElement, {item: item, id: item.id, type: "add", after: before?.id} 
+      putAction pageElement, {item: item, id: item.id, type: "add", after: before?.id}
 
     initDragging = ->
       storyElement = pageElement.find('.story')
@@ -282,21 +282,21 @@ $ ->
     if History.enabled
       url = ("/view/#{page}" for page in state.pages).join('') # + "##{state.active}"
       History.pushState state, state.active, url
-      
+
   setActive = (page) ->
     if History.enabled
       state = History.getState().data
       state.active = page
       setState state
-        
+
   showState = (state) ->
     # show and refresh correct pages
     oldPages = pagesInDom()
     newPages = state.pages
     previousPage = newPages
-    
+
     return unless newPages
-    
+
     for name in newPages
       if name in oldPages
         delete oldPages[oldPages.indexOf(name)]
@@ -342,11 +342,11 @@ $ ->
     .ajaxError (event, request, settings) ->
       console.log [event,request,settings]
       $('.main').prepend "<li class='error'>Error on #{settings.url}<br/>#{request.responseText}</li>"
-    
+
   $('.main')
     .delegate '.show-page-source', 'click', (e) ->
       e.preventDefault()
-      #TODO: this is a cut,paste&hack from a few lines above - refactor out 
+      #TODO: this is a cut,paste&hack from a few lines above - refactor out
       if useLocalStorage() and json = localStorage[pageElement.attr("id")]
         #set the dialog content..
         window.dialog.dialog('open');
@@ -356,7 +356,7 @@ $ ->
         site = $(pageElement).data('site')
 
         resource = if site? then "remote/#{site}/#{slug}" else slug
-        $.get "/#{resource}.json?random=#{randomBytes(4)}", "", (page) -> 
+        $.get "/#{resource}.json?random=#{randomBytes(4)}", "", (page) ->
           window.dialog.html($('<pre/>').text(JSON.stringify(page, null, 2)))
           window.dialog.dialog( "option", "title", "Source for: "+slug );
           window.dialog.dialog('open')
@@ -370,7 +370,7 @@ $ ->
       $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
       scrollTo createPage(name).appendTo('.main').each refresh
       # FIXME: can open page multiple times with shift key
-      
+
       if History.enabled
         setState {pages: pagesInDom(), active: name}
 
@@ -388,8 +388,8 @@ $ ->
         .each refresh
 
   useLocalStorage = () -> $('#localEditing').is(':checked')
-  
+
   $('.page').each refresh
-  
+
   startPages = pagesInDom()
   setState { pages: startPages, active: startPages[startPages.length-1]}
