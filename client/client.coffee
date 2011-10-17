@@ -65,7 +65,7 @@ $ ->
       error: (xhr, type, msg) ->
         console.log "ajax error type: #{type} msg: #{msg}"
 
-  textEditor = (div, item) ->
+  textEditor = wiki.textEditor = (div, item) ->
     textarea = $("<textarea>#{item.text ? ''}</textarea>")
       .focusout ->
         if textarea.val()

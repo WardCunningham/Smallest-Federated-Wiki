@@ -6,7 +6,7 @@
     bind: function(div, item) {
       div.dblclick(function() {
         div.removeClass('factory').addClass(item.type = 'paragraph');
-        return textEditor(div, item);
+        return wiki.textEditor(div, item);
       });
       div.bind('dragenter', function(evt) {
         return evt.preventDefault();

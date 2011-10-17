@@ -3,7 +3,7 @@ window.plugins.factory =
   bind: (div, item) ->
     div.dblclick ->
       div.removeClass('factory').addClass(item.type='paragraph')
-      textEditor div, item
+      wiki.textEditor div, item
     div.bind 'dragenter', (evt) -> evt.preventDefault()
     div.bind 'dragover', (evt) -> evt.preventDefault()
     div.bind "drop", (dropEvent) ->

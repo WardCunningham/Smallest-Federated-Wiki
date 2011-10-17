@@ -86,7 +86,7 @@
         }
       });
     };
-    textEditor = function(div, item) {
+    textEditor = wiki.textEditor = function(div, item) {
       var textarea, _ref;
       textarea = $("<textarea>" + ((_ref = item.text) != null ? _ref : '') + "</textarea>").focusout(function() {
         if (textarea.val()) {
