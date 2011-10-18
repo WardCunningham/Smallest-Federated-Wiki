@@ -1,6 +1,8 @@
 http = require 'http'
 fs = require 'fs'
 qs = require 'querystring'
+
+DEBUG = 0
     
 port = 8888
 
@@ -12,9 +14,13 @@ filetype = {
   index: {
       content_type: 'text/html', encoding: 'ascii', dir: '../server/views/static.html'
     },
-  css: {
-      content_type: 'text/css', encoding: 'ascii', dir: '../server/views/'
+  css: {  #this one is complicated - there's css from jquery, the view css, and then (probably) css for plugins - so I'll make the views css a special case in code below :(
+      #content_type: 'text/css', encoding: 'ascii', dir: '../server/views/'
+      content_type: 'text/css', encoding: 'ascii', dir: '../client/'
     },
+  stylecss: {  
+      content_type: 'text/css', encoding: 'ascii', dir: '../server/views/'
+    }
   js: {
       content_type: 'text/javascript', encoding: 'ascii', dir: '../client/'
     },
@@ -28,6 +34,7 @@ filetype = {
 
 process.serve_url = (req, res) ->
     file = req.url[1..]
+    console.log req.method+' '+req.url+': '+file if DEBUG
 
     if req.method == 'PUT'
        #nasty hack, as we're only putting pages atm, and the URI's are :(
@@ -37,11 +44,11 @@ process.serve_url = (req, res) ->
        req.on 'data', (data) -> body +=data;
        req.on 'end', ->
          POST =  qs.parse(body, true);
-         console.log(POST);
+         console.log(POST) if DEBUG
 
     
     if file == ''
-      console.log 'getting / == welcome-visitors.html topic'
+      console.log '    getting / == welcome-visitors.html topic' if DEBUG
       file = 'welcome-visitors.html'
       
     #TODO: use require('url').parse(request.url, true) to parse the url
@@ -51,12 +58,15 @@ process.serve_url = (req, res) ->
     file = file.replace(/\?.*$/i, '')     #remove ?random= - or other urlparams
       
     file_extension = file.match(/\.([^\.]*)$/i)
+    if file == 'style.css'
+      file_extension = ['stylecss', 'stylecss']
     if file_extension && file_extension[0]
       file_extension = file_extension[1].toLowerCase()
     else
       file_extension = 'json'
-    
+      
     if ! filetype[file_extension]
+      console.log '    defaulting: ' + file_extension if DEBUG
       file_extension = 'index'
       file = ''
       #TODO: modify the index.html page div id (I think I'll get client.coffee to update it)
@@ -68,7 +78,7 @@ process.serve_url = (req, res) ->
     #and here's a pointless exception to the filename.extension :(
     filePath = filePath.replace(/\.json/, '') if file_extension == 'json'
     
-    console.log req.method+' '+req.url+': '+filePath
+    console.log '    serverfile: '+filePath if DEBUG
     
     #fulfil the request
     #read
@@ -80,7 +90,8 @@ process.serve_url = (req, res) ->
         else
           status = 404
         data = ""
-      console.log 'status: '+ status
+      console.log '    filePath: ' + filePath if DEBUG
+      console.log '    status: '+ status if DEBUG
       #console.log ' contentType: '+ contentType
       if status is 200
           res.writeHead 200,
@@ -99,6 +110,7 @@ process.serve_url = (req, res) ->
         res.writeHead status
 
       res.end()
+      console.log 'DONE: ' + filePath if DEBUG
 #done.
 
 if process.myserver
