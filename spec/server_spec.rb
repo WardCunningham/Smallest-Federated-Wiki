@@ -108,3 +108,43 @@ describe "GET /welcome-visitors.json" do
   end
 
 end
+
+describe "GET /non-existant-test-page" do
+
+  before(:all) do
+    `rm data/pages/non-existant-test-page`
+  end
+
+  after(:all) do
+    `rm data/pages/non-existant-test-page`
+  end
+
+  before(:each) do
+    get "/non-existant-test-page.json"
+    @response = last_response
+    @body = last_response.body
+    @json = JSON.parse(@body)
+  end
+
+  it "has a factory item" do
+    @json['story'].first['type'].should == 'factory'
+  end
+
+  it "can convert factory to paragraph" do
+    factory = @json['story'].first
+    factory['type'] = 'paragraph'
+    factory['text'] = 'The quick brown fox jumped over the lazy dogs back.'
+    action = {'id'=>factory['id'], 'type'=>'edit', 'item'=>factory }
+    put "/page/non-existant-test-page/action", :action => action.to_json
+    last_response.body.should == 'ok'
+  end
+
+  it "has the revision in the story" do
+    @json['story'].first['text'].should == 'The quick brown fox jumped over the lazy dogs back.'
+  end
+
+  it "has an edit action in the journal" do
+    @json['journal'].first['type'].should == 'edit'
+  end
+
+end
