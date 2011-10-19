@@ -1,12 +1,18 @@
 require 'rubygems'
-require 'pathname'
 require 'bundler'
+require 'pathname'
 Bundler.require
 
-class Controller < Sinatra::Base
-  root_path = File.dirname(File.dirname(__FILE__))
-  APP_ROOT = Pathname.new(root_path).realpath.to_s #find full path to this file
+$LOAD_PATH.unshift(File.dirname(__FILE__))
+root_path = File.dirname(File.dirname(__FILE__)) # one level up
+APP_ROOT = Pathname.new(root_path).realpath.to_s # full path to application root
 
+require 'random_id'
+require 'page'
+
+Page.directory = File.join(APP_ROOT, 'data/pages')
+
+class Controller < Sinatra::Base
   set :port, 1111
   set :public, "#{APP_ROOT}/client"
   set :views , "#{APP_ROOT}/server/views"  
@@ -14,17 +20,17 @@ class Controller < Sinatra::Base
 
   helpers do
     def gen_id
-      (0..15).collect{(rand*16).to_i.to_s(16)}.join
+      RandomId.generate
     end
+
     def get_page name
-      path = File.join(APP_ROOT, "data/pages/#{name}")
-      return put_page name, {'title'=>name,'story'=>[{'type'=>'factory', 'id'=>gen_id}]} unless File.file? path
-      File.open(path, 'r') { |file| JSON.parse(file.read) }
+      Page.get(name)
     end
+
     def put_page name, page
-      File.open(File.join(APP_ROOT, "data/pages/#{name}"), 'w') { |file| file.write(JSON.generate(page)) }
-      return page
+      Page.put(name, page)
     end
+
     def resolve_links string
       string.
         gsub(/\[\[([^\]]+)\]\]/i) {
