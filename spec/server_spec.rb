@@ -109,7 +109,7 @@ end
 
 describe "GET /non-existent-test-page" do
   before(:all) do
-    `rm data/pages/non-existent-test-page`
+    `rm -f data/pages/non-existent-test-page`
   end
 
   after(:all) do
