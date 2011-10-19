@@ -104,23 +104,20 @@ describe "GET /welcome-visitors.json" do
     it "has paragraph with text string" do
       @json['story'].first['text'].class.should == String
     end
-    
   end
-
 end
 
-describe "GET /non-existant-test-page" do
-
+describe "GET /non-existent-test-page" do
   before(:all) do
-    `rm data/pages/non-existant-test-page`
+    `rm data/pages/non-existent-test-page`
   end
 
   after(:all) do
-    `rm data/pages/non-existant-test-page`
+    `rm data/pages/non-existent-test-page`
   end
 
   before(:each) do
-    get "/non-existant-test-page.json"
+    get "/non-existent-test-page.json"
     @response = last_response
     @body = last_response.body
     @json = JSON.parse(@body)
@@ -135,7 +132,7 @@ describe "GET /non-existant-test-page" do
     factory['type'] = 'paragraph'
     factory['text'] = 'The quick brown fox jumped over the lazy dogs back.'
     action = {'id'=>factory['id'], 'type'=>'edit', 'item'=>factory }
-    put "/page/non-existant-test-page/action", :action => action.to_json
+    put "/page/non-existent-test-page/action", :action => action.to_json
     last_response.body.should == 'ok'
   end
 
@@ -146,5 +143,4 @@ describe "GET /non-existant-test-page" do
   it "has an edit action in the journal" do
     @json['journal'].first['type'].should == 'edit'
   end
-
 end
