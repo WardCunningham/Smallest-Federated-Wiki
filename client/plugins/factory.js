@@ -1,4 +1,10 @@
 (function() {
+  var __indexOf = Array.prototype.indexOf || function(item) {
+    for (var i = 0, l = this.length; i < l; i++) {
+      if (this[i] === item) return i;
+    }
+    return -1;
+  };
   window.plugins.factory = {
     emit: function(div, item) {
       return div.append('<p>Double-Click to Edit<br>Drop Text or Image to Insert</p>');
@@ -15,8 +21,8 @@
         return evt.preventDefault();
       });
       return div.bind("drop", function(dropEvent) {
-        var file, finishDrop, majorType, minorType, reader, _ref;
-        finishDrop = function(type, handler) {
+        var dt, readFile, readHandler;
+        readHandler = function(type, handler) {
           return function(loadEvent) {
             var action, pageElement, plugin;
             item.type = type;
@@ -41,29 +47,39 @@
             return wiki.putAction(pageElement, action);
           };
         };
-        dropEvent.preventDefault();
-        if (dropEvent.originalEvent.dataTransfer != null) {
-          console.log(dropEvent.originalEvent.dataTransfer.types);
-          file = dropEvent.originalEvent.dataTransfer.files[0];
+        readFile = function(file) {
+          var majorType, minorType, reader, _ref;
           if (file != null) {
             _ref = file.type.split("/"), majorType = _ref[0], minorType = _ref[1];
             reader = new FileReader();
             if (majorType === "image") {
-              reader.onload = finishDrop("image", function(loadEvent) {
+              reader.onload = readHandler("image", function(loadEvent) {
                 item.url = loadEvent.target.result;
                 return item.caption || (item.caption = "Uploaded image");
               });
               return reader.readAsDataURL(file);
             } else if (majorType === "text") {
-              reader.onload = finishDrop("paragraph", function(loadEvent) {
+              reader.onload = readHandler("paragraph", function(loadEvent) {
                 return item.text = loadEvent.target.result;
               });
               return reader.readAsText(file);
             } else {
-              return alert("Expected text or image, got '" + file.type + "'");
+              return alert("Expected text or image, got '" + (join("\n", file.type)) + "'");
             }
           } else {
-            return alert("Expected file, got null");
+            return alert("Expected file name, got null");
+          }
+        };
+        dropEvent.preventDefault();
+        if ((dt = dropEvent.originalEvent.dataTransfer) != null) {
+          if (__indexOf.call(dt.types, 'text/uri-list') >= 0) {
+            console.log(dt);
+            return console.log(dt.getData('URL'));
+          } else if (__indexOf.call(dt.types, 'Files') >= 0) {
+            return readFile(dt.files[0]);
+          } else {
+            console.log(dt.types);
+            return alert("Can't read any of " + dt.types);
           }
         } else {
           return alert("Expected dataTransfer, got null");

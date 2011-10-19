@@ -8,7 +8,7 @@ window.plugins.factory =
     div.bind 'dragover', (evt) -> evt.preventDefault()
     div.bind "drop", (dropEvent) ->
 
-      finishDrop = (type, handler) ->
+      readHandler = (type, handler) ->
         (loadEvent) ->
           item.type = type
           handler loadEvent
@@ -26,26 +26,35 @@ window.plugins.factory =
           action = {type: 'edit', id: item.id, item: item}
           wiki.putAction(pageElement, action)
 
-      dropEvent.preventDefault()
-      if dropEvent.originalEvent.dataTransfer?
-        console.log dropEvent.originalEvent.dataTransfer.types
-        file = dropEvent.originalEvent.dataTransfer.files[0]
+      readFile = (file) ->
         if file?
           [majorType, minorType] = file.type.split("/")
           reader = new FileReader()
           if majorType == "image"
-            reader.onload = finishDrop "image", (loadEvent) ->
+            reader.onload = readHandler "image", (loadEvent) ->
               item.url = loadEvent.target.result
               item.caption ||= "Uploaded image"
             reader.readAsDataURL(file)
           else if majorType == "text"
-            reader.onload = finishDrop "paragraph", (loadEvent) ->
+            reader.onload = readHandler "paragraph", (loadEvent) ->
               item.text = loadEvent.target.result
             reader.readAsText(file)
           else
-            alert "Expected text or image, got '#{file.type}'"
+            alert "Expected text or image, got '#{join "\n", file.type}'"
         else
-          alert "Expected file, got null"
+          alert "Expected file name, got null"
+
+      dropEvent.preventDefault()
+      if (dt = dropEvent.originalEvent.dataTransfer)?
+        if 'text/uri-list' in dt.types
+          console.log dt
+          console.log dt.getData('URL')
+        else if 'Files' in dt.types
+          readFile dt.files[0]
+        else
+          console.log dt.types
+          alert "Can't read any of #{dt.types}"
       else
         alert "Expected dataTransfer, got null"
+
 
