@@ -4,7 +4,7 @@ require 'pp'
 include Rack::Test::Methods
 def app; Controller; end
 
-shared_examples_for "Welcome" do
+shared_examples_for "Welcome as HTML" do
   it "renders the page" do
     last_response.status.should == 200
   end
@@ -60,4 +60,18 @@ describe "GET /view/welcome-visitors/view/indie-web-camp" do
   it "has a div with class 'page' and id 'indie-web-camp'" do
     @body.should match(/<div class='page' id='indie-web-camp'>/)
   end
+end
+
+describe "GET /welcome-visitors.json" do
+  before(:all) do
+    get "/view/welcome-visitors.json"
+    @response = last_response
+    @body = last_response.body
+  end
+
+  it "does something" do
+    puts @body
+
+  end
+  
 end
