@@ -23,14 +23,6 @@ class Controller < Sinatra::Base
       RandomId.generate
     end
 
-    def get_page name
-      Page.get(name)
-    end
-
-    def put_page name, page
-      Page.put(name, page)
-    end
-
     def resolve_links string
       string.
         gsub(/\[\[([^\]]+)\]\]/i) {
@@ -70,11 +62,11 @@ class Controller < Sinatra::Base
 
   get %r{^/([a-z0-9-]+)\.json$} do |name|
     content_type 'application/json'
-    JSON.pretty_generate(get_page(name))
+    JSON.pretty_generate(Page.get(name))
   end
 
   put %r{^/page/([a-z0-9-]+)/action$} do |name|
-    page = get_page name
+    page = Page.get(name)
     action = JSON.parse params['action']
     puts action.inspect
     case action['type']
@@ -93,7 +85,7 @@ class Controller < Sinatra::Base
       return "unfamiliar action"
     end
     ( page['journal'] ||= [] ) << action # todo: journal undo, not redo
-    put_page name, page
+    Page.put name, page
     "ok"
   end
 
