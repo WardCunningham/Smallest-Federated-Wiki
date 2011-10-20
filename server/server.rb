@@ -99,4 +99,17 @@ class Controller < Sinatra::Base
     `curl -s #{site}/favicon.png`
   end
 
+  get '/pages' do 
+    haml :pages, :locals => {:page_names => [ Dir[APP_ROOT + '/data/pages/*'].map{|f| File.basename(f)} ],
+                             :text       => '<ul>' +
+                                            Dir[APP_ROOT + '/data/pages/*'].
+                                              sort().
+                                              map{|f| '<li>[[' + 
+                                                      File.basename(f) + 
+                                                      ']]</li>'
+                                                 }.join("\n") +
+                                            '</ul>'
+                            }
+  end
+
 end
