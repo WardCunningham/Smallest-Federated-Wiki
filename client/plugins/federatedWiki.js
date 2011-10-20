@@ -1,11 +1,12 @@
 (function() {
   window.plugins.federatedWiki = {
     emit: function(div, item) {
-      var icon;
-      icon = $("<a href='//" + item.site + "/view/welcome-visitors' class='remote'><img src='//" + item.site + "/favicon.png' width='24px' height='24px'></a>");
-      icon.find('img').data('slug', 'welcome-visitors');
+      var icon, slug;
+      icon = $("<a href='//" + item.site + "/view/welcome-visitors' class='remote'><img src='//" + item.site + "/favicon.png' width='16px' height='16px'></a>");
+      icon.find('img').data('slug', slug = item.slug || 'welcome-visitors');
       icon.find('img').data('site', item.site);
-      return div.append($("<p> " + (wiki.resolveLinks(item.text)) + "</p>").prepend(icon));
+      div.append($("<p> " + (wiki.resolveLinks(item.text)) + "</p>").prepend(icon));
+      return div.append($("<p class='cite'>(from " + item.site + " page " + item.slug + ")</p>"));
     },
     bind: function(div, item) {
       return div.dblclick(function() {

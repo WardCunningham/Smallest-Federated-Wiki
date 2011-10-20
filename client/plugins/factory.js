@@ -10,6 +10,28 @@
       return div.append('<p>Double-Click to Edit<br>Drop Text or Image to Insert</p>');
     },
     bind: function(div, item) {
+      var syncEditAction;
+      syncEditAction = function() {
+        var pageElement, plugin;
+        console.log(item);
+        div.empty().unbind();
+        div.removeClass("factory").addClass(item.type);
+        pageElement = div.parents('.page:first');
+        try {
+          div.data('pageElement', pageElement);
+          div.data('item', item);
+          plugin = wiki.getPlugin(item.type);
+          plugin.emit(div, item);
+          plugin.bind(div, item);
+        } catch (err) {
+          div.append("<p class='error'>" + err + "</p>");
+        }
+        return wiki.putAction(pageElement, {
+          type: 'edit',
+          id: item.id,
+          item: item
+        });
+      };
       div.dblclick(function() {
         div.removeClass('factory').addClass(item.type = 'paragraph');
         return wiki.textEditor(div, item);
@@ -21,47 +43,26 @@
         return evt.preventDefault();
       });
       return div.bind("drop", function(dropEvent) {
-        var dt, readFile, readHandler;
-        readHandler = function(type, handler) {
-          return function(loadEvent) {
-            var action, pageElement, plugin;
-            item.type = type;
-            handler(loadEvent);
-            div.empty().unbind();
-            div.removeClass("factory").addClass(type);
-            pageElement = div.parents('.page:first');
-            try {
-              div.data('pageElement', pageElement);
-              div.data('item', item);
-              plugin = wiki.getPlugin(item.type);
-              plugin.emit(div, item);
-              plugin.bind(div, item);
-            } catch (err) {
-              div.append("<p class='error'>" + err + "</p>");
-            }
-            action = {
-              type: 'edit',
-              id: item.id,
-              item: item
-            };
-            return wiki.putAction(pageElement, action);
-          };
-        };
+        var dt, found, ignore, readFile, url;
         readFile = function(file) {
           var majorType, minorType, reader, _ref;
           if (file != null) {
             _ref = file.type.split("/"), majorType = _ref[0], minorType = _ref[1];
             reader = new FileReader();
             if (majorType === "image") {
-              reader.onload = readHandler("image", function(loadEvent) {
+              reader.onload = function(loadEvent) {
+                item.type = 'image';
                 item.url = loadEvent.target.result;
-                return item.caption || (item.caption = "Uploaded image");
-              });
+                item.caption || (item.caption = "Uploaded image");
+                return syncEditAction();
+              };
               return reader.readAsDataURL(file);
             } else if (majorType === "text") {
-              reader.onload = readHandler("paragraph", function(loadEvent) {
-                return item.text = loadEvent.target.result;
-              });
+              reader.onload = function(loadEvent) {
+                item.type = 'paragraph';
+                item.text = loadEvent.target.result;
+                return syncEditAction();
+              };
               return reader.readAsText(file);
             } else {
               return alert("Expected text or image, got '" + (join("\n", file.type)) + "'");
@@ -74,7 +75,16 @@
         if ((dt = dropEvent.originalEvent.dataTransfer) != null) {
           if (__indexOf.call(dt.types, 'text/uri-list') >= 0) {
             console.log(dt);
-            return console.log(dt.getData('URL'));
+            console.log(dt.getData('URL'));
+            url = dt.getData('URL');
+            if (found = url.match(/https?:\/\/([a-z0-9\:\.\-]+)\/view\/([a-z0-9-]+)/)) {
+              item.type = 'federatedWiki';
+              item.text = 'A serecently found federated site.';
+              ignore = found[0], item.site = found[1], item.slug = found[2];
+              return syncEditAction();
+            } else {
+              return alert("Can't drop " + url);
+            }
           } else if (__indexOf.call(dt.types, 'Files') >= 0) {
             return readFile(dt.files[0]);
           } else {
