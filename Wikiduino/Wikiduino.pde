@@ -26,7 +26,7 @@ OneWire ds(8);
 
 int analog[2];
 struct Temp {
-  unsigned int code; 
+  unsigned int code;
   int data;
 } temp[4] = {{0,0}};
 
@@ -81,7 +81,7 @@ void startTempSample() {
   }
   if (!ds.search(data)) {
     ch = -1;
-  } 
+  }
   else {
     if (OneWire::crc8(data, 7) == data[7] && 0x28 == data[0]) {
       id = data[2]*256u+data[1];
@@ -144,7 +144,7 @@ void serve() {
         }
         if (c == '\n') {
           blank = true;
-        } 
+        }
         else if (c != '\r') {
           blank = false;
           if (slash && code == 0) {
@@ -196,7 +196,7 @@ void htmlReport () {
     stag("body");
       p("<div class='"); p("main"); n("'>");
         p("<div class='"); p("page"); p("' id='"); p("garden-report"); p("'>");
-        etag("div"); 
+        etag("div");
       etag("div");
     etag("body");
   etag("html");
@@ -212,11 +212,11 @@ void k (char* s) {  if (more) { p(','); } p('"'); p(s); p('"'); p(':'); more = f
 void v (char* s) {  if (more) { p(','); } p('"'); p(s); p('"'); more = true; }
 void v (long  s) {  if (more) { p(','); } client.print(s); more = true; }
 void v (float s) {  if (more) { p(','); } client.print(s); more = true; }
-  
+
 void jsonReport () {
   more = false;
   long id = 472647400L;
-  
+
   code("200 OK");
   mime("application/json");
   sh();

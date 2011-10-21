@@ -13,7 +13,7 @@ RewriteCond %{REQUEST_URI} !^/client/
 RewriteRule ^client.js$ /client/client.js
 
 RewriteCond %{REQUEST_URI} !^/data/
-RewriteRule ^(.*)\.json$ /data/pages/$1 
+RewriteRule ^(.*)\.json$ /data/pages/$1
 
 #work around the issue where in local edit mode we still ask the server, even if the server can tell us nothing
 #should really use the 404 for 'topic does not exist' and then have the client create it locally

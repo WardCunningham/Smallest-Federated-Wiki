@@ -18,7 +18,7 @@ filetype = {
       #content_type: 'text/css', encoding: 'ascii', dir: '../server/views/'
       content_type: 'text/css', encoding: 'ascii', dir: '../client/'
     },
-  stylecss: {  
+  stylecss: {
       content_type: 'text/css', encoding: 'ascii', dir: '../server/views/'
     }
   js: {
@@ -46,17 +46,17 @@ process.serve_url = (req, res) ->
          POST =  qs.parse(body, true);
          console.log(POST) if DEBUG
 
-    
+
     if file == ''
       console.log '    getting / == welcome-visitors.html topic' if DEBUG
       file = 'welcome-visitors.html'
-      
+
     #TODO: use require('url').parse(request.url, true) to parse the url
-    
+
     #TODO: security, don't allow non-topic id chars - avoid ../ etc
     file = file.replace(/\.\.[\/\\]/g, '')    #remove all instances of ../ and ..\ (talk about brutish and a tad simplistic
     file = file.replace(/\?.*$/i, '')     #remove ?random= - or other urlparams
-      
+
     file_extension = file.match(/\.([^\.]*)$/i)
     if file == 'style.css'
       file_extension = ['stylecss', 'stylecss']
@@ -64,22 +64,22 @@ process.serve_url = (req, res) ->
       file_extension = file_extension[1].toLowerCase()
     else
       file_extension = 'json'
-      
+
     if ! filetype[file_extension]
       console.log '    defaulting: ' + file_extension if DEBUG
       file_extension = 'index'
       file = ''
       #TODO: modify the index.html page div id (I think I'll get client.coffee to update it)
-    
+
     encoding = filetype[file_extension]['encoding']
     contentType =  filetype[file_extension]['content_type']
     filePath = filetype[file_extension]['dir']+file
-    
+
     #and here's a pointless exception to the filename.extension :(
     filePath = filePath.replace(/\.json/, '') if file_extension == 'json'
-    
+
     console.log '    serverfile: '+filePath if DEBUG
-    
+
     #fulfil the request
     #read
     fs.readFile filePath, encoding, (err, data) ->
@@ -104,9 +104,9 @@ process.serve_url = (req, res) ->
             #console.log 'sending string'
             data = data.toString()
             res.write data + '\n'
-          
+
           #console.log 'result(s): ' + data
-      else 
+      else
         res.writeHead status
 
       res.end()
@@ -116,13 +116,13 @@ process.serve_url = (req, res) ->
 if process.myserver
   console.log '  restarting'
   process.myserver.close()
-  
+
 process.myserver = http.createServer (req, res) -> process.serve_url(req, res)
 
-process.myserver.on 'error', (e) -> 
+process.myserver.on 'error', (e) ->
     console.log("Error: %j", e);
     process.exit
-  
+
 process.myserver.listen port , ->
   console.log '--------------------------------------------------------------------------'
   console.log("Federated Wiki server on %j", process.myserver.address());

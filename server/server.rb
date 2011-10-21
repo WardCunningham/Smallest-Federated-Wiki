@@ -15,7 +15,7 @@ Page.directory = File.join(APP_ROOT, 'data/pages')
 class Controller < Sinatra::Base
   set :port, 1111
   set :public, "#{APP_ROOT}/client"
-  set :views , "#{APP_ROOT}/server/views"  
+  set :views , "#{APP_ROOT}/server/views"
   set :haml, :format => :html5
 
   helpers do
@@ -26,7 +26,7 @@ class Controller < Sinatra::Base
     def resolve_links string
       string.
         gsub(/\[\[([^\]]+)\]\]/i) {
-                    |name| 
+                    |name|
                     name.gsub!(/^\[\[(.*)\]\]/, '\1')
 
                     slug = name.gsub(/\s/, '-')

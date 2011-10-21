@@ -28,7 +28,7 @@ We recommend taking time to learn the CoffeeScript syntax and the rationale for 
 
   http://jashkenas.github.com/coffee-script/
 
-We used a Javascript to Coffeescript converter to create the first draft of client.coffee. You may find this converter useful for importing sample codes. 
+We used a Javascript to Coffeescript converter to create the first draft of client.coffee. You may find this converter useful for importing sample codes.
 
   http://ricostacruz.com/js2coffee/
 

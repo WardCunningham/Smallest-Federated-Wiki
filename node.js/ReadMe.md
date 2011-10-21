@@ -4,7 +4,7 @@ requires coffeescript and node.js (see below)
 
 run by issuing:
     coffee -w server.coffee
-    
+
 This will convert to javascript internally, run the server, and watch the server.coffee file for modifications.
 
 
