@@ -54,7 +54,7 @@ window.plugins.factory =
           url = dt.getData 'URL'
           if found = url.match /https?:\/\/([a-z0-9\:\.\-]+)\/view\/([a-z0-9-]+)/
             item.type = 'federatedWiki'
-            item.text = 'A serecently found federated site.'
+            item.text = 'A recently found federated site.'
             [ignore, item.site, item.slug] = found
             syncEditAction()
           else

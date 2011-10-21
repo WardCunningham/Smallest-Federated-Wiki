@@ -379,13 +379,15 @@ $ ->
 
     .delegate '.action.fork, .remote', 'click', (e) ->
       e.preventDefault()
+      name = $(e.target).data('slug')
       $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
-      $("<div />")
-        .attr('id',$(e.target).data('slug'))
+      scrollTo createPage(name)
         .data('site',$(e.target).data('site'))
-        .addClass("page")
         .appendTo($('.main'))
         .each refresh
+
+      if History.enabled
+        setState {pages: pagesInDom(), active: name}
 
   useLocalStorage = () -> $('#localEditing').is(':checked')
 

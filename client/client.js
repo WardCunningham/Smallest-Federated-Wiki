@@ -494,11 +494,19 @@
     }).delegate('.action', 'hover', function() {
       return $('#' + $(this).data('itemId')).toggleClass('target');
     }).delegate('.action.fork, .remote', 'click', function(e) {
+      var name;
       e.preventDefault();
+      name = $(e.target).data('slug');
       if (!e.shiftKey) {
         $(e.target).parents('.page').nextAll().remove();
       }
-      return $("<div />").attr('id', $(e.target).data('slug')).data('site', $(e.target).data('site')).addClass("page").appendTo($('.main')).each(refresh);
+      scrollTo(createPage(name).data('site', $(e.target).data('site')).appendTo($('.main')).each(refresh));
+      if (History.enabled) {
+        return setState({
+          pages: pagesInDom(),
+          active: name
+        });
+      }
     });
     useLocalStorage = function() {
       return $('#localEditing').is(':checked');
