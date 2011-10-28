@@ -10,13 +10,37 @@ APP_ROOT = Pathname.new(root_path).realpath.to_s # full path to application root
 require 'random_id'
 require 'page'
 
-Page.directory = File.join(APP_ROOT, 'data/pages')
+
 
 class Controller < Sinatra::Base
   set :port, 1111
   set :public, "#{APP_ROOT}/client"
-  set :views , "#{APP_ROOT}/server/views"  
+  set :views , "#{APP_ROOT}/server/views"
   set :haml, :format => :html5
+
+  class << self
+    def data_root
+      "#{APP_ROOT}/data"
+    end
+
+    def setup_default_files
+      Page.directory = File.join(data_root, 'pages')
+      ["status/local-identity", "pages/welcome-visitors"].each do |name|
+        file = File.join(data_root, name)
+        unless File.exist?(File.join(data_root, file))
+          default_file = File.join(File.dirname(file), "default-" + File.basename(file))
+          FileUtils.cp default_file, file
+        end
+      end
+    end
+
+
+  end
+
+  def identity
+    JSON.parse(File.read(File.join(self.class.data_root, "status/local-identity")))
+  end
+
 
   helpers do
     def gen_id
@@ -26,7 +50,7 @@ class Controller < Sinatra::Base
     def resolve_links string
       string.
         gsub(/\[\[([^\]]+)\]\]/i) {
-                    |name| 
+                    |name|
                     name.gsub!(/^\[\[(.*)\]\]/, '\1')
 
                     slug = name.gsub(/\s/, '-')
@@ -38,10 +62,7 @@ class Controller < Sinatra::Base
   end
 
   configure do
-    `cd #{APP_ROOT}/data/status; cp default-local-identity local-identity` unless File.exists? File.join(APP_ROOT,'data/status/local-identity')
-    $identity = File.open(File.join(APP_ROOT, "data/status/local-identity"), 'r') { |file| JSON.parse(file.read) }
-    `cd #{APP_ROOT}/data/pages; cp default-welcome-visitors welcome-visitors` unless File.exists? File.join(APP_ROOT,'data/pages/welcome-visitors')
-    `cd #{APP_ROOT}/client; cp default-favicon.png favicon.png` unless File.exists? File.join(APP_ROOT,'client/favicon.png')
+    setup_default_files
   end
 
   get '/style.css' do
@@ -50,7 +71,7 @@ class Controller < Sinatra::Base
   end
 
   get '/' do
-    haml :view, :locals => {:page_names => [$identity['root']]}
+    haml :view, :locals => {:page_names => [identity['root']]}
   end
 
   get %r{^/([a-z0-9-]+)\.html$} do |name|

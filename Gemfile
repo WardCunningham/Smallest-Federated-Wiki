@@ -17,4 +17,6 @@ group :test do
   gem 'rspec-core'         , '2.4.0'
   gem 'rspec-expectations' , '2.4.0'
   gem 'rspec-mocks'        , '2.4.0'
+  gem 'capybara'
+  gem 'launchy'
 end
