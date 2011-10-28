@@ -22,25 +22,25 @@ class Controller < Sinatra::Base
     def data_root
       "#{APP_ROOT}/data"
     end
-
-    def setup_default_files
-      Page.directory = File.join(data_root, 'pages')
-      ["status/local-identity", "pages/welcome-visitors"].each do |name|
-        file = File.join(data_root, name)
-        unless File.exist?(File.join(data_root, file))
-          default_file = File.join(File.dirname(file), "default-" + File.basename(file))
-          FileUtils.cp default_file, file
-        end
-      end
-    end
-
-
   end
 
   def identity
-    JSON.parse(File.read(File.join(self.class.data_root, "status/local-identity")))
+    relative_path = "status/local-identity"
+    default_path = File.join("#{APP_ROOT}/default-data", relative_path)
+    real_path = File.join(self.class.data_root, relative_path)
+
+    unless File.exist? real_path
+      FileUtils.mkdir_p File.dirname(real_path)
+      FileUtils.cp default_path, real_path
+    end
+
+    JSON.parse(File.read(real_path))
   end
 
+  before do
+    Page.directory = File.join(self.class.data_root, "pages")
+    Page.default_directory = "#{APP_ROOT}/default-data/pages"
+  end
 
   helpers do
     def gen_id
@@ -59,10 +59,6 @@ class Controller < Sinatra::Base
                 }.
         gsub(/\[(http.*?) (.*?)\]/i, '<a class="external" href="\1">\2</a>')
     end
-  end
-
-  configure do
-    setup_default_files
   end
 
   get '/style.css' do
