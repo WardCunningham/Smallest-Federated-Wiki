@@ -2,5 +2,6 @@
 *.swp
 .sass-cache/*
 .rvmrc
-data
-client/js
+/data
+/spec/data
+/client/js
