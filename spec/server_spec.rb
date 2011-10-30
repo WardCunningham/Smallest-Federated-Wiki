@@ -73,7 +73,7 @@ describe "GET /welcome-visitors.json" do
   it "returns 200" do
     last_response.status.should == 200
   end
-  
+
   it "returns Content-Type application/json" do
     last_response.header["Content-Type"].should == "application/json"
   end

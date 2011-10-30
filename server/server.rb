@@ -10,13 +10,38 @@ APP_ROOT = Pathname.new(root_path).realpath.to_s # full path to application root
 require 'random_id'
 require 'page'
 
-Page.directory = File.join(APP_ROOT, 'data/pages')
+
 
 class Controller < Sinatra::Base
   set :port, 1111
   set :public, "#{APP_ROOT}/client"
-  set :views , "#{APP_ROOT}/server/views"  
+  set :views , "#{APP_ROOT}/server/views"
   set :haml, :format => :html5
+
+  class << self
+    def data_root
+      "#{APP_ROOT}/data"
+    end
+  end
+
+  def identity
+    relative_path = "status/local-identity"
+    default_path = File.join("#{APP_ROOT}/default-data", relative_path)
+    real_path = File.join(self.class.data_root, relative_path)
+
+    unless File.exist? real_path
+      FileUtils.mkdir_p File.dirname(real_path)
+      FileUtils.cp default_path, real_path
+    end
+
+    JSON.parse(File.read(real_path))
+  end
+
+  before do
+    pages = File.exists?(File.join(self.class.data_root, "farm")) ? "farm/#{request.host}" : "pages"
+    Page.directory = File.join(self.class.data_root, pages)
+    Page.default_directory = "#{APP_ROOT}/default-data/pages"
+  end
 
   helpers do
     def gen_id
@@ -26,7 +51,7 @@ class Controller < Sinatra::Base
     def resolve_links string
       string.
         gsub(/\[\[([^\]]+)\]\]/i) {
-                    |name| 
+                    |name|
                     name.gsub!(/^\[\[(.*)\]\]/, '\1')
 
                     slug = name.gsub(/\s/, '-')
@@ -37,20 +62,13 @@ class Controller < Sinatra::Base
     end
   end
 
-  configure do
-    `cd #{APP_ROOT}/data/status; cp default-local-identity local-identity` unless File.exists? File.join(APP_ROOT,'data/status/local-identity')
-    $identity = File.open(File.join(APP_ROOT, "data/status/local-identity"), 'r') { |file| JSON.parse(file.read) }
-    `cd #{APP_ROOT}/data/pages; cp default-welcome-visitors welcome-visitors` unless File.exists? File.join(APP_ROOT,'data/pages/welcome-visitors')
-    `cd #{APP_ROOT}/client; cp default-favicon.png favicon.png` unless File.exists? File.join(APP_ROOT,'client/favicon.png')
-  end
-
   get '/style.css' do
     content_type 'text/css'
     sass :style
   end
 
   get '/' do
-    haml :view, :locals => {:page_names => [$identity['root']]}
+    haml :view, :locals => {:page_names => [identity['root']]}
   end
 
   get %r{^/([a-z0-9-]+)\.html$} do |name|

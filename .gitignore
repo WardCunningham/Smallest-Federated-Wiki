@@ -2,7 +2,5 @@
 *.swp
 .sass-cache/*
 .rvmrc
-client/favicon.png
-data/pages/welcome-visitors
+data
 client/js
-/data/status/local-identity

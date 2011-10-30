@@ -1,3 +1,0 @@
-{type: "create", page: "welcome-visitors", by: "c2.com/~ward"}
-{type: "create", page: "indie-web-camp", by: "c2.com/~ward"}
-{type: "merge", page: "indie-web-camp", from: "fw.indiewebcamp.com"}
