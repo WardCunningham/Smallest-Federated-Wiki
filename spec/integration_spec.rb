@@ -67,6 +67,12 @@ class Capybara::Node::Element
   end
 end
 
+class Capybara::Session
+  def back
+    execute_script("window.history.back()")
+  end
+end
+
 describe "edit paragraph in place" do
   before do
     `rm -rf #{TEST_DATA_DIR}`
@@ -112,6 +118,30 @@ describe "edit paragraph in place" do
     double_click_paragraph
     replace_and_save("The [[quick brown]] fox.")
     journal.length.should == j+1
+  end
+
+end
+
+describe "navigating between pages" do
+  before do
+    `rm -rf #{TEST_DATA_DIR}`
+    Capybara.current_driver = :selenium
+    visit("/")
+  end
+
+  def link_titled(text)
+    page.all("a").select {|l| l.text == text}.first
+  end
+
+  it "should open internal links by adding a new wiki page to the web page" do
+    link_titled("Indie Web Camp").click
+    page.all(".page").length.should == 2
+  end
+
+  it "should remove added pages when the browser's back button is pressed" do
+    link_titled("Indie Web Camp").click
+    page.back
+    page.all(".page").length.should == 1
   end
 
 end
