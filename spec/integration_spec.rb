@@ -44,18 +44,6 @@ describe "loading a page" do
 
 end
 
-# describe "retrieving favicon" do
-#   before do
-#     `rm -rf #{TEST_DATA_DIR}`
-#     Capybara.current_driver = :selenium
-#   end
-#   it "should return the default image when no other image is present" do
-#     File.exist?(File.join(TEST_DATA_DIR, "status/favicon.png")).should == false
-#     visit("/favicon.png")
-#     body.shound include("favicon.png (PNG Image, 32x32 pixels)") #firefox generated
-#   end
-# end
-
 class Capybara::Node::Element
   def double_click
     driver.browser.mouse.double_click(native)
