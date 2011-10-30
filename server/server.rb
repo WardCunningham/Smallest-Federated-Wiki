@@ -38,7 +38,8 @@ class Controller < Sinatra::Base
   end
 
   before do
-    Page.directory = File.join(self.class.data_root, "pages")
+    pages = File.exists?(File.join(self.class.data_root, "farm")) ? "farm/#{request.host}" : "pages"
+    Page.directory = File.join(self.class.data_root, pages)
     Page.default_directory = "#{APP_ROOT}/default-data/pages"
   end
 
