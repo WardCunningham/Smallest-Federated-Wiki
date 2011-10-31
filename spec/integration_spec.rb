@@ -3,6 +3,8 @@ require 'capybara/rspec'
 
 require 'capybara/dsl'
 require 'pathname'
+require 'digest/sha1'
+require 'net/http'
 
 ROOT = File.expand_path(File.join(File.dirname(__FILE__), ".."))
 APP_DATA_DIR = File.join(ROOT, "data")
@@ -133,3 +135,40 @@ describe "navigating between pages" do
   end
 
 end
+
+describe "should retrieving favicon" do
+  before do
+    `rm -rf #{TEST_DATA_DIR}`
+    Capybara.current_driver = :selenium
+  end
+
+  def default_favicon
+    File.join(APP_ROOT, "default-data/status/favicon.png")
+  end
+
+  def local_favicon
+    File.join(TEST_DATA_DIR, "status/favicon.png")
+  end
+
+  def favicon_response
+    Net::HTTP.get_response URI.parse(page.driver.rack_server.url("/favicon.png"))
+  end
+
+  def sha(text)
+    Digest::SHA1.hexdigest(text)
+  end
+
+  it "should return the default image when no other image is present" do
+    File.exist?(local_favicon).should == false
+    sha(favicon_response.body).should == sha(File.read(default_favicon))
+    favicon_response['Content-Type'].should == 'image/png'
+  end
+
+  it "should return the local image when it exists" do
+    FileUtils.mkdir_p File.dirname(local_favicon)
+    FileUtils.cp "#{APP_ROOT}/spec/favicon.png", local_favicon
+    sha(favicon_response.body).should == sha(File.read(local_favicon))
+    favicon_response['Content-Type'].should == 'image/png'
+  end
+end
+

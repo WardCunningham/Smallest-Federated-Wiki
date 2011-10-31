@@ -67,6 +67,12 @@ class Controller < Sinatra::Base
     sass :style
   end
 
+  get '/favicon.png' do
+    content_type 'image/png'
+    local = File.join(self.class.data_root, 'status/favicon.png')
+    File.read(File.exists?(local) ? local : "#{APP_ROOT}/default-data/status/favicon.png")
+  end
+
   get '/' do
     haml :view, :locals => {:page_names => [identity['root']]}
   end
