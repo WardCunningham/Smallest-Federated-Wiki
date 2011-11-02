@@ -1,6 +1,9 @@
 GEM
   remote: http://rubygems.org/
   specs:
+    RubyInline (3.11.0)
+      ZenTest (~> 4.3)
+    ZenTest (4.6.2)
     archive-tar-minitar (0.5.2)
     capybara (1.1.1)
       mime-types (>= 1.16)
@@ -33,6 +36,7 @@ GEM
     mime-types (1.17.2)
     nokogiri (1.5.0)
     nokogiri (1.5.0-java)
+    png (1.2.0)
     rack (1.3.5)
     rack-test (0.5.6)
       rack (>= 1.0)
@@ -84,10 +88,12 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  RubyInline
   capybara
   haml
   json
   launchy
+  png
   rack-test (= 0.5.6)
   rspec (= 2.4.0)
   rspec-core (= 2.4.0)

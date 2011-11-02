@@ -5,6 +5,8 @@ gem "haml"
 gem "sass"
 gem "json"
 gem "thin"
+gem "RubyInline"
+gem "png"
 
 group :development do
   gem 'ruby-debug', :require => 'ruby-debug', :platform => :mri_18

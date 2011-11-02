@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'bundler'
 require 'pathname'
+require 'png'
 Bundler.require
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
@@ -67,10 +68,39 @@ class Controller < Sinatra::Base
     sass :style
   end
 
+  def mkfavicon local
+    canvas = PNG::Canvas.new 32, 32
+    light = PNG::Color.from_hsv(256*rand,256,200).rgb()
+    dark = PNG::Color.from_hsv(256*rand,256,125).rgb()
+    angle = 2 * (rand()-0.5)
+    sin = Math.sin angle
+    cos = Math.cos angle
+    scale = sin.abs + cos.abs
+    for x in (0..31)
+      for y in (0..31)
+        p = (sin >= 0 ? sin*x+cos*y : -sin*(31-x)+cos*y) / 31 / scale
+        canvas[x,y] = PNG::Color.new(
+          light[0]*p + dark[0]*(1-p),
+          light[1]*p + dark[1]*(1-p),
+          light[2]*p + dark[2]*(1-p))
+      end
+    end
+    png = PNG.new canvas
+    png.save local
+  end
+
   get '/favicon.png' do
     content_type 'image/png'
-    local = File.join(self.class.data_root, 'status/favicon.png')
-    File.read(File.exists?(local) ? local : "#{APP_ROOT}/default-data/status/favicon.png")
+    local = File.join self.class.data_root, 'status/favicon.png'
+    mkfavicon local unless File.exists? local
+    File.read local
+  end
+
+  get '/random.png' do |a|
+    content_type 'image/png'
+    local = File.join self.class.data_root, 'status/random.png'
+    mkfavicon local
+    File.read local
   end
 
   get '/' do
