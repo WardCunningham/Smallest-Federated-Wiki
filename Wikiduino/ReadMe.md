@@ -4,10 +4,10 @@ Wikiduino: Federated Wiki for Arduino
 The Arduino is an open-source hardware and software platform designed for
 artists and experimenters. Arduino boards employ one of several Atmel AVR 8-bit microcontrollers
 along with an FDDI USB to serial converter for device programming and software debugging
-from a custom made for purpose development environment. The Wikiduino configuration 
+from a custom made for purpose development environment. The Wikiduino configuration
 adds to this an Ethernet adapter daughter card (called a shield) and a variety of sensors.
 
-The source code for Wikiduino exists in a single file which can be copied and pasted into the Arduino IDE. We host two files that vary depending on which version of IDE and libraries one is 
+The source code for Wikiduino exists in a single file which can be copied and pasted into the Arduino IDE. We host two files that vary depending on which version of IDE and libraries one is
 using. These are:
 
 * Wikiduino.pde for use with Arduino beta version 22
