@@ -96,7 +96,7 @@ class Controller < Sinatra::Base
     File.read local
   end
 
-  get '/random.png' do |a|
+  get '/random.png' do
     content_type 'image/png'
     local = File.join self.class.data_root, 'status/random.png'
     mkfavicon local
