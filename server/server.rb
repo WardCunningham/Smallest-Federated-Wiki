@@ -70,8 +70,8 @@ class Controller < Sinatra::Base
 
   def mkfavicon local
     canvas = PNG::Canvas.new 32, 32
-    light = PNG::Color.from_hsv(256*rand,256,200).rgb()
-    dark = PNG::Color.from_hsv(256*rand,256,125).rgb()
+    light = PNG::Color.from_hsv(256*rand,255,200).rgb()
+    dark = PNG::Color.from_hsv(256*rand,255,125).rgb()
     angle = 2 * (rand()-0.5)
     sin = Math.sin angle
     cos = Math.cos angle
