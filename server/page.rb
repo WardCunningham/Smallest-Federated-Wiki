@@ -25,7 +25,7 @@ class Page
     end
 
     def put name, page
-      File.open(File.join(directory, name), 'w') { |file| file.write(JSON.generate(page)) }
+      File.open(File.join(directory, name), 'w') { |file| file.write(JSON.pretty_generate(page)) }
       page
     end
 
