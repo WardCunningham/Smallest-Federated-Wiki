@@ -15,21 +15,20 @@ require 'page'
 
 class Controller < Sinatra::Base
   set :port, 1111
-  set :public, "#{APP_ROOT}/client"
-  set :views , "#{APP_ROOT}/server/views"
+  set :public, File.join(APP_ROOT, "client")
+  set :views , File.join(APP_ROOT, "server", "views")
   set :haml, :format => :html5
 
-  class << self
+  class << self # overriden in test
     def data_root
-      "#{APP_ROOT}/data"
+      File.join APP_ROOT, "data"
     end
   end
 
   def identity
-    relative_path = "status/local-identity"
-    default_path = File.join("#{APP_ROOT}/default-data", relative_path)
-    real_path = File.join(self.class.data_root, relative_path)
-
+    default_path = File.join APP_ROOT, "default-data", "status", "local-identity"
+    real_path = File.join @status, "local-identity"
+    p [default_path, real_path]
     unless File.exist? real_path
       FileUtils.mkdir_p File.dirname(real_path)
       FileUtils.cp default_path, real_path
@@ -39,9 +38,12 @@ class Controller < Sinatra::Base
   end
 
   before do
-    pages = File.exists?(File.join(self.class.data_root, "farm")) ? "farm/#{request.host}" : "pages"
-    Page.directory = File.join(self.class.data_root, pages)
-    Page.default_directory = "#{APP_ROOT}/default-data/pages"
+    data = File.exists?(File.join(self.class.data_root, "farm")) ? File.join(self.class.data_root, "farm", request.host) : self.class.data_root
+    @status = File.join(data, "status")
+    Page.directory = @pages = File.join(data, "pages")
+    Page.default_directory = File.join APP_ROOT, "default-data", "pages"
+    FileUtils.mkdir_p @status
+    FileUtils.mkdir_p @pages
   end
 
   helpers do
@@ -70,8 +72,8 @@ class Controller < Sinatra::Base
 
   def mkfavicon local
     canvas = PNG::Canvas.new 32, 32
-    light = PNG::Color.from_hsv(256*rand,255,200).rgb()
-    dark = PNG::Color.from_hsv(256*rand,255,125).rgb()
+    light = PNG::Color.from_hsv(256*rand,200,255).rgb()
+    dark = PNG::Color.from_hsv(256*rand,200,125).rgb()
     angle = 2 * (rand()-0.5)
     sin = Math.sin angle
     cos = Math.cos angle
@@ -91,14 +93,14 @@ class Controller < Sinatra::Base
 
   get '/favicon.png' do
     content_type 'image/png'
-    local = File.join self.class.data_root, 'status/favicon.png'
+    local = File.join @status, 'favicon.png'
     mkfavicon local unless File.exists? local
     File.read local
   end
 
   get '/random.png' do
     content_type 'image/png'
-    local = File.join self.class.data_root, 'status/random.png'
+    local = File.join @status, 'favicon.png'
     mkfavicon local
     File.read local
   end
