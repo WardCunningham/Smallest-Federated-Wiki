@@ -10,8 +10,7 @@ APP_ROOT = Pathname.new(root_path).realpath.to_s # full path to application root
 
 require 'random_id'
 require 'page'
-
-
+require 'favicon'
 
 class Controller < Sinatra::Base
   set :port, 1111
@@ -71,38 +70,17 @@ class Controller < Sinatra::Base
     sass :style
   end
 
-  def mkfavicon local
-    canvas = PNG::Canvas.new 32, 32
-    light = PNG::Color.from_hsv(256*rand,200,255).rgb()
-    dark = PNG::Color.from_hsv(256*rand,200,125).rgb()
-    angle = 2 * (rand()-0.5)
-    sin = Math.sin angle
-    cos = Math.cos angle
-    scale = sin.abs + cos.abs
-    for x in (0..31)
-      for y in (0..31)
-        p = (sin >= 0 ? sin*x+cos*y : -sin*(31-x)+cos*y) / 31 / scale
-        canvas[x,y] = PNG::Color.new(
-          light[0]*p + dark[0]*(1-p),
-          light[1]*p + dark[1]*(1-p),
-          light[2]*p + dark[2]*(1-p))
-      end
-    end
-    png = PNG.new canvas
-    png.save local
-  end
-
   get '/favicon.png' do
     content_type 'image/png'
     local = File.join @status, 'favicon.png'
-    mkfavicon local unless File.exists? local
+    Favicon.create local unless File.exists? local
     File.read local
   end
 
   get '/random.png' do
     content_type 'image/png'
     local = File.join @status, 'favicon.png'
-    mkfavicon local
+    Favicon.create local
     File.read local
   end
 

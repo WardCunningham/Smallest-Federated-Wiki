@@ -1,6 +1,4 @@
 require File.dirname(__FILE__) + '/spec_helper'
-require 'pp'
-include Rack::Test::Methods
 require File.expand_path("../../server/page", __FILE__)
 
 describe "Page" do
@@ -35,7 +33,7 @@ describe "Page" do
     end
 
     before(:each) do
-      FileUtils.rm_rf @test_data_dir
+      FileUtils.rm_rf Page.directory
       FileUtils.mkdir Page.directory
       FileUtils.mkdir Page.default_directory
       @page_data = {'foo' => 'bar'}
