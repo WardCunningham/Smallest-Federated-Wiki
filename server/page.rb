@@ -3,10 +3,19 @@ require File.expand_path("../random_id", __FILE__)
 
 class PageError < StandardError; end;
 
+# Page Class
+# Handles writing and reading JSON data to and from files.
 class Page
   class << self
-    attr_accessor :directory, :default_directory
+    # Directory where pages are to be stored.
+    attr_accessor :directory
+    # Directory where default (pre-existing) pages are stored.
+    attr_accessor :default_directory
 
+    # Get a page
+    #
+    # @param [String] name - The name of the file to retrieve, relative to Page.directory.
+    # @return [Hash] The contents of the retrieved page (parsed JSON).
     def get(name)
       assert_directories_set
 
@@ -27,6 +36,11 @@ class Page
       end
     end
 
+    # Create or update a page
+    #
+    # @param [String] name - The name of the file to create/update, relative to Page.directory.
+    # @param [Hash] page - The page data to be written to the file (it will be converted to JSON).
+    # @return [Hash] The contents of the retrieved page (parsed JSON).
     def put(name, page)
       assert_directories_set
       File.open(File.join(directory, name), 'w') { |file| file.write(JSON.pretty_generate(page)) }

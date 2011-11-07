@@ -13,7 +13,7 @@ describe "Page" do
     it "raises PageError" do
       expect {
         Page.get('anything')
-      }.to raise_error(PageError, /Page\.directory /)
+      }.to raise_error(PageError, /Page\.directory/)
     end
   end
 
