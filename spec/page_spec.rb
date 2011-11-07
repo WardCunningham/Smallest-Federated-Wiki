@@ -4,6 +4,10 @@ include Rack::Test::Methods
 require File.expand_path("../../server/page", __FILE__)
 
 describe "Page" do
+  before(:all) do
+    Page.directory = nil
+    Page.default_directory = nil
+  end
 
   context "when Page.directory has not been set" do
     it "raises PageError" do
