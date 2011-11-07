@@ -1,7 +1,6 @@
 require 'rubygems'
 require 'bundler'
 require 'pathname'
-require 'png'
 Bundler.require
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
