@@ -38,6 +38,8 @@ class Controller < Sinatra::Base
   end
 
   before do
+    # This seems to be spawning 'mkdir -p' on every request.
+    # TODO: run just once at startup, and/or only when needed.
     data = File.exists?(File.join(self.class.data_root, "farm")) ? File.join(self.class.data_root, "farm", request.host) : self.class.data_root
     @status = File.join(data, "status")
     Page.directory = @pages = File.join(data, "pages")
