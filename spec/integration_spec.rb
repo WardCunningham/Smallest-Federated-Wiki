@@ -9,7 +9,7 @@ require 'net/http'
 module TestDirs
   ROOT = File.expand_path(File.join(File.dirname(__FILE__), ".."))
   APP_DATA_DIR = File.join(ROOT, "data")
-  TestDirs::TEST_DATA_DIR = File.join(ROOT, 'spec/data')
+  TEST_DATA_DIR = File.join(ROOT, 'spec/data')
 end
 
 class TestApp < Controller

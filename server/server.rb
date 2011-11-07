@@ -28,7 +28,6 @@ class Controller < Sinatra::Base
   def identity
     default_path = File.join APP_ROOT, "default-data", "status", "local-identity"
     real_path = File.join @status, "local-identity"
-    p [default_path, real_path]
     unless File.exist? real_path
       FileUtils.mkdir_p File.dirname(real_path)
       FileUtils.cp default_path, real_path
@@ -126,7 +125,6 @@ class Controller < Sinatra::Base
   put %r{^/page/([a-z0-9-]+)/action$} do |name|
     page = Page.get(name)
     action = JSON.parse params['action']
-    puts action.inspect
     case action['type']
     when 'move'
       page['story'] = action['order'].collect{ |id| page['story'].detect{ |item| item['id'] == id } }
