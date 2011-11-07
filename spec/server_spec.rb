@@ -1,6 +1,4 @@
 require File.dirname(__FILE__) + '/spec_helper'
-require 'rexml/document'
-require 'pp'
 require 'json'
 include Rack::Test::Methods
 def app; Controller; end
