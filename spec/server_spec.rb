@@ -1,10 +1,10 @@
 require File.dirname(__FILE__) + '/spec_helper'
-require 'rexml/document'
-require 'pp'
 require 'json'
 include Rack::Test::Methods
 def app; Controller; end
 
+# TODO: now that there is a Page spec and an integration spec, we should
+# mock and stub the page writing in these tests.
 shared_examples_for "Welcome as HTML" do
   it "renders the page" do
     last_response.status.should == 200

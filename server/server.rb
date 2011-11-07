@@ -1,7 +1,6 @@
 require 'rubygems'
 require 'bundler'
 require 'pathname'
-require 'png'
 Bundler.require
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
@@ -10,8 +9,7 @@ APP_ROOT = Pathname.new(root_path).realpath.to_s # full path to application root
 
 require 'random_id'
 require 'page'
-
-
+require 'favicon'
 
 class Controller < Sinatra::Base
   set :port, 1111
@@ -19,7 +17,7 @@ class Controller < Sinatra::Base
   set :views , File.join(APP_ROOT, "server", "views")
   set :haml, :format => :html5
 
-  class << self # overriden in test
+  class << self # overridden in test
     def data_root
       File.join APP_ROOT, "data"
     end
@@ -28,7 +26,6 @@ class Controller < Sinatra::Base
   def identity
     default_path = File.join APP_ROOT, "default-data", "status", "local-identity"
     real_path = File.join @status, "local-identity"
-    p [default_path, real_path]
     unless File.exist? real_path
       FileUtils.mkdir_p File.dirname(real_path)
       FileUtils.cp default_path, real_path
@@ -38,6 +35,8 @@ class Controller < Sinatra::Base
   end
 
   before do
+    # This seems to be spawning 'mkdir -p' on every request.
+    # TODO: run just once at startup, and/or only when needed.
     data = File.exists?(File.join(self.class.data_root, "farm")) ? File.join(self.class.data_root, "farm", request.host) : self.class.data_root
     @status = File.join(data, "status")
     Page.directory = @pages = File.join(data, "pages")
@@ -70,38 +69,17 @@ class Controller < Sinatra::Base
     sass :style
   end
 
-  def mkfavicon local
-    canvas = PNG::Canvas.new 32, 32
-    light = PNG::Color.from_hsv(256*rand,200,255).rgb()
-    dark = PNG::Color.from_hsv(256*rand,200,125).rgb()
-    angle = 2 * (rand()-0.5)
-    sin = Math.sin angle
-    cos = Math.cos angle
-    scale = sin.abs + cos.abs
-    for x in (0..31)
-      for y in (0..31)
-        p = (sin >= 0 ? sin*x+cos*y : -sin*(31-x)+cos*y) / 31 / scale
-        canvas[x,y] = PNG::Color.new(
-          light[0]*p + dark[0]*(1-p),
-          light[1]*p + dark[1]*(1-p),
-          light[2]*p + dark[2]*(1-p))
-      end
-    end
-    png = PNG.new canvas
-    png.save local
-  end
-
   get '/favicon.png' do
     content_type 'image/png'
     local = File.join @status, 'favicon.png'
-    mkfavicon local unless File.exists? local
+    Favicon.create local unless File.exists? local
     File.read local
   end
 
   get '/random.png' do
     content_type 'image/png'
     local = File.join @status, 'favicon.png'
-    mkfavicon local
+    Favicon.create local
     File.read local
   end
 
@@ -124,7 +102,6 @@ class Controller < Sinatra::Base
   put %r{^/page/([a-z0-9-]+)/action$} do |name|
     page = Page.get(name)
     action = JSON.parse params['action']
-    puts action.inspect
     case action['type']
     when 'move'
       page['story'] = action['order'].collect{ |id| page['story'].detect{ |item| item['id'] == id } }

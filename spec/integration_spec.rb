@@ -6,13 +6,15 @@ require 'pathname'
 require 'digest/sha1'
 require 'net/http'
 
-ROOT = File.expand_path(File.join(File.dirname(__FILE__), ".."))
-APP_DATA_DIR = File.join(ROOT, "data")
-TEST_DATA_DIR = File.join(ROOT, 'spec/data')
+module TestDirs
+  ROOT = File.expand_path(File.join(File.dirname(__FILE__), ".."))
+  APP_DATA_DIR = File.join(ROOT, "data")
+  TEST_DATA_DIR = File.join(ROOT, 'spec/data')
+end
 
 class TestApp < Controller
   def self.data_root
-    TEST_DATA_DIR
+    TestDirs::TEST_DATA_DIR
   end
 end
 
@@ -28,7 +30,7 @@ end
 
 describe "loading a page" do
   before do
-    `rm -rf #{TEST_DATA_DIR}`
+    `rm -rf #{TestDirs::TEST_DATA_DIR}`
     Capybara.current_driver = :selenium
   end
 
@@ -38,12 +40,11 @@ describe "loading a page" do
   end
 
   it "should copy welcome-visitors from the default-data to data" do
-    File.exist?(File.join(TEST_DATA_DIR, "pages/welcome-visitors")).should == false
+    File.exist?(File.join(TestDirs::TEST_DATA_DIR, "pages/welcome-visitors")).should == false
     visit("/")
     body.should include("Welcome Visitors")
-    File.exist?(File.join(TEST_DATA_DIR, "pages/welcome-visitors")).should == true
+    File.exist?(File.join(TestDirs::TEST_DATA_DIR, "pages/welcome-visitors")).should == true
   end
-
 end
 
 class Capybara::Node::Element
@@ -65,7 +66,7 @@ end
 
 describe "edit paragraph in place" do
   before do
-    `rm -rf #{TEST_DATA_DIR}`
+    `rm -rf #{TestDirs::TEST_DATA_DIR}`
     Capybara.current_driver = :selenium
     visit("/")
   end
@@ -109,12 +110,11 @@ describe "edit paragraph in place" do
     replace_and_save("The [[quick brown]] fox.")
     journal.length.should == j+1
   end
-
 end
 
 describe "navigating between pages" do
   before do
-    `rm -rf #{TEST_DATA_DIR}`
+    `rm -rf #{TestDirs::TEST_DATA_DIR}`
     Capybara.current_driver = :selenium
     visit("/")
   end
@@ -133,12 +133,12 @@ describe "navigating between pages" do
     page.back
     page.all(".page").length.should == 1
   end
-
 end
 
-describe "should retrieving favicon" do
+# This should probably be moved somewhere else.
+describe "should retrieve favicon" do
   before do
-    `rm -rf #{TEST_DATA_DIR}`
+    `rm -rf #{TestDirs::TEST_DATA_DIR}`
     Capybara.current_driver = :selenium
   end
 
@@ -147,7 +147,7 @@ describe "should retrieving favicon" do
   end
 
   def local_favicon
-    File.join(TEST_DATA_DIR, "status/favicon.png")
+    File.join(TestDirs::TEST_DATA_DIR, "status/favicon.png")
   end
 
   def favicon_response
@@ -158,6 +158,7 @@ describe "should retrieving favicon" do
     Digest::SHA1.hexdigest(text)
   end
 
+  # FIXME: this test fails for me (BryanDonovan)
   it "should return the default image when no other image is present" do
     File.exist?(local_favicon).should == false
     sha(favicon_response.body).should == sha(File.read(default_favicon))
@@ -171,4 +172,3 @@ describe "should retrieving favicon" do
     favicon_response['Content-Type'].should == 'image/png'
   end
 end
-
