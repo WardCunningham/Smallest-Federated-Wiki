@@ -43,7 +43,6 @@ describe "loading a page" do
     body.should include("Welcome Visitors")
     File.exist?(File.join(TEST_DATA_DIR, "pages/welcome-visitors")).should == true
   end
-
 end
 
 class Capybara::Node::Element
@@ -109,7 +108,6 @@ describe "edit paragraph in place" do
     replace_and_save("The [[quick brown]] fox.")
     journal.length.should == j+1
   end
-
 end
 
 describe "navigating between pages" do
@@ -133,10 +131,10 @@ describe "navigating between pages" do
     page.back
     page.all(".page").length.should == 1
   end
-
 end
 
-describe "should retrieving favicon" do
+# This should probably be moved somewhere else.
+describe "should retrieve favicon" do
   before do
     `rm -rf #{TEST_DATA_DIR}`
     Capybara.current_driver = :selenium
@@ -171,4 +169,3 @@ describe "should retrieving favicon" do
     favicon_response['Content-Type'].should == 'image/png'
   end
 end
-

@@ -19,7 +19,7 @@ class Controller < Sinatra::Base
   set :views , File.join(APP_ROOT, "server", "views")
   set :haml, :format => :html5
 
-  class << self # overriden in test
+  class << self # overridden in test
     def data_root
       File.join APP_ROOT, "data"
     end
