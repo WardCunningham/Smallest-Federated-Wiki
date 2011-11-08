@@ -7,6 +7,7 @@ gem "json"
 gem "thin"
 gem "RubyInline"
 gem "png"
+gem "rest-client"
 
 group :development do
   gem 'ruby-debug', :require => 'ruby-debug', :platform => :mri_18

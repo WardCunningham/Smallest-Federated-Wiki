@@ -124,12 +124,12 @@ class Controller < Sinatra::Base
 
   get %r{^/remote/([a-zA-Z0-9:\.-]+)/([a-z0-9-]+)\.json$} do |site, name|
     content_type 'application/json'
-    `curl -s #{site}/#{name}.json`
+    RestClient.get "#{site}/#{name}.json"
   end
 
   get %r{^/remote/([a-zA-Z0-9:\.-]+)/favicon.png$} do |site|
     content_type 'image/png'
-    `curl -s #{site}/favicon.png`
+    RestClient.get "#{site}/favicon.png"
   end
 
 end
