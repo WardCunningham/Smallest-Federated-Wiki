@@ -50,10 +50,6 @@ class Controller < Sinatra::Base
       headers 'Access-Control-Allow-Origin' => "*" if request.env['HTTP_ORIGIN']
     end
 
-    def gen_id
-      RandomId.generate
-    end
-
     def resolve_links string
       string.
         gsub(/\[\[([^\]]+)\]\]/i) {
