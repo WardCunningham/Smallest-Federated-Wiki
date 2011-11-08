@@ -9,7 +9,7 @@
     return this[this.length - 1];
   };
   $(function() {
-    var LEFTARROW, RIGHTARROW, addToJournal, createPage, findPage, formatTime, getItem, getPlugin, pagesInDom, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, renderInternalLink, resolveLinks, scripts, scrollTo, setActive, setState, showState, startPages, textEditor, useLocalStorage;
+    var LEFTARROW, RIGHTARROW, addToJournal, createPage, doPlugin, findPage, formatTime, getItem, getPlugin, pagesInDom, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, renderInternalLink, resolveLinks, scripts, scrollTo, setActive, setState, showState, startPages, textEditor, useLocalStorage;
     window.wiki = {};
     window.dialog = $('<div></div>').html('This dialog will show every time!').dialog({
       autoOpen: false,
@@ -87,14 +87,13 @@
       });
     };
     textEditor = wiki.textEditor = function(div, item) {
-      var textarea, _ref;
-      textarea = $("<textarea>" + ((_ref = item.text) != null ? _ref : '') + "</textarea>").focusout(function() {
-        if (textarea.val()) {
-          $(div).last('p').html("<p>" + (resolveLinks(textarea.val())) + "</p>");
-          if (textarea.val() === item.text) {
+      var original, textarea, _ref;
+      textarea = $("<textarea>" + (original = (_ref = item.text) != null ? _ref : '') + "</textarea>").focusout(function() {
+        if (item.text = textarea.val()) {
+          doPlugin(div.empty(), item);
+          if (item.text === original) {
             return;
           }
-          item.text = textarea.val();
           putAction(div.parents('.page:first'), {
             type: 'edit',
             id: item.id,
@@ -168,6 +167,18 @@
         wiki.getScript("plugins/" + plugin + ".js");
       }
       return window.plugins[plugin];
+    };
+    doPlugin = wiki.doPlugin = function(div, item) {
+      var plugin;
+      try {
+        div.data('pageElement', div.get(0));
+        div.data('item', item);
+        plugin = getPlugin(item.type);
+        plugin.emit(div, item);
+        return plugin.bind(div, item);
+      } catch (err) {
+        return div.append("<p class='error'>" + err + "</p>");
+      }
     };
     scrollTo = function(el) {
       var contentWidth, maxX, minX, target, width;

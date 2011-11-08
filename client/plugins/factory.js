@@ -74,14 +74,17 @@
         dropEvent.preventDefault();
         if ((dt = dropEvent.originalEvent.dataTransfer) != null) {
           if (__indexOf.call(dt.types, 'text/uri-list') >= 0) {
-            console.log(dt);
             console.log(dt.getData('URL'));
             url = dt.getData('URL');
-            if (found = url.match(/https?:\/\/([a-z0-9\:\.\-]+)\/view\/([a-z0-9-]+)/)) {
-              item.type = 'federatedWiki';
-              item.text = 'A recently found federated site.';
+            if (found = url.match(/https?:\/\/([a-z0-9\:\.\-]+)\/.*?view\/([a-z0-9-]+)$/)) {
               ignore = found[0], item.site = found[1], item.slug = found[2];
-              return syncEditAction();
+              return $.getJSON("http://" + item.site + "/" + item.slug + ".json", function(remote) {
+                console.log(remote);
+                item.type = 'federatedWiki';
+                item.title = remote.title || item.slug;
+                item.text = remote.synopsis || remote.story[0].text || remote.story[1].text || 'A recently found federated wiki site.';
+                return syncEditAction();
+              });
             } else {
               return alert("Can't drop " + url);
             }

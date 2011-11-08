@@ -49,14 +49,16 @@ window.plugins.factory =
       dropEvent.preventDefault()
       if (dt = dropEvent.originalEvent.dataTransfer)?
         if 'text/uri-list' in dt.types
-          console.log dt
           console.log dt.getData('URL')
           url = dt.getData 'URL'
-          if found = url.match /https?:\/\/([a-z0-9\:\.\-]+)\/view\/([a-z0-9-]+)/
-            item.type = 'federatedWiki'
-            item.text = 'A recently found federated site.'
+          if found = url.match /https?:\/\/([a-z0-9\:\.\-]+)\/.*?view\/([a-z0-9-]+)$/
             [ignore, item.site, item.slug] = found
-            syncEditAction()
+            $.getJSON "http://#{item.site}/#{item.slug}.json", (remote) ->
+              console.log remote
+              item.type = 'federatedWiki'
+              item.title = remote.title || item.slug
+              item.text = remote.synopsis || remote.story[0].text || remote.story[1].text || 'A recently found federated wiki site.'
+              syncEditAction()
           else
             alert "Can't drop #{url}"
         else if 'Files' in dt.types

@@ -66,12 +66,13 @@ $ ->
         console.log "ajax error type: #{type} msg: #{msg}"
 
   textEditor = wiki.textEditor = (div, item) ->
-    textarea = $("<textarea>#{item.text ? ''}</textarea>")
+    textarea = $("<textarea>#{original = item.text ? ''}</textarea>")
       .focusout ->
-        if textarea.val()
-          $(div).last('p').html "<p>#{resolveLinks(textarea.val())}</p>"
-          return if textarea.val() == item.text
-          item.text = textarea.val()
+        if item.text = textarea.val()
+          # $(div).last('p').html "<p>#{resolveLinks(textarea.val())}</p>"
+          doPlugin div.empty(), item
+          return if item.text == original
+          # item.text = textarea.val()
           putAction div.parents('.page:first'), {type: 'edit', id: item.id, item: item}
         else
           putAction div.parents('.page:first'), {type: 'remove', id: item.id}
@@ -120,6 +121,16 @@ $ ->
   getPlugin = wiki.getPlugin = (plugin) ->
     wiki.getScript "plugins/#{plugin}.js" unless window.plugins[plugin]?
     window.plugins[plugin]
+
+  doPlugin = wiki.doPlugin = (div, item) ->
+    try
+      div.data 'pageElement', div.get(0)
+      div.data 'item', item
+      plugin = getPlugin item.type
+      plugin.emit div, item
+      plugin.bind div, item
+    catch err
+      div.append "<p class='error'>#{err}</p>"
 
   scrollTo = (el) ->
     minX = $("body").scrollLeft()

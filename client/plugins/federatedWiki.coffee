@@ -1,9 +1,9 @@
 window.plugins.federatedWiki =
   emit: (div, item) ->
-    icon = $("<a href='//#{item.site}/view/welcome-visitors' class='remote'><img src='//#{item.site}/favicon.png' width='16px' height='16px'></a>")
-    icon.find('img').data('slug', slug = item.slug or 'welcome-visitors')
-    icon.find('img').data('site', site = item.site)
-    div.append ($("<p> #{wiki.resolveLinks(item.text)}</p>").prepend(icon))
-    div.append ($("<p class='cite'>http://#{site}/view/#{slug}</p>"))
+    slug = item.slug or 'welcome-visitors'
+    div.append($("<h3><img src='//#{item.site}/favicon.png' class='remote' width='16px' height='16px'> #{item.title}</h3>"))
+    div.append($("<p>#{wiki.resolveLinks(item.text)}</p>"))
+    div.append($("<p class='cite'>http://#{item.site}/view/#{slug}</p>"))
+    div.find('img').data('slug', slug).data('site', item.site)
   bind: (div, item) ->
     div.dblclick -> wiki.textEditor div, item
