@@ -46,6 +46,10 @@ class Controller < Sinatra::Base
   end
 
   helpers do
+    def cross_origin
+      headers 'Access-Control-Allow-Origin' => "*" if request.env['HTTP_ORIGIN']
+    end
+
     def gen_id
       RandomId.generate
     end
@@ -71,6 +75,7 @@ class Controller < Sinatra::Base
 
   get '/favicon.png' do
     content_type 'image/png'
+    cross_origin
     local = File.join @status, 'favicon.png'
     Favicon.create local unless File.exists? local
     File.read local
@@ -96,6 +101,7 @@ class Controller < Sinatra::Base
 
   get %r{^/([a-z0-9-]+)\.json$} do |name|
     content_type 'application/json'
+    cross_origin
     JSON.pretty_generate(Page.get(name))
   end
 
