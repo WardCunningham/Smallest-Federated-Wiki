@@ -9,19 +9,29 @@
 #include <OneWire.h>
 #define num(array) (sizeof(array)/sizeof(array[0]))
 
+// pin assignments
+byte radioPowerPin = 2;
+
 // Ethernet Configuration
 
 byte mac[] = { 0xEE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED   };
 IPAddress ip(10, 94, 54, 2);
 IPAddress gateway(10, 94, 54, 1);
+
 //IPAddress ip(10, 0, 3, 201 );
 //IPAddress gateway( 10, 0, 3, 1 );
+
+//IPAddress ip(192, 168, 0, 201 );
+//IPAddress gateway( 192, 168, 0, 1 );
+
 IPAddress subnet( 255, 255, 255, 0 );
 
 EthernetServer server(1111);
 EthernetClient client(255);
 
 unsigned long requests = 0;
+unsigned long lastRequest = 0; // records the request number at time of the most recent radio powerup
+byte radioPowerMode = 1; // indicates which power management algorith to use
 
 // Sensor Configuration
 
@@ -35,6 +45,14 @@ struct Temp {
 
 unsigned int last = 100;
 unsigned int powersave = 0;
+unsigned long lastSample = 100;
+unsigned long lastRadioOn = 0; // records time the radio was last powered on
+unsigned long totalRadioOn = 0; // records total time the radio has been on
+unsigned long now = 0;
+unsigned long rollOvers = 0;
+boolean topOfHourFlag = false;
+unsigned long topOfHour = 0;
+boolean radioOn = false; // status of radio power
 unsigned long crc_errs = 0;
 
 // Arduino Setup and Loop
@@ -43,6 +61,9 @@ void setup() {
   Serial.begin(115200L);
   Ethernet.begin(mac, ip, gateway, subnet);
   server.begin();
+  // configure radio power control pin
+  pinMode(radioPowerPin,OUTPUT);
+  powerRadio(true);
 }
 
 void loop() {
@@ -56,24 +77,101 @@ void loop() {
 // Sample and Hold Analog and One-Wire Temperature Data
 
 void sample() {
-  unsigned int now = millis();
-  if ((now-last) >= 1000) {
-    last = now;
-    powerClock();
+  now = millis();
+  if ((now-lastSample) >= 1000) {
+    if(now < lastSample) {
+      rollOvers++;
+    }
+    lastSample = now;
+    manageRadioPower();
     analogSample();
     tempSample();
   }
 }
 
-void powerClock() {
-  boolean poweron = powersave == 0;
-  pinMode(2,OUTPUT);
-  digitalWrite(2,poweron);
-  if (!poweron) {
-    powersave--;
+unsigned long modeOneOnTime = (58*60+30) * 1000UL;
+unsigned long modeOneOffTime = (4*60+15) * 1000UL;
+unsigned long modeTwoOnTime = (2*60+30) * 1000UL;
+unsigned long modeTwoOffTime = (4*60+5) * 1000UL;
+unsigned long longestOnTimeWithoutRequest = 3600*1000UL;
+
+void manageRadioPower() {
+  if(radioOn && (lastRequest == requests) && ((now-lastRadioOn) >= longestOnTimeWithoutRequest)) {
+    // radio has been on for a while, but received no requests, may be wedged, try rebooting
+    printTime(now,0); Serial.println(" Resetting radio");
+    powerRadio(false);
+    delay(2000);
+    now = millis();
+    powerRadio(true);
+  } else {
+    if(radioPowerMode == 0 || !topOfHourFlag) { // stay on
+      if(!radioOn) {
+        powerRadio(true);
+      }
+    } else {
+      // remove integer hours from time, just interested in phase ... not needed if we get a sync often enough relative to wrapping
+      while((now-topOfHour) > (3600*1000UL)) {
+        topOfHour += 3600*1000UL;
+      }
+      unsigned long timeAfterHour = (now-topOfHour) % (3600*1000UL);
+      if(radioPowerMode == 1) { // on at 58m30s, off at 4m15s after hour
+        boolean duringOffTime = (timeAfterHour > modeOneOffTime) && (timeAfterHour < modeOneOnTime);
+        if(radioOn && duringOffTime) {
+          powerRadio(false);
+        } else if (!radioOn && !duringOffTime) {
+          powerRadio(true);
+        }
+      } else if(radioPowerMode == 2) { // minimal radio uptime on at 2m30s, off at 4m5s after hour
+        boolean duringOnTime = (timeAfterHour > modeTwoOnTime) && (timeAfterHour < modeTwoOffTime);
+        if(radioOn && !duringOnTime) {
+          powerRadio(false);
+        } else if (!radioOn && duringOnTime) {
+          powerRadio(true);
+        }
+      }
+    }
   }
 }
 
+void printTime(unsigned long t,unsigned long ref) {
+  unsigned long hour;
+  unsigned long minute;
+  unsigned long second;
+  
+  t -= ref;
+  hour = t / (3600 * 1000UL);
+  minute = t % (3600 * 1000UL);
+  second = minute % (60 * 1000UL);
+  minute -= second;
+  if(topOfHourFlag) {
+    Serial.print("Sync'd: ");
+  }
+  Serial.print(hour); Serial.print(":");
+  Serial.print(minute/60000UL); Serial.print(":");
+  Serial.print(second/1000.0,3);
+}
+
+float uptime() { // returns uptime as a floating point hour
+  return (4294967296.0 * rollOvers + now) / (3600.0 * 1000);
+}
+
+float radioOnTime() { // returns time radio has been on in hours
+  return (float) (totalRadioOn + (radioOn ? (now-lastRadioOn) : 0)) / (3600.0 * 1000);
+}
+
+void powerRadio(boolean power) {
+  digitalWrite(radioPowerPin,power);
+  radioOn = power;
+  if(power) {
+    lastRadioOn = now;
+    lastRequest = requests;
+  } else {
+    totalRadioOn += (now-lastRadioOn);
+    lastRadioOn = 0;
+  }
+  printTime(now,0); Serial.print(" "); printTime(now,topOfHour); Serial.print(" "); Serial.println(radioOn);
+}
+  
 void analogSample() {
   for (int i = 0; i < num(analog); i++) {
     analog[i] = analogRead(i);
@@ -181,8 +279,19 @@ void report(char code) {
     jsonReport();
   } else if (code == 'f') {
     faviconReport();
+  } else if (code == 's') {
+    topOfHour = now = millis();
+    topOfHourFlag = true;
   } else if (code == 'p') {
-    powersave = 55*60;
+    now = millis();
+    topOfHour = now - (4*60*1000UL);
+    topOfHourFlag = true;
+  } else if (code == '0') {
+    radioPowerMode = 0;
+  } else if (code == '1') {
+    radioPowerMode = 1;
+  } else if (code == '2') {
+    radioPowerMode = 2;
   } else {
     errorReport();
   }
@@ -282,6 +391,42 @@ void jsonReport () {
           k(F("data"));
             sa();
               sa(); v(1314306006L); v((long)requests); ea();
+            ea();
+        eh();
+        sh();
+          k(F("type")); v(F("chart"));
+          k(F("id")); v(id++);
+          k(F("caption")); v(F("Arduino Uptime<br>Hours"));
+          k(F("data"));
+            sa();
+              sa(); v(1314306006L); v(uptime()); ea();
+            ea();
+        eh();
+        sh();
+          k(F("type")); v(F("chart"));
+          k(F("id")); v(id++);
+          k(F("caption")); v(F("Radio Uptime<br>Hours"));
+          k(F("data"));
+            sa();
+              sa(); v(1314306006L); v(radioOnTime()); ea();
+            ea();
+        eh();
+        sh();
+          k(F("type")); v(F("chart"));
+          k(F("id")); v(id++);
+          k(F("caption")); v(F("Minutes After Hour"));
+          k(F("data"));
+            sa();
+              sa(); v(1314306006L); v((float) (topOfHourFlag ? ((now-topOfHour) % (3600*1000UL))/60000.0 : 0.0)); ea();
+            ea();
+        eh();
+        sh();
+          k(F("type")); v(F("chart"));
+          k(F("id")); v(id++);
+          k(F("caption")); v(F("Radio Power Mode"));
+          k(F("data"));
+            sa();
+              sa(); v(1314306006L); v(radioPowerMode); ea();
             ea();
         eh();
       ea();
