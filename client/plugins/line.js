@@ -24,7 +24,7 @@
         for (_i = 0, _len = series.length; _i < _len; _i++) {
           p = series[_i];
           _results.push({
-            x: p[0],
+            x: (p[0] - start) / 24 / 3600,
             y: p[1]
           });
         }
