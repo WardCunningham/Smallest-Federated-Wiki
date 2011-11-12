@@ -14,7 +14,7 @@ calculate = (text) ->
       [sums[x], sum] = [sum, 0] unless sums[x]? && x != 'SUM' 
       sums[x].toFixed 2
     col[0] = col[0].replace /^\-?[0-9\.]+$/, (x) ->
-      sum = sum + dx = switch col[1]
+      sum = sum + switch col[1]
         when 'CR', 'DB' then x/-1
         when '*' then x*col[2]
         when '/' then x/col[2]

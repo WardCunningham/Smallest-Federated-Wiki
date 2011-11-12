@@ -18,7 +18,7 @@
           });
         }
         return _results;
-      })() : (start = series[0][0]) > 1000000000 ? (function() {
+      })() : start > 1000000000 ? (function() {
         var _i, _len, _results;
         _results = [];
         for (_i = 0, _len = series.length; _i < _len; _i++) {

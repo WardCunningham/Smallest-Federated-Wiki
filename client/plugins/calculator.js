@@ -29,8 +29,7 @@
         return sums[x].toFixed(2);
       });
       col[0] = col[0].replace(/^\-?[0-9\.]+$/, function(x) {
-        var dx;
-        sum = sum + (dx = (function() {
+        sum = sum + (function() {
           switch (col[1]) {
             case 'CR':
             case 'DB':
@@ -42,7 +41,7 @@
             default:
               return x / 1;
           }
-        })());
+        })();
         return (x / 1).toFixed(2);
       });
       if (line.match(/^\s*$/)) {

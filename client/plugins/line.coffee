@@ -31,7 +31,7 @@ window.plugins.line =
     series = wiki.getData()
     data = if (start = series[0][0]) > 1000000000000 # js time
       ({x: (p[0]-start)/24/3600/1000, y:p[1]} for p in series)
-    else if (start = series[0][0]) > 1000000000 # unix time
+    else if start > 1000000000 # unix time
       ({x: (p[0]-start)/24/3600, y:p[1]} for p in series)
     else
       ({x: (p[0]), y:p[1]} for p in series)
