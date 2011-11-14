@@ -158,10 +158,9 @@ describe "should retrieve favicon" do
     Digest::SHA1.hexdigest(text)
   end
 
-  # FIXME: this test fails for me (BryanDonovan)
-  it "should return the default image when no other image is present" do
+  it "should create an image when no other image is present" do
     File.exist?(local_favicon).should == false
-    sha(favicon_response.body).should == sha(File.read(default_favicon))
+    sha(favicon_response.body).should == sha(File.read(local_favicon))
     favicon_response['Content-Type'].should == 'image/png'
   end
 
