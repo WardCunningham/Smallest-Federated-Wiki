@@ -1,7 +1,7 @@
 (function() {
   window.plugins.line = {
     emit: function(div, item) {
-      wiki.getScript('js/d3/d3.js');
+      wiki.getScript('/js/d3/d3.js');
       return div.append('<style>\nsvg {\n  font: 10px sans-serif;\n}\n\n.rule line {\n  stroke: #eee;\n  shape-rendering: crispEdges;\n}\n\n.rule line.axis {\n  stroke: #000;\n}\n\n.line {\n  fill: none;\n  stroke: steelblue;\n  stroke-width: 1.5px;\n}\n\ncircle.line {\n  fill: #fff;\n}\n</style>');
     },
     bind: function(div, item) {

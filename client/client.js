@@ -143,7 +143,7 @@
       _results = [];
       for (_i = 0, _len = paths.length; _i < _len; _i++) {
         path = paths[_i];
-        _results.push(scripts[path] == null ? (scripts[path] = true, $('<script type="text/javascript"/>').attr('src', "/" + path).prependTo($('script:first'))) : void 0);
+        _results.push(scripts[path] == null ? (scripts[path] = true, $('<script type="text/javascript"/>').attr('src', path).prependTo($('script:first'))) : void 0);
       }
       return _results;
     };
@@ -164,7 +164,7 @@
     };
     getPlugin = wiki.getPlugin = function(plugin) {
       if (window.plugins[plugin] == null) {
-        wiki.getScript("plugins/" + plugin + ".js");
+        wiki.getScript("/plugins/" + plugin + ".js");
       }
       return window.plugins[plugin];
     };
@@ -174,6 +174,9 @@
         div.data('pageElement', div.get(0));
         div.data('item', item);
         plugin = getPlugin(item.type);
+        if (plugin == null) {
+          throw TypeError("Can't find plugin for '" + item.type + "'");
+        }
         plugin.emit(div, item);
         return plugin.bind(div, item);
       } catch (err) {
@@ -338,18 +341,10 @@
           return $("<div />").addClass(className).appendTo(pageElement);
         }), storyElement = _ref[0], journalElement = _ref[1], footerElement = _ref[2];
         $.each(page.story, function(i, item) {
-          var div, plugin;
+          var div;
           div = $("<div class=\"item " + item.type + "\" id=\"" + item.id + "\" />");
           storyElement.append(div);
-          try {
-            div.data('pageElement', pageElement);
-            div.data('item', item);
-            plugin = getPlugin(item.type);
-            plugin.emit(div, item);
-            return plugin.bind(div, item);
-          } catch (err) {
-            return div.append("<p class='error'>" + err + "</p>");
-          }
+          return doPlugin(div, item);
         });
         $.each(page.journal, function(i, action) {
           return addToJournal(journalElement, action);
@@ -466,7 +461,7 @@
     };
     $(document).ajaxError(function(event, request, settings) {
       console.log([event, request, settings]);
-      return $('.main').prepend("<li class='error'>Error on " + settings.url + "<br/>" + request.responseText + "</li>");
+      return $('.main').prepend("<li class='error'>Error on " + settings.url + "</li>");
     });
     $('.main').delegate('.show-page-source', 'click', function(e) {
       var json, pageElement, resource, site, slug;

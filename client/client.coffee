@@ -108,7 +108,7 @@ $ ->
     for path in paths
       unless scripts[path]?
         scripts[path] = true
-        $('<script type="text/javascript"/>').attr('src',"/#{path}").prependTo($('script:first'))
+        $('<script type="text/javascript"/>').attr('src',path).prependTo($('script:first'))
 
   wiki.log = ->
     for p in $('.page')
@@ -119,7 +119,7 @@ $ ->
     null
 
   getPlugin = wiki.getPlugin = (plugin) ->
-    wiki.getScript "plugins/#{plugin}.js" unless window.plugins[plugin]?
+    wiki.getScript "/plugins/#{plugin}.js" unless window.plugins[plugin]?
     window.plugins[plugin]
 
   doPlugin = wiki.doPlugin = (div, item) ->
@@ -127,6 +127,7 @@ $ ->
       div.data 'pageElement', div.get(0)
       div.data 'item', item
       plugin = getPlugin item.type
+      throw TypeError("Can't find plugin for '#{item.type}'") unless plugin?
       plugin.emit div, item
       plugin.bind div, item
     catch err
@@ -253,14 +254,7 @@ $ ->
       $.each page.story, (i, item) ->
         div = $("<div class=\"item #{item.type}\" id=\"#{item.id}\" />")
         storyElement.append div
-        try
-          div.data 'pageElement', pageElement
-          div.data 'item', item
-          plugin = getPlugin item.type
-          plugin.emit div, item
-          plugin.bind div, item
-        catch err
-          div.append "<p class='error'>#{err}</p>"
+        doPlugin div, item
 
       $.each page.journal, (i, action) ->
         addToJournal journalElement, action
@@ -352,7 +346,7 @@ $ ->
   $(document)
     .ajaxError (event, request, settings) ->
       console.log [event,request,settings]
-      $('.main').prepend "<li class='error'>Error on #{settings.url}<br/>#{request.responseText}</li>"
+      $('.main').prepend "<li class='error'>Error on #{settings.url}</li>"
 
   $('.main')
     .delegate '.show-page-source', 'click', (e) ->

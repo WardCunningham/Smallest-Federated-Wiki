@@ -1,6 +1,6 @@
 window.plugins.line =
   emit: (div, item) ->
-    wiki.getScript 'js/d3/d3.js'
+    wiki.getScript '/js/d3/d3.js'
     div.append '''
       <style>
       svg {

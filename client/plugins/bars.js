@@ -1,7 +1,7 @@
 (function() {
   window.plugins.bars = {
     emit: function(div, item) {
-      return wiki.getScript('js/d3/d3.js');
+      return wiki.getScript('/js/d3/d3.js');
     },
     bind: function(div, item) {
       var bars, data, h, rules, vis, w, x, y;
