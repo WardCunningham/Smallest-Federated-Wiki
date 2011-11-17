@@ -6,18 +6,17 @@
 	.story
 		- page['story'].each do |item|
 			%div{:class => ['item', type=item['type']], :id => item['id'], "data-static-item" => item.to_json}
-				- if type == 'paragraph'
+				- case type
+				- when 'paragraph'
 					%p= resolve_links(item['text'])
-				- if type == 'image'
+				- when 'image'
 					%img{:src => item['url']}
 					%p= resolve_links(item['caption'])
-				- if type == 'chart'
+				- when 'chart'
 					%p.readout= item['data'].last.last || "0.0"
 					%p= resolve_links(item['caption'])
-				- if type == 'factory'
-					%p
-						Double-Click to Edit
-						%br Drop Text or Image to Insert
+				- else
+					%p.error= type
 	.journal
 		- ( page['journal'] || [] ).each do |item|
 			%span{:class => ['action', item['type']], "data-item-id" => item['id'] }
