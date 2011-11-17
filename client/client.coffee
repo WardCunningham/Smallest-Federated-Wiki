@@ -194,9 +194,7 @@ $ ->
       itemElement = $("<div />", class: "item factory", id: item.id).data('item',item)
       itemElement.data 'pageElement', pageElement
       pageElement.find(".story").append(itemElement)
-      factory = getPlugin('factory')
-      factory.emit itemElement, item
-      factory.bind itemElement, item
+      doPlugin itemElement, item
       beforeElement = itemElement.prev('.item')
       before = getItem(beforeElement)
       putAction pageElement, {item: item, id: item.id, type: "add", after: before?.id}

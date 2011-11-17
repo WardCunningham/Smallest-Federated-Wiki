@@ -262,7 +262,7 @@
       slug = $(pageElement).attr('id');
       site = $(pageElement).data('site');
       pageElement.find(".add-factory").live("click", function(evt) {
-        var before, beforeElement, factory, item, itemElement;
+        var before, beforeElement, item, itemElement;
         evt.preventDefault();
         item = {
           type: "factory",
@@ -274,9 +274,7 @@
         }).data('item', item);
         itemElement.data('pageElement', pageElement);
         pageElement.find(".story").append(itemElement);
-        factory = getPlugin('factory');
-        factory.emit(itemElement, item);
-        factory.bind(itemElement, item);
+        doPlugin(itemElement, item);
         beforeElement = itemElement.prev('.item');
         before = getItem(beforeElement);
         return putAction(pageElement, {
