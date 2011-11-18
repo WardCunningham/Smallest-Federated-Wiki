@@ -1,2 +1,2 @@
-- page_names.each do |page_name|
-	.page{:id => page_name}
+- pages.each do |page_tuple|
+	.page{:id => page_tuple[:id], 'data-site' => page_tuple[:site]}

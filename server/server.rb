@@ -85,14 +85,25 @@ class Controller < Sinatra::Base
   end
 
   get '/' do
-    haml :view, :locals => {:page_names => [identity['root']]}
+    haml :view, :locals => {:pages => [ {:id => identity['root']} ]}
   end
 
   get %r{^/([a-z0-9-]+)\.html$} do |name|
     haml :page, :locals => { :page => Page.get(name), :page_name => name }
   end
-  get %r{^/view/([a-z0-9-]+(/view/[a-z0-9-]+)*)$} do |pages,extra|
-    haml :view, :locals => {:page_names => pages.split('/view/')}
+
+  domain = "(view|([a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+))"
+  get %r{^/(#{domain}/[a-z0-9-]+(/#{domain}/[a-z0-9-]+)*)$} do
+    elements = params[:captures].first.split('/')
+    pages = []
+    while (site = elements.shift) && (id = elements.shift)
+      if site == 'view' || site == 'my'
+        pages << {:id => id}
+      else
+        pages << {:id => id, :site => site}
+      end
+    end
+    haml :view, :locals => {:pages => pages}
   end
 
   get %r{^/([a-z0-9-]+)\.json$} do |name|
