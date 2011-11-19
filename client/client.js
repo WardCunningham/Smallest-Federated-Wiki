@@ -171,7 +171,7 @@
     doPlugin = wiki.doPlugin = function(div, item) {
       var plugin;
       try {
-        div.data('pageElement', div.get(0));
+        div.data('pageElement', div.parents(".page"));
         div.data('item', item);
         plugin = getPlugin(item.type);
         if (plugin == null) {

@@ -124,7 +124,7 @@ $ ->
 
   doPlugin = wiki.doPlugin = (div, item) ->
     try
-      div.data 'pageElement', div.get(0)
+      div.data 'pageElement', div.parents(".page")
       div.data 'item', item
       plugin = getPlugin item.type
       throw TypeError("Can't find plugin for '#{item.type}'") unless plugin?
