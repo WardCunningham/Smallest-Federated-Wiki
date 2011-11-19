@@ -10,6 +10,8 @@ module TestDirs
   ROOT = File.expand_path(File.join(File.dirname(__FILE__), ".."))
   APP_DATA_DIR = File.join(ROOT, "data")
   TEST_DATA_DIR = File.join(ROOT, 'spec/data')
+  FIXTURE_DATA_DIR = File.join(ROOT, 'spec/fixtures/data')
+  JS_DIR = File.join(ROOT, "spec/js")
 end
 
 class TestApp < Controller
@@ -56,12 +58,26 @@ class Capybara::Node::Element
   def trigger(event)
     driver.browser.execute_script(TRIGGER_JS, native, event)
   end
+
+  def drag_down(number)
+    driver.browser.execute_script "$(arguments[0]).simulateDragSortable({move: arguments[1]});", native, number
+  end
 end
 
 class Capybara::Session
   def back
     execute_script("window.history.back()")
   end
+
+  def load_test_library!
+    Dir["#{TestDirs::JS_DIR}/*.js"].each do |file|
+      driver.browser.execute_script File.read(file)
+    end
+  end
+end
+
+def first_paragraph
+  page.find(".paragraph:first")
 end
 
 describe "edit paragraph in place" do
@@ -71,9 +87,6 @@ describe "edit paragraph in place" do
     visit("/")
   end
 
-  def first_paragraph
-    page.find(".paragraph:first")
-  end
 
   def double_click_paragraph
     first_paragraph.double_click
@@ -110,6 +123,48 @@ describe "edit paragraph in place" do
     replace_and_save("The [[quick brown]] fox.")
     journal.length.should == j+1
   end
+end
+
+def use_fixture_pages(*pages)
+  `rm -rf #{TestDirs::TEST_DATA_DIR}`
+  pages.each do |page|
+    FileUtils.mkdir_p "#{TestDirs::TEST_DATA_DIR}/pages/"
+    FileUtils.cp "#{TestDirs::FIXTURE_DATA_DIR}/pages/#{page}", "#{TestDirs::TEST_DATA_DIR}/pages/#{page}"
+  end
+end
+
+describe "moving paragraphs" do
+  before do
+    Capybara.current_driver = :selenium
+    use_fixture_pages("multiple-paragraphs")
+  end
+
+  def move_paragraph
+    page.load_test_library!
+    first_paragraph.drag_down(2)
+  end
+
+  def journal_items
+    page.all(".journal a")
+  end
+
+  before do
+    visit "/view/multiple-paragraphs"
+  end
+
+  it "should move paragraph 1 past paragraph 2" do
+    move_paragraph
+    page.all(".paragraph").map(&:text).should == ["paragraph 2", "paragraph 1", "paragraph 3"]
+  end
+
+  it "should add a move to the journal" do
+    original_journal_length = journal_items.length
+    move_paragraph
+    journal_items.length.should == original_journal_length + 1
+    journal_items.last.text.should == "m"
+  end
+
+
 end
 
 describe "navigating between pages" do
