@@ -15,7 +15,7 @@ shared_examples_for "Welcome as HTML" do
   end
 
   it "has a div with class 'page' and id 'welcome-visitors'" do
-    @body.should match(/<div class='page' id='welcome-visitors'>/)
+    @body.should match(/<div class='page' .*?id='welcome-visitors'>/)
   end
 end
 
