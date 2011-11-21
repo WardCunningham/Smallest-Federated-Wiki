@@ -113,8 +113,15 @@ class Controller < Sinatra::Base
   end
 
   put %r{^/page/([a-z0-9-]+)/action$} do |name|
-    page = Page.get(name)
     action = JSON.parse params['action']
+    if site = action['fork']
+      page = JSON.parse RestClient.get("#{site}/#{name}.json")
+      ( page['journal'] ||= [] ) << { 'type' => 'fork', 'site' => site }
+      Page.put name, page
+      action.delete 'fork'
+    else
+      page = Page.get(name)
+    end
     case action['type']
     when 'move'
       page['story'] = action['order'].collect{ |id| page['story'].detect{ |item| item['id'] == id } }

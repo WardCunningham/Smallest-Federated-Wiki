@@ -38,6 +38,14 @@ $ ->
         .data("slug", pageElement.attr('id'))
 
   putAction = wiki.putAction = (pageElement, action) ->
+    if (site = pageElement.data('site'))?
+      action.fork = site
+      pageElement.find('h1 img').attr('src', '/favicon.png')
+      pageElement.find('h1 a').attr('href', '/')
+      pageElement.data('site', null)
+      addToJournal pageElement.find('.journal'),
+        type: 'fork'
+        site: site
     if useLocalStorage()
       pushToLocal(pageElement, action)
       pageElement.addClass("local")
