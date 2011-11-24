@@ -25,6 +25,7 @@ end
 # end
 
 Capybara.app = TestApp
+Capybara.server_port = 31337
 
 RSpec.configure do |config|
   config.include Capybara::DSL
@@ -47,6 +48,19 @@ describe "loading a page" do
     body.should include("Welcome Visitors")
     File.exist?(File.join(TestDirs::TEST_DATA_DIR, "pages/welcome-visitors")).should == true
   end
+
+  it "should load multiple pages at once" do
+    visit("/view/welcome-visitors/view/indie-web-camp")
+    body.should include("You are welcome to copy this page to any server you own and revise its welcoming message as you see fit.")
+    body.should include("Rather than posting content on many third-party silos of data, we should all begin owning the data we're creating. ")
+  end
+
+  # it "should load remote page" do
+  #   remote = "localhost:#{Capybara.server_port}"
+  #   visit("/#{remote}/welcome-visitor")
+  #   body.should include("You are welcome to copy this page to any server you own and revise its welcoming message as you see fit.")
+  # end
+
 end
 
 class Capybara::Node::Element
