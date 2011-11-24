@@ -23,27 +23,31 @@ class Controller < Sinatra::Base
     end
   end
 
+  def farm_page
+    data = File.exists?(File.join(self.class.data_root, "farm")) ? File.join(self.class.data_root, "farm", request.host) : self.class.data_root
+    page = Page.new
+    page.directory = File.join(data, "pages")
+    page.default_directory = File.join APP_ROOT, "default-data", "pages"
+    FileUtils.mkdir_p page.directory
+    page
+  end
+
+  def farm_status
+    data = File.exists?(File.join(self.class.data_root, "farm")) ? File.join(self.class.data_root, "farm", request.host) : self.class.data_root
+    status = File.join(data, "status")
+    FileUtils.mkdir_p status
+    status
+  end
+
   def identity
     default_path = File.join APP_ROOT, "default-data", "status", "local-identity"
-    real_path = File.join @status, "local-identity"
+    real_path = File.join farm_status, "local-identity"
     unless File.exist? real_path
       FileUtils.mkdir_p File.dirname(real_path)
       FileUtils.cp default_path, real_path
     end
 
     JSON.parse(File.read(real_path))
-  end
-
-  before do
-    # This seems to be spawning 'mkdir -p' on every request.
-    # TODO: run just once at startup, and/or only when needed.
-    data = File.exists?(File.join(self.class.data_root, "farm")) ? File.join(self.class.data_root, "farm", request.host) : self.class.data_root
-    @status = File.join(data, "status")
-    @page = Page.new
-    @page.directory = @pages = File.join(data, "pages")
-    @page.default_directory = File.join APP_ROOT, "default-data", "pages"
-    FileUtils.mkdir_p @status
-    FileUtils.mkdir_p @pages
   end
 
   helpers do
@@ -73,14 +77,14 @@ class Controller < Sinatra::Base
   get '/favicon.png' do
     content_type 'image/png'
     cross_origin
-    local = File.join @status, 'favicon.png'
+    local = File.join farm_status, 'favicon.png'
     Favicon.create local unless File.exists? local
     File.read local
   end
 
   get '/random.png' do
     content_type 'image/png'
-    local = File.join @status, 'favicon.png'
+    local = File.join farm_status, 'favicon.png'
     Favicon.create local
     File.read local
   end
@@ -90,7 +94,7 @@ class Controller < Sinatra::Base
   end
 
   get %r{^/([a-z0-9-]+)\.html$} do |name|
-    haml :page, :locals => { :page => @page.get(name), :page_name => name }
+    haml :page, :locals => { :page => farm_page.get(name), :page_name => name }
   end
 
   domain = "(view|([a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+))"
@@ -110,7 +114,7 @@ class Controller < Sinatra::Base
   get %r{^/([a-z0-9-]+)\.json$} do |name|
     content_type 'application/json'
     cross_origin
-    JSON.pretty_generate(@page.get(name))
+    JSON.pretty_generate(farm_page.get(name))
   end
 
   put %r{^/page/([a-z0-9-]+)/action$} do |name|
@@ -118,10 +122,10 @@ class Controller < Sinatra::Base
     if site = action['fork']
       page = JSON.parse RestClient.get("#{site}/#{name}.json")
       ( page['journal'] ||= [] ) << { 'type' => 'fork', 'site' => site }
-      @page.put name, page
+      farm_page.put name, page
       action.delete 'fork'
     else
-      page = @page.get(name)
+      page = farm_page.get(name)
     end
     case action['type']
     when 'move'
@@ -139,7 +143,7 @@ class Controller < Sinatra::Base
       return "unfamiliar action"
     end
     ( page['journal'] ||= [] ) << action # todo: journal undo, not redo
-    @page.put name, page
+    farm_page.put name, page
     "ok"
   end
 
