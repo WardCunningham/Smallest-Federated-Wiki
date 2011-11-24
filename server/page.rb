@@ -6,7 +6,7 @@ class PageError < StandardError; end;
 # Page Class
 # Handles writing and reading JSON data to and from files.
 class Page
-  class << self
+  # class << self
     # Directory where pages are to be stored.
     attr_accessor :directory
     # Directory where default (pre-existing) pages are stored.
@@ -57,5 +57,5 @@ class Page
       raise PageError.new('Page.directory must be set') unless directory
       raise PageError.new('Page.default_directory must be set') unless default_directory
     end
-  end
+  # end
 end
