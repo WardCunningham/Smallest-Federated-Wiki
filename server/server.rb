@@ -93,6 +93,15 @@ class Controller < Sinatra::Base
     haml :view, :locals => {:pages => [ {:id => identity['root']} ]}
   end
 
+  get '/plugins/factory.js' do
+    # soon we'll construct this table from metadata
+    catalog = 'window.catalog = {
+      "MathJax": {"menu": "TeX Formatted Equations"},
+      "Calculator": {"menu": "Running Sums for Expenses"}
+    };'
+    catalog + File.read(File.join(APP_ROOT, "client/plugins/meta-factory.js"))
+  end
+
   get %r{^/([a-z0-9-]+)\.html$} do |name|
     haml :page, :locals => { :page => farm_page.get(name), :page_name => name }
   end

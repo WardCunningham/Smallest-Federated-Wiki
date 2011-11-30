@@ -7,7 +7,19 @@
   };
   window.plugins.factory = {
     emit: function(div, item) {
-      return div.append('<p>Double-Click to Edit<br>Drop Text or Image to Insert</p>');
+      var info, menu, name, _ref, _results;
+      div.append('<p>Double-Click to Edit<br>Drop Text or Image to Insert</p>');
+      console.log(window.catalog);
+      if (window.catalog != null) {
+        menu = div.find('p').append("<br>Or Choose a Plugin");
+        _ref = window.catalog;
+        _results = [];
+        for (name in _ref) {
+          info = _ref[name];
+          _results.push(menu.append("<li><a href='#' title='" + info.menu + "'>" + name + "</a></li>"));
+        }
+        return _results;
+      }
     },
     bind: function(div, item) {
       var syncEditAction;
@@ -34,6 +46,10 @@
       };
       div.dblclick(function() {
         div.removeClass('factory').addClass(item.type = 'paragraph');
+        return wiki.textEditor(div, item);
+      });
+      div.find('a').click(function(evt) {
+        div.removeClass('factory').addClass(item.type = evt.target.text.toLowerCase());
         return wiki.textEditor(div, item);
       });
       div.bind('dragenter', function(evt) {

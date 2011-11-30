@@ -1,5 +1,11 @@
 window.plugins.factory =
-  emit: (div, item) -> div.append '<p>Double-Click to Edit<br>Drop Text or Image to Insert</p>'
+  emit: (div, item) ->
+    div.append '<p>Double-Click to Edit<br>Drop Text or Image to Insert</p>'
+    console.log window.catalog
+    if window.catalog?
+      menu = div.find('p').append "<br>Or Choose a Plugin"
+      for name, info of window.catalog
+        menu.append "<li><a href='#' title='#{info.menu}'>#{name}</a></li>"
   bind: (div, item) ->
 
     syncEditAction = () ->
@@ -20,6 +26,11 @@ window.plugins.factory =
     div.dblclick ->
       div.removeClass('factory').addClass(item.type='paragraph')
       wiki.textEditor div, item
+
+    div.find('a').click (evt)->
+      div.removeClass('factory').addClass(item.type=evt.target.text.toLowerCase())
+      wiki.textEditor div, item
+
     div.bind 'dragenter', (evt) -> evt.preventDefault()
     div.bind 'dragover', (evt) -> evt.preventDefault()
     div.bind "drop", (dropEvent) ->
