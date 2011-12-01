@@ -20,15 +20,23 @@ class TestApp < Controller
   end
 end
 
-# Capybara.register_driver :selenium do |app|
-#   Capybara::Selenium::Driver.new(app, :resynchronize => true)
-# end
+Capybara.register_driver :selenium do |app|
+  Capybara::Selenium::Driver.new(app, :resynchronize => true)
+end
 
 Capybara.app = TestApp
 Capybara.server_port = 31337
 
 RSpec.configure do |config|
   config.include Capybara::DSL
+end
+
+AJAX_TIMEOUT_LIMIT = 5
+def wait_for_ajax_to_complete!
+  start = Time.now
+  while page.evaluate_script("window.jQuery.active") != 0 do
+    raise Timeout::Error.new("AJAX request timed out") if Time.now - start > AJAX_TIMEOUT_LIMIT
+  end
 end
 
 describe "loading a page" do
@@ -55,11 +63,12 @@ describe "loading a page" do
     body.should include("Rather than posting content on many third-party silos of data, we should all begin owning the data we're creating. ")
   end
 
-  # it "should load remote page" do
-  #   remote = "localhost:#{Capybara.server_port}"
-  #   visit("/#{remote}/welcome-visitor")
-  #   body.should include("You are welcome to copy this page to any server you own and revise its welcoming message as you see fit.")
-  # end
+  it "should load remote page" do
+    remote = "localhost:#{Capybara.server_port}"
+    visit("/#{remote}/welcome-visitors")
+    wait_for_ajax_to_complete!
+    body.should include("You are welcome to copy this page to any server you own and revise its welcoming message as you see fit.")
+  end
 
 end
 
