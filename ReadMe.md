@@ -51,7 +51,7 @@ For that matter, there is lots of coding and project philosophy in the comment h
 
 * [Closed Issues](https://github.com/WardCunningham/Smallest-Federated-Wiki/issues?sort=comments&direction=desc&state=closed&page=1)
 
-We're proud to be forked frequently. Go ahead and fork this project now. We're glad to have you. 
+We're proud to be forked frequently. Go ahead and fork this project now. We're glad to have you.
 
 
 Install and Launch
@@ -84,6 +84,19 @@ Now go to your browser and browse your new wiki:
 
 	http://localhost:1111
 
+Running specs
+=============
+
+The test suite is written using RSpec 2 and utilizes Selenium heavily. You must have a recent version of Firefox installed to run the test suite.
+
+To run an individual spec, run
+
+  bundle exec rspec spec/[spec name].rb
+
+To run all specs, run
+
+  bundle exec rake spec
+
 Looking For Code Bloat
 ======================
 
@@ -98,11 +111,11 @@ You may use the Smallest Federated Wiki under either the
 [MIT License](https://github.com/WardCunningham/Smallest-Federated-Wiki/blob/master/mit-license.txt) or the
 [GNU General Public License](https://github.com/WardCunningham/Smallest-Federated-Wiki/blob/master/gpl-license.txt) (GPL) Version 2.
 
-Debian Squeeze quick hints 
+Debian Squeeze quick hints
 ==========================
 for those not using Ruby much, but using Debian:
 
-    sudo apt-get install ruby1.9.1 rubygems ruby1.9.1-examples debian-keyring ri1.9.1 ruby1.9.1-dev rubygems-doc 
+    sudo apt-get install ruby1.9.1 rubygems ruby1.9.1-examples debian-keyring ri1.9.1 ruby1.9.1-dev rubygems-doc
     sudo gem install bundle
     sudo /var/lib/gems/1.8/bin/bundle install
     rvm 1.9.2
