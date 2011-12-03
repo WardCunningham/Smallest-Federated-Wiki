@@ -9,7 +9,6 @@
     emit: function(div, item) {
       var info, menu, name, _ref, _results;
       div.append('<p>Double-Click to Edit<br>Drop Text or Image to Insert</p>');
-      console.log(window.catalog);
       if (window.catalog != null) {
         menu = div.find('p').append("<br>Or Choose a Plugin");
         _ref = window.catalog;

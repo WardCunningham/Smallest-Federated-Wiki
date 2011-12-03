@@ -1,7 +1,6 @@
 window.plugins.factory =
   emit: (div, item) ->
     div.append '<p>Double-Click to Edit<br>Drop Text or Image to Insert</p>'
-    console.log window.catalog
     if window.catalog?
       menu = div.find('p').append "<br>Or Choose a Plugin"
       for name, info of window.catalog
