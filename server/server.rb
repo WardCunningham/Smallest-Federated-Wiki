@@ -96,6 +96,7 @@ class Controller < Sinatra::Base
   get '/plugins/factory.js' do
     # soon we'll construct this table from metadata
     catalog = 'window.catalog = {
+      "ByteBeat": {"menu": "8-bit Music by Formula"},
       "MathJax": {"menu": "TeX Formatted Equations"},
       "Calculator": {"menu": "Running Sums for Expenses"}
     };'
