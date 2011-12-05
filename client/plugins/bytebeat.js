@@ -1,5 +1,5 @@
 (function() {
-  var FMTSubChunk, RIFFChunk, audioCheck, b, c, chunkSize, colorCode, dataSubChunk, el, generateSound, makeSampleFunction, makeURL, play, playDataURI, sampleArrayToData, split32bitValueToBytes, stop;
+  var FMTSubChunk, RIFFChunk, audioCheck, b, c, chunkSize, colorCode, dataSubChunk, el, frequency, generateSound, makeSampleFunction, makeURL, play, playDataURI, sampleArrayToData, split32bitValueToBytes, stop;
   window.plugins.bytebeat = {
     emit: function(div, item) {
       div.append("<p>" + (colorCode(item.text)) + " <a href='#'>&#9654;</a><div id='player'></div></p>");
@@ -36,52 +36,42 @@
     eval("var f = function (t) {return " + js + "}");
     return f;
   };
+  frequency = 8000;
   generateSound = function(f) {
-    var frequency, sample, sampleArray, seconds, t;
-    frequency = 8000;
+    var samples, seconds, t, _results;
     seconds = 32.767;
-    sampleArray = [];
+    samples = frequency * seconds;
     t = 0;
-    while (t < frequency * seconds) {
-      sample = (f(t)) & 0xff;
-      sample *= 256;
-      if (sample < 0) {
-        sample = 0;
-      }
-      if (sample > 65535) {
-        sample = 65535;
-      }
-      sampleArray.push(sample);
-      t++;
+    _results = [];
+    while (t < samples) {
+      _results.push(((f(t++)) & 0xff) * 256);
     }
-    return [frequency, sampleArray];
+    return _results;
   };
   b = function(values) {
-    var hex, i, out;
-    out = "";
-    i = 0;
-    while (i < values.length) {
-      hex = values[i].toString(16);
-      if (hex.length === 1) {
-        hex = "0" + hex;
+    var num, strings;
+    strings = (function() {
+      var _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = values.length; _i < _len; _i++) {
+        num = values[_i];
+        _results.push((num > 15 ? "%" : "%0") + num.toString(16));
       }
-      out += "%" + hex;
-      i++;
-    }
-    return out.toUpperCase();
+      return _results;
+    })();
+    return strings.join('').toUpperCase();
   };
   c = function(str) {
-    var i, out;
+    var code, _i, _len, _results;
     if (str.length === 1) {
       return str.charCodeAt(0);
     } else {
-      out = [];
-      i = 0;
-      while (i < str.length) {
-        out.push(c(str[i]));
-        i++;
+      _results = [];
+      for (_i = 0, _len = str.length; _i < _len; _i++) {
+        code = str[_i];
+        _results.push(c(code));
       }
-      return out;
+      return _results;
     }
   };
   split32bitValueToBytes = function(l) {
@@ -94,20 +84,18 @@
     return [].concat(c("fmt "), split32bitValueToBytes(16), [1, 0], [channels, 0], split32bitValueToBytes(frequency), split32bitValueToBytes(byteRate), [blockAlign, 0], [bitsPerSample, 0]);
   };
   sampleArrayToData = function(sampleArray, bitsPerSample) {
-    var data, i;
+    var data, samp, _i, _len;
     if (bitsPerSample === 8) {
       return sampleArray;
     }
     if (bitsPerSample !== 16) {
-      alert("Only 8 or 16 bit supported.");
-      return;
+      throw "Only 8 or 16 bit supported.";
     }
     data = [];
-    i = 0;
-    while (i < sampleArray.length) {
-      data.push(0xff & sampleArray[i]);
-      data.push((0xff00 & sampleArray[i]) >> 8);
-      i++;
+    for (_i = 0, _len = sampleArray.length; _i < _len; _i++) {
+      samp = sampleArray[_i];
+      data.push(0xff & samp);
+      data.push((0xff00 & samp) >> 8);
     }
     return data;
   };
@@ -125,11 +113,9 @@
     return [].concat(header, fmt, data);
   };
   makeURL = function(text) {
-    var bitsPerSample, channels, frequency, generated, samples;
+    var bitsPerSample, channels, samples;
     bitsPerSample = 16;
-    generated = generateSound(makeSampleFunction(text));
-    frequency = generated[0];
-    samples = generated[1];
+    samples = generateSound(makeSampleFunction(text));
     channels = 1;
     return "data:audio/x-wav," + b(RIFFChunk(channels, bitsPerSample, frequency, samples));
   };

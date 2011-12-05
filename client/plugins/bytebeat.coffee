@@ -34,41 +34,24 @@ makeSampleFunction = (text) ->
   eval "var f = function (t) {return #{js}}"
   f
 
-generateSound = (f)->
-  frequency = 8000
+frequency = 8000
+
+generateSound = (f) ->
   seconds = 32.767
-  sampleArray = []
+  samples = frequency * seconds
   t = 0
-  while t < frequency * seconds
-    sample = (f(t)) & 0xff
-    sample *= 256
-    sample = 0  if sample < 0
-    sample = 65535  if sample > 65535
-    sampleArray.push sample
-    t++
-  [ frequency, sampleArray ]
+  while t < samples
+    ((f(t++)) & 0xff) * 256
 
 b = (values) ->
-  out = ""
-  i = 0
-  while i < values.length
-    hex = values[i].toString(16)
-    hex = "0" + hex  if hex.length is 1
-    out += "%" + hex
-    i++
-  out.toUpperCase()
+  strings = ((if num>15 then "%" else "%0") + num.toString(16) for num in values)
+  strings.join('').toUpperCase()
 
 c = (str) ->
   if str.length is 1
     str.charCodeAt 0
   else
-    out = []
-    i = 0
-
-    while i < str.length
-      out.push c(str[i])
-      i++
-    out
+    (c code for code in str)
 
 split32bitValueToBytes = (l) ->
   [ l & 0xff, (l & 0xff00) >> 8, (l & 0xff0000) >> 16, (l & 0xff000000) >> 24 ]
@@ -80,15 +63,11 @@ FMTSubChunk = (channels, bitsPerSample, frequency) ->
 
 sampleArrayToData = (sampleArray, bitsPerSample) ->
   return sampleArray  if bitsPerSample is 8
-  if bitsPerSample isnt 16
-    alert "Only 8 or 16 bit supported."
-    return
+  throw "Only 8 or 16 bit supported." unless bitsPerSample is 16
   data = []
-  i = 0
-  while i < sampleArray.length
-    data.push 0xff & sampleArray[i]
-    data.push (0xff00 & sampleArray[i]) >> 8
-    i++
+  for samp in sampleArray
+    data.push 0xff & samp
+    data.push (0xff00 & samp) >> 8
   data
 
 dataSubChunk = (channels, bitsPerSample, sampleArray) ->
@@ -105,9 +84,7 @@ RIFFChunk = (channels, bitsPerSample, frequency, sampleArray) ->
 
 makeURL = (text) ->
   bitsPerSample = 16
-  generated = generateSound makeSampleFunction text
-  frequency = generated[0]
-  samples = generated[1]
+  samples = generateSound makeSampleFunction text
   channels = 1
   "data:audio/x-wav," + b(RIFFChunk(channels, bitsPerSample, frequency, samples))
 
