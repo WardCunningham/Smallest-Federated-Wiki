@@ -31,7 +31,7 @@ Then you will want to read through the project roadmap. This and a number of oth
 * [Project Roadmap](https://github.com/WardCunningham/Smallest-Federated-Wiki/wiki)
 * [List of Wiki Pages](https://github.com/WardCunningham/Smallest-Federated-Wiki/wiki/_pages)
 
-When you start reading code you're want to start with the "reference" server implementation. This is coded in ruby as a Sinatra application. There are other server implementations but the ruby code is as close as we have to a specification as to what it means to be a federated wiki server:
+When you start reading code you'll want to start with the "reference" server implementation. This is coded in Ruby as a Sinatra application. There are other server implementations but the Ruby code is as close as we have to a specification as to what it means to be a federated wiki server:
 
 * [/server](https://github.com/WardCunningham/Smallest-Federated-Wiki/tree/master/server)
 
