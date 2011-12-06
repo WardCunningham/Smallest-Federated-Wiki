@@ -1,9 +1,9 @@
 window.plugins.bytebeat =
   emit: (div, item) ->
-    div.append "<p>#{colorCode(item.text)} <a href='#'>&#9654;</a><div id='player'></div></p>"
+    div.append "<p>#{colorCode(item.text)} <a href='#'>&#9654;</a></div></p>"
     audioCheck()
   bind: (div, item) ->
-    div.find('a').click -> play item.text
+    div.find('a').click -> play div, item.text
     div.dblclick -> 
       stop()
       wiki.textEditor div, item
@@ -13,8 +13,8 @@ colorCode = (text) ->
     .replace(/\bt((<<|>>)\d+)?\b/g, (m) -> "<font color='red'>#{m}</font>")
     .replace(/\n/g, '<br>')
 
-play = (text)->
-  playDataURI makeURL text
+play = (div, text)->
+  playDataURI div, makeURL text
 
 audioCheck = ->
   elm = document.createElement("audio")
@@ -91,13 +91,13 @@ makeURL = (text) ->
 el = undefined
 
 stop = ->
-  document.getElementById("player").removeChild el  if el
+  $(el).remove()  if el
   el = null
 
-playDataURI = (uri) ->
+playDataURI = (div, uri) ->
   stop()
   el = document.createElement("audio")
   el.setAttribute "autoplay", true
   el.setAttribute "src", uri
   el.setAttribute "controls", "controls"
-  document.getElementById("player").appendChild el
+  div.append el

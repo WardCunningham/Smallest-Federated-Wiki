@@ -2,12 +2,12 @@
   var FMTSubChunk, RIFFChunk, audioCheck, b, c, chunkSize, colorCode, dataSubChunk, el, frequency, generateSound, makeSampleFunction, makeURL, play, playDataURI, sampleArrayToData, split32bitValueToBytes, stop;
   window.plugins.bytebeat = {
     emit: function(div, item) {
-      div.append("<p>" + (colorCode(item.text)) + " <a href='#'>&#9654;</a><div id='player'></div></p>");
+      div.append("<p>" + (colorCode(item.text)) + " <a href='#'>&#9654;</a></div></p>");
       return audioCheck();
     },
     bind: function(div, item) {
       div.find('a').click(function() {
-        return play(item.text);
+        return play(div, item.text);
       });
       return div.dblclick(function() {
         stop();
@@ -20,8 +20,8 @@
       return "<font color='red'>" + m + "</font>";
     }).replace(/\n/g, '<br>');
   };
-  play = function(text) {
-    return playDataURI(makeURL(text));
+  play = function(div, text) {
+    return playDataURI(div, makeURL(text));
   };
   audioCheck = function() {
     var elm;
@@ -122,16 +122,16 @@
   el = void 0;
   stop = function() {
     if (el) {
-      document.getElementById("player").removeChild(el);
+      $(el).remove();
     }
     return el = null;
   };
-  playDataURI = function(uri) {
+  playDataURI = function(div, uri) {
     stop();
     el = document.createElement("audio");
     el.setAttribute("autoplay", true);
     el.setAttribute("src", uri);
     el.setAttribute("controls", "controls");
-    return document.getElementById("player").appendChild(el);
+    return div.append(el);
   };
 }).call(this);
