@@ -30,11 +30,19 @@
         return _results;
       })()).join('');
     };
+    wiki.log = function() {
+      var things;
+      things = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+      if (console.log != null) {
+        return console.log(things);
+      }
+    };
     resolveLinks = wiki.resolveLinks = function(string) {
       var renderInternalLink;
       renderInternalLink = function(match, name) {
         var slug;
         slug = name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase();
+        wiki.log('resolve', slug);
         return "<a class=\"internal\" href=\"/" + slug + ".html\" data-page-name=\"" + slug + "\">" + name + "</a>";
       };
       return string.replace(/\[\[([^\]]+)\]\]/gi, renderInternalLink).replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" href=\"$1\">$2</a>");
@@ -94,7 +102,7 @@
           return addToJournal(pageElement.find('.journal'), action);
         },
         error: function(xhr, type, msg) {
-          return console.log("ajax error type: " + type + " msg: " + msg);
+          return wiki.log("ajax error callback", type, msg);
         }
       });
     };
@@ -159,17 +167,16 @@
       }
       return _results;
     };
-    wiki.log = function() {
+    wiki.dump = function() {
       var i, p, _i, _j, _len, _len2, _ref, _ref2;
       _ref = $('.page');
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         p = _ref[_i];
-        console.log(p);
+        wiki.log('.page', p);
         _ref2 = $(p).find('.item');
         for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
           i = _ref2[_j];
-          console.log(i);
-          console.dir($(i).data('item'));
+          wiki.log('.item', i, 'data-item', $(i).data('item'));
         }
       }
       return null;
@@ -273,6 +280,7 @@
       pageElement = $(this);
       slug = $(pageElement).attr('id');
       site = $(pageElement).data('site');
+      wiki.log('refresh', slug, 'site', site);
       pageElement.find(".add-factory").live("click", function(evt) {
         var before, beforeElement, item, itemElement;
         evt.preventDefault();
@@ -470,7 +478,7 @@
       return $("#" + name);
     };
     $(document).ajaxError(function(event, request, settings) {
-      console.log([event, request, settings]);
+      wiki.log('ajax error', event, request, settings);
       return $('.main').prepend("<li class='error'>Error on " + settings.url + "</li>");
     });
     $('.main').delegate('.show-page-source', 'click', function(e) {
@@ -497,6 +505,7 @@
       var name;
       e.preventDefault();
       name = $(e.target).data('pageName');
+      wiki.log('click', name);
       if (!e.shiftKey) {
         $(e.target).parents('.page').nextAll().remove();
       }
@@ -513,6 +522,7 @@
       var name;
       e.preventDefault();
       name = $(e.target).data('slug');
+      wiki.log('click', name, 'site', $(e.target).data('site'));
       if (!e.shiftKey) {
         $(e.target).parents('.page').nextAll().remove();
       }

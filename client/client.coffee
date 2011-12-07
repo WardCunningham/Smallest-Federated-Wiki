@@ -14,11 +14,14 @@ $ ->
   randomByte = -> (((1+Math.random())*0x100)|0).toString(16).substring(1)
   randomBytes = (n) -> (randomByte() for [1..n]).join('')
 
+  wiki.log = (things...) ->
+    console.log things if console.log?
 
   resolveLinks = wiki.resolveLinks = (string) ->
     renderInternalLink = (match, name) ->
       # spaces become 'slugs', non-alpha-num get removed
       slug = name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase()
+      wiki.log 'resolve', slug
       "<a class=\"internal\" href=\"/"+slug+".html\" data-page-name=\""+slug+"\">"+name+"</a>"
     string
       .replace(/\[\[([^\]]+)\]\]/gi, renderInternalLink)
@@ -71,7 +74,7 @@ $ ->
       success: () ->
         addToJournal pageElement.find('.journal'), action
       error: (xhr, type, msg) ->
-        console.log "ajax error type: #{type} msg: #{msg}"
+        wiki.log "ajax error callback", type, msg
 
   textEditor = wiki.textEditor = (div, item) ->
     textarea = $("<textarea>#{original = item.text ? ''}</textarea>")
@@ -118,12 +121,10 @@ $ ->
         scripts[path] = true
         $('<script type="text/javascript"/>').attr('src',path).prependTo($('script:first'))
 
-  wiki.log = ->
+  wiki.dump = ->
     for p in $('.page')
-      console.log p
-      for i in $(p).find('.item')
-        console.log i
-        console.dir $(i).data('item')
+      wiki.log '.page', p
+      wiki.log '.item', i, 'data-item', $(i).data('item') for i in $(p).find('.item')
     null
 
   getPlugin = wiki.getPlugin = (plugin) ->
@@ -193,6 +194,7 @@ $ ->
     pageElement = $(this)
     slug = $(pageElement).attr('id')
     site = $(pageElement).data('site')
+    wiki.log 'refresh', slug, 'site', site
 
     pageElement.find(".add-factory").live "click", (evt) ->
       evt.preventDefault()
@@ -351,7 +353,7 @@ $ ->
 
   $(document)
     .ajaxError (event, request, settings) ->
-      console.log [event,request,settings]
+      wiki.log 'ajax error', event, request, settings
       $('.main').prepend "<li class='error'>Error on #{settings.url}</li>"
 
   $('.main')
@@ -378,6 +380,7 @@ $ ->
     .delegate '.internal', 'click', (e) ->
       e.preventDefault()
       name = $(e.target).data 'pageName'
+      wiki.log 'click', name
       $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
       scrollTo createPage(name).appendTo('.main').each refresh
       # FIXME: can open page multiple times with shift key
@@ -391,6 +394,7 @@ $ ->
     .delegate '.action.fork, .remote', 'click', (e) ->
       e.preventDefault()
       name = $(e.target).data('slug')
+      wiki.log 'click', name, 'site', $(e.target).data('site')
       $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
       scrollTo createPage(name)
         .data('site',$(e.target).data('site'))
