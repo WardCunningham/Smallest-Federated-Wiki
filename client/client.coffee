@@ -17,12 +17,20 @@ $ ->
   wiki.log = (things...) ->
     console.log things if console.log?
 
+  wiki.resolutionContext = []
+  resolveFrom = wiki.resolveFrom = (addition, callback) ->
+    wiki.resolutionContext.push addition
+    try
+      callback()
+    finally
+      wiki.resolutionContext.pop()
+
   resolveLinks = wiki.resolveLinks = (string) ->
     renderInternalLink = (match, name) ->
       # spaces become 'slugs', non-alpha-num get removed
       slug = name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase()
-      wiki.log 'resolve', slug
-      "<a class=\"internal\" href=\"/"+slug+".html\" data-page-name=\""+slug+"\">"+name+"</a>"
+      wiki.log 'resolve', slug, 'context', wiki.resolutionContext.join(' => ')
+      "<a class=\"internal\" href=\"/#{slug}.html\" data-page-name=\"#{slug}\" title=\"#{wiki.resolutionContext.join(' => ')}\">#{name}</a>"
     string
       .replace(/\[\[([^\]]+)\]\]/gi, renderInternalLink)
       .replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" href=\"$1\">$2</a>")
@@ -194,7 +202,6 @@ $ ->
     pageElement = $(this)
     slug = $(pageElement).attr('id')
     site = $(pageElement).data('site')
-    wiki.log 'refresh', slug, 'site', site
 
     pageElement.find(".add-factory").live "click", (evt) ->
       evt.preventDefault()
@@ -250,6 +257,16 @@ $ ->
 
       page = $.extend(empty, data)
       $(pageElement).data("data", data)
+
+      context = ['origin']
+      addContext = (string) ->
+        if string?
+          context = _.without context, string
+          context.push string
+      addContext action.site for action in data.journal
+      addContext site
+      wiki.log 'build', slug, 'context', context.join ' => '
+      wiki.resolutionContext = context
 
       if site?
         $(pageElement).append "<h1><a href=\"//#{site}\"><img src = \"/remote/#{site}/favicon.png\" height = \"32px\"></a> #{page.title}</h1>"

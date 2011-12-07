@@ -9,7 +9,7 @@
     return this[this.length - 1];
   };
   $(function() {
-    var LEFTARROW, RIGHTARROW, addToJournal, createPage, doPlugin, findPage, formatTime, getItem, getPlugin, pagesInDom, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveLinks, scripts, scrollTo, setActive, setState, showState, startPages, textEditor, useLocalStorage;
+    var LEFTARROW, RIGHTARROW, addToJournal, createPage, doPlugin, findPage, formatTime, getItem, getPlugin, pagesInDom, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveFrom, resolveLinks, scripts, scrollTo, setActive, setState, showState, startPages, textEditor, useLocalStorage;
     window.wiki = {};
     window.dialog = $('<div></div>').html('This dialog will show every time!').dialog({
       autoOpen: false,
@@ -37,13 +37,22 @@
         return console.log(things);
       }
     };
+    wiki.resolutionContext = [];
+    resolveFrom = wiki.resolveFrom = function(addition, callback) {
+      wiki.resolutionContext.push(addition);
+      try {
+        return callback();
+      } finally {
+        wiki.resolutionContext.pop();
+      }
+    };
     resolveLinks = wiki.resolveLinks = function(string) {
       var renderInternalLink;
       renderInternalLink = function(match, name) {
         var slug;
         slug = name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase();
-        wiki.log('resolve', slug);
-        return "<a class=\"internal\" href=\"/" + slug + ".html\" data-page-name=\"" + slug + "\">" + name + "</a>";
+        wiki.log('resolve', slug, 'context', wiki.resolutionContext.join(' => '));
+        return "<a class=\"internal\" href=\"/" + slug + ".html\" data-page-name=\"" + slug + "\" title=\"" + (wiki.resolutionContext.join(' => ')) + "\">" + name + "</a>";
       };
       return string.replace(/\[\[([^\]]+)\]\]/gi, renderInternalLink).replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" href=\"$1\">$2</a>");
     };
@@ -280,7 +289,6 @@
       pageElement = $(this);
       slug = $(pageElement).attr('id');
       site = $(pageElement).data('site');
-      wiki.log('refresh', slug, 'site', site);
       pageElement.find(".add-factory").live("click", function(evt) {
         var before, beforeElement, item, itemElement;
         evt.preventDefault();
@@ -341,7 +349,7 @@
         });
       };
       buildPage = function(data) {
-        var empty, footerElement, journalElement, page, storyElement, _ref;
+        var action, addContext, context, empty, footerElement, journalElement, page, storyElement, _i, _len, _ref, _ref2;
         empty = {
           title: 'empty',
           synopsys: 'empty',
@@ -350,14 +358,29 @@
         };
         page = $.extend(empty, data);
         $(pageElement).data("data", data);
+        context = ['origin'];
+        addContext = function(string) {
+          if (string != null) {
+            context = _.without(context, string);
+            return context.push(string);
+          }
+        };
+        _ref = data.journal;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          action = _ref[_i];
+          addContext(action.site);
+        }
+        addContext(site);
+        wiki.log('build', slug, 'context', context.join(' => '));
+        wiki.resolutionContext = context;
         if (site != null) {
           $(pageElement).append("<h1><a href=\"//" + site + "\"><img src = \"/remote/" + site + "/favicon.png\" height = \"32px\"></a> " + page.title + "</h1>");
         } else {
           $(pageElement).append("<h1><a href=\"/\"><img src = \"/favicon.png\" height = \"32px\"></a> " + page.title + "</h1>");
         }
-        _ref = ['story', 'journal', 'footer'].map(function(className) {
+        _ref2 = ['story', 'journal', 'footer'].map(function(className) {
           return $("<div />").addClass(className).appendTo(pageElement);
-        }), storyElement = _ref[0], journalElement = _ref[1], footerElement = _ref[2];
+        }), storyElement = _ref2[0], journalElement = _ref2[1], footerElement = _ref2[2];
         $.each(page.story, function(i, item) {
           var div;
           div = $("<div class=\"item " + item.type + "\" id=\"" + item.id + "\" />");
