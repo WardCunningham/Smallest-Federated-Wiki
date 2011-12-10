@@ -1,0 +1,166 @@
+.error {
+  color: #bb0000; }
+
+body {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  background: #eeeeee url("/crosses.png");
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  font-family: "Helvetica Neue", helvetica, Verdana, Arial, Sans;
+  line-height: 1.3;
+  color: #333333; }
+
+.main {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  bottom: 60px;
+  margin: 0;
+  width: 10000%; }
+
+header,
+footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 20px;
+  padding: 10px;
+  font-size: 80%;
+  z-index: 1000;
+  color: #555566; }
+
+header {
+  top: 0; }
+
+footer {
+  bottom: 0; }
+
+.story {
+  padding-bottom: 5px; }
+
+.chart,
+.image {
+  float: right;
+  margin-left: 0.4em;
+  margin-bottom: 0.4em;
+  background: #eeeeee;
+  padding: 0.8em;
+  width: 40%; }
+
+.image img {
+  width: 100%; }
+
+.journal {
+  margin-top: 2px;
+  clear: both;
+  background-color: #eeeeee;
+  overflow: auto;
+  padding: 3px; }
+
+.action.fork {
+  color: black; }
+
+.action {
+  background-color: #cccccc;
+  color: #666666;
+  text-align: center;
+  text-decoration: none;
+  padding: 0.2em;
+  margin: 3px;
+  float: left;
+  width: 1em; }
+
+.target {
+  background-color: #ffffcc !important; }
+
+.factory p,
+.chart p,
+.footer a,
+.image p {
+  text-align: center;
+  margin-bottom: 0;
+  color: gray;
+  font-size: 70%; }
+
+.federatedWiki .cite {
+  margin-top: 0;
+  color: gray;
+  font-size: 70%; }
+
+p.readout {
+  text-align: center;
+  font-size: 300%;
+  color: black;
+  font-weight: bold;
+  margin: 0; }
+
+.footer {
+  clear: both;
+  margin-bottom: 1em; }
+
+.page {
+  float: left;
+  margin: 0.5em;
+  padding: 0 2em;
+  width: 26em;
+  background-color: white;
+  height: 100%;
+  overflow: auto;
+  box-shadow: 2px 1px 4px rgba(0, 0, 0, 0.2); }
+  .page.active {
+    box-shadow: 2px 1px 24px rgba(0, 0, 0, 0.4);
+    z-index: 10; }
+
+.page.local {
+  background-color: #fbfbef; }
+
+.factory,
+textarea {
+  font-size: inherit;
+  width: 100%;
+  height: 150px; }
+
+.factory {
+  clear: both;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  background-color: #eeeeee; }
+
+.factory p {
+  padding: 10px; }
+
+.clickable:hover {
+  cursor: pointer; }
+
+@media all and (max-width: 400px) {
+  .page {
+    width: 0.9%;
+    margin: 0.01%;
+    padding: 0.04%; } }
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  margin-right: 10px; }
+
+::-webkit-scrollbar-button:start:decrement,
+::-webkit-scrollbar-button:end:increment {
+  height: 30px;
+  display: block;
+  background-color: transparent; }
+
+::-webkit-scrollbar-track-piece {
+  background-color: #eeeeee;
+  -webkit-border-radius: 6px; }
+
+::-webkit-scrollbar-thumb:vertical {
+  height: 50px;
+  background-color: #cccccc;
+  border: 1px solid #eeeeee;
+  -webkit-border-radius: 6px; }
