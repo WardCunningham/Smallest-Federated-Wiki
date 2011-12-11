@@ -8,28 +8,35 @@ In summary, the server's peer-to-peer side exists to:
 * Encourage the deployment of independently owned content stores.
 * Support community among owners through systematic sharing of content.
 
+
 Customizing your Server
 =======================
 
-The distribution contains default files that will be installed if you don't install your own.
-These are:
+The distribution contains default files. They will be copied the first time
+they're requested, if you don't install your own. These are:
 
-  data/pages/default-welcome-visitors
+    default-data/pages/welcome-visitors
+    default-data/status/favicon.png
 
-This is the usual welcome page offered as the server's home page.
-It becomes welcome-visitors unless that file already exists.
-You can revise it at your leisure.
+The first is the usual welcome page offered as the server's home page.
+The second is a 32x32 png gradient that is used to identify your server
+in bookmarks, browser tabs, page headings and journal entries.
 
-  client/default-favicon.png
+You can revise the welcome page by editing your copy here:
 
-This is a 32x32 png gradient that is used to identify your server in bookmarks,
-browser tabs, page headings and journal entries.
+    data/pages/welcome-visitors
+
 You're encouraged to create a distinctive gradient file to identify your server.
-Try generating something fun at http://tools.dynamicdrive.com/gradient/
-Save the result as client/favicon.png.
+Try generating something fun at http://tools.dynamicdrive.com/gradient/ and
+save the resulting file here:
 
-We found another very simple gradient generator which has the advantage of being written in ruby.
-Read the blog post, http://blog.jpoz.net/2009/07/27/ruby-gradients.html, or run the generator, http://gradient.jpoz.net/
+    client/favicon.png
+
+We found another very simple gradient generator which has the advantage of
+being written in ruby.
+Read the blog post, http://blog.jpoz.net/2009/07/27/ruby-gradients.html,
+or run the generator, http://gradient.jpoz.net/
+
 
 Launching the Server
 ====================
