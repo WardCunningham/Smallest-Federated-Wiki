@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/spec_helper'
 require 'png/reader'
 require 'pp'
-require File.expand_path("../../server/favicon", __FILE__)
 
 describe "Favicon" do
 	before(:all) do
