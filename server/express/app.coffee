@@ -11,9 +11,8 @@ http = require('http')
 opt =
   port: 3000
   host: ''                                # Anything falsey will accept all hosts
-  root: path.normalize("#{__dirname}/..") # App root defaults to one level above cwd
-  db: path.join("..", "data/pages")
-
+  root: path.normalize("#{__dirname}/../..") # App root defaults to one level above cwd
+  db: path.normalize("#{__dirname}/../../spec/data/pages")
 
 # App configuration
 
@@ -26,7 +25,7 @@ app.configure( ->
   app.use(express.bodyParser())
   app.use(express.methodOverride())
   app.use(app.router)
-  app.use(express.static('../client'))
+  app.use(express.static("#{opt.root}/client"))
 )
 
 app.configure('development', ->
@@ -112,7 +111,7 @@ app.put(/^\/page\/([a-z0-9-]+)\/action$/i, (req, res) ->
           for p in oldstory
             if id is p.id
               page.story.push p
-        
+
       when 'add'
         before = -1
         for i in page.story
@@ -120,7 +119,7 @@ app.put(/^\/page\/([a-z0-9-]+)\/action$/i, (req, res) ->
             before = page.story.indexOf(i)
         before += 1
         page.story.splice(before, 0, action.item)
-        
+
       when 'remove'
         for i in page.story
           if i.id is action.id

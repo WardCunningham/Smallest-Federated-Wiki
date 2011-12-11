@@ -14,28 +14,32 @@ module TestDirs
   JS_DIR = File.join(ROOT, "spec/js")
 end
 
-class TestApp < Controller
-  def self.data_root
-    TestDirs::TEST_DATA_DIR
+
+if USE_NODE
+  Capybara.app_host = "http://localhost:3000"
+else
+  class TestApp < Controller
+    def self.data_root
+      TestDirs::TEST_DATA_DIR
+    end
   end
+  Capybara.app = TestApp
+  Capybara.server_port = 31337
 end
 
 Capybara.register_driver :selenium do |app|
   Capybara::Selenium::Driver.new(app, :resynchronize => true)
 end
 
-Capybara.app = TestApp
-Capybara.server_port = 31337
-
 RSpec.configure do |config|
   config.include Capybara::DSL
-end
-
-describe "loading a page" do
-  before do
+  config.before(:each) do
     `rm -rf #{TestDirs::TEST_DATA_DIR}`
     Capybara.current_driver = :selenium
   end
+end
+
+describe "loading a page" do
 
   it "should load the welcome page" do
     visit("/")
@@ -113,8 +117,6 @@ end
 
 describe "edit paragraph in place" do
   before do
-    `rm -rf #{TestDirs::TEST_DATA_DIR}`
-    Capybara.current_driver = :selenium
     visit("/")
   end
 
@@ -166,7 +168,6 @@ end
 
 describe "moving paragraphs" do
   before do
-    Capybara.current_driver = :selenium
     use_fixture_pages("multiple-paragraphs")
   end
 
@@ -200,8 +201,6 @@ end
 
 describe "navigating between pages" do
   before do
-    `rm -rf #{TestDirs::TEST_DATA_DIR}`
-    Capybara.current_driver = :selenium
     visit("/")
   end
 
@@ -223,10 +222,6 @@ end
 
 # This should probably be moved somewhere else.
 describe "should retrieve favicon" do
-  before do
-    `rm -rf #{TestDirs::TEST_DATA_DIR}`
-    Capybara.current_driver = :selenium
-  end
 
   def default_favicon
     File.join(APP_ROOT, "default-data/status/favicon.png")
@@ -252,7 +247,7 @@ describe "should retrieve favicon" do
 
   it "should return the local image when it exists" do
     FileUtils.mkdir_p File.dirname(local_favicon)
-    FileUtils.cp "#{APP_ROOT}/spec/favicon.png", local_favicon
+    FileUtils.cp "#{ROOT}/spec/favicon.png", local_favicon
     sha(favicon_response.body).should == sha(File.read(local_favicon))
     favicon_response['Content-Type'].should == 'image/png'
   end
