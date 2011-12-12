@@ -46,7 +46,7 @@ app.configure('production', ->
 
 app.redirect('index', (req, res) ->
   '/static.html'
-  )
+)
 
 # Get routes
 
@@ -63,7 +63,7 @@ app.get('*.json', (req, res) ->
 )
 
 app.get('*style.css', (req, res) ->
-  res.sendfile("#{opt.root}/server/views/sinatra/style.css")
+  res.sendfile("#{opt.root}/server/sinatra/views/style.css")
 )
 
 viewdomain = /// ^/(
@@ -82,7 +82,7 @@ app.get(viewdomain, (req, res) ->
     else
       {id, site}
   #res.redirect('index')
-  res.sendfile("#{opt.root}/server/views/static.html")
+  res.sendfile("#{opt.root}/server/sinatra/views/static.html")
 )
 
 app.get('/plugins/factory.js', (req, res) ->
