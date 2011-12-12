@@ -1,6 +1,6 @@
 source :rubygems
 
-gem "sinatra", '1.2.6'
+gem "sinatra", '1.2'
 gem "haml"
 gem "sass"
 gem "json"
