@@ -247,7 +247,7 @@ describe "should retrieve favicon" do
 
   it "should return the local image when it exists" do
     FileUtils.mkdir_p File.dirname(local_favicon)
-    FileUtils.cp "#{ROOT}/spec/favicon.png", local_favicon
+    FileUtils.cp "#{TestDirs::ROOT}/spec/favicon.png", local_favicon
     sha(favicon_response.body).should == sha(File.read(local_favicon))
     favicon_response['Content-Type'].should == 'image/png'
   end
