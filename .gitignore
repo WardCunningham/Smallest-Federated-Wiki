@@ -1,7 +1,8 @@
 .DS_Store
 *.swp
-.sass-cache/*
+.sass-cache
 .rvmrc
 /data
 /spec/data
 /client/js
+/server/express/node_modules

@@ -1,5 +1,4 @@
 require File.dirname(__FILE__) + '/spec_helper'
-require File.expand_path("../../server/page", __FILE__)
 
 describe "Page" do
   before(:all) do

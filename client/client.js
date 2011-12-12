@@ -1,13 +1,10 @@
 (function() {
-  var __slice = Array.prototype.slice, __indexOf = Array.prototype.indexOf || function(item) {
-    for (var i = 0, l = this.length; i < l; i++) {
-      if (this[i] === item) return i;
-    }
-    return -1;
-  };
+  var __slice = Array.prototype.slice, __hasProp = Object.prototype.hasOwnProperty, __indexOf = Array.prototype.indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (__hasProp.call(this, i) && this[i] === item) return i; } return -1; };
+
   Array.prototype.last = function() {
     return this[this.length - 1];
   };
+
   $(function() {
     var LEFTARROW, RIGHTARROW, addToJournal, createPage, doPlugin, findPage, formatTime, getItem, getPlugin, pagesInDom, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveFrom, resolveLinks, scripts, scrollTo, setActive, setState, showState, startPages, textEditor, useLocalStorage;
     window.wiki = {};
@@ -33,9 +30,7 @@
     wiki.log = function() {
       var things;
       things = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-      if (console.log != null) {
-        return console.log(things);
-      }
+      if (console.log != null) return console.log(things);
     };
     wiki.resolutionContext = [];
     resolveFrom = wiki.resolveFrom = function(addition, callback) {
@@ -86,13 +81,9 @@
     pushToLocal = function(pageElement, action) {
       var page;
       page = localStorage[pageElement.attr("id")];
-      if (page) {
-        page = JSON.parse(page);
-      }
+      if (page) page = JSON.parse(page);
       page || (page = pageElement.data("data"));
-      if (page.journal == null) {
-        page.journal = [];
-      }
+      if (page.journal == null) page.journal = [];
       page.journal.concat(action);
       page.story = $(pageElement).find(".item").map(function() {
         return $(this).data("item");
@@ -120,9 +111,7 @@
       textarea = $("<textarea>" + (original = (_ref = item.text) != null ? _ref : '') + "</textarea>").focusout(function() {
         if (item.text = textarea.val()) {
           doPlugin(div.empty(), item);
-          if (item.text === original) {
-            return;
-          }
+          if (item.text === original) return;
           putAction(div.parents('.page:first'), {
             type: 'edit',
             id: item.id,
@@ -172,7 +161,12 @@
       _results = [];
       for (_i = 0, _len = paths.length; _i < _len; _i++) {
         path = paths[_i];
-        _results.push(scripts[path] == null ? (scripts[path] = true, $('<script type="text/javascript"/>').attr('src', path).prependTo($('script:first'))) : void 0);
+        if (scripts[path] == null) {
+          scripts[path] = true;
+          _results.push($('<script type="text/javascript"/>').attr('src', path).prependTo($('script:first')));
+        } else {
+          _results.push(void 0);
+        }
       }
       return _results;
     };
@@ -443,9 +437,7 @@
       oldPages = pagesInDom();
       newPages = state.pages;
       previousPage = newPages;
-      if (!newPages) {
-        return;
-      }
+      if (!newPages) return;
       for (_i = 0, _len = newPages.length; _i < _len; _i++) {
         name = newPages[_i];
         if (__indexOf.call(oldPages, name) >= 0) {
@@ -464,9 +456,7 @@
     };
     History.Adapter.bind(window, 'statechange', function() {
       var state;
-      if (state = History.getState().data) {
-        return showState(state);
-      }
+      if (state = History.getState().data) return showState(state);
     });
     LEFTARROW = 37;
     RIGHTARROW = 39;
@@ -521,17 +511,13 @@
         });
       }
     }).delegate('.page', 'click', function(e) {
-      if (!$(e.target).is("a")) {
-        return setActive(this.id);
-      }
+      if (!$(e.target).is("a")) return setActive(this.id);
     }).delegate('.internal', 'click', function(e) {
       var name;
       e.preventDefault();
       name = $(e.target).data('pageName');
       wiki.log('click', name);
-      if (!e.shiftKey) {
-        $(e.target).parents('.page').nextAll().remove();
-      }
+      if (!e.shiftKey) $(e.target).parents('.page').nextAll().remove();
       scrollTo(createPage(name).appendTo('.main').each(refresh));
       if (History.enabled) {
         return setState({
@@ -546,9 +532,7 @@
       e.preventDefault();
       name = $(e.target).data('slug');
       wiki.log('click', name, 'site', $(e.target).data('site'));
-      if (!e.shiftKey) {
-        $(e.target).parents('.page').nextAll().remove();
-      }
+      if (!e.shiftKey) $(e.target).parents('.page').nextAll().remove();
       scrollTo(createPage(name).data('site', $(e.target).data('site')).appendTo($('.main')).each(refresh));
       if (History.enabled) {
         return setState({
@@ -567,4 +551,5 @@
       active: startPages[startPages.length - 1]
     });
   });
+
 }).call(this);
