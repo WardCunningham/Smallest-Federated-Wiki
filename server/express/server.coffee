@@ -51,7 +51,7 @@ app.redirect('index', (req, res) ->
 # Get routes
 
 app.get('/', (req, res) ->
-  res.sendfile("#{opt.root}/server/views/static.html")
+  res.sendfile("#{opt.root}/server/sinatra/views/static.html")
 )
 
 app.get('*.json', (req, res) ->
@@ -63,7 +63,7 @@ app.get('*.json', (req, res) ->
 )
 
 app.get('*style.css', (req, res) ->
-  res.sendfile("#{opt.root}/server/views/style.css")
+  res.sendfile("#{opt.root}/server/sinatra/views/style.css")
 )
 
 viewdomain = /// ^/(

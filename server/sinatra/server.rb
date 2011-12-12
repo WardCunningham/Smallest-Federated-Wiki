@@ -4,8 +4,8 @@ require 'pathname'
 Bundler.require
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
-root_path = File.dirname(File.dirname(__FILE__)) # one level up
-APP_ROOT = Pathname.new(root_path).realpath.to_s # full path to application root
+SINATRA_ROOT = File.expand_path(File.dirname(__FILE__))
+APP_ROOT = File.expand_path(File.join(SINATRA_ROOT, "..", ".."))
 
 require 'random_id'
 require 'page'
@@ -14,7 +14,7 @@ require 'favicon'
 class Controller < Sinatra::Base
   set :port, 1111
   set :public, File.join(APP_ROOT, "client")
-  set :views , File.join(APP_ROOT, "server", "views")
+  set :views , File.join(SINATRA_ROOT, "views")
   set :haml, :format => :html5
 
   class << self # overridden in test

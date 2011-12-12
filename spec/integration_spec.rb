@@ -14,36 +14,32 @@ module TestDirs
   JS_DIR = File.join(ROOT, "spec/js")
 end
 
-class TestApp < Controller
-  def self.data_root
-    TestDirs::TEST_DATA_DIR
+
+if USE_NODE
+  Capybara.app_host = "http://localhost:3000"
+else
+  class TestApp < Controller
+    def self.data_root
+      TestDirs::TEST_DATA_DIR
+    end
   end
+  Capybara.app = TestApp
+  Capybara.server_port = 31337
 end
 
 Capybara.register_driver :selenium do |app|
   Capybara::Selenium::Driver.new(app, :resynchronize => true)
 end
 
-Capybara.app = TestApp
-Capybara.server_port = 31337
-
 RSpec.configure do |config|
   config.include Capybara::DSL
-end
-
-AJAX_TIMEOUT_LIMIT = 5
-def wait_for_ajax_to_complete!
-  start = Time.now
-  while page.evaluate_script("window.jQuery.active") != 0 do
-    raise Timeout::Error.new("AJAX request timed out") if Time.now - start > AJAX_TIMEOUT_LIMIT
+  config.before(:each) do
+    `rm -rf #{TestDirs::TEST_DATA_DIR}`
+    Capybara.current_driver = :selenium
   end
 end
 
 describe "loading a page" do
-  before do
-    `rm -rf #{TestDirs::TEST_DATA_DIR}`
-    Capybara.current_driver = :selenium
-  end
 
   it "should load the welcome page" do
     visit("/")
@@ -66,7 +62,6 @@ describe "loading a page" do
   it "should load remote page" do
     remote = "localhost:#{Capybara.server_port}"
     visit("/#{remote}/welcome-visitors")
-    wait_for_ajax_to_complete!
     body.should include("You are welcome to copy this page to any server you own and revise its welcoming message as you see fit.")
   end
 
@@ -83,7 +78,9 @@ class Capybara::Node::Element
   end
 
   def drag_down(number)
-    driver.browser.execute_script "$(arguments[0]).simulateDragSortable({move: arguments[1]});", native, number
+    driver.resynchronize do
+      driver.browser.execute_script "$(arguments[0]).simulateDragSortable({move: arguments[1]});", native, number
+    end
   end
 end
 
@@ -97,6 +94,21 @@ class Capybara::Session
       driver.browser.execute_script File.read(file)
     end
   end
+
+  AJAX_TIMEOUT_LIMIT = 5
+  def wait_for_ajax_to_complete!
+    start = Time.now
+    while evaluate_script("window.jQuery.active") != 0 do
+      raise Timeout::Error.new("AJAX request timed out") if Time.now - start > AJAX_TIMEOUT_LIMIT
+    end
+  end
+
+  def visit_with_wait_for_ajax(*args)
+    visit_without_wait_for_ajax(*args)
+    wait_for_ajax_to_complete!
+  end
+  alias_method :visit_without_wait_for_ajax, :visit
+  alias_method :visit, :visit_with_wait_for_ajax
 end
 
 def first_paragraph
@@ -105,8 +117,6 @@ end
 
 describe "edit paragraph in place" do
   before do
-    `rm -rf #{TestDirs::TEST_DATA_DIR}`
-    Capybara.current_driver = :selenium
     visit("/")
   end
 
@@ -158,7 +168,6 @@ end
 
 describe "moving paragraphs" do
   before do
-    Capybara.current_driver = :selenium
     use_fixture_pages("multiple-paragraphs")
   end
 
@@ -192,8 +201,6 @@ end
 
 describe "navigating between pages" do
   before do
-    `rm -rf #{TestDirs::TEST_DATA_DIR}`
-    Capybara.current_driver = :selenium
     visit("/")
   end
 
@@ -215,10 +222,6 @@ end
 
 # This should probably be moved somewhere else.
 describe "should retrieve favicon" do
-  before do
-    `rm -rf #{TestDirs::TEST_DATA_DIR}`
-    Capybara.current_driver = :selenium
-  end
 
   def default_favicon
     File.join(APP_ROOT, "default-data/status/favicon.png")
@@ -244,7 +247,7 @@ describe "should retrieve favicon" do
 
   it "should return the local image when it exists" do
     FileUtils.mkdir_p File.dirname(local_favicon)
-    FileUtils.cp "#{APP_ROOT}/spec/favicon.png", local_favicon
+    FileUtils.cp "#{TestDirs::ROOT}/spec/favicon.png", local_favicon
     sha(favicon_response.body).should == sha(File.read(local_favicon))
     favicon_response['Content-Type'].should == 'image/png'
   end
