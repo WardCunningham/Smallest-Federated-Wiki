@@ -123,22 +123,22 @@ app.put(/^\/page\/([a-z0-9-]+)\/action$/i, (req, res) ->
     console.log page.story if opt.debug
     page.story = switch action.type
       when 'move'
-        _(action.order).chain()
-          .map((i) ->
-            _(page.story).find( (item) ->
-              i is item.id
-            )
-          ).value()
+        _(action.order).map((i) ->
+          _(page.story).find( (story) ->
+            console.log i, story
+            i is story.id
+          )
+        )
         
       when 'add'
-        _(page.story).chain()
-          .map( (i) ->
-            if i.id is action.after
-              [i, action.item]
-            else
-              i
-          ).flatten()
-          .value()
+        before = -1
+        for i in page.story
+          if i.id = action.after
+            before = page.story.indexOf(i)
+        before += 1
+        page.story.splice(before, 0, action.item)
+        page.story
+
 
       when 'remove'
         _(page.story).reject( (i) ->
@@ -147,10 +147,10 @@ app.put(/^\/page\/([a-z0-9-]+)\/action$/i, (req, res) ->
 
       when 'edit'
         _(page.story).map( (i) ->
-            if i.id is action.id
-              action.item
-            else
-              i
+          if i.id is action.id
+            action.item
+          else
+            i
         )
 
       else
