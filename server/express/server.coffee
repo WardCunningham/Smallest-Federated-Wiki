@@ -5,6 +5,7 @@ fs = require('fs')
 path = require('path')
 http = require('http')
 _ = require('../../client/js/underscore-min.js')
+pagehandler = require('./page.coffee')
 
 # All user defineable options
 
@@ -56,9 +57,8 @@ app.get('/', (req, res) ->
 
 app.get('*.json', (req, res) ->
   file = req.params[0]
-  fs.readFile(path.join(opt.db, file), (err, data) =>
-    if err then throw err
-    res.json(JSON.parse(data))
+  pagehandler.get(opt, file, (page) =>
+    res.json(page)
   )
 )
 
@@ -117,28 +117,26 @@ app.put(/^\/page\/([a-z0-9-]+)\/action$/i, (req, res) ->
   action = JSON.parse(req.body.action)
   console.log(action) if opt.debug
   # TODO: implement action.fork
-  fs.readFile(path.join(opt.db, req.params[0]), (err, page) =>
-    if err then throw err
-    page = JSON.parse(page)
+  pagehandler.get(opt, req.params[0], (page) ->
     console.log page.story if opt.debug
     page.story = switch action.type
       when 'move'
-        _(action.order).chain()
-          .map((i) ->
-            _(page.story).find( (item) ->
-              i is item.id
-            )
-          ).value()
+        _(action.order).map((i) ->
+          _(page.story).find( (story) ->
+            console.log i, story
+            i is story.id
+          )
+        )
         
       when 'add'
-        _(page.story).chain()
-          .map( (i) ->
-            if i.id is action.after
-              [i, action.item]
-            else
-              i
-          ).flatten()
-          .value()
+        before = -1
+        for i in page.story
+          if i.id = action.after
+            before = page.story.indexOf(i)
+        before += 1
+        page.story.splice(before, 0, action.item)
+        page.story
+
 
       when 'remove'
         _(page.story).reject( (i) ->
@@ -147,10 +145,10 @@ app.put(/^\/page\/([a-z0-9-]+)\/action$/i, (req, res) ->
 
       when 'edit'
         _(page.story).map( (i) ->
-            if i.id is action.id
-              action.item
-            else
-              i
+          if i.id is action.id
+            action.item
+          else
+            i
         )
 
       else
@@ -160,7 +158,7 @@ app.put(/^\/page\/([a-z0-9-]+)\/action$/i, (req, res) ->
     if not page.journal
       page.journal = []
     page.journal.push(action)
-    fs.writeFile(path.join(opt.db, req.params[0]), JSON.stringify(page), (err) =>
+    pagehandler.put(opt, req.params[0], page, (err) =>
       if err then throw err
       res.send('ok')
       console.log 'saved' if opt.debug
