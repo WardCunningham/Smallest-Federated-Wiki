@@ -5,6 +5,7 @@ fs = require('fs')
 path = require('path')
 http = require('http')
 _ = require('../../client/js/underscore-min.js')
+pagehandler = require('./page.coffee')
 
 # All user defineable options
 
@@ -56,9 +57,8 @@ app.get('/', (req, res) ->
 
 app.get('*.json', (req, res) ->
   file = req.params[0]
-  fs.readFile(path.join(opt.db, file), (err, data) =>
-    if err then throw err
-    res.json(JSON.parse(data))
+  pagehandler.get(opt, file, (page) =>
+    res.json(page)
   )
 )
 
@@ -117,9 +117,7 @@ app.put(/^\/page\/([a-z0-9-]+)\/action$/i, (req, res) ->
   action = JSON.parse(req.body.action)
   console.log(action) if opt.debug
   # TODO: implement action.fork
-  fs.readFile(path.join(opt.db, req.params[0]), (err, page) =>
-    if err then throw err
-    page = JSON.parse(page)
+  pagehandler.get(opt, req.params[0], (page) ->
     console.log page.story if opt.debug
     page.story = switch action.type
       when 'move'
@@ -160,7 +158,7 @@ app.put(/^\/page\/([a-z0-9-]+)\/action$/i, (req, res) ->
     if not page.journal
       page.journal = []
     page.journal.push(action)
-    fs.writeFile(path.join(opt.db, req.params[0]), JSON.stringify(page), (err) =>
+    pagehandler.put(opt, req.params[0], page, (err) =>
       if err then throw err
       res.send('ok')
       console.log 'saved' if opt.debug
