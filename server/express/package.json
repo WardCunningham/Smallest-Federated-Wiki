@@ -4,5 +4,7 @@
   , "private": true
   , "dependencies": {
       "express": ">= 2.5.1"
+    , "mkdirp": ">= 0.0.1"
+    , "canvas": ">= 0.0.1"
   }
 }
