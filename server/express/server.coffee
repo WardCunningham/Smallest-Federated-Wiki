@@ -6,6 +6,7 @@ path = require('path')
 http = require('http')
 _ = require('../../client/js/underscore-min.js')
 pagehandler = require('./page.coffee')
+favicon = require('./favicon.coffee')
 
 # All user defineable options
 
@@ -102,7 +103,9 @@ app.get('/plugins/factory.js', (req, res) ->
 )
 
 app.get('/favicon.png', (req,res) ->
-  res.sendfile("#{opt.root}/data/status/favicon.png")
+  favicon.get("#{opt.root}/data/status/favicon.png", (loc) ->
+    res.sendfile(loc)
+  )
 )
 
 
