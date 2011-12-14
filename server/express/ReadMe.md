@@ -9,8 +9,6 @@ if you don't have coffeescript installed globally
 
 	npm install -g coffeescript
 
-If you don't have your own data, copy ../../default-data to ../../data.
-
 All user options are contained in the opt object defined at the top of
 the file.  Defaults should work in the git repo on port 3000
 Debug logging is turned on when in development environment.
