@@ -166,6 +166,26 @@ def use_fixture_pages(*pages)
   end
 end
 
+describe "completely empty (but valid json) page" do
+  before do
+    use_fixture_pages("empty-page")
+    visit("/view/empty-page")
+  end
+
+  it "should have a title of empty" do
+    body.should include("</a> empty</h1>")
+  end
+
+  it "should have an empty story" do
+    body.should include("<div class=\"story ui-sortable\"></div>")
+  end
+
+  it "should have an empty journal" do
+    body.should include("<div class=\"journal\"></div>")
+  end
+end
+
+
 describe "moving paragraphs" do
   before do
     use_fixture_pages("multiple-paragraphs")

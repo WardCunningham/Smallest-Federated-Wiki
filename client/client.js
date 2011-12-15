@@ -365,7 +365,7 @@
             return context.push(string);
           }
         };
-        _ref = data.journal;
+        _ref = page.journal;
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           action = _ref[_i];
           addContext(action.site);
