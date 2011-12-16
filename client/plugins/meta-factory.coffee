@@ -47,8 +47,15 @@ window.plugins.factory =
             reader.readAsDataURL(file)
           else if majorType == "text"
             reader.onload = (loadEvent) ->
-              item.type = 'paragraph'
-              item.text = loadEvent.target.result
+              result = loadEvent.target.result
+              if minorType == 'csv'
+                item.type = 'data'
+                item.columns = (array = csvToArray result)[0]
+                item.data = arrayToJson array
+                item.text = file.fileName
+              else
+                item.type = 'paragraph'
+                item.text = result
               syncEditAction()
             reader.readAsText(file)
           else
@@ -79,4 +86,29 @@ window.plugins.factory =
       else
         alert "Expected dataTransfer, got null"
 
+# from http://www.bennadel.com/blog/1504-Ask-Ben-Parsing-CSV-Strings-With-Javascript-Exec-Regular-Expression-Command.htm
+# via http://stackoverflow.com/questions/1293147/javascript-code-to-parse-csv-data
 
+csvToArray = (strData, strDelimiter) ->
+  strDelimiter = (strDelimiter or ",")
+  objPattern = new RegExp(("(\\" + strDelimiter + "|\\r?\\n|\\r|^)" + "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" + "([^\"\\" + strDelimiter + "\\r\\n]*))"), "gi")
+  arrData = [ [] ]
+  arrMatches = null
+  while arrMatches = objPattern.exec(strData)
+    strMatchedDelimiter = arrMatches[1]
+    arrData.push []  if strMatchedDelimiter.length and (strMatchedDelimiter isnt strDelimiter)
+    if arrMatches[2]
+      strMatchedValue = arrMatches[2].replace(new RegExp("\"\"", "g"), "\"")
+    else
+      strMatchedValue = arrMatches[3]
+    arrData[arrData.length - 1].push strMatchedValue
+  arrData
+
+arrayToJson = (array) ->
+  cols = array.shift()
+  rowToObject = (row) ->
+    obj = {}
+    for [k, v] in _.zip(cols, row)
+      obj[k] = v if v? && (v.match /\S/) && v != 'NULL'
+    obj
+  (rowToObject row for row in array)

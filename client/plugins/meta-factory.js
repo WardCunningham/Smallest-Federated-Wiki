@@ -1,4 +1,5 @@
 (function() {
+  var arrayToJson, csvToArray;
   var __indexOf = Array.prototype.indexOf || function(item) {
     for (var i = 0, l = this.length; i < l; i++) {
       if (this[i] === item) return i;
@@ -74,8 +75,17 @@
               return reader.readAsDataURL(file);
             } else if (majorType === "text") {
               reader.onload = function(loadEvent) {
-                item.type = 'paragraph';
-                item.text = loadEvent.target.result;
+                var array, result;
+                result = loadEvent.target.result;
+                if (minorType === 'csv') {
+                  item.type = 'data';
+                  item.columns = (array = csvToArray(result))[0];
+                  item.data = arrayToJson(array);
+                  item.text = file.fileName;
+                } else {
+                  item.type = 'paragraph';
+                  item.text = result;
+                }
                 return syncEditAction();
               };
               return reader.readAsText(file);
@@ -114,5 +124,47 @@
         }
       });
     }
+  };
+  csvToArray = function(strData, strDelimiter) {
+    var arrData, arrMatches, objPattern, strMatchedDelimiter, strMatchedValue;
+    strDelimiter = strDelimiter || ",";
+    objPattern = new RegExp("(\\" + strDelimiter + "|\\r?\\n|\\r|^)" + "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" + "([^\"\\" + strDelimiter + "\\r\\n]*))", "gi");
+    arrData = [[]];
+    arrMatches = null;
+    while (arrMatches = objPattern.exec(strData)) {
+      strMatchedDelimiter = arrMatches[1];
+      if (strMatchedDelimiter.length && (strMatchedDelimiter !== strDelimiter)) {
+        arrData.push([]);
+      }
+      if (arrMatches[2]) {
+        strMatchedValue = arrMatches[2].replace(new RegExp("\"\"", "g"), "\"");
+      } else {
+        strMatchedValue = arrMatches[3];
+      }
+      arrData[arrData.length - 1].push(strMatchedValue);
+    }
+    return arrData;
+  };
+  arrayToJson = function(array) {
+    var cols, row, rowToObject, _i, _len, _results;
+    cols = array.shift();
+    rowToObject = function(row) {
+      var k, obj, v, _i, _len, _ref, _ref2;
+      obj = {};
+      _ref = _.zip(cols, row);
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        _ref2 = _ref[_i], k = _ref2[0], v = _ref2[1];
+        if ((v != null) && (v.match(/\S/)) && v !== 'NULL') {
+          obj[k] = v;
+        }
+      }
+      return obj;
+    };
+    _results = [];
+    for (_i = 0, _len = array.length; _i < _len; _i++) {
+      row = array[_i];
+      _results.push(rowToObject(row));
+    }
+    return _results;
   };
 }).call(this);
