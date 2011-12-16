@@ -8,17 +8,47 @@ _ = require('../../client/js/underscore-min.js')
 pagehandler = require('./page.coffee')
 favicon = require('./favicon.coffee')
 
-# All user defineable options
+# Handle command line options
 
+argv = require('optimist')
+  .usage('Usage: $0')
+  .options('p',
+    alias     : 'port'
+    default   : 3000
+    describe  : 'Port'
+  )
+  .options('o',
+    alias     : 'host'
+    default   : ''
+    describe  : 'Host to accept connections on, falsy == any'
+  )
+  .options('r',
+    alias     : 'root'
+    default   : path.join("#{__dirname}", '..', '..')
+    describe  : 'Aplication root folder'
+  )
+  .options('d',
+    alias     : 'data'
+    default   : ''
+    describe  : 'location of flat file data'
+  )
+  .argv
+
+if not argv.d
+  argv.d = path.relative("#{__dirname}", "#{argv.r}/data")
+if not argv.c
+  argv.c = path.relative("#{__dirname}", "#{argv.r}/client")
+console.log argv
+
+# Option object... TODO remove in favor of argv directly?
 opt = {
-  port: 3000
-  host: ''                                    # Anything falsey will accept all hosts
-  root: path.join("#{__dirname}", '..', '..') # App root defaults to two levels above cwd
+  port: argv.p
+  host: argv.h
+  root: argv.r
+  db: path.join(argv.d, 'pages')
+  status: path.resolve(path.join(argv.d, 'status'))
+  client: argv.c
 }
-
-# paths relative to opt.root
-opt.db = path.relative("#{__dirname}", "#{opt.root}/data/pages")
-opt.client = path.relative("#{__dirname}", "#{opt.root}/client")
 
 # App configuration
 
@@ -58,7 +88,7 @@ app.get('/', (req, res) ->
 
 app.get('*.json', (req, res) ->
   file = req.params[0]
-  pagehandler.get(opt, file, (page) =>
+  pagehandler.get(path.join(opt.db, file), (page) =>
     res.json(page)
   )
 )
@@ -103,7 +133,7 @@ app.get('/plugins/factory.js', (req, res) ->
 )
 
 app.get('/favicon.png', (req,res) ->
-  favicon.get("#{opt.root}/data/status/favicon.png", (loc) ->
+  favicon.get("#{opt.status}/favicon.png", (loc) ->
     res.sendfile(loc)
   )
 )
@@ -120,7 +150,7 @@ app.put(/^\/page\/([a-z0-9-]+)\/action$/i, (req, res) ->
   action = JSON.parse(req.body.action)
   console.log(action) if opt.debug
   # TODO: implement action.fork
-  pagehandler.get(opt, req.params[0], (page) ->
+  pagehandler.get(path.join(opt.db, req.params[0]), (page) ->
     console.log page.story if opt.debug
     page.story = switch action.type
       when 'move'
@@ -161,7 +191,7 @@ app.put(/^\/page\/([a-z0-9-]+)\/action$/i, (req, res) ->
     if not page.journal
       page.journal = []
     page.journal.push(action)
-    pagehandler.put(opt, req.params[0], page, (err) =>
+    pagehandler.put(path.join(opt.db, req.params[0]), page, (err) =>
       if err then throw err
       res.send('ok')
       console.log 'saved' if opt.debug

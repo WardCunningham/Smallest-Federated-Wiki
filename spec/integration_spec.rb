@@ -16,7 +16,7 @@ end
 
 
 if USE_NODE
-  Capybara.app_host = "http://localhost:3000"
+  Capybara.app_host = "http://localhost:33333"
 else
   class TestApp < Controller
     def self.data_root
