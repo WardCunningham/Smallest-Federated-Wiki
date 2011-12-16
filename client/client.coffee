@@ -263,7 +263,7 @@ $ ->
         if string?
           context = _.without context, string
           context.push string
-      addContext action.site for action in data.journal
+      addContext action.site for action in page.journal
       addContext site
       wiki.log 'build', slug, 'context', context.join ' => '
       wiki.resolutionContext = context
