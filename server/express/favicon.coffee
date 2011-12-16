@@ -38,7 +38,7 @@ create = (loc, cb) ->
     console.log loc, cb
     setTimeout( ->
       cb(loc)
-    , 1000
+    , 100
     )
   )
   light = hsltorgb(Math.floor(Math.random() * 256), .78, .50)
@@ -57,7 +57,6 @@ create = (loc, cb) ->
       ctx.fillRect(x, y, 1, 1)
 
 # Exported functions
-
 
 itself.get = (loc, cb) ->
   path.exists(loc, (exists) ->

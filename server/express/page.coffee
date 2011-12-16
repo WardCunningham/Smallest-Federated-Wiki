@@ -10,69 +10,66 @@ itself = {}
 
 # Untility functions
 
-load_parse = (path, callback) ->
-  fs.readFile(path, (err, data) ->
+load_parse = (loc, cb) ->
+  fs.readFile(loc, (err, data) ->
     if err then throw err
-    callback(JSON.parse(data))
+    cb(JSON.parse(data))
   )
 
-load_parse_copy = (path, opt, name, callback) ->
-  fs.readFile(path, (err, data) ->
+load_parse_copy = (defloc, loc, cb) ->
+  fs.readFile(defloc, (err, data) ->
     if err then throw err
     page = JSON.parse(data)
-    callback(page)
-    itself.put(opt, name, page, (err) ->
+    cb(page)
+    itself.put(loc, page, (err) ->
       if err then throw err
     )
   )
 
-blank_page = (opt, name, callback) ->
+blank_page = (loc, cb) ->
   freshpage = {
-    title: path.basename(name)
+    title: path.basename(loc)
     story: [
       { type: 'factory', id: random_id() }
     ]
     journal: []
   }
-  itself.put(opt, name, freshpage, (err) ->
+  itself.put(loc, freshpage, (err) ->
     if err then throw err
   )
-  callback(freshpage)
+  cb(freshpage)
 
 # Exported functions
 
-itself.get = (opt, name, callback) ->
-  loc = path.join(opt.db, name)
-  console.log(loc) if opt.debug
+itself.get = (loc, cb) ->
+  console.log(loc)
   path.exists(loc, (exists) ->
     if exists
-      load_parse(loc, callback)
+      load_parse(loc, cb)
     else
-      loc = path.join(opt.root, "default-data/pages", name)
-      path.exists(loc, (exists) ->
+      defloc = path.join(path.dirname(loc), '..', '..', '..', 'default-data', 'pages', path.basename(loc))
+      console.log defloc
+      path.exists(defloc, (exists) ->
         if exists
-          load_parse_copy(loc, opt, name, callback)
+          load_parse_copy(defloc, loc, cb)
         else
-          blank_page(opt, name, callback)
+          blank_page(loc, cb)
       )
   )
   
 
-itself.put = (opt, name, page, callback) ->
+itself.put = (loc, page, cb) ->
   page = JSON.stringify(page)
-  loc = path.join(opt.db, name)
-  path.exists(opt.db, (exists) ->
+  path.exists(path.dirname(loc), (exists) ->
     if exists
       fs.writeFile(loc, page, (err) ->
-        if err then throw err
-        console.log 'saved' if opt.debug
+        cb(err)
       )
     else
-      mkdirp(opt.db, 0777, (err) ->
+      mkdirp(path.dirname(loc), 0777, (err) ->
         if err then throw err
         fs.writeFile(loc, page, (err) ->
-          if err then throw err
-          console.log 'saved' if opt.debug
+          cb(err)
         )
       )
   )
