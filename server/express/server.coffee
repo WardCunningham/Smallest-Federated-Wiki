@@ -7,48 +7,46 @@ http = require('http')
 _ = require('../../client/js/underscore-min.js')
 pagehandler = require('./page.coffee')
 favicon = require('./favicon.coffee')
+optimist = require('optimist')
 
 # Handle command line options
-
-argv = require('optimist')
+argv = optimist
   .usage('Usage: $0')
-  .options('p',
-    alias     : 'port'
-    default   : 3000
-    describe  : 'Port'
+  .options('d',
+    alias     : 'data'
+    default   : ''
+    describe  : 'location of flat file data'
+  )
+  .options('h',
+    alias     : 'help'
+    boolean   : true
+    describe  : 'Show this help info and exit'
   )
   .options('o',
     alias     : 'host'
     default   : ''
     describe  : 'Host to accept connections on, falsy == any'
   )
+  .options('p',
+    alias     : 'port'
+    default   : 3000
+    describe  : 'Port'
+  )
   .options('r',
     alias     : 'root'
     default   : path.join("#{__dirname}", '..', '..')
     describe  : 'Aplication root folder'
   )
-  .options('d',
-    alias     : 'data'
-    default   : ''
-    describe  : 'location of flat file data'
-  )
   .argv
 
+if argv.h
+  optimist.showHelp()
+  process.exit()
 if not argv.d
   argv.d = path.relative("#{__dirname}", "#{argv.r}/data")
 if not argv.c
   argv.c = path.relative("#{__dirname}", "#{argv.r}/client")
-console.log argv
-
-# Option object... TODO remove in favor of argv directly?
-opt = {
-  port: argv.p
-  host: argv.h
-  root: argv.r
-  db: path.join(argv.d, 'pages')
-  status: path.resolve(path.join(argv.d, 'status'))
-  client: argv.c
-}
+argv.db = path.join(argv.d, 'pages')
 
 # App configuration
 
@@ -61,17 +59,16 @@ app.configure( ->
   app.use(express.bodyParser())
   app.use(express.methodOverride())
   app.use(app.router)
-  app.use(express.static(opt.client))
+  app.use(express.static(argv.c))
 )
 
 app.configure('development', ->
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }))
-  opt.debug = console? and true
+  argv.debug = console? and true
 )
 
 app.configure('production', ->
   app.use(express.errorHandler())
-  opt.debug = false
 )
 
 # Redirects
@@ -83,18 +80,18 @@ app.redirect('index', (req, res) ->
 # Get routes
 
 app.get('/', (req, res) ->
-  res.sendfile("#{opt.root}/server/sinatra/views/static.html")
+  res.sendfile("#{argv.r}/server/sinatra/views/static.html")
 )
 
 app.get('*.json', (req, res) ->
   file = req.params[0]
-  pagehandler.get(path.join(opt.db, file), (page) =>
+  pagehandler.get(path.join(argv.db, file), (page) =>
     res.json(page)
   )
 )
 
 app.get('*style.css', (req, res) ->
-  res.sendfile("#{opt.root}/server/sinatra/views/style.css")
+  res.sendfile("#{argv.r}/server/sinatra/views/style.css")
 )
 
 viewdomain = /// ^/(
@@ -113,7 +110,7 @@ app.get(viewdomain, (req, res) ->
     else
       {id, site}
   #res.redirect('index')
-  res.sendfile("#{opt.root}/server/sinatra/views/static.html")
+  res.sendfile("#{argv.r}/server/sinatra/views/static.html")
 )
 
 app.get('/plugins/factory.js', (req, res) ->
@@ -125,7 +122,7 @@ app.get('/plugins/factory.js', (req, res) ->
             };
 
             """
-  fs.readFile("#{opt.root}/client/plugins/meta-factory.js", (err, data) =>
+  fs.readFile("#{argv.r}/client/plugins/meta-factory.js", (err, data) =>
     if err then throw err
     res.header('Content-Type', 'application/javascript')
     res.send(catalog + data)
@@ -133,7 +130,7 @@ app.get('/plugins/factory.js', (req, res) ->
 )
 
 app.get('/favicon.png', (req,res) ->
-  favicon.get("#{opt.status}/favicon.png", (loc) ->
+  favicon.get("#{argv.status}/favicon.png", (loc) ->
     res.sendfile(loc)
   )
 )
@@ -148,10 +145,10 @@ app.get('/*', (req, res, next) ->
 
 app.put(/^\/page\/([a-z0-9-]+)\/action$/i, (req, res) ->
   action = JSON.parse(req.body.action)
-  console.log(action) if opt.debug
+  console.log(action) if argv.debug
   # TODO: implement action.fork
-  pagehandler.get(path.join(opt.db, req.params[0]), (page) ->
-    console.log page.story if opt.debug
+  pagehandler.get(path.join(argv.db, req.params[0]), (page) ->
+    console.log page.story if argv.debug
     page.story = switch action.type
       when 'move'
         _(action.order).map((i) ->
@@ -191,14 +188,14 @@ app.put(/^\/page\/([a-z0-9-]+)\/action$/i, (req, res) ->
     if not page.journal
       page.journal = []
     page.journal.push(action)
-    pagehandler.put(path.join(opt.db, req.params[0]), page, (err) =>
+    pagehandler.put(path.join(argv.db, req.params[0]), page, (err) =>
       if err then throw err
       res.send('ok')
-      console.log 'saved' if opt.debug
+      console.log 'saved' if argv.debug
     )
   )
 )
 
-app.listen(opt.port, opt.host if opt.host)
+app.listen(argv.p, argv.o if argv.o)
 
 console.log("Smallest Federated Wiki server listening on #{app.address().port} in mode: #{app.settings.env}")
