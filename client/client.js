@@ -9,7 +9,7 @@
     return this[this.length - 1];
   };
   $(function() {
-    var LEFTARROW, RIGHTARROW, addToJournal, createPage, doPlugin, findPage, formatTime, getItem, getPlugin, pagesInDom, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveFrom, resolveLinks, scripts, scrollTo, setActive, setState, showState, startPages, textEditor, useLocalStorage;
+    var LEFTARROW, RIGHTARROW, addToJournal, asSlug, createPage, doInternalLink, doPlugin, findPage, formatTime, getItem, getPlugin, pagesInDom, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveFrom, resolveLinks, scripts, scrollTo, setActive, setState, showState, startPages, textEditor, useLocalStorage;
     window.wiki = {};
     window.dialog = $('<div></div>').html('This dialog will show every time!').dialog({
       autoOpen: false,
@@ -46,11 +46,14 @@
         wiki.resolutionContext.pop();
       }
     };
+    asSlug = function(name) {
+      return name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase();
+    };
     resolveLinks = wiki.resolveLinks = function(string) {
       var renderInternalLink;
       renderInternalLink = function(match, name) {
         var slug;
-        slug = name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase();
+        slug = asSlug(name);
         wiki.log('resolve', slug, 'context', wiki.resolutionContext.join(' => '));
         return "<a class=\"internal\" href=\"/" + slug + ".html\" data-page-name=\"" + slug + "\" title=\"" + (wiki.resolutionContext.join(' => ')) + "\">" + name + "</a>";
       };
@@ -210,6 +213,12 @@
       } catch (err) {
         return div.append("<p class='error'>" + err + "</p>");
       }
+    };
+    doInternalLink = wiki.doInternalLink = function(name, page) {
+      if (page != null) {
+        $(page).nextAll().remove();
+      }
+      return scrollTo(createPage(asSlug(name)).appendTo($('.main')).each(refresh));
     };
     scrollTo = function(el) {
       var contentWidth, maxX, minX, target, width;

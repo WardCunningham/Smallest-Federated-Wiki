@@ -25,10 +25,13 @@ $ ->
     finally
       wiki.resolutionContext.pop()
 
+  asSlug = (name) ->
+    name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase()
+
   resolveLinks = wiki.resolveLinks = (string) ->
     renderInternalLink = (match, name) ->
       # spaces become 'slugs', non-alpha-num get removed
-      slug = name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase()
+      slug = asSlug name
       wiki.log 'resolve', slug, 'context', wiki.resolutionContext.join(' => ')
       "<a class=\"internal\" href=\"/#{slug}.html\" data-page-name=\"#{slug}\" title=\"#{wiki.resolutionContext.join(' => ')}\">#{name}</a>"
     string
@@ -149,6 +152,13 @@ $ ->
       plugin.bind div, item
     catch err
       div.append "<p class='error'>#{err}</p>"
+
+  doInternalLink = wiki.doInternalLink = (name, page) ->
+    $(page).nextAll().remove() if page?
+    scrollTo createPage(asSlug(name))
+      .appendTo($('.main'))
+      .each refresh
+
 
   scrollTo = (el) ->
     minX = $("body").scrollLeft()
