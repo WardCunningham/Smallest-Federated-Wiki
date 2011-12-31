@@ -61,6 +61,7 @@ create = (loc, cb) ->
 # Exported functions
 
 itself.get = (loc, cb) ->
+  console.log loc
   path.exists(loc, (exists) ->
     if exists
       cb(loc)
@@ -75,6 +76,7 @@ itself.get = (loc, cb) ->
           )
       )
   )
+
 if path.basename(process.argv[1]) is 'favicon.coffee'
   # If run from the command line, create a favicon.png in provided loc or cwd and exit
   create(process.argv[2] or "#{__dirname}/favicon.png", (loc) ->
