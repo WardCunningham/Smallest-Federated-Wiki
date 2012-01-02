@@ -44,7 +44,6 @@ itself.get = (loc, cb) ->
     if exists
       load_parse(loc, cb)
     else
-      #finddefloc(loc)
       defloc = path.join(path.dirname(loc), '..', '..', '..', 'default-data', 'pages', path.basename(loc))
       path.exists(defloc, (exists) ->
         if exists

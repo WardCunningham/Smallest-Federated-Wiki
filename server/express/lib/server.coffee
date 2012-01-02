@@ -6,7 +6,6 @@ http = require('http')
 _ = require('../../../client/js/underscore-min.js')
 pagehandler = require('./page.coffee')
 favicon = require('./favicon.coffee')
-optimist = require('optimist')
 
 # App configuration
 
@@ -14,9 +13,6 @@ module.exports = (argv) ->
   app = express.createServer()
 
   app.configure( ->
-    #app.set('views', '../views')
-    #app.register('.haml', require('hamljs'))
-    #app.set('view engine', 'haml')
     app.use(express.bodyParser())
     app.use(express.methodOverride())
     app.use(app.router)
@@ -35,13 +31,14 @@ module.exports = (argv) ->
   # Redirects
 
   app.redirect('index', (req, res) ->
-    '/static.html'
+    '/view/welcome-visitors'
+    #res.sendfile("#{argv.r}/server/sinatra/views/static.html")
   )
 
   # Get routes
 
   app.get('/', (req, res) ->
-    res.sendfile("#{argv.r}/server/sinatra/views/static.html")
+    res.redirect('index')
   )
 
   app.get('*.json', (req, res) ->
@@ -63,14 +60,12 @@ module.exports = (argv) ->
   )$ ///
 
   app.get(viewdomain, (req, res) ->
-    # TODO: Make this actually render the template instead of redirecting to index
     elements = req.params[0].split('/')
-    pages = while ((site = elements.shift()) and (id = elements.shift()))
-      if site is 'view' or site is 'my'
-        {id}
-      else
-        {id, site}
-    #res.redirect('index')
+    #pages = while ((site = elements.shift()) and (id = elements.shift()))
+    #  if site is 'view' or site is 'my'
+    #    {id}
+    #  else
+    #    {id, site}
     res.sendfile("#{argv.r}/server/sinatra/views/static.html")
   )
 
@@ -107,19 +102,19 @@ module.exports = (argv) ->
     getopts = {
       host: req.params[0]
       port: 80
-      path: req.aprams[1]
+      path: req.params[1]
     }
     console.log getopts
-    # http.get()
+    http.get(getopts, (resp) ->
+      res.sendfile(resp.body)
+    )
   )
 
   # Put routes
 
   app.put(/^\/page\/([a-z0-9-]+)\/action$/i, (req, res) ->
     action = JSON.parse(req.body.action)
-    console.log(action) if argv.debug
-    # TODO: implement action.fork
-    pagehandler.get(path.join(argv.db, req.params[0]), (page) ->
+    actionCB = (page) ->
       console.log page if argv.debug
       switch action.type
         when 'move'
@@ -136,7 +131,6 @@ module.exports = (argv) ->
             if item.id is action.after
               before = action.after
           page.story.splice(index, 0, action.item)
-
 
         when 'remove'
           page.story = (item for item in page.story when item?.id isnt action.id)
@@ -159,7 +153,9 @@ module.exports = (argv) ->
         res.send('ok')
         console.log 'saved' if argv.debug
       )
-    )
+    console.log(action) if argv.debug
+    # TODO: implement action.fork
+    pagehandler.get(path.join(argv.db, req.params[0]), actionCB)
   )
 
   app.listen(argv.p, argv.o if argv.o)

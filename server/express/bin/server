@@ -47,33 +47,5 @@ if not argv.c
 argv.db = path.resolve(path.join(argv.d, 'pages'))
 argv.status = path.resolve(path.join(argv.d, 'status'))
 
-# App configuration
-
+# Create an instance of server using command line arguments and defaults.
 server(argv)
-
-# server = module.exports = express.createServer()
-
-###
-server.configure( ->
-  #app.set('views', '../views')
-  #app.register('.haml', require('hamljs'))
-  #app.set('view engine', 'haml')
-  app.use(express.bodyParser())
-  app.use(express.methodOverride())
-  app.use(app.router)
-  app.use(express.static(argv.c))
-)
-
-server.configure('development', ->
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }))
-  argv.debug = console? and true
-)
-
-app.configure('production', ->
-  app.use(express.errorHandler())
-)
-
-app.listen(argv.p, argv.o if argv.o)
-
-console.log("Smallest Federated Wiki server listening on #{app.address().port} in mode: #{app.settings.env}")
-###
