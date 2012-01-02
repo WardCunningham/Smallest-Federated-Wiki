@@ -432,6 +432,10 @@ $ ->
         setState {pages: pagesInDom(), active: name}
 
   useLocalStorage = () -> $('#localEditing').is(':checked')
+  
+  urlPages = (a for a in $(location).attr('pathname').split('/') by 2)[1..]
+  for urlPage in urlPages when urlPage not in pagesInDom()
+      createPage(urlPage).appendTo('.main')
 
   $('.page').each refresh
 

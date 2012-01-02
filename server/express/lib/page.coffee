@@ -8,8 +8,6 @@ random_id = require('./random_id')
 
 itself = {}
 
-# Untility functions
-
 load_parse = (loc, cb) ->
   fs.readFile(loc, (err, data) ->
     if err then throw err
@@ -42,13 +40,11 @@ blank_page = (loc, cb) ->
 # Exported functions
 
 itself.get = (loc, cb) ->
-  console.log(loc)
   path.exists(loc, (exists) ->
     if exists
       load_parse(loc, cb)
     else
       defloc = path.join(path.dirname(loc), '..', '..', '..', 'default-data', 'pages', path.basename(loc))
-      console.log defloc
       path.exists(defloc, (exists) ->
         if exists
           load_parse_copy(defloc, loc, cb)

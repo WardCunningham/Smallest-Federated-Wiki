@@ -1,0 +1,51 @@
+#!/usr/bin/env coffee
+# server
+# cli for the Smallest-Federated-Wiki express server
+
+path = require 'path'
+optimist = require 'optimist'
+server = require '../'
+
+# Handle command line options
+
+argv = optimist
+  .usage('Usage: $0')
+  .options('d',
+    alias     : 'data'
+    default   : ''
+    describe  : 'location of flat file data'
+  )
+  .options('h',
+    alias     : 'help'
+    boolean   : true
+    describe  : 'Show this help info and exit'
+  )
+  .options('o',
+    alias     : 'host'
+    default   : ''
+    describe  : 'Host to accept connections on, falsy == any'
+  )
+  .options('p',
+    alias     : 'port'
+    default   : 3000
+    describe  : 'Port'
+  )
+  .options('r',
+    alias     : 'root'
+    default   : path.join("#{__dirname}", '..', '..', '..')
+    describe  : 'Aplication root folder'
+  )
+  .argv
+
+if argv.h
+  optimist.showHelp()
+  process.exit()
+if not argv.d
+  argv.d = path.relative("#{__dirname}", "#{argv.r}/data")
+if not argv.c
+  argv.c = path.relative("#{__dirname}", "#{argv.r}/client")
+argv.db = path.resolve(path.join(argv.d, 'pages'))
+argv.status = path.resolve(path.join(argv.d, 'status'))
+
+# Create an instance of server using command line arguments and defaults.
+server(argv)
