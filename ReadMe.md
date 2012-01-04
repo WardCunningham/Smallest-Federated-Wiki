@@ -71,12 +71,12 @@ Our reference implementation is in Sinatra.
 We're using Ruby 1.9.2 which we manage with rvm:
 
 	rvm install 1.9.2
-	rvm 1.9.2
+	rvm use 1.9.2
 
-The server is a ruby bundle. Get the bundler and then use it to get everything else:
+The server is a ruby bundle. Get the bundler gem and then use it to get everything else:
 
-	sudo gem install bundler
-	sudo bundle install
+	gem install bundler
+	bundle install
 
 Launch the server with this bundle command:
 
