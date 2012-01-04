@@ -46,10 +46,12 @@
       };
       div.dblclick(function() {
         div.removeClass('factory').addClass(item.type = 'paragraph');
+        div.unbind();
         return wiki.textEditor(div, item);
       });
       div.find('a').click(function(evt) {
         div.removeClass('factory').addClass(item.type = evt.target.text.toLowerCase());
+        div.unbind();
         return wiki.textEditor(div, item);
       });
       div.bind('dragenter', function(evt) {
