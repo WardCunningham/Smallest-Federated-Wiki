@@ -1,20 +1,25 @@
 window.plugins.bytebeat =
   emit: (div, item) ->
-    div.append "<p>#{colorCode(item.text)} <a href='#'>&#9654;</a></div></p>"
+    div.append "<p>#{colorCode(item.text)} <a href='#' class='play'>&#9654;</a></div></p>"
     audioCheck()
   bind: (div, item) ->
-    div.find('a').click -> play div, item.text
-    div.dblclick -> 
-      stop()
+    div.find('a').click => @play div, item
+    div.dblclick => 
+      @stop(div)
       wiki.textEditor div, item
+  play: (div, item) ->
+    @stop(div)
+    $("<audio>").attr({autoplay: true, src: makeURL(item.text), controls: "controls"}).appendTo(div)
+  stop: (div) ->
+    @audio(div).remove()
+  audio: (div) ->
+    div.find("audio")
+    
 
 colorCode = (text) ->
   text
-    .replace(/\bt((<<|>>)\d+)?\b/g, (m) -> "<font color='red'>#{m}</font>")
+    .replace(/\bt((<<|>>)\d+)?\b/g, (m) -> "<span class='symbol'>#{m}</span>")
     .replace(/\n/g, '<br>')
-
-play = (div, text)->
-  playDataURI div, makeURL text
 
 audioCheck = ->
   elm = document.createElement("audio")
@@ -88,16 +93,3 @@ makeURL = (text) ->
   channels = 1
   "data:audio/x-wav," + b(RIFFChunk(channels, bitsPerSample, frequency, samples))
 
-el = undefined
-
-stop = ->
-  $(el).remove()  if el
-  el = null
-
-playDataURI = (div, uri) ->
-  stop()
-  el = document.createElement("audio")
-  el.setAttribute "autoplay", true
-  el.setAttribute "src", uri
-  el.setAttribute "controls", "controls"
-  div.append el
