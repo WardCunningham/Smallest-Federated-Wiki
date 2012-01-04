@@ -24,10 +24,12 @@ window.plugins.factory =
 
     div.dblclick ->
       div.removeClass('factory').addClass(item.type='paragraph')
+      div.unbind()
       wiki.textEditor div, item
 
     div.find('a').click (evt)->
       div.removeClass('factory').addClass(item.type=evt.target.text.toLowerCase())
+      div.unbind()
       wiki.textEditor div, item
 
     div.bind 'dragenter', (evt) -> evt.preventDefault()

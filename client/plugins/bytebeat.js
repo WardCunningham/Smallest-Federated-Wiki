@@ -1,27 +1,39 @@
 (function() {
-  var FMTSubChunk, RIFFChunk, audioCheck, b, c, chunkSize, colorCode, dataSubChunk, el, frequency, generateSound, makeSampleFunction, makeURL, play, playDataURI, sampleArrayToData, split32bitValueToBytes, stop;
+  var FMTSubChunk, RIFFChunk, audioCheck, b, c, chunkSize, colorCode, dataSubChunk, frequency, generateSound, makeSampleFunction, makeURL, sampleArrayToData, split32bitValueToBytes;
+  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   window.plugins.bytebeat = {
     emit: function(div, item) {
-      div.append("<p>" + (colorCode(item.text)) + " <a href='#'>&#9654;</a></div></p>");
+      div.append("<p>" + (colorCode(item.text)) + " <a href='#' class='play'>&#9654;</a></div></p>");
       return audioCheck();
     },
     bind: function(div, item) {
-      div.find('a').click(function() {
-        return play(div, item.text);
-      });
-      return div.dblclick(function() {
-        stop();
+      div.find('a').click(__bind(function() {
+        return this.play(div, item);
+      }, this));
+      return div.dblclick(__bind(function() {
+        this.stop(div);
         return wiki.textEditor(div, item);
-      });
+      }, this));
+    },
+    play: function(div, item) {
+      this.stop(div);
+      return $("<audio>").attr({
+        autoplay: true,
+        src: makeURL(item.text),
+        controls: "controls"
+      }).appendTo(div);
+    },
+    stop: function(div) {
+      return this.audio(div).remove();
+    },
+    audio: function(div) {
+      return div.find("audio");
     }
   };
   colorCode = function(text) {
     return text.replace(/\bt((<<|>>)\d+)?\b/g, function(m) {
-      return "<font color='red'>" + m + "</font>";
+      return "<span class='symbol'>" + m + "</span>";
     }).replace(/\n/g, '<br>');
-  };
-  play = function(div, text) {
-    return playDataURI(div, makeURL(text));
   };
   audioCheck = function() {
     var elm;
@@ -118,20 +130,5 @@
     samples = generateSound(makeSampleFunction(text));
     channels = 1;
     return "data:audio/x-wav," + b(RIFFChunk(channels, bitsPerSample, frequency, samples));
-  };
-  el = void 0;
-  stop = function() {
-    if (el) {
-      $(el).remove();
-    }
-    return el = null;
-  };
-  playDataURI = function(div, uri) {
-    stop();
-    el = document.createElement("audio");
-    el.setAttribute("autoplay", true);
-    el.setAttribute("src", uri);
-    el.setAttribute("controls", "controls");
-    return div.append(el);
   };
 }).call(this);
