@@ -32,13 +32,36 @@ module.exports = (argv) ->
 
   app.redirect('index', (req, res) ->
     '/view/welcome-visitors'
-    #res.sendfile("#{argv.r}/server/sinatra/views/static.html")
+  )
+
+  app.redirect('remotefav', (req, res) ->
+    console.log req.params
+    "http://#{req.params[0]}"
   )
 
   # Get routes
 
   app.get('/', (req, res) ->
     res.redirect('index')
+  )
+
+  app.get(///^/remote/([a-zA-Z0-9:\.-]+)/([a-z0-9-]+)\.json$///, (req, res) ->
+    getopts = {
+      host: req.params[0]
+      port: 80
+      path: "/#{req.params[1]}.json"
+    }
+    console.log getopts
+    http.get(getopts, (resp) ->
+      responsedata = ''
+      resp.on('data', (chunk) ->
+        responsedata += chunk
+      )
+      resp.on('end', ->
+        console.log responsedata
+        res.json(JSON.parse(responsedata))
+      )
+    )
   )
 
   app.get('*.json', (req, res) ->
@@ -60,12 +83,6 @@ module.exports = (argv) ->
   )$ ///
 
   app.get(viewdomain, (req, res) ->
-    elements = req.params[0].split('/')
-    #pages = while ((site = elements.shift()) and (id = elements.shift()))
-    #  if site is 'view' or site is 'my'
-    #    {id}
-    #  else
-    #    {id, site}
     res.sendfile("#{argv.r}/server/sinatra/views/static.html")
   )
 
@@ -97,17 +114,8 @@ module.exports = (argv) ->
     next()
   )
 
-  app.get(///^/remote/([a-zA-Z0-9:\.-]+)/([a-z0-9-]+)\.json$///, (req, res)->
-    console.log req.params
-    getopts = {
-      host: req.params[0]
-      port: 80
-      path: req.params[1]
-    }
-    console.log getopts
-    http.get(getopts, (resp) ->
-      res.sendfile(resp.body)
-    )
+  app.get(///^/remote/([a-zA-Z0-9:\.-]+/favicon.png)$///, (req, res) ->
+        res.redirect('remotefav')
   )
 
   # Put routes
@@ -130,7 +138,8 @@ module.exports = (argv) ->
           for item, index in page.story
             if item.id is action.after
               before = action.after
-          page.story.splice(index, 0, action.item)
+          before += 1
+          page.story.splice(before, 0, action.item)
 
         when 'remove'
           page.story = (item for item in page.story when item?.id isnt action.id)
