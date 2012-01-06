@@ -370,8 +370,11 @@ $ ->
   pagesInDom = () ->
     $.makeArray $(".page").map (_, el) -> el.id
 
-  createPage = (name) ->
-    $("<div/>").attr('id', name).addClass("page")
+  createPage = (name, loc) ->
+    if loc and (loc isnt ('view' or 'my'))
+      $("<div/>").attr('id', name).attr('data-site', loc).addClass("page")
+    else
+      $("<div/>").attr('id', name).addClass("page")
 
   findPage = (name) ->
     $("#"+name)
@@ -433,9 +436,10 @@ $ ->
 
   useLocalStorage = () -> $('#localEditing').is(':checked')
   
-  urlPages = (a for a in $(location).attr('pathname').split('/') by 2)[1..]
-  for urlPage in urlPages when urlPage not in pagesInDom()
-      createPage(urlPage).appendTo('.main')
+  urlPages = (i for i in $(location).attr('pathname').split('/') by 2)[1..]
+  urlLocs = (j for j in $(location).attr('pathname').split('/')[1..] by 2)
+  for urlPage, idx in urlPages when urlPage not in pagesInDom()
+      createPage(urlPage, urlLocs[idx]).appendTo('.main')
 
   $('.page').each refresh
 

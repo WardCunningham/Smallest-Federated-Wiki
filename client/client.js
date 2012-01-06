@@ -7,7 +7,7 @@
   };
 
   $(function() {
-    var LEFTARROW, RIGHTARROW, a, addToJournal, asSlug, createPage, doInternalLink, doPlugin, findPage, formatTime, getItem, getPlugin, pagesInDom, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveFrom, resolveLinks, scripts, scrollTo, setActive, setState, showState, startPages, textEditor, urlPage, urlPages, useLocalStorage, _i, _len;
+    var LEFTARROW, RIGHTARROW, addToJournal, asSlug, createPage, doInternalLink, doPlugin, findPage, formatTime, getItem, getPlugin, i, idx, j, pagesInDom, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveFrom, resolveLinks, scripts, scrollTo, setActive, setState, showState, startPages, textEditor, urlLocs, urlPage, urlPages, useLocalStorage, _len;
     window.wiki = {};
     window.dialog = $('<div></div>').html('This dialog will show every time!').dialog({
       autoOpen: false,
@@ -492,8 +492,12 @@
         return el.id;
       }));
     };
-    createPage = function(name) {
-      return $("<div/>").attr('id', name).addClass("page");
+    createPage = function(name, loc) {
+      if (loc && (loc !== ('view' || 'my'))) {
+        return $("<div/>").attr('id', name).attr('data-site', loc).addClass("page");
+      } else {
+        return $("<div/>").attr('id', name).addClass("page");
+      }
     };
     findPage = function(name) {
       return $("#" + name);
@@ -557,15 +561,25 @@
       _ref = $(location).attr('pathname').split('/');
       _results = [];
       for (_i = 0, _len = _ref.length, _step = 2; _i < _len; _i += _step) {
-        a = _ref[_i];
-        _results.push(a);
+        i = _ref[_i];
+        _results.push(i);
       }
       return _results;
     })()).slice(1);
-    for (_i = 0, _len = urlPages.length; _i < _len; _i++) {
-      urlPage = urlPages[_i];
+    urlLocs = (function() {
+      var _i, _len, _ref, _results, _step;
+      _ref = $(location).attr('pathname').split('/').slice(1);
+      _results = [];
+      for (_i = 0, _len = _ref.length, _step = 2; _i < _len; _i += _step) {
+        j = _ref[_i];
+        _results.push(j);
+      }
+      return _results;
+    })();
+    for (idx = 0, _len = urlPages.length; idx < _len; idx++) {
+      urlPage = urlPages[idx];
       if (__indexOf.call(pagesInDom(), urlPage) < 0) {
-        createPage(urlPage).appendTo('.main');
+        createPage(urlPage, urlLocs[idx]).appendTo('.main');
       }
     }
     $('.page').each(refresh);
