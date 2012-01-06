@@ -25,7 +25,7 @@
       var syncEditAction;
       syncEditAction = function() {
         var pageElement, plugin;
-        console.log(item);
+        wiki.log('item', item);
         div.empty().unbind();
         div.removeClass("factory").addClass(item.type);
         pageElement = div.parents('.page:first');
@@ -61,7 +61,14 @@
         return evt.preventDefault();
       });
       return div.bind("drop", function(dropEvent) {
-        var dt, found, ignore, readFile, url;
+        var dt, found, ignore, punt, readFile, url;
+        punt = function(data) {
+          wiki.log('punt', dropEvent);
+          item.type = 'data';
+          item.text = "Unexpected Item";
+          item.data = data;
+          return syncEditAction();
+        };
         readFile = function(file) {
           var majorType, minorType, reader, _ref;
           if (file != null) {
@@ -92,37 +99,47 @@
               };
               return reader.readAsText(file);
             } else {
-              return alert("Expected text or image, got '" + (join("\n", file.type)) + "'");
+              return punt({
+                name: file.fileName,
+                type: file.type
+              });
             }
           } else {
-            return alert("Expected file name, got null");
+            return punt({
+              types: dropEvent.originalEvent.dataTransfer.types
+            });
           }
         };
         dropEvent.preventDefault();
         if ((dt = dropEvent.originalEvent.dataTransfer) != null) {
-          if (__indexOf.call(dt.types, 'text/uri-list') >= 0) {
-            console.log(dt.getData('URL'));
+          if ((dt.types != null) && __indexOf.call(dt.types, 'text/uri-list') >= 0) {
             url = dt.getData('URL');
             if (found = url.match(/https?:\/\/([a-z0-9\:\.\-]+)\/.*?view\/([a-z0-9-]+)$/)) {
               ignore = found[0], item.site = found[1], item.slug = found[2];
               return $.getJSON("http://" + item.site + "/" + item.slug + ".json", function(remote) {
-                console.log(remote);
+                wiki.log('remote', remote);
                 item.type = 'federatedWiki';
                 item.title = remote.title || item.slug;
                 item.text = remote.synopsis || remote.story[0].text || remote.story[1].text || 'A recently found federated wiki site.';
                 return syncEditAction();
               });
             } else {
-              return alert("Can't drop " + url);
+              return punt({
+                url: url,
+                types: dt.types
+              });
             }
           } else if (__indexOf.call(dt.types, 'Files') >= 0) {
             return readFile(dt.files[0]);
           } else {
-            console.log(dt.types);
-            return alert("Can't read any of " + dt.types);
+            return punt({
+              types: dt.types
+            });
           }
         } else {
-          return alert("Expected dataTransfer, got null");
+          return punt({
+            trouble: "no data transfer object"
+          });
         }
       });
     }

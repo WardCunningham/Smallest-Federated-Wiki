@@ -8,7 +8,7 @@ window.plugins.factory =
   bind: (div, item) ->
 
     syncEditAction = () ->
-      console.log item
+      wiki.log 'item', item
       div.empty().unbind()
       div.removeClass("factory").addClass(item.type)
       pageElement = div.parents('.page:first')
@@ -36,6 +36,13 @@ window.plugins.factory =
     div.bind 'dragover', (evt) -> evt.preventDefault()
     div.bind "drop", (dropEvent) ->
 
+      punt = (data) ->
+        wiki.log 'punt', dropEvent
+        item.type = 'data'
+        item.text = "Unexpected Item"
+        item.data = data
+        syncEditAction()
+
       readFile = (file) ->
         if file?
           [majorType, minorType] = file.type.split("/")
@@ -61,32 +68,37 @@ window.plugins.factory =
               syncEditAction()
             reader.readAsText(file)
           else
-            alert "Expected text or image, got '#{join "\n", file.type}'"
+            punt
+              name: file.fileName
+              type: file.type
         else
-          alert "Expected file name, got null"
+          punt
+            types: dropEvent.originalEvent.dataTransfer.types
 
       dropEvent.preventDefault()
       if (dt = dropEvent.originalEvent.dataTransfer)?
-        if 'text/uri-list' in dt.types
-          console.log dt.getData('URL')
+        if dt.types? and 'text/uri-list' in dt.types
           url = dt.getData 'URL'
           if found = url.match /https?:\/\/([a-z0-9\:\.\-]+)\/.*?view\/([a-z0-9-]+)$/
             [ignore, item.site, item.slug] = found
             $.getJSON "http://#{item.site}/#{item.slug}.json", (remote) ->
-              console.log remote
+              wiki.log 'remote', remote
               item.type = 'federatedWiki'
               item.title = remote.title || item.slug
               item.text = remote.synopsis || remote.story[0].text || remote.story[1].text || 'A recently found federated wiki site.'
               syncEditAction()
           else
-            alert "Can't drop #{url}"
+            punt
+              url: url
+              types: dt.types
         else if 'Files' in dt.types
           readFile dt.files[0]
         else
-          console.log dt.types
-          alert "Can't read any of #{dt.types}"
+          punt
+            types: dt.types
       else
-        alert "Expected dataTransfer, got null"
+        punt
+          trouble: "no data transfer object"
 
 # from http://www.bennadel.com/blog/1504-Ask-Ben-Parsing-CSV-Strings-With-Javascript-Exec-Regular-Expression-Command.htm
 # via http://stackoverflow.com/questions/1293147/javascript-code-to-parse-csv-data
