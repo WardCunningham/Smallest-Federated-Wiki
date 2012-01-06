@@ -77,7 +77,7 @@ window.plugins.factory =
 
       dropEvent.preventDefault()
       if (dt = dropEvent.originalEvent.dataTransfer)?
-        if dt.types? and 'text/uri-list' in dt.types
+        if dt.types? and ('text/uri-list' in dt.types or 'text/x-moz-url' in dt.types)
           url = dt.getData 'URL'
           if found = url.match /https?:\/\/([a-z0-9\:\.\-]+)\/.*?view\/([a-z0-9-]+)$/
             [ignore, item.site, item.slug] = found

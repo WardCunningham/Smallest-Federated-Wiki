@@ -112,7 +112,7 @@
         };
         dropEvent.preventDefault();
         if ((dt = dropEvent.originalEvent.dataTransfer) != null) {
-          if ((dt.types != null) && __indexOf.call(dt.types, 'text/uri-list') >= 0) {
+          if ((dt.types != null) && (__indexOf.call(dt.types, 'text/uri-list') >= 0 || __indexOf.call(dt.types, 'text/x-moz-url') >= 0)) {
             url = dt.getData('URL');
             if (found = url.match(/https?:\/\/([a-z0-9\:\.\-]+)\/.*?view\/([a-z0-9-]+)$/)) {
               ignore = found[0], item.site = found[1], item.slug = found[2];
