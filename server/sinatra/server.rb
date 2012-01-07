@@ -19,6 +19,7 @@ class Controller < Sinatra::Base
   set :public, File.join(APP_ROOT, "client")
   set :views , File.join(SINATRA_ROOT, "views")
   set :haml, :format => :html5
+  enable :sessions
 
   class << self # overridden in test
     def data_root
@@ -75,14 +76,28 @@ class Controller < Sinatra::Base
       @openid_consumer ||= OpenID::Consumer.new(session, OpenID::Store::Filesystem.new("#{farm_status}/tmp/openid"))
     end
 
+    def authenticated?
+      session[:authenticated] == true
+    end
+
+    def authenticate!
+      session[:authenticated] = true
+      redirect "/"
+    end
+
+  end
+
+  post "/logout" do
+    session.delete :authenticated
+    redirect "/"
   end
 
   post '/login' do
-    identifier = params[:identifier]
-    request = openid_consumer.begin(identifier)
     root_url = request.url.match(/(^.*\/{2}[^\/]*)/)[1]
+    identifier = params[:identifier]
+    open_id_request = openid_consumer.begin(identifier)
 
-    redirect request.redirect_url(root_url, root_url + "/login/openid/complete")
+    redirect open_id_request.redirect_url(root_url, root_url + "/login/openid/complete")
   end
 
   get '/login/openid/complete' do
@@ -103,12 +118,14 @@ class Controller < Sinatra::Base
           stored_id = File.read(id_file)
           if stored_id == id
             "Success! it matches"
+            authenticate!
           else
             "this is not your wiki"
           end
         else
           File.open(id_file, "w") {|f| f << id }
           "You have registered this wiki to #{id}"
+          authenticate!
         end
     end
   end
@@ -171,7 +188,16 @@ class Controller < Sinatra::Base
     JSON.pretty_generate(farm_page.get(name))
   end
 
+  error 403 do
+    'Access forbidden'
+  end
+
   put %r{^/page/([a-z0-9-]+)/action$} do |name|
+    unless authenticated?
+      halt 403
+      return
+    end
+
     action = JSON.parse params['action']
     if site = action['fork']
       page = JSON.parse RestClient.get("#{site}/#{name}.json")

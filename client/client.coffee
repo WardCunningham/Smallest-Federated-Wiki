@@ -435,7 +435,7 @@ $ ->
       if History.enabled
         setState {pages: pagesInDom(), active: name}
 
-  useLocalStorage = () -> $('#localEditing').is(':checked')
+  useLocalStorage = -> $("#authenticated").length == 0
 
   urlPages = (i for i in $(location).attr('pathname').split('/') by 2)[1..]
   urlLocs = (j for j in $(location).attr('pathname').split('/')[1..] by 2)

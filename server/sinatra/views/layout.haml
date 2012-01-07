@@ -20,7 +20,13 @@
 		%footer
 			%input{:type => "checkbox", :id => "localEditing", :class => "local_editing clickable", :style => 'display:none;'}
 			%label{:for => "localEditing",  :class => "clickable", :style => 'display:none;'} Local editing
-			%form{:method => 'POST', :action => "/login"}
-				OpenID:
-				%input{:type => 'text', :name => 'identifier'}
-				%input{:type => 'submit', :value => "Login"}
+			- if authenticated?
+				%span#authenticated
+					Authenicated!
+				%form{:method => 'POST', :action => "/logout"}
+					%input{:type => 'submit', :value => "Logout"}
+			- else
+				%form{:method => 'POST', :action => "/login"}
+					OpenID:
+					%input{:type => 'text', :name => 'identifier'}
+					%input{:type => 'submit', :value => "Login"}
