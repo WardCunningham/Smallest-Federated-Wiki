@@ -8,6 +8,7 @@ gem "thin"
 gem "RubyInline"
 gem "png"
 gem "rest-client"
+gem "ruby-openid"
 
 group :development do
   gem 'ruby-debug', :require => 'ruby-debug', :platform => :mri_18

@@ -65,6 +65,7 @@ GEM
       columnize (>= 0.3.1)
       linecache19 (>= 0.5.11)
       ruby-debug-base19 (>= 0.11.19)
+    ruby-openid (2.1.8)
     ruby_core_source (0.1.5)
       archive-tar-minitar (>= 0.5.2)
     rubyzip (0.9.4)
@@ -104,6 +105,7 @@ DEPENDENCIES
   rspec-mocks (= 2.4.0)
   ruby-debug
   ruby-debug19
+  ruby-openid
   sass
   selenium-webdriver (= 2.10.0)
   sinatra (= 1.2.6)

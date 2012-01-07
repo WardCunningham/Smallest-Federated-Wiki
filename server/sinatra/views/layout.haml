@@ -18,5 +18,9 @@
 		%section.main
 			=yield
 		%footer
-			%input{:type => "checkbox", :id => "localEditing", :class => "local_editing clickable"}
-			%label{:for => "localEditing",  :class => "clickable"} Local editing
+			%input{:type => "checkbox", :id => "localEditing", :class => "local_editing clickable", :style => 'display:none;'}
+			%label{:for => "localEditing",  :class => "clickable", :style => 'display:none;'} Local editing
+			%form{:method => 'POST', :action => "/login"}
+				OpenID:
+				%input{:type => 'text', :name => 'identifier'}
+				%input{:type => 'submit', :value => "Login"}

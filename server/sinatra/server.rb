@@ -11,6 +11,9 @@ require 'random_id'
 require 'page'
 require 'favicon'
 
+require 'openid'
+require 'openid/store/filesystem'
+
 class Controller < Sinatra::Base
   set :port, 1111
   set :public, File.join(APP_ROOT, "client")
@@ -66,6 +69,47 @@ class Controller < Sinatra::Base
                     '<a class="internal" href="/'+slug+'.html" data-page-name="'+slug+'">'+name+'</a>'
                 }.
         gsub(/\[(http.*?) (.*?)\]/i, '<a class="external" href="\1">\2</a>')
+    end
+
+    def openid_consumer
+      @openid_consumer ||= OpenID::Consumer.new(session, OpenID::Store::Filesystem.new("#{farm_status}/tmp/openid"))
+    end
+
+  end
+
+  post '/login' do
+    identifier = params[:identifier]
+    request = openid_consumer.begin(identifier)
+    root_url = request.url.match(/(^.*\/{2}[^\/]*)/)[1]
+
+    redirect request.redirect_url(root_url, root_url + "/login/openid/complete")
+  end
+
+  get '/login/openid/complete' do
+    response = openid_consumer.complete(params, request.url)
+    case response.status
+      when OpenID::Consumer::FAILURE
+        "Login failure"
+
+      when OpenID::Consumer::SETUP_NEEDED
+        "'Setup needed'"
+
+      when OpenID::Consumer::CANCEL
+        "Login cancelled"
+      when OpenID::Consumer::SUCCESS
+        id = params['openid.identity']
+        id_file = File.join farm_status, "open_id.identity"
+        if File.exist?(id_file)
+          stored_id = File.read(id_file)
+          if stored_id == id
+            "Success! it matches"
+          else
+            "this is not your wiki"
+          end
+        else
+          File.open(id_file, "w") {|f| f << id }
+          "You have registered this wiki to #{id}"
+        end
     end
   end
 
