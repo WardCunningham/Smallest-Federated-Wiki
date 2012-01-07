@@ -5,28 +5,46 @@ to install
 
 	npm install
 
-if you don't have coffeescript installed globally
+if you don't have coffee-script installed globally
 
-	npm install -g coffeescript
+	npm install -g coffee-script
 
-All user options are contained in the opt object defined at the top of
-the file.  Defaults should work in the git repo on port 3000
-Debug logging is turned on when in development environment.
+Debug logging is turned on when in the development environment.
+Currently there are some none node dependencies brought in from
+node-canvas.  For now, please see node-canvas to install.
 
 Warning: Writes are enabled and the server isn't secured in any way.
-
-tested using node 0.6.x
 
 Launching the Node/Express Server
 =================================
 
-To run in the default development mode:
+To run in the default development mode just execute:
 
-	coffee server.coffee
+	bin/server
 
 To run in production mode (don't put this in production yet....):
 
-	NODE_ENV=production coffee server.coffee
+	NODE_ENV=production server
+
+Goals
+=====
+The main goal of the express port of Smallest Federated Wiki is to create a
+SFW server that is fully compatible with the reference server, with a focus
+on being easy to install, setup, and maintain.  The end result of this being
+a lowered bar to participation, and thus greater numbers in the federation.
+
+We are attempting to stay compatible  with the newest release versions of
+node, coffee-script, and express.
+
+Usage patterns
+==============
+There are two patterns that have emerged so far for the node server.
+You can either run it from the command line using the executable coffee script
+file /server/express/bin/server or you can require /server/express from another
+node program, and then call it passing in the options you want.
+
+The everything is still changing rapidly, and more use cases will be explored,
+but for now both of these should be supported.
 
 # Running specs
 
