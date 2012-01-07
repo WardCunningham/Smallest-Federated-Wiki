@@ -287,7 +287,7 @@ $ ->
         $("<div />").addClass(className).appendTo(pageElement)
 
       $.each page.story, (i, item) ->
-        div = $("<div class=\"item #{item.type}\" id=\"#{item.id}\" />")
+        div = $("<div />").addClass("item").addClass(item.type).attr("data-id", item.id)
         storyElement.append div
         doPlugin div, item
 
@@ -419,7 +419,8 @@ $ ->
         setState {pages: pagesInDom(), active: name}
 
     .delegate '.action', 'hover', ->
-      $('#'+$(this).data('itemId')).toggleClass('target')
+      id = $(this).data('itemId')
+      $("[data-id=#{id}]").toggleClass('target')
 
     .delegate '.action.fork, .remote', 'click', (e) ->
       e.preventDefault()
@@ -435,7 +436,7 @@ $ ->
         setState {pages: pagesInDom(), active: name}
 
   useLocalStorage = () -> $('#localEditing').is(':checked')
-  
+
   urlPages = (i for i in $(location).attr('pathname').split('/') by 2)[1..]
   urlLocs = (j for j in $(location).attr('pathname').split('/')[1..] by 2)
   for urlPage, idx in urlPages when urlPage not in pagesInDom()

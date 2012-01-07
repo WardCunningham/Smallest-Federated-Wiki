@@ -82,6 +82,14 @@ class Capybara::Node::Element
       driver.browser.execute_script "$(arguments[0]).simulateDragSortable({move: arguments[1]});", native, number
     end
   end
+
+  def roll_over
+    trigger "mouseover"
+  end
+
+  def roll_out
+    trigger "mouseout"
+  end
 end
 
 class Capybara::Session
@@ -111,14 +119,26 @@ class Capybara::Session
   alias_method :visit, :visit_with_wait_for_ajax
 end
 
-def first_paragraph
-  page.find(".paragraph:first")
+def pause
+  STDIN.read(1)
+end
+
+module IntegrationHelpers
+  def journal
+    page.find(".journal").all(".action")
+  end
+
+  def first_paragraph
+    page.find(".paragraph:first")
+  end
+
 end
 
 describe "edit paragraph in place" do
   before do
     visit("/")
   end
+  include IntegrationHelpers
 
 
   def double_click_paragraph
@@ -133,11 +153,6 @@ describe "edit paragraph in place" do
     text_area.set value
     text_area.trigger "focusout"
   end
-
-  def journal
-    page.find(".journal").all(".action")
-  end
-
 
   it "should turn into a text area, showing wikitext when double-clicking" do
     double_click_paragraph
@@ -190,6 +205,8 @@ describe "moving paragraphs" do
   before do
     use_fixture_pages("multiple-paragraphs")
   end
+
+  include IntegrationHelpers
 
   def move_paragraph
     page.load_test_library!
@@ -270,5 +287,44 @@ describe "should retrieve favicon" do
     FileUtils.cp "#{TestDirs::ROOT}/spec/favicon.png", local_favicon
     sha(favicon_response.body).should == sha(File.read(local_favicon))
     favicon_response['Content-Type'].should == 'image/png'
+  end
+
+end
+
+describe "viewing journal" do
+  before do
+    use_fixture_pages("multiple-paragraphs", "duplicate-paragraphs")
+  end
+  include IntegrationHelpers
+
+  RSpec::Matchers.define :be_highlighted do
+    match do |actual|
+      actual['class'].include?("target")
+    end
+  end
+
+  it "should highlight a paragraph when hovering over journal entry" do
+    visit "/view/multiple-paragraphs"
+    paragraphs = page.all(".paragraph")
+    first_paragraph = paragraphs.first
+    other_paragraphs = paragraphs - [first_paragraph]
+
+    paragraphs.each {|p| p.should_not be_highlighted }
+
+    journal.first.roll_over
+    first_paragraph.should be_highlighted
+    other_paragraphs.each {|p| p.should_not be_highlighted }
+
+    journal.first.roll_out
+    paragraphs.each {|p| p.should_not be_highlighted }
+  end
+
+  it "should highlight all paragraphs with all the same JSON id" do
+    visit "/view/duplicate-paragraphs"
+    first_paragraph, second_paragraph = page.all(".paragraph")
+
+    journal.first.roll_over
+    first_paragraph.should be_highlighted
+    second_paragraph.should be_highlighted
   end
 end
