@@ -7,9 +7,16 @@ _ = require('../../../client/js/underscore-min.js')
 pagehandler = require('./page.coffee')
 favicon = require('./favicon.coffee')
 
-# App configuration
 
 module.exports = (argv) ->
+  ###
+  This module is used to generate new Smallest Federated Wiki servers.
+
+  To use it, require it in a program and call it with the options you want
+  for each server.
+  ###
+
+  # App configuration
   app = express.createServer()
 
   app.configure( ->
@@ -163,8 +170,25 @@ module.exports = (argv) ->
         console.log 'saved' if argv.debug
       )
     console.log(action) if argv.debug
-    # TODO: implement action.fork
-    pagehandler.get(path.join(argv.db, req.params[0]), actionCB)
+    # TODO: test action.fork
+    if action.fork
+      getopts = {
+        host: action.fork
+        port: 80
+        path: "/#{req.params[0]}.json"
+      }
+      http.get(getopts, (resp) ->
+        responsedata = ''
+        resp.on('data', (chunk) ->
+          responsedata += chunk
+        )
+        resp.on('end', ->
+          console.log responsedata
+          actionCB(JSON.parse(responsedata))
+        )
+      )
+    else
+      pagehandler.get(path.join(argv.db, req.params[0]), actionCB)
   )
 
   app.listen(argv.p, argv.o if argv.o)
