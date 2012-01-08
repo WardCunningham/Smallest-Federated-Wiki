@@ -20,7 +20,7 @@
     bind: function(div, item) {
       var syncEditAction;
       syncEditAction = function() {
-        var pageElement, plugin;
+        var pageElement;
         wiki.log('item', item);
         div.empty().unbind();
         div.removeClass("factory").addClass(item.type);
@@ -28,9 +28,10 @@
         try {
           div.data('pageElement', pageElement);
           div.data('item', item);
-          plugin = wiki.getPlugin(item.type);
-          plugin.emit(div, item);
-          plugin.bind(div, item);
+          wiki.getPlugin(item.type, function(plugin) {
+            plugin.emit(div, item);
+            return plugin.bind(div, item);
+          });
         } catch (err) {
           div.append("<p class='error'>" + err + "</p>");
         }

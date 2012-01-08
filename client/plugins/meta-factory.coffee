@@ -15,9 +15,9 @@ window.plugins.factory =
       try
         div.data 'pageElement', pageElement
         div.data 'item', item
-        plugin = wiki.getPlugin item.type
-        plugin.emit div, item
-        plugin.bind div, item
+        wiki.getPlugin item.type, (plugin) ->
+          plugin.emit div, item
+          plugin.bind div, item
       catch err
         div.append "<p class='error'>#{err}</p>"
       wiki.putAction pageElement, {type: 'edit', id: item.id, item: item}
