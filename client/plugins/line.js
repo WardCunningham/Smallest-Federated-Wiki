@@ -1,4 +1,5 @@
 (function() {
+
   window.plugins.line = {
     emit: function(div, item) {
       wiki.getScript('/js/d3/d3.js');
@@ -81,4 +82,5 @@
       }).attr("r", 3.5);
     }
   };
+
 }).call(this);

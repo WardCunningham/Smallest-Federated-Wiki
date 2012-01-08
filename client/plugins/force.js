@@ -1,4 +1,5 @@
 (function() {
+
   window.plugins.force = {
     emit: function(div, item) {
       wiki.getScript('/js/d3/d3.js');
@@ -58,4 +59,5 @@
       });
     }
   };
+
 }).call(this);

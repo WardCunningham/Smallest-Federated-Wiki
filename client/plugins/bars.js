@@ -1,4 +1,5 @@
 (function() {
+
   window.plugins.bars = {
     emit: function(div, item) {
       return wiki.getScript('/js/d3/d3.js');
@@ -37,4 +38,5 @@
       return vis.append("svg:line").attr("y1", 0).attr("y2", h).attr("stroke", "black");
     }
   };
+
 }).call(this);

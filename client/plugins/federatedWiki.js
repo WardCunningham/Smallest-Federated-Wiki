@@ -1,4 +1,5 @@
 (function() {
+
   window.plugins.federatedWiki = {
     emit: function(div, item) {
       var slug;
@@ -16,4 +17,5 @@
       });
     }
   };
+
 }).call(this);

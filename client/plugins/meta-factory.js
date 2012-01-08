@@ -1,11 +1,7 @@
 (function() {
-  var arrayToJson, csvToArray;
-  var __indexOf = Array.prototype.indexOf || function(item) {
-    for (var i = 0, l = this.length; i < l; i++) {
-      if (this[i] === item) return i;
-    }
-    return -1;
-  };
+  var arrayToJson, csvToArray,
+    __indexOf = Array.prototype.indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
   window.plugins.factory = {
     emit: function(div, item) {
       var info, menu, name, _ref, _results;
@@ -144,6 +140,7 @@
       });
     }
   };
+
   csvToArray = function(strData, strDelimiter) {
     var arrData, arrMatches, objPattern, strMatchedDelimiter, strMatchedValue;
     strDelimiter = strDelimiter || ",";
@@ -164,6 +161,7 @@
     }
     return arrData;
   };
+
   arrayToJson = function(array) {
     var cols, row, rowToObject, _i, _len, _results;
     cols = array.shift();
@@ -173,9 +171,7 @@
       _ref = _.zip(cols, row);
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         _ref2 = _ref[_i], k = _ref2[0], v = _ref2[1];
-        if ((v != null) && (v.match(/\S/)) && v !== 'NULL') {
-          obj[k] = v;
-        }
+        if ((v != null) && (v.match(/\S/)) && v !== 'NULL') obj[k] = v;
       }
       return obj;
     };
@@ -186,4 +182,5 @@
     }
     return _results;
   };
+
 }).call(this);

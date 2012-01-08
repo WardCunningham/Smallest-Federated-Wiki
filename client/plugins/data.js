@@ -1,6 +1,7 @@
 (function() {
-  var readout, thumbs;
-  var __hasProp = Object.prototype.hasOwnProperty;
+  var readout, thumbs,
+    __hasProp = Object.prototype.hasOwnProperty;
+
   window.plugins.data = {
     emit: function(div, item) {
       $('<p />').addClass('readout').appendTo(div).text(readout(item));
@@ -14,6 +15,7 @@
       });
     }
   };
+
   readout = function(item) {
     if (item.columns != null) {
       return "" + item.data.length + "x" + item.columns.length;
@@ -23,11 +25,10 @@
     }
     return "data";
   };
+
   thumbs = function(item) {
     var key, _ref, _results;
-    if (item.columns != null) {
-      return item.columns;
-    }
+    if (item.columns != null) return item.columns;
     _ref = item.data;
     _results = [];
     for (key in _ref) {
@@ -36,4 +37,5 @@
     }
     return _results;
   };
+
 }).call(this);

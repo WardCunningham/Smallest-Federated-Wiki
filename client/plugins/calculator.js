@@ -1,5 +1,6 @@
 (function() {
   var calculate;
+
   window.plugins.calculator = {
     emit: function(div, item) {
       var pre, text;
@@ -13,6 +14,7 @@
       });
     }
   };
+
   calculate = function(text) {
     var col, line, sum, sums, _i, _len, _ref, _ref2, _results;
     _ref = [{}, 0], sums = _ref[0], sum = _ref[1];
@@ -44,11 +46,10 @@
         })();
         return (x / 1).toFixed(2);
       });
-      if (line.match(/^\s*$/)) {
-        sum = 0;
-      }
+      if (line.match(/^\s*$/)) sum = 0;
       _results.push(col.join(' '));
     }
     return _results;
   };
+
 }).call(this);
