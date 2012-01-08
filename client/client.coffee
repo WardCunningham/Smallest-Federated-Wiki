@@ -230,7 +230,7 @@ $ ->
       item =
         type: "factory"
         id: randomBytes(8)
-      itemElement = $("<div />", class: "item factory", id: item.id).data('item',item)
+      itemElement = $("<div />", class: "item factory").data('item',item).attr('data-id', item.id)
       itemElement.data 'pageElement', pageElement
       pageElement.find(".story").append(itemElement)
       doPlugin itemElement, item
@@ -255,7 +255,7 @@ $ ->
           moveToPage = not moveWithinPage and equals(thisPageElement, destinationPageElement)
 
           action = if moveWithinPage
-            order = $(this).children().map((_, value) -> value.id).get()
+            order = $(this).children().map((_, value) -> $(value).attr('data-id')).get()
             {type: 'move', order: order}
           else if moveFromPage
             {type: 'remove'}

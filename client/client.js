@@ -307,9 +307,8 @@
           id: randomBytes(8)
         };
         itemElement = $("<div />", {
-          "class": "item factory",
-          id: item.id
-        }).data('item', item);
+          "class": "item factory"
+        }).data('item', item).attr('data-id', item.id);
         itemElement.data('pageElement', pageElement);
         pageElement.find(".story").append(itemElement);
         doPlugin(itemElement, item);
@@ -341,7 +340,7 @@
             moveFromPage = !moveWithinPage && equals(thisPageElement, sourcePageElement);
             moveToPage = !moveWithinPage && equals(thisPageElement, destinationPageElement);
             action = moveWithinPage ? (order = $(this).children().map(function(_, value) {
-              return value.id;
+              return $(value).attr('data-id');
             }).get(), {
               type: 'move',
               order: order
