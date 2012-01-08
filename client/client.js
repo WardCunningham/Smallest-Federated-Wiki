@@ -7,7 +7,7 @@
   };
 
   $(function() {
-    var LEFTARROW, RIGHTARROW, addToJournal, asSlug, createPage, doInternalLink, doPlugin, findPage, formatTime, getItem, getPlugin, i, idx, j, pagesInDom, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveFrom, resolveLinks, scripts, scrollTo, setActive, setState, showState, startPages, textEditor, urlLocs, urlPage, urlPages, useLocalStorage, _len;
+    var LEFTARROW, RIGHTARROW, addToJournal, asSlug, createPage, doInternalLink, doPlugin, findPage, formatTime, getItem, getPlugin, i, idx, j, locsInDom, pagesInDom, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveFrom, resolveLinks, scripts, scrollTo, setActive, setState, showState, startPages, textEditor, urlLocs, urlPage, urlPages, useLocalStorage, _len;
     window.wiki = {};
     window.dialog = $('<div></div>').html('This dialog will show every time!').dialog({
       autoOpen: false,
@@ -424,15 +424,15 @@
       }
     };
     setState = function(state) {
-      var page, url;
+      var idx, page, url;
       if (History.enabled) {
         url = ((function() {
-          var _i, _len, _ref, _results;
+          var _len, _ref, _ref2, _results;
           _ref = state.pages;
           _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            page = _ref[_i];
-            _results.push("/view/" + page);
+          for (idx = 0, _len = _ref.length; idx < _len; idx++) {
+            page = _ref[idx];
+            _results.push("/" + (((_ref2 = state.locs) != null ? _ref2[idx] : void 0) || 'view') + "/" + page);
           }
           return _results;
         })()).join('');
@@ -499,6 +499,11 @@
         return el.id;
       }));
     };
+    locsInDom = function() {
+      return $.makeArray($(".page").map(function(_, el) {
+        return $(el).data('site') || 'view';
+      }));
+    };
     createPage = function(name, loc) {
       if (loc && (loc !== ('view' || 'my'))) {
         return $("<div/>").attr('id', name).attr('data-site', loc).addClass("page");
@@ -541,7 +546,8 @@
       if (History.enabled) {
         return setState({
           pages: pagesInDom(),
-          active: name
+          active: name,
+          locs: locsInDom()
         });
       }
     }).delegate('.action', 'hover', function() {
@@ -558,7 +564,8 @@
       if (History.enabled) {
         return setState({
           pages: pagesInDom(),
-          active: name
+          active: name,
+          locs: locsInDom()
         });
       }
     });
@@ -595,7 +602,8 @@
     startPages = pagesInDom();
     return setState({
       pages: startPages,
-      active: startPages[startPages.length - 1]
+      active: startPages[startPages.length - 1],
+      locs: locsInDom()
     });
   });
 
