@@ -142,6 +142,7 @@ $ ->
     null
 
   getPlugin = wiki.getPlugin = (name, callback) ->
+    return callback(plugin) if plugin = window.plugins[name]
     wiki.getScript "/plugins/#{name}.js", () ->
       callback(window.plugins[name])
 

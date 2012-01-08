@@ -185,6 +185,8 @@
       return null;
     };
     getPlugin = wiki.getPlugin = function(name, callback) {
+      var plugin;
+      if (plugin = window.plugins[name]) return callback(plugin);
       return wiki.getScript("/plugins/" + name + ".js", function() {
         return callback(window.plugins[name]);
       });
