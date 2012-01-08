@@ -25,4 +25,4 @@
 				%form{:method => 'POST', :action => "/login"}
 					OpenID:
 					%input{:type => 'text', :name => 'identifier'}
-					%input{:type => 'submit', :value => "Login"}
+					%input{:type => 'submit', :value => claimed? ? "Login" : "Claim"}
