@@ -159,20 +159,16 @@
       return $('.chart,.data').last().data('item').data;
     };
     scripts = {};
-    wiki.getScript = function() {
-      var path, paths, _i, _len, _results;
-      paths = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-      _results = [];
-      for (_i = 0, _len = paths.length; _i < _len; _i++) {
-        path = paths[_i];
-        if (scripts[path] == null) {
-          scripts[path] = true;
-          _results.push($('<script type="text/javascript"/>').attr('src', path).prependTo($('script:first')));
-        } else {
-          _results.push(void 0);
-        }
+    wiki.getScript = function(url, callback) {
+      if (callback == null) callback = function() {};
+      if (scripts[url] != null) {
+        return callback();
+      } else {
+        return $.getScript(url, function() {
+          scripts[url] = true;
+          return callback();
+        });
       }
-      return _results;
     };
     wiki.dump = function() {
       var i, p, _i, _j, _len, _len2, _ref, _ref2;
@@ -188,25 +184,35 @@
       }
       return null;
     };
-    getPlugin = wiki.getPlugin = function(plugin) {
-      if (window.plugins[plugin] == null) {
-        wiki.getScript("/plugins/" + plugin + ".js");
-      }
-      return window.plugins[plugin];
+    getPlugin = wiki.getPlugin = function(name, callback) {
+      return wiki.getScript("/plugins/" + name + ".js", function() {
+        return callback(window.plugins[name]);
+      });
     };
     doPlugin = wiki.doPlugin = function(div, item) {
-      var plugin;
+      var error;
+      error = function(ex) {
+        var errorElement;
+        errorElement = $("<div />").addClass('error');
+        errorElement.text(ex.toString());
+        return div.append(errorElement);
+      };
       try {
         div.data('pageElement', div.parents(".page"));
         div.data('item', item);
-        plugin = getPlugin(item.type);
-        if (plugin == null) {
-          throw TypeError("Can't find plugin for '" + item.type + "'");
-        }
-        plugin.emit(div, item);
-        return plugin.bind(div, item);
+        return getPlugin(item.type, function(plugin) {
+          if (plugin == null) {
+            throw TypeError("Can't find plugin for '" + item.type + "'");
+          }
+          try {
+            plugin.emit(div, item);
+            return plugin.bind(div, item);
+          } catch (err) {
+            return error(err);
+          }
+        });
       } catch (err) {
-        return div.append("<p class='error'>" + err + "</p>");
+        return error(err);
       }
     };
     doInternalLink = wiki.doInternalLink = function(name, page) {

@@ -126,11 +126,14 @@ $ ->
     $('.chart,.data').last().data('item').data
 
   scripts = {}
-  wiki.getScript = (paths...) ->
-    for path in paths
-      unless scripts[path]?
-        scripts[path] = true
-        $('<script type="text/javascript"/>').attr('src',path).prependTo($('script:first'))
+  wiki.getScript = (url, callback = () ->) ->
+    if scripts[url]?
+      callback()
+    else
+      $.getScript(url, ->
+        scripts[url] = true
+        callback()
+      )
 
   wiki.dump = ->
     for p in $('.page')
@@ -138,20 +141,28 @@ $ ->
       wiki.log '.item', i, 'data-item', $(i).data('item') for i in $(p).find('.item')
     null
 
-  getPlugin = wiki.getPlugin = (plugin) ->
-    wiki.getScript "/plugins/#{plugin}.js" unless window.plugins[plugin]?
-    window.plugins[plugin]
+  getPlugin = wiki.getPlugin = (name, callback) ->
+    wiki.getScript "/plugins/#{name}.js", () ->
+      callback(window.plugins[name])
 
   doPlugin = wiki.doPlugin = (div, item) ->
+    error = (ex) ->
+      errorElement = $("<div />").addClass('error')
+      errorElement.text(ex.toString())
+      div.append(errorElement)
+
     try
       div.data 'pageElement', div.parents(".page")
       div.data 'item', item
-      plugin = getPlugin item.type
-      throw TypeError("Can't find plugin for '#{item.type}'") unless plugin?
-      plugin.emit div, item
-      plugin.bind div, item
+      getPlugin item.type, (plugin) ->
+        throw TypeError("Can't find plugin for '#{item.type}'") unless plugin?
+        try
+          plugin.emit div, item
+          plugin.bind div, item
+        catch err
+          error(err)
     catch err
-      div.append "<p class='error'>#{err}</p>"
+      error(err)
 
   doInternalLink = wiki.doInternalLink = (name, page) ->
     $(page).nextAll().remove() if page?
