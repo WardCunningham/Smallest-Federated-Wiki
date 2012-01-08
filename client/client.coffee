@@ -332,7 +332,7 @@ $ ->
 
   setState = (state) ->
     if History.enabled
-      url = ("/view/#{page}" for page in state.pages).join('') # + "##{state.active}"
+      url = ("/#{state.locs?[idx] or 'view'}/#{page}" for page, idx in state.pages).join('') # + "##{state.active}"
       History.pushState state, state.active, url
 
   setActive = (page) ->
@@ -373,7 +373,7 @@ $ ->
       when LEFTARROW then -1
       when RIGHTARROW then +1
     if direction && History.enabled
-      state = History.getState().data;
+      state = History.getState().data
       newIndex = state.pages.indexOf(state.active) + direction
       if 0 <= newIndex < state.pages.length
         state.active = state.pages[newIndex]
@@ -381,6 +381,10 @@ $ ->
 
   pagesInDom = () ->
     $.makeArray $(".page").map (_, el) -> el.id
+
+  locsInDom = () ->
+    $.makeArray $(".page").map (_, el) ->
+      $(el).data('site') or 'view'
 
   createPage = (name, loc) ->
     if loc and (loc isnt ('view' or 'my'))
@@ -404,7 +408,7 @@ $ ->
       #TODO: this is a cut,paste&hack from a few lines above - refactor out
       if useLocalStorage() and json = localStorage[pageElement.attr("id")]
         #set the dialog content..
-        window.dialog.dialog('open');
+        window.dialog.dialog('open')
       else
         pageElement = $(this).parent().parent()
         slug = $(pageElement).attr('id')
@@ -413,7 +417,7 @@ $ ->
         resource = if site? then "remote/#{site}/#{slug}" else slug
         $.get "/#{resource}.json?random=#{randomBytes(4)}", "", (page) ->
           window.dialog.html($('<pre/>').text(JSON.stringify(page, null, 2)))
-          window.dialog.dialog( "option", "title", "Source for: "+slug );
+          window.dialog.dialog( "option", "title", "Source for: "+slug )
           window.dialog.dialog('open')
 
     .delegate '.page', 'click', (e) ->
@@ -428,7 +432,7 @@ $ ->
       # FIXME: can open page multiple times with shift key
 
       if History.enabled
-        setState {pages: pagesInDom(), active: name}
+        setState {pages: pagesInDom(), active: name, locs: locsInDom() }
 
     .delegate '.action', 'hover', ->
       id = $(this).data('itemId')
@@ -445,7 +449,7 @@ $ ->
         .each refresh
 
       if History.enabled
-        setState {pages: pagesInDom(), active: name}
+        setState {pages: pagesInDom(), active: name, locs: locsInDom() }
 
   useLocalStorage = -> $(".login").length > 0
 
@@ -457,4 +461,4 @@ $ ->
   $('.page').each refresh
 
   startPages = pagesInDom()
-  setState { pages: startPages, active: startPages[startPages.length-1]}
+  setState { pages: startPages, active: startPages[startPages.length-1], locs: locsInDom() }
