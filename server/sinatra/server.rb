@@ -80,6 +80,10 @@ class Controller < Sinatra::Base
       session[:authenticated] == true
     end
 
+    def claimed?
+      File.exists? "#{farm_status}/open_id.identity"
+    end
+
     def authenticate!
       session[:authenticated] = true
       redirect "/"
@@ -193,7 +197,7 @@ class Controller < Sinatra::Base
   end
 
   put %r{^/page/([a-z0-9-]+)/action$} do |name|
-    unless authenticated?
+    unless authenticated? or !claimed?
       halt 403
       return
     end

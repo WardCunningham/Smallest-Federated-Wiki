@@ -17,12 +17,8 @@
 		%header
 		%section.main
 			=yield
-		%footer
-			%input{:type => "checkbox", :id => "localEditing", :class => "local_editing clickable", :style => 'display:none;'}
-			%label{:for => "localEditing",  :class => "clickable", :style => 'display:none;'} Local editing
+		%footer{:class => authenticated? ? "logout" : claimed? ? "login" : "claim"}
 			- if authenticated?
-				%span#authenticated
-					Authenicated!
 				%form{:method => 'POST', :action => "/logout"}
 					%input{:type => 'submit', :value => "Logout"}
 			- else

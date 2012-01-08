@@ -563,7 +563,7 @@
       }
     });
     useLocalStorage = function() {
-      return $("#authenticated").length === 0;
+      return $(".login").length > 0;
     };
     urlPages = ((function() {
       var _i, _len, _ref, _results, _step;
