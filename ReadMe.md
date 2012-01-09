@@ -59,7 +59,7 @@ Install and Launch
 
 The project is distributed as a GitHub repository. You will need a git client. Learn more from GitHub:
 
-	http://help.github.com/
+* http://help.github.com/
 
 When you have git. Use it to clone the repository:
 
