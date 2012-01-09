@@ -105,7 +105,7 @@ Looking For Code Bloat
 
 Try this command to see if any code files have grown unpleasantly large.
 
-	wc -l `find . | perl -ne 'next if /jquery/; print if /\.(rb|haml|sass|coffee)$/'`
+	wc -l `find . | perl -ne 'next if /jquery/; print if /\.(rb|haml|sass|coffee)$/'` | sort -rgb
 
 License
 =======
