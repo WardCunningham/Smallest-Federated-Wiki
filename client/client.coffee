@@ -316,7 +316,8 @@ $ ->
       pageElement.find('.item').each (i, each) ->
         div = $(each)
         item = getItem(div)
-        getPlugin(item.type).bind div, item
+        getPlugin item.type, (plugin) ->
+          plugin.bind div, item
     else
       if useLocalStorage() and json = localStorage[pageElement.attr("id")]
         pageElement.addClass("local")

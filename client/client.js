@@ -407,7 +407,9 @@
           var div, item;
           div = $(each);
           item = getItem(div);
-          return getPlugin(item.type).bind(div, item);
+          return getPlugin(item.type, function(plugin) {
+            return plugin.bind(div, item);
+          });
         });
       } else {
         if (useLocalStorage() && (json = localStorage[pageElement.attr("id")])) {
