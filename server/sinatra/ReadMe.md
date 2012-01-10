@@ -40,6 +40,14 @@ We're now using Ruby 1.9.2 which we manage with rvm. Launch the server with the 
 	rvm 1.9.2
 	bundle exec rackup -s thin -p 1111
 
+Starting Afresh
+===============
+
+When the wiki is polluted during development and you want to start afresh, stop the server and remove the data
+directory.
+
+	rm -r data
+
 Hosting a Server Farm
 =====================
 
