@@ -6,6 +6,8 @@ http = require('http')
 _ = require('../../../client/js/underscore-min.js')
 pagehandler = require('./page.coffee')
 favicon = require('./favicon.coffee')
+passport = require('passport')
+OpenIDstrat = require('passport-openid').Strategy
 
 
 module.exports = (argv) ->
@@ -15,13 +17,48 @@ module.exports = (argv) ->
   To use it, require it in a program and call it with the options you want
   for each server.
   ###
+  
+  # Helper functions
 
-  # App configuration
+  authenticated = (req, res, next) ->
+    console.log "tryig to check auth"
+    if req.isAuthenticated() then next() else res.send(403)
+
+  
+  # passport openID config
+
+  passport.serializeUser( (user, done) ->
+    done(null, user.id)
+  )
+
+  passport.deserializeUser( (id, done) ->
+    done(null, {id})
+  )
+
+  passport.use(new OpenIDstrat({
+    returnURL: 'http://localhost:3000/login/openid/complete',
+    realm: 'http://localhost:3000/'
+    identifierField: 'identifier'
+  },
+  ((id, done) ->
+    process.nextTick( ->
+      done(null, {id})
+    )
+  )))
+  
+
+
+  # Express configuration
+
   app = express.createServer()
 
   app.configure( ->
+    app.use(express.cookieParser())
     app.use(express.bodyParser())
     app.use(express.methodOverride())
+    app.use(express.session({ secret: 'notsecret'}))
+    app.use(passport.initialize())
+    app.use(passport.session())
     app.use(app.router)
     app.use(express.static(argv.c))
   )
@@ -82,14 +119,7 @@ module.exports = (argv) ->
     res.sendfile("#{argv.r}/server/sinatra/views/style.css")
   )
 
-  viewdomain = /// ^/(
-    (view|([a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+))
-    /[a-z0-9-]+(/
-    (view|([a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+))
-    /[a-z0-9-]+)*
-  )$ ///
-
-  app.get(viewdomain, (req, res) ->
+  app.get(///^(/([a-zA-Z0-9.-]+)/([a-z0-9-]+))+$///, (req, res) ->
     res.sendfile("#{argv.r}/server/sinatra/views/static.html")
   )
 
@@ -127,7 +157,7 @@ module.exports = (argv) ->
 
   # Put routes
 
-  app.put(/^\/page\/([a-z0-9-]+)\/action$/i, (req, res) ->
+  app.put(/^\/page\/([a-z0-9-]+)\/action$/i, authenticated, (req, res) ->
     action = JSON.parse(req.body.action)
     actionCB = (page) ->
       console.log page if argv.debug
@@ -189,6 +219,30 @@ module.exports = (argv) ->
       )
     else
       pagehandler.get(path.join(argv.db, req.params[0]), actionCB)
+  )
+
+  # Routes used for openID authentication
+
+  app.post('/login',
+    passport.authenticate('openid', { failureRedirect: 'index'}),
+    (req, res) ->
+      res.redirect('index')
+  )
+
+  app.post('/logout', (req, res) ->
+    req.logout()
+    res.redirect('index')
+  )
+
+  app.get('/logout', (req, res) ->
+    req.logout()
+    res.redirect('index')
+  )
+
+  app.get('/login/openid/complete',
+    passport.authenticate('openid', { failureRedirect: 'index'}),
+    (req, res) ->
+      res.redirect('index')
   )
 
   app.listen(argv.p, argv.o if argv.o)

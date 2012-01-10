@@ -7,5 +7,7 @@
     , "mkdirp": ">= 0.0.1"
     , "canvas": ">= 0.0.1"
     , "optimist": ">= 0.0.1"
+    , "passport": ">= 0.0.1"
+    , "passport-openid": ">= 0.0.1"
   }
 }
