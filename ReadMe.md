@@ -59,7 +59,7 @@ Install and Launch
 
 The project is distributed as a GitHub repository. You will need a git client. Learn more from GitHub:
 
-	http://help.github.com/
+* http://help.github.com/
 
 When you have git. Use it to clone the repository:
 
@@ -105,7 +105,7 @@ Looking For Code Bloat
 
 Try this command to see if any code files have grown unpleasantly large.
 
-	wc -l `find . | perl -ne 'next if /jquery/; print if /\.(rb|haml|sass|coffee)$/'`
+	wc -l `find . | perl -ne 'next if /jquery/; print if /\.(rb|haml|sass|coffee)$/'` | sort -rgb
 
 License
 =======
