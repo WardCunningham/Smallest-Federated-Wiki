@@ -3,6 +3,7 @@ express = require('express')
 fs = require('fs')
 path = require('path')
 http = require('http')
+hbs = require('hbs')
 _ = require('../../../client/js/underscore-min.js')
 pagehandler = require('./page.coffee')
 favicon = require('./favicon.coffee')
@@ -19,10 +20,31 @@ module.exports = (argv) ->
   ###
   
   # Helper functions
+  owner = ''
+
+  setOwner = (id) ->
+    idpath = "#{argv.status}/open_id.identity"
+    path.exists(idpath, (exists) ->
+      if exists
+        fs.readFile(idpath, (err, data) ->
+          if err then throw err
+          owner += data)
+      else if id
+        fs.writeFile(idpath, id, (err) ->
+          if err then throw err
+          console.log("Claimed by #{id}")
+          owner = id
+        )
+    )
+
+  setOwner()
 
   authenticated = (req, res, next) ->
-    console.log "tryig to check auth"
-    if req.isAuthenticated() then next() else res.send(403)
+    console.log owner
+    console.log req.user?.id
+    if req.isAuthenticated() and req.user.id is owner
+      next()
+    else res.send('Access forbidden', 403)
 
   
   # passport openID config
@@ -36,13 +58,19 @@ module.exports = (argv) ->
   )
 
   passport.use(new OpenIDstrat({
-    returnURL: 'http://localhost:3000/login/openid/complete',
-    realm: 'http://localhost:3000/'
+    returnURL: "#{argv.u}/login/openid/complete"
+    realm: "#{argv.u}"
     identifierField: 'identifier'
   },
   ((id, done) ->
+    console.log id, done
     process.nextTick( ->
-      done(null, {id})
+      unless owner
+        setOwner(id)
+      else if id isnt owner
+        done(null, false)
+      else
+        done(null, {id})
     )
   )))
   
@@ -53,6 +81,10 @@ module.exports = (argv) ->
   app = express.createServer()
 
   app.configure( ->
+    app.set('views', path.join(__dirname, '..', '/views'))
+    app.set('view engine', 'hbs')
+    app.register('.html', hbs)
+    app.set('view options', layout: false)
     app.use(express.cookieParser())
     app.use(express.bodyParser())
     app.use(express.methodOverride())
@@ -85,9 +117,6 @@ module.exports = (argv) ->
 
   # Get routes
 
-  app.get('/', (req, res) ->
-    res.redirect('index')
-  )
 
   app.get(///^/remote/([a-zA-Z0-9:\.-]+)/([a-z0-9-]+)\.json$///, (req, res) ->
     getopts = {
@@ -119,8 +148,27 @@ module.exports = (argv) ->
     res.sendfile("#{argv.r}/server/sinatra/views/style.css")
   )
 
-  app.get(///^(/([a-zA-Z0-9.-]+)/([a-z0-9-]+))+$///, (req, res) ->
-    res.sendfile("#{argv.r}/server/sinatra/views/static.html")
+  app.get(///^((/[a-zA-Z0-9:.-]+/[a-z0-9-]+)+)$///, (req, res) ->
+    #res.sendfile("#{argv.r}/server/sinatra/views/static.html")
+    urlPages = (i for i in req.params[0].split('/') by 2)[1..]
+    urlLocs = (j for j in req.params[0].split('/')[1..] by 2)
+    console.log owner
+    info = {
+      pages: []
+      authenticated: req.isAuthenticated()
+      status: if owner
+        if req.isAuthenticated()
+          'logout'
+        else 'login'
+      else 'claim'
+    }
+    for page, idx in urlPages
+      if urlLocs[idx] is 'view'
+        pageDiv = {page}
+      else
+        pageDiv = {page, origin: "data-site=#{urlLocs[idx]}"}
+      info.pages.push(pageDiv)
+    res.render('static.html', info)
   )
 
   app.get('/plugins/factory.js', (req, res) ->
@@ -143,12 +191,6 @@ module.exports = (argv) ->
     favicon.get(path.join(argv.status, "favicon.png"), (loc) ->
       res.sendfile(loc)
     )
-  )
-
-
-  app.get('/*', (req, res, next) ->
-    file = req.params[0]
-    next()
   )
 
   app.get(///^/remote/([a-zA-Z0-9:\.-]+/favicon.png)$///, (req, res) ->
@@ -243,6 +285,10 @@ module.exports = (argv) ->
     passport.authenticate('openid', { failureRedirect: 'index'}),
     (req, res) ->
       res.redirect('index')
+  )
+
+  app.get('/', (req, res) ->
+    res.redirect('index')
   )
 
   app.listen(argv.p, argv.o if argv.o)

@@ -25,6 +25,11 @@ argv = optimist
     default   : ''
     describe  : 'Host to accept connections on, falsy == any'
   )
+  .options('u',
+    alias     : 'url'
+    default   : 'http://localhost:3000'
+    describe  : 'Url to be used for the realm in openID'
+  )
   .options('p',
     alias     : 'port'
     default   : 3000
