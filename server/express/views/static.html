@@ -17,13 +17,20 @@
   <body>
     <header></header>
     <section class='main'>
-      <div class='page' id='welcome-visitors'></div>
+      {{#pages}}
+        <div class='page' id={{page}} {{origin}}></div>
+      {{/pages}}
     </section>
-    <footer class='login'>
+    <footer class={{status}}>
+      {{#authenticated}}
+      <form action='/logout' method='POST'>
+      {{/authenticated}}
+      {{^authenticated}}
       <form action='/login' method='POST'>
         OpenID:
         <input name='identifier' type='text'>
-        <input type='submit' value='Login'>
+      {{/authenticated}}
+        <input type='submit' value={{status}}>
       </form>
     </footer>
   </body>
