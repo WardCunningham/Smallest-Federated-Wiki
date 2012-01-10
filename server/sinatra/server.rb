@@ -172,9 +172,10 @@ class Controller < Sinatra::Base
     haml :page, :locals => { :page => farm_page.get(name), :page_name => name }
   end
 
-  get %r{^(/([a-zA-Z0-9.-]+)/([a-z0-9-]+))+$} do
+  get %r{^((/[a-zA-Z0-9:.-]+/[a-z0-9-]+)+)$} do
     elements = params[:captures].first.split('/')
     pages = []
+    elements.shift
     while (site = elements.shift) && (id = elements.shift)
       if site == 'view' || site == 'my'
         pages << {:id => id}
