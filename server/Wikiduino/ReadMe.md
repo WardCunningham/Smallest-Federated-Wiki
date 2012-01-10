@@ -7,10 +7,8 @@ along with an FDDI USB to serial converter for device programming and software d
 from a custom made for purpose development environment. The Wikiduino configuration 
 adds to this an Ethernet adapter daughter card (called a shield) and a variety of sensors.
 
-The source code for Wikiduino exists in a single file which can be copied and pasted into the Arduino IDE. We host two files that vary depending on which version of IDE and libraries one is 
-using. These are:
+The source code for Wikiduino exists in a single file which can be copied and pasted into the Arduino IDE or cloned directly from GitHub:
 
-* Wikiduino.pde for use with Arduino beta version 22
 * Wikiduino.ino for use with release 1.0 or later
 
 System Operation
