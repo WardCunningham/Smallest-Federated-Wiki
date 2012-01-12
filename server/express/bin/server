@@ -25,6 +25,11 @@ argv = optimist
     default   : ''
     describe  : 'Host to accept connections on, falsy == any'
   )
+  .options('u',
+    alias     : 'url'
+    default   : ''
+    describe  : 'Url to be used for the realm in openID'
+  )
   .options('p',
     alias     : 'port'
     default   : 3000
@@ -40,12 +45,7 @@ argv = optimist
 if argv.h
   optimist.showHelp()
   process.exit()
-if not argv.d
-  argv.d = path.relative("#{__dirname}", "#{argv.r}/data")
-if not argv.c
-  argv.c = path.relative("#{__dirname}", "#{argv.r}/client")
-argv.db = path.resolve(path.join(argv.d, 'pages'))
-argv.status = path.resolve(path.join(argv.d, 'status'))
+argv = require('../lib/defaultargs')(argv)
 
 # Create an instance of server using command line arguments and defaults.
 server(argv)
