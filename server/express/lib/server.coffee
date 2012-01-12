@@ -4,8 +4,8 @@ fs = require('fs')
 path = require('path')
 http = require('http')
 hbs = require('hbs')
-_ = require('../../../client/js/underscore-min.js')
 pagehandler = require('./page.coffee')
+_ = require('../../../client/js/underscore-min.js')
 favicon = require('./favicon.coffee')
 passport = require('passport')
 OpenIDstrat = require('passport-openid').Strategy
@@ -20,6 +20,8 @@ module.exports = (argv) ->
   ###
   
   # Helper functions
+  pagehandler.setup(argv)
+
   owner = ''
 
   setOwner = (id) ->
@@ -139,7 +141,7 @@ module.exports = (argv) ->
 
   app.get('*.json', (req, res) ->
     file = req.params[0]
-    pagehandler.get(path.join(argv.db, file), (page) =>
+    pagehandler.get(file, (page) =>
       res.json(page)
     )
   )
@@ -236,7 +238,7 @@ module.exports = (argv) ->
       if not page.journal
         page.journal = []
       page.journal.push(action)
-      pagehandler.put(path.join(argv.db, req.params[0]), page, (err) =>
+      pagehandler.put(req.params[0], page, (err) =>
         if err then throw err
         res.send('ok')
         console.log 'saved' if argv.debug
@@ -260,7 +262,7 @@ module.exports = (argv) ->
         )
       )
     else
-      pagehandler.get(path.join(argv.db, req.params[0]), actionCB)
+      pagehandler.get(req.params[0], actionCB)
   )
 
   # Routes used for openID authentication

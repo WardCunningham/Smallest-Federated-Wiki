@@ -39,12 +39,17 @@ blank_page = (loc, cb) ->
 
 # Exported functions
 
-itself.get = (loc, cb) ->
-  path.exists(loc, (exists) ->
+itself.setup = (opts) ->
+  @argv = opts
+
+
+itself.get = (file, cb) ->
+  loc = path.join(@argv.db, file)
+  path.exists(loc, (exists) =>
     if exists
       load_parse(loc, cb)
     else
-      defloc = path.join(path.dirname(loc), '..', '..', '..', 'default-data', 'pages', path.basename(loc))
+      defloc = path.join(@argv.r, 'default-data', 'pages', file)
       path.exists(defloc, (exists) ->
         if exists
           load_parse_copy(defloc, loc, cb)
@@ -54,7 +59,8 @@ itself.get = (loc, cb) ->
   )
   
 
-itself.put = (loc, page, cb) ->
+itself.put = (file, page, cb) ->
+  loc = path.join(@argv.db, file)
   page = JSON.stringify(page)
   path.exists(path.dirname(loc), (exists) ->
     if exists
