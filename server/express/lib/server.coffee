@@ -105,6 +105,8 @@ module.exports = (argv) ->
     argv.debug = console? and true
   )
 
+  console.log argv if argv.debug
+
   app.configure('production', ->
     app.use(express.errorHandler())
   )
