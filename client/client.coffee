@@ -8,6 +8,10 @@ $ ->
   window.dialog = $('<div></div>')
 	  .html('This dialog will show every time!')
 	  .dialog { autoOpen: false, title: 'Basic Dialog', height: 600, width: 800 }
+  wiki.dialog = (title, html) ->
+    window.dialog.html html
+    window.dialog.dialog "option", "title", title
+    window.dialog.dialog 'open'
 
 # FUNCTIONS used by plugins and elsewhere
 
@@ -206,6 +210,8 @@ $ ->
           [time, sample] = item.data[Math.floor(item.data.length * e.offsetX / e.target.offsetWidth)]
           $(e.target).text sample.toFixed(1)
           $(e.target).siblings("p").last().html formatTime(time)
+        .dblclick ->
+          wiki.dialog "JSON for #{item.caption}", $('<pre/>').text(JSON.stringify(item.data, null, 2))
     changes:
       emit: (div, item) ->
         div.append ul = $('<ul />').append if localStorage.length then $('<input type="button" value="discard all" />').css('margin-top','10px') else $('<p>empty</p>')
@@ -408,10 +414,7 @@ $ ->
       e.preventDefault()
       pageElement = $(this).parent().parent()
       json = pageElement.data('data')
-      text = JSON.stringify(json, null, 2)
-      window.dialog.html $('<pre/>').text(text)
-      window.dialog.dialog "option", "title", "JSON for #{json.title}"
-      window.dialog.dialog 'open'
+      wiki.dialog "JSON for #{json.title}",  $('<pre/>').text(JSON.stringify(json, null, 2))
 
     .delegate '.page', 'click', (e) ->
       setActive this.id unless $(e.target).is("a")
