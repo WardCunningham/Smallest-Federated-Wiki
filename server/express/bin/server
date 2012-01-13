@@ -37,7 +37,6 @@ argv = optimist
   )
   .options('r',
     alias     : 'root'
-    default   : path.join("#{__dirname}", '..', '..', '..')
     describe  : 'Aplication root folder'
   )
   .argv
@@ -46,6 +45,7 @@ if argv.h
   optimist.showHelp()
   process.exit()
 argv = require('../lib/defaultargs')(argv)
+console.log argv
 
 # Create an instance of server using command line arguments and defaults.
 server(argv)
