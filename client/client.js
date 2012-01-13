@@ -15,6 +15,11 @@
       height: 600,
       width: 800
     });
+    wiki.dialog = function(title, html) {
+      window.dialog.html(html);
+      window.dialog.dialog("option", "title", title);
+      return window.dialog.dialog('open');
+    };
     randomByte = function() {
       return (((1 + Math.random()) * 0x100) | 0).toString(16).substring(1);
     };
@@ -271,6 +276,8 @@
             _ref = item.data[Math.floor(item.data.length * e.offsetX / e.target.offsetWidth)], time = _ref[0], sample = _ref[1];
             $(e.target).text(sample.toFixed(1));
             return $(e.target).siblings("p").last().html(formatTime(time));
+          }).dblclick(function() {
+            return wiki.dialog("JSON for " + item.caption, $('<pre/>').text(JSON.stringify(item.data, null, 2)));
           });
         }
       },
@@ -521,21 +528,11 @@
       return $('.main').prepend("<li class='error'>Error on " + settings.url + "</li>");
     });
     $('.main').delegate('.show-page-source', 'click', function(e) {
-      var json, pageElement, resource, site, slug;
+      var json, pageElement;
       e.preventDefault();
-      if (useLocalStorage() && (json = localStorage[pageElement.attr("id")])) {
-        return window.dialog.dialog('open');
-      } else {
-        pageElement = $(this).parent().parent();
-        slug = $(pageElement).attr('id');
-        site = $(pageElement).data('site');
-        resource = site != null ? "remote/" + site + "/" + slug : slug;
-        return $.get("/" + resource + ".json?random=" + (randomBytes(4)), "", function(page) {
-          window.dialog.html($('<pre/>').text(JSON.stringify(page, null, 2)));
-          window.dialog.dialog("option", "title", "Source for: " + slug);
-          return window.dialog.dialog('open');
-        });
-      }
+      pageElement = $(this).parent().parent();
+      json = pageElement.data('data');
+      return wiki.dialog("JSON for " + json.title, $('<pre/>').text(JSON.stringify(json, null, 2)));
     }).delegate('.page', 'click', function(e) {
       if (!$(e.target).is("a")) return setActive(this.id);
     }).delegate('.internal', 'click', function(e) {

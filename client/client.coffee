@@ -8,6 +8,10 @@ $ ->
   window.dialog = $('<div></div>')
 	  .html('This dialog will show every time!')
 	  .dialog { autoOpen: false, title: 'Basic Dialog', height: 600, width: 800 }
+  wiki.dialog = (title, html) ->
+    window.dialog.html html
+    window.dialog.dialog "option", "title", title
+    window.dialog.dialog 'open'
 
 # FUNCTIONS used by plugins and elsewhere
 
@@ -206,6 +210,8 @@ $ ->
           [time, sample] = item.data[Math.floor(item.data.length * e.offsetX / e.target.offsetWidth)]
           $(e.target).text sample.toFixed(1)
           $(e.target).siblings("p").last().html formatTime(time)
+        .dblclick ->
+          wiki.dialog "JSON for #{item.caption}", $('<pre/>').text(JSON.stringify(item.data, null, 2))
     changes:
       emit: (div, item) ->
         div.append ul = $('<ul />').append if localStorage.length then $('<input type="button" value="discard all" />').css('margin-top','10px') else $('<p>empty</p>')
@@ -406,20 +412,9 @@ $ ->
   $('.main')
     .delegate '.show-page-source', 'click', (e) ->
       e.preventDefault()
-      #TODO: this is a cut,paste&hack from a few lines above - refactor out
-      if useLocalStorage() and json = localStorage[pageElement.attr("id")]
-        #set the dialog content..
-        window.dialog.dialog('open')
-      else
-        pageElement = $(this).parent().parent()
-        slug = $(pageElement).attr('id')
-        site = $(pageElement).data('site')
-
-        resource = if site? then "remote/#{site}/#{slug}" else slug
-        $.get "/#{resource}.json?random=#{randomBytes(4)}", "", (page) ->
-          window.dialog.html($('<pre/>').text(JSON.stringify(page, null, 2)))
-          window.dialog.dialog( "option", "title", "Source for: "+slug )
-          window.dialog.dialog('open')
+      pageElement = $(this).parent().parent()
+      json = pageElement.data('data')
+      wiki.dialog "JSON for #{json.title}",  $('<pre/>').text(JSON.stringify(json, null, 2))
 
     .delegate '.page', 'click', (e) ->
       setActive this.id unless $(e.target).is("a")
