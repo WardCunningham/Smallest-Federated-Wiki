@@ -4,8 +4,8 @@ fs = require('fs')
 path = require('path')
 http = require('http')
 hbs = require('hbs')
-_ = require('../../../client/js/underscore-min.js')
 pagehandler = require('./page.coffee')
+_ = require('../../../client/js/underscore-min.js')
 favicon = require('./favicon.coffee')
 passport = require('passport')
 OpenIDstrat = require('passport-openid').Strategy
@@ -20,6 +20,9 @@ module.exports = (argv) ->
   ###
   
   # Helper functions
+  argv = require('./defaultargs')(argv)
+  pagehandler.setup(argv)
+
   owner = ''
 
   setOwner = (id) ->
@@ -40,8 +43,8 @@ module.exports = (argv) ->
   setOwner()
 
   authenticated = (req, res, next) ->
-    console.log owner
-    console.log req.user?.id
+    console.log(owner) if argv.debug
+    console.log(req.user?.id) if argv.debug
     if req.isAuthenticated() and req.user.id is owner
       next()
     else res.send('Access forbidden', 403)
@@ -63,13 +66,15 @@ module.exports = (argv) ->
     identifierField: 'identifier'
   },
   ((id, done) ->
-    console.log id, done
+    console.log(id, done) if argv.debug
     process.nextTick( ->
-      unless owner
-        setOwner(id)
-      else if id isnt owner
-        done(null, false)
+      if owner
+        if id is owner
+          done(null, {id})
+        else
+          done(null, false)
       else
+        setOwner(id)
         done(null, {id})
     )
   )))
@@ -111,9 +116,13 @@ module.exports = (argv) ->
   )
 
   app.redirect('remotefav', (req, res) ->
-    console.log req.params
     "http://#{req.params[0]}"
   )
+
+  app.redirect('notyourwiki', (req, res) ->
+    '/notyourwiki'
+  )
+
 
   # Get routes
 
@@ -124,14 +133,12 @@ module.exports = (argv) ->
       port: 80
       path: "/#{req.params[1]}.json"
     }
-    console.log getopts
     http.get(getopts, (resp) ->
       responsedata = ''
       resp.on('data', (chunk) ->
         responsedata += chunk
       )
       resp.on('end', ->
-        console.log responsedata
         res.json(JSON.parse(responsedata))
       )
     )
@@ -139,7 +146,7 @@ module.exports = (argv) ->
 
   app.get('*.json', (req, res) ->
     file = req.params[0]
-    pagehandler.get(path.join(argv.db, file), (page) =>
+    pagehandler.get(file, (page) =>
       res.json(page)
     )
   )
@@ -152,7 +159,6 @@ module.exports = (argv) ->
     #res.sendfile("#{argv.r}/server/sinatra/views/static.html")
     urlPages = (i for i in req.params[0].split('/') by 2)[1..]
     urlLocs = (j for j in req.params[0].split('/')[1..] by 2)
-    console.log owner
     info = {
       pages: []
       authenticated: req.isAuthenticated()
@@ -207,7 +213,7 @@ module.exports = (argv) ->
         when 'move'
           page.story = _(action.order).map((i) ->
             _(page.story).find( (story) ->
-              console.log i, story
+              console.log(i, story) if argv.debug
               i is story.id
             )
           )
@@ -236,7 +242,7 @@ module.exports = (argv) ->
       if not page.journal
         page.journal = []
       page.journal.push(action)
-      pagehandler.put(path.join(argv.db, req.params[0]), page, (err) =>
+      pagehandler.put(req.params[0], page, (err) =>
         if err then throw err
         res.send('ok')
         console.log 'saved' if argv.debug
@@ -255,18 +261,17 @@ module.exports = (argv) ->
           responsedata += chunk
         )
         resp.on('end', ->
-          console.log responsedata
           actionCB(JSON.parse(responsedata))
         )
       )
     else
-      pagehandler.get(path.join(argv.db, req.params[0]), actionCB)
+      pagehandler.get(req.params[0], actionCB)
   )
 
   # Routes used for openID authentication
 
   app.post('/login',
-    passport.authenticate('openid', { failureRedirect: 'index'}),
+    passport.authenticate('openid', { failureRedirect: 'notyourwiki'}),
     (req, res) ->
       res.redirect('index')
   )
@@ -282,9 +287,13 @@ module.exports = (argv) ->
   )
 
   app.get('/login/openid/complete',
-    passport.authenticate('openid', { failureRedirect: 'index'}),
+    passport.authenticate('openid', { failureRedirect: 'notyourwiki'}),
     (req, res) ->
       res.redirect('index')
+  )
+
+  app.get('/notyourwiki', (req, res) ->
+    res.send('This is not your wiki!', 403)
   )
 
   app.get('/', (req, res) ->
