@@ -14,12 +14,12 @@ load_parse = (loc, cb) ->
     cb(JSON.parse(data))
   )
 
-load_parse_copy = (defloc, loc, cb) ->
+load_parse_copy = (defloc, file, cb) ->
   fs.readFile(defloc, (err, data) ->
     if err then throw err
     page = JSON.parse(data)
     cb(page)
-    itself.put(loc, page, (err) ->
+    itself.put(file, page, (err) ->
       if err then throw err
     )
   )
@@ -52,7 +52,7 @@ itself.get = (file, cb) ->
       defloc = path.join(@argv.r, 'default-data', 'pages', file)
       path.exists(defloc, (exists) ->
         if exists
-          load_parse_copy(defloc, loc, cb)
+          load_parse_copy(defloc, file, cb)
         else
           blank_page(loc, cb)
       )
