@@ -406,20 +406,12 @@ $ ->
   $('.main')
     .delegate '.show-page-source', 'click', (e) ->
       e.preventDefault()
-      #TODO: this is a cut,paste&hack from a few lines above - refactor out
-      if useLocalStorage() and json = localStorage[pageElement.attr("id")]
-        #set the dialog content..
-        window.dialog.dialog('open')
-      else
-        pageElement = $(this).parent().parent()
-        slug = $(pageElement).attr('id')
-        site = $(pageElement).data('site')
-
-        resource = if site? then "remote/#{site}/#{slug}" else slug
-        $.get "/#{resource}.json?random=#{randomBytes(4)}", "", (page) ->
-          window.dialog.html($('<pre/>').text(JSON.stringify(page, null, 2)))
-          window.dialog.dialog( "option", "title", "Source for: "+slug )
-          window.dialog.dialog('open')
+      pageElement = $(this).parent().parent()
+      json = pageElement.data('data')
+      text = JSON.stringify(json, null, 2)
+      window.dialog.html $('<pre/>').text(text)
+      window.dialog.dialog "option", "title", "JSON for #{json.title}"
+      window.dialog.dialog 'open'
 
     .delegate '.page', 'click', (e) ->
       setActive this.id unless $(e.target).is("a")

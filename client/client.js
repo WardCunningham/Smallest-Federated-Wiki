@@ -521,21 +521,14 @@
       return $('.main').prepend("<li class='error'>Error on " + settings.url + "</li>");
     });
     $('.main').delegate('.show-page-source', 'click', function(e) {
-      var json, pageElement, resource, site, slug;
+      var json, pageElement, text;
       e.preventDefault();
-      if (useLocalStorage() && (json = localStorage[pageElement.attr("id")])) {
-        return window.dialog.dialog('open');
-      } else {
-        pageElement = $(this).parent().parent();
-        slug = $(pageElement).attr('id');
-        site = $(pageElement).data('site');
-        resource = site != null ? "remote/" + site + "/" + slug : slug;
-        return $.get("/" + resource + ".json?random=" + (randomBytes(4)), "", function(page) {
-          window.dialog.html($('<pre/>').text(JSON.stringify(page, null, 2)));
-          window.dialog.dialog("option", "title", "Source for: " + slug);
-          return window.dialog.dialog('open');
-        });
-      }
+      pageElement = $(this).parent().parent();
+      json = pageElement.data('data');
+      text = JSON.stringify(json, null, 2);
+      window.dialog.html($('<pre/>').text(text));
+      window.dialog.dialog("option", "title", "JSON for " + json.title);
+      return window.dialog.dialog('open');
     }).delegate('.page', 'click', function(e) {
       if (!$(e.target).is("a")) return setActive(this.id);
     }).delegate('.internal', 'click', function(e) {
