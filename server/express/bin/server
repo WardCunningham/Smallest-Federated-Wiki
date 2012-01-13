@@ -37,7 +37,6 @@ argv = optimist
   )
   .options('r',
     alias     : 'root'
-    default   : path.join("#{__dirname}", '..', '..', '..')
     describe  : 'Aplication root folder'
   )
   .argv
