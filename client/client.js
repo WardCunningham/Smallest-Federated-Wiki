@@ -17,7 +17,7 @@
     });
     wiki.dialog = function(title, html) {
       window.dialog.html(html);
-      window.dialog.dialog("option", "title", title);
+      window.dialog.dialog("option", "title", resolveLinks(title));
       return window.dialog.dialog('open');
     };
     randomByte = function() {
@@ -260,9 +260,18 @@
       },
       image: {
         emit: function(div, item) {
-          return div.append("<img src=\"" + item.url + "\"> <p>" + (resolveLinks(item.caption)) + "</p>");
+          item.text || (item.text = item.caption);
+          wiki.log('image', item);
+          return div.append("<img src=\"" + item.url + "\"> <p>" + (resolveLinks(item.text)) + "</p>");
         },
-        bind: function(div, item) {}
+        bind: function(div, item) {
+          div.dblclick(function() {
+            return textEditor(div, item);
+          });
+          return div.find('img').dblclick(function() {
+            return wiki.dialog(item.text, this);
+          });
+        }
       },
       chart: {
         emit: function(div, item) {

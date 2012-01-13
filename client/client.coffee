@@ -10,7 +10,7 @@ $ ->
 	  .dialog { autoOpen: false, title: 'Basic Dialog', height: 600, width: 800 }
   wiki.dialog = (title, html) ->
     window.dialog.html html
-    window.dialog.dialog "option", "title", title
+    window.dialog.dialog "option", "title", resolveLinks(title)
     window.dialog.dialog 'open'
 
 # FUNCTIONS used by plugins and elsewhere
@@ -95,10 +95,8 @@ $ ->
     textarea = $("<textarea>#{original = item.text ? ''}</textarea>")
       .focusout ->
         if item.text = textarea.val()
-          # $(div).last('p').html "<p>#{resolveLinks(textarea.val())}</p>"
           doPlugin div.empty(), item
           return if item.text == original
-          # item.text = textarea.val()
           putAction div.parents('.page:first'), {type: 'edit', id: item.id, item: item}
         else
           putAction div.parents('.page:first'), {type: 'remove', id: item.id}
@@ -199,8 +197,13 @@ $ ->
       bind: (div, item) ->
         div.dblclick -> textEditor div, item
     image:
-      emit: (div, item) -> div.append "<img src=\"#{item.url}\"> <p>#{resolveLinks(item.caption)}</p>"
+      emit: (div, item) ->
+        item.text ||= item.caption
+        wiki.log 'image', item
+        div.append "<img src=\"#{item.url}\"> <p>#{resolveLinks(item.text)}</p>"
       bind: (div, item) ->
+        div.dblclick -> textEditor div, item
+        div.find('img').dblclick -> wiki.dialog item.text, this
     chart:
       emit: (div, item) ->
         chartElement = $('<p />').addClass('readout').appendTo(div).text(item.data.last().last())
