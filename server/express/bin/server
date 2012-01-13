@@ -45,7 +45,6 @@ if argv.h
   optimist.showHelp()
   process.exit()
 argv = require('../lib/defaultargs')(argv)
-console.log argv
 
 # Create an instance of server using command line arguments and defaults.
 server(argv)
