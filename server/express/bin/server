@@ -5,6 +5,8 @@
 path = require 'path'
 optimist = require 'optimist'
 server = require '../'
+bouncy = require 'bouncy'
+farm = require '../lib/farm'
 
 # Handle command line options
 
@@ -37,14 +39,26 @@ argv = optimist
   )
   .options('r',
     alias     : 'root'
+    default   : path.join(__dirname, '..', '..', '..')
     describe  : 'Aplication root folder'
+  )
+  .options('f',
+    alias     : 'farm'
+    boolean   : true
+    describe  : 'Turn on the farm?'
+  )
+  .options('F',
+    alias     : 'FarmPort'
+    default   : 40000
+    describe  : 'Port to start farm servers on.'
   )
   .argv
 
 if argv.h
   optimist.showHelp()
   process.exit()
-argv = require('../lib/defaultargs')(argv)
 
-# Create an instance of server using command line arguments and defaults.
-server(argv)
+if argv.f
+  farm(argv)
+else
+  server(argv)
