@@ -36,7 +36,7 @@ Initial Deployment
 ==================
 
 Our first deployment has been in a remote soil temperature sensing application.
-We use Maxium DB18B20 digital thermometers on 20 to 50 foot runs of CAT-3 cable to reach the soil plots of interest.
+We use Maxium DS18B20 digital thermometers on 20 to 50 foot runs of CAT-3 cable to reach the soil plots of interest.
 We also sense environmental conditions in the garden shed including air temperature, battery voltage and ambient light.
 
 Our directional WiFi tranciever draws several times the current as the Arduino/Ethernet setup.
@@ -47,6 +47,8 @@ We've described this installation in two DorkbotPDX blog posts:
 
 * http://dorkbotpdx.org/blog/wardcunningham/remote_sensing_with_federated_wiki
 * http://dorkbotpdx.org/blog/wardcunningham/wikiduino_deployed
+
+A few more pointers to background work can be found in [issue #94](https://github.com/WardCunningham/Smallest-Federated-Wiki/issues/94) discussion.
 
 Retrospective
 =============
