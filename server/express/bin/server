@@ -1,10 +1,12 @@
 #!/usr/bin/env coffee
 # server
-# cli for the Smallest-Federated-Wiki express server
+# Cli for the Smallest-Federated-Wiki express server
 
 path = require 'path'
 optimist = require 'optimist'
 server = require '../'
+bouncy = require 'bouncy'
+farm = require '../lib/farm'
 
 # Handle command line options
 
@@ -37,14 +39,29 @@ argv = optimist
   )
   .options('r',
     alias     : 'root'
-    describe  : 'Aplication root folder'
+    default   : path.join(__dirname, '..', '..', '..')
+    describe  : 'Application root folder'
+  )
+  .options('f',
+    alias     : 'farm'
+    boolean   : true
+    describe  : 'Turn on the farm?'
+  )
+  .options('F',
+    alias     : 'FarmPort'
+    default   : 40000
+    describe  : 'Port to start farm servers on.'
   )
   .argv
 
+# If h/help is set print the generated help message and exit.
 if argv.h
   optimist.showHelp()
   process.exit()
-argv = require('../lib/defaultargs')(argv)
 
-# Create an instance of server using command line arguments and defaults.
-server(argv)
+# If f/farm is set call../lib/farm.coffee with argv object, else call
+# ../lib/server.coffee with argv object.
+if argv.f
+  farm(argv)
+else
+  server(argv)

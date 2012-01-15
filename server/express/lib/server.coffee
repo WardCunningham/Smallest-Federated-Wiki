@@ -1,4 +1,11 @@
-# server.coffee
+# ** server.coffee ** is the main guts of the express version
+# of Smallest Federated Wiki.  The CLI and Farm are just front ends
+# for setting arguments, and spawning servers.  In a complex system
+# you would probably want to replace the CLI/Farm with your own code,
+#
+#### Dependencies 
+# anything not in the standard library can be installed with an 
+#     npm install
 express = require('express')
 fs = require('fs')
 path = require('path')
@@ -10,21 +17,24 @@ favicon = require('./favicon.coffee')
 passport = require('passport')
 OpenIDstrat = require('passport-openid').Strategy
 
-
-module.exports = (argv) ->
-  ###
-  This module is used to generate new Smallest Federated Wiki servers.
-
-  To use it, require it in a program and call it with the options you want
-  for each server.
-  ###
-  
-  # Helper functions
+module.exports = exports = (argv) ->
+  # This takes the argv object that is passed in and then does its
+  # best to supply sane defaults for any arguments that are missing.
   argv = require('./defaultargs')(argv)
+
+  # Passes the arguments to the pagehandler, so it knows where to find
+  # data, and default data.
   pagehandler.setup(argv)
 
+  #### Setting up Authentication
+  # The owner of a server is simply the open id url that the wiki
+  # has been claimed with.  It is persisted at argv.status/open_id.identity,
+  # and kept in memory as owner
   owner = ''
 
+  # Attempts figure out if the wiki is claimed or not,
+  # if it is it returns the owner, if not it sets the owner
+  # to the id, if it is provided.
   setOwner = (id) ->
     idpath = "#{argv.status}/open_id.identity"
     path.exists(idpath, (exists) ->
@@ -42,6 +52,8 @@ module.exports = (argv) ->
 
   setOwner()
 
+  # This is the middleware that make sure that an action can only be taken
+  # by the owner, and returns 403 if someone else tries.
   authenticated = (req, res, next) ->
     console.log(owner) if argv.debug
     console.log(req.user?.id) if argv.debug
@@ -49,9 +61,7 @@ module.exports = (argv) ->
       next()
     else res.send('Access forbidden', 403)
 
-  
-  # passport openID config
-
+  # Simplest possible way to serialize and deserialize a user.
   passport.serializeUser( (user, done) ->
     done(null, user.id)
   )
@@ -60,6 +70,8 @@ module.exports = (argv) ->
     done(null, {id})
   )
 
+  # Telling passport to use the OpenID strategy. And establish
+  # owner as the test of id.
   passport.use(new OpenIDstrat({
     returnURL: "#{argv.u}/login/openid/complete"
     realm: "#{argv.u}"
@@ -78,13 +90,13 @@ module.exports = (argv) ->
         done(null, {id})
     )
   )))
-  
 
-
-  # Express configuration
-
+  #### Express configuration
   app = express.createServer()
 
+  # This sets up all the standard express server options,
+  # including setting up hbs to use handlebars/mustache templates
+  # saved with a .html extension, and no layout.
   app.configure( ->
     app.set('views', path.join(__dirname, '..', '/views'))
     app.set('view engine', 'hbs')
@@ -100,19 +112,23 @@ module.exports = (argv) ->
     app.use(express.static(argv.c))
   )
 
+  # Sets up standard environments.
+  # Dev turns on console.log debugging as well as showing the stack on err.
   app.configure('development', ->
     app.use(express.errorHandler({ dumpExceptions: true, showStack: true }))
     argv.debug = console? and true
   )
 
+  # Shows all of the options a server is using when it is started in dev mode.
   console.log argv if argv.debug
 
+  # Production swallows errors as best it can.
   app.configure('production', ->
     app.use(express.errorHandler())
   )
 
-  # Redirects
-
+  ##### Redirects
+  # Common redirects that may get used throughout the routes.
   app.redirect('index', (req, res) ->
     '/view/welcome-visitors'
   )
@@ -125,10 +141,7 @@ module.exports = (argv) ->
     '/notyourwiki'
   )
 
-
-  # Get routes
-
-
+  ##### Get routes
   app.get(///^/remote/([a-zA-Z0-9:\.-]+)/([a-z0-9-]+)\.json$///, (req, res) ->
     getopts = {
       host: req.params[0]
@@ -205,10 +218,11 @@ module.exports = (argv) ->
         res.redirect('remotefav')
   )
 
-  # Put routes
+  ##### Put routes
 
   app.put(/^\/page\/([a-z0-9-]+)\/action$/i, authenticated, (req, res) ->
     action = JSON.parse(req.body.action)
+    # actionCB handles all of the possible actions to be taken on a page,
     actionCB = (page) ->
       console.log page if argv.debug
       switch action.type
@@ -270,7 +284,7 @@ module.exports = (argv) ->
       pagehandler.get(req.params[0], actionCB)
   )
 
-  # Routes used for openID authentication
+  ##### Routes used for openID authentication
 
   app.post('/login',
     passport.authenticate('openid', { failureRedirect: 'notyourwiki'}),
@@ -302,6 +316,6 @@ module.exports = (argv) ->
     res.redirect('index')
   )
 
+  #### Starting the server.
   app.listen(argv.p, argv.o if argv.o)
-
   console.log("Smallest Federated Wiki server listening on #{app.address().port} in mode: #{app.settings.env}")

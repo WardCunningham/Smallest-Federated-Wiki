@@ -1,11 +1,10 @@
-Setup
-=====
+## Setup
 
-to install
+To install
 
 	npm install
 
-if you don't have coffee-script installed globally
+If you don't have coffee-script installed globally
 
 	npm install -g coffee-script
 
@@ -15,8 +14,14 @@ node-canvas.  For now, please see node-canvas to install.
 
 Warning: Writes are enabled and the server isn't secured in any way.
 
-Launching the Node/Express Server
-=================================
+## Newest Docs
+The most up to date node server specific documentation is in the source
+code, in a way that is best viewed when processed with 
+[Docco](http://jashkenas.github.com/docco/). This document should eventually
+only be an install how to, with most other docs being in the source code
+of logically placed files.
+
+## Launching the Node/Express Server
 
 To run in the default development mode just execute:
 
@@ -26,8 +31,7 @@ To run in production mode (don't put this in production yet....):
 
 	NODE_ENV=production server
 
-Goals
-=====
+## Goals
 The main goal of the express port of Smallest Federated Wiki is to create a
 SFW server that is fully compatible with the reference server, with a focus
 on being easy to install, setup, and maintain.  The end result of this being
@@ -36,8 +40,7 @@ a lowered bar to participation, and thus greater numbers in the federation.
 We are attempting to stay compatible  with the newest release versions of
 node, coffee-script, and express.
 
-Usage patterns
-==============
+## Usage patterns
 There are two patterns that have emerged so far for the node server.
 You can either run it from the command line using the executable coffee script
 file /server/express/bin/server or you can require /server/express from another
@@ -46,7 +49,7 @@ node program, and then call it passing in the options you want.
 The everything is still changing rapidly, and more use cases will be explored,
 but for now both of these should be supported.
 
-# Running specs
+## Running specs
 
 * Make sure you have Ruby 1.9.x installed, as well as the 'bundler' gem
 * Run `bundle install` in the root
