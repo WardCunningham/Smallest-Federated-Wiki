@@ -1,4 +1,5 @@
-# random_id.coffee
+# ** random_id.coffee **
+# takes no arguments and returns a random id
 
 random_id = ->
   [0..15].map( ->

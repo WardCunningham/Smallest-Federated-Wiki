@@ -1,6 +1,6 @@
 #!/usr/bin/env coffee
 # server
-# cli for the Smallest-Federated-Wiki express server
+# Cli for the Smallest-Federated-Wiki express server
 
 path = require 'path'
 optimist = require 'optimist'
@@ -40,7 +40,7 @@ argv = optimist
   .options('r',
     alias     : 'root'
     default   : path.join(__dirname, '..', '..', '..')
-    describe  : 'Aplication root folder'
+    describe  : 'Application root folder'
   )
   .options('f',
     alias     : 'farm'
@@ -54,10 +54,13 @@ argv = optimist
   )
   .argv
 
+# If h/help is set print the generated help message and exit.
 if argv.h
   optimist.showHelp()
   process.exit()
 
+# If f/farm is set call../lib/farm.coffee with argv object, else call
+# ../lib/server.coffee with argv object.
 if argv.f
   farm(argv)
 else

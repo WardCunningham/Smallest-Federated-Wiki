@@ -1,4 +1,5 @@
-# defaultargs.coffee
+# **defaultargs.coffee** when called with on the argv object this
+# module will create reasonable defaults for options not supplied.
 path = require 'path'
 
 module.exports = (argv) ->

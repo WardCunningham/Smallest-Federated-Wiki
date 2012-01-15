@@ -1,5 +1,6 @@
-# farm.coffee
-
+# ** farm.coffee **
+# The farm module works by putting a bouncy host based proxy
+# in front of servers that it creates 
 path = require 'path'
 server = require '../'
 bouncy = require 'bouncy'
