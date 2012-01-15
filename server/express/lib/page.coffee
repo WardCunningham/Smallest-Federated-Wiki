@@ -1,13 +1,18 @@
-# page.coffee
-# Module for interacting with pages on file system
+# ** page.coffee **
+# This is the module for interacting with pages persisted on the server.
+# Right now everything is stored using json flat files.
 
+#### Require some stuff, nothing special here.
 fs = require('fs')
 path = require('path')
 mkdirp = require('mkdirp')
 random_id = require('./random_id')
 
-itself = {}
+# Set up an empty object named itself that will have public methods
+# added to it and be exported.
+module.exports = exports = itself = {}
 
+#### Private utility methods.
 load_parse = (loc, cb) ->
   fs.readFile(loc, (err, data) ->
     if err then throw err
@@ -37,12 +42,14 @@ blank_page = (loc, cb) ->
   )
   cb(freshpage)
 
-# Exported functions
+#### Exported functions
+# Setup just takes the same argv element as everywhere else, so that
+# page.coffee can find everything it needs
+itself.setup = (@argv) ->
 
-itself.setup = (opts) ->
-  @argv = opts
-
-
+# get takes a slug and a callback, it then calls the callback with the page
+# it wanted, or the same named page from default-data, or creates a blank page
+# and sends it back.
 itself.get = (file, cb) ->
   loc = path.join(@argv.db, file)
   path.exists(loc, (exists) =>
@@ -58,7 +65,8 @@ itself.get = (file, cb) ->
       )
   )
   
-
+# put takes a slugged name, the page as a json object, and a callback.
+# calls cb with an err if anything goes wrong.
 itself.put = (file, page, cb) ->
   loc = path.join(@argv.db, file)
   page = JSON.stringify(page)
@@ -76,4 +84,3 @@ itself.put = (file, page, cb) ->
       )
   )
 
-module.exports = itself

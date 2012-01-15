@@ -1,4 +1,9 @@
-# favicon.coffee
+# ** favicon.coffee **
+# This is a brute force port of Ward's favicon.rb,
+# and could do with some refactoring by someone
+# who knows the canvas api, but it would be better
+# to move favicon generation to the client side.  This
+# could serve as a basis for that with enough refactoring.
 
 Canvas = require('canvas')
 fs = require('fs')

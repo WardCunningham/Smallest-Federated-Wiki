@@ -1,15 +1,15 @@
 {
-    "name": "sfwiki-express"
-  , "version": "0.0.1"
-  , "private": true
-  , "dependencies": {
-      "express": ">= 2.5.1"
-    , "mkdirp": ">= 0.0.1"
-    , "canvas": ">= 0.0.1"
-    , "optimist": ">= 0.0.1"
-    , "passport": ">= 0.0.1"
-    , "passport-openid": ">= 0.0.1"
-    , "hbs": ">= 0.0.1"
-    , "bouncy": ">= 0.0.1"
+  "name": "sfwiki-express",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "express": ">= 2.5.1",
+    "mkdirp": ">= 0.0.1",
+    "canvas": ">= 0.0.1",
+    "optimist": ">= 0.0.1",
+    "passport": ">= 0.0.1",
+    "passport-openid": ">= 0.0.1",
+    "hbs": ">= 0.0.1",
+    "bouncy": ">= 0.0.1"
   }
 }
