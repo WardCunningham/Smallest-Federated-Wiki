@@ -4,15 +4,9 @@ To install
 
 	npm install
 
-If you don't have coffee-script installed globally
-
-	npm install -g coffee-script
-
 Debug logging is turned on when in the development environment.
 Currently there are some none node dependencies brought in from
 node-canvas.  For now, please see node-canvas to install.
-
-Warning: Writes are enabled and the server isn't secured in any way.
 
 ## Newest Docs
 The most up to date node server specific documentation is in the source
@@ -54,5 +48,5 @@ but for now both of these should be supported.
 * Make sure you have Ruby 1.9.x installed, as well as the 'bundler' gem
 * Run `bundle install` in the root
 * Start the Express server at port 33333, with the data directory set at {root}/spec/data
-	cd server/express/bin && ./server -p 33333 -d '../../../spec/data/'
+	server/express/bin/server -p 33333 -d '../../../spec/data/'
 * Run `TEST_NODE=true bundle exec rspec spec/integration_spec.rb`. This will run the integration specs against the node/express server.
