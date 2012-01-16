@@ -1,14 +1,6 @@
 #!/usr/bin/env node
 // server
-// Cli for the Smallest-Federated-Wiki express server
+// Executable cli for the express port of Smallest Federated Wiki
 
 require('coffee-script');
-
-// the following bits copied from the coffee-script binaries,
-// used to find the ../lib/command.coffee module
-
-var path = require('path');
-var fs   = require('fs');
-var lib  = path.join(path.dirname(fs.realpathSync(__filename)), '../lib');
-
-require(lib + '/command');
+require('../lib/cli');
