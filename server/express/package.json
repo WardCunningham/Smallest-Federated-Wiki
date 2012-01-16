@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
+    "coffee-script": ">=1.2.0",
     "express": ">= 2.5.1",
     "mkdirp": ">= 0.0.1",
     "canvas": ">= 0.0.1",
