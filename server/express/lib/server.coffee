@@ -148,14 +148,21 @@ module.exports = exports = (argv) ->
       port: 80
       path: "/#{req.params[1]}.json"
     }
+    # TODO: This needs more robust error handling, just trying to
+    # keep it from taking down the server.
     http.get(getopts, (resp) ->
       responsedata = ''
       resp.on('data', (chunk) ->
         responsedata += chunk
       )
+      resp.on('error', (e) ->
+        console.log("Error: #{e}")
+      )
       resp.on('end', ->
         res.json(JSON.parse(responsedata))
       )
+    ).on('error', (e) ->
+      console.log "Error: #{e}"
     )
   )
 
@@ -167,7 +174,7 @@ module.exports = exports = (argv) ->
   )
 
   app.get('*style.css', (req, res) ->
-    res.sendfile("#{argv.r}/server/sinatra/views/style.css")
+    res.sendfile("#{argv.r}/server/express/views/style.css")
   )
 
   app.get(///^((/[a-zA-Z0-9:.-]+/[a-z0-9-]+)+)$///, (req, res) ->
@@ -235,23 +242,17 @@ module.exports = exports = (argv) ->
           )
           
         when 'add'
-          before = -1
+          before = 0
           for item, index in page.story
             if item.id is action.after
-              before = action.after
-          before += 1
-          page.story.splice(before, 0, action.item)
+              before = index
+          page.story[before...before] = action.item
 
         when 'remove'
           page.story = (item for item in page.story when item?.id isnt action.id)
 
         when 'edit'
-          page.story = _(page.story).map( (i) ->
-            if i.id is action.id
-              action.item
-            else
-              i
-          )
+          page.story = ((if item.id is action.id then action.item else item) for item in page.story)
 
         else
           console.log "Unfamiliar action: #{action}"
@@ -271,14 +272,21 @@ module.exports = exports = (argv) ->
         port: 80
         path: "/#{req.params[0]}.json"
       }
+      # TODO: This needs more robust error handling, just trying to
+      # keep it from taking down the server.
       http.get(getopts, (resp) ->
         responsedata = ''
         resp.on('data', (chunk) ->
           responsedata += chunk
         )
+        resp.on('error', (e) ->
+          console.log("Error: #{e}")
+        )
         resp.on('end', ->
           actionCB(JSON.parse(responsedata))
         )
+      ).on('error', (e) ->
+        console.log "Error: #{e}"
       )
     else
       pagehandler.get(req.params[0], actionCB)

@@ -66,7 +66,6 @@ create = (loc, cb) ->
 # Exported functions
 
 itself.get = (loc, cb) ->
-  console.log loc
   path.exists(loc, (exists) ->
     if exists
       cb(loc)
