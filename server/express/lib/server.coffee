@@ -1,10 +1,12 @@
-# ** server.coffee ** is the main guts of the express version
+# **server.coffee** is the main guts of the express version
 # of Smallest Federated Wiki.  The CLI and Farm are just front ends
 # for setting arguments, and spawning servers.  In a complex system
 # you would probably want to replace the CLI/Farm with your own code,
+# and use server.coffee directly.
 #
 #### Dependencies 
-# anything not in the standard library can be installed with an 
+# anything not in the standard library is included in the repo, or
+# can be installed with an:
 #     npm install
 express = require('express')
 fs = require('fs')
@@ -12,7 +14,6 @@ path = require('path')
 http = require('http')
 hbs = require('hbs')
 pagehandler = require('./page.coffee')
-_ = require('../../../client/js/underscore-min.js')
 favicon = require('./favicon.coffee')
 passport = require('passport')
 OpenIDstrat = require('passport-openid').Strategy
@@ -78,7 +79,7 @@ module.exports = exports = (argv) ->
     identifierField: 'identifier'
   },
   ((id, done) ->
-    console.log(id, done) if argv.debug
+    console.log(id, done) #if argv.debug
     process.nextTick( ->
       if owner
         if id is owner
@@ -127,6 +128,11 @@ module.exports = exports = (argv) ->
     app.use(express.errorHandler())
   )
 
+  #### Routes
+  # Routes currently make up the bulk of the Express port of
+  # Smallest Federated Wiki. Most routes use literal names,
+  # or regexes to match, and then access req.params directly.
+
   ##### Redirects
   # Common redirects that may get used throughout the routes.
   app.redirect('index', (req, res) ->
@@ -142,34 +148,18 @@ module.exports = exports = (argv) ->
   )
 
   ##### Get routes
-  app.get(///^/remote/([a-zA-Z0-9:\.-]+)/([a-z0-9-]+)\.json$///, (req, res) ->
-    getopts = {
-      host: req.params[0]
-      port: 80
-      path: "/#{req.params[1]}.json"
-    }
-    http.get(getopts, (resp) ->
-      responsedata = ''
-      resp.on('data', (chunk) ->
-        responsedata += chunk
-      )
-      resp.on('end', ->
-        res.json(JSON.parse(responsedata))
-      )
-    )
+  # Routes have mostly been kept together by http verb, with the exception
+  # of the openID related routes which are at the end together.
+
+  app.get('/style.css', (req, res) ->
+    res.sendfile("#{argv.r}/server/express/views/style.css")
   )
 
-  app.get('*.json', (req, res) ->
-    file = req.params[0]
-    pagehandler.get(file, (page) =>
-      res.json(page)
-    )
-  )
-
-  app.get('*style.css', (req, res) ->
-    res.sendfile("#{argv.r}/server/sinatra/views/style.css")
-  )
-
+  # Main route for initial contact.  This is what allows us to
+  # link into a specific set of pages, local and remote.
+  # This can also be handled by the client, but it also sets up
+  # the login status, and related footer html, which the client
+  # relies on to know if it is logged in or not.
   app.get(///^((/[a-zA-Z0-9:.-]+/[a-z0-9-]+)+)$///, (req, res) ->
     #res.sendfile("#{argv.r}/server/sinatra/views/static.html")
     urlPages = (i for i in req.params[0].split('/') by 2)[1..]
@@ -208,12 +198,51 @@ module.exports = exports = (argv) ->
     )
   )
 
+  ###### Json Routes
+  # These handle fetching local and remote json pages.
+  # Local pages are handled by the pagehandler, module.
+  app.get(///^/([a-z0-9-]+)\.json$///, (req, res) ->
+    file = req.params[0]
+    pagehandler.get(file, (page) =>
+      res.json(page)
+    )
+  )
+
+  # Remote pages use the http client to retrieve the page
+  # and sends it to the client.  TODO: consider caching remote pages locally.
+  app.get(///^/remote/([a-zA-Z0-9:\.-]+)/([a-z0-9-]+)\.json$///, (req, res) ->
+    getopts = {
+      host: req.params[0]
+      port: 80
+      path: "/#{req.params[1]}.json"
+    }
+    # TODO: This needs more robust error handling, just trying to
+    # keep it from taking down the server.
+    http.get(getopts, (resp) ->
+      responsedata = ''
+      resp.on('data', (chunk) ->
+        responsedata += chunk
+      )
+      resp.on('error', (e) ->
+        console.log("Error: #{e}")
+      )
+      resp.on('end', ->
+        res.json(JSON.parse(responsedata))
+      )
+    ).on('error', (e) ->
+      console.log "Error: #{e}"
+    )
+  )
+
+  ###### Favicon Routes
+  # Local favicons are handled by the favicon module.
   app.get('/favicon.png', (req,res) ->
     favicon.get(path.join(argv.status, "favicon.png"), (loc) ->
       res.sendfile(loc)
     )
   )
 
+  # Remote favicons redirect to the server they are needed from.
   app.get(///^/remote/([a-zA-Z0-9:\.-]+/favicon.png)$///, (req, res) ->
         res.redirect('remotefav')
   )
@@ -225,36 +254,30 @@ module.exports = exports = (argv) ->
     # actionCB handles all of the possible actions to be taken on a page,
     actionCB = (page) ->
       console.log page if argv.debug
-      switch action.type
+      # Using Coffee-Scripts implicit returns we assign page.story to the
+      # result of a list comprehension by way of a switch expression.
+      page.story = switch action.type
         when 'move'
-          page.story = _(action.order).map((i) ->
-            _(page.story).find( (story) ->
-              console.log(i, story) if argv.debug
-              i is story.id
-            )
-          )
-          
+          (stuff for stuff in page.story when item is stuff.id)[0] for item in action.order
+
         when 'add'
-          before = -1
+          before = 0
           for item, index in page.story
             if item.id is action.after
-              before = action.after
-          before += 1
-          page.story.splice(before, 0, action.item)
+              before = index
+          page.story[before...before] = action.item
+          page.story
 
         when 'remove'
-          page.story = (item for item in page.story when item?.id isnt action.id)
+          item for item in page.story when item?.id isnt action.id
 
         when 'edit'
-          page.story = _(page.story).map( (i) ->
-            if i.id is action.id
-              action.item
-            else
-              i
-          )
+          (if item.id is action.id then action.item else item) for item in page.story
 
         else
           console.log "Unfamiliar action: #{action}"
+          page.story
+
       if not page.journal
         page.journal = []
       page.journal.push(action)
@@ -264,34 +287,43 @@ module.exports = exports = (argv) ->
         console.log 'saved' if argv.debug
       )
     console.log(action) if argv.debug
-    # TODO: test action.fork
     if action.fork
       getopts = {
         host: action.fork
         port: 80
         path: "/#{req.params[0]}.json"
       }
+      # TODO: This needs more robust error handling, just trying to
+      # keep it from taking down the server.
       http.get(getopts, (resp) ->
         responsedata = ''
         resp.on('data', (chunk) ->
           responsedata += chunk
         )
+        resp.on('error', (e) ->
+          console.log("Error: #{e}")
+        )
         resp.on('end', ->
           actionCB(JSON.parse(responsedata))
         )
+      ).on('error', (e) ->
+        console.log "Error: #{e}"
       )
     else
       pagehandler.get(req.params[0], actionCB)
   )
 
   ##### Routes used for openID authentication
-
+  # Currently throws an error to next(err) when id is blank.
+  # TODO: Handle that error more gracefully.
   app.post('/login',
     passport.authenticate('openid', { failureRedirect: 'notyourwiki'}),
     (req, res) ->
       res.redirect('index')
   )
 
+  # Get and post routes to logout.  The post one is the only one that
+  # gets used from client, but the get logout route seemed useful as well.
   app.post('/logout', (req, res) ->
     req.logout()
     res.redirect('index')
@@ -302,16 +334,20 @@ module.exports = exports = (argv) ->
     res.redirect('index')
   )
 
+  # Route that the openID provider redirects user to after login.
   app.get('/login/openid/complete',
     passport.authenticate('openid', { failureRedirect: 'notyourwiki'}),
     (req, res) ->
       res.redirect('index')
   )
 
+  # Simple Access forbidden message when someone tries to log into a wiki
+  # they do not own.
   app.get('/notyourwiki', (req, res) ->
     res.send('This is not your wiki!', 403)
   )
 
+  # Traditional request to / redirects to index :)
   app.get('/', (req, res) ->
     res.redirect('index')
   )
