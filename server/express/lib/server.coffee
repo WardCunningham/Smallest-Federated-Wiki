@@ -1,10 +1,12 @@
-# ** server.coffee ** is the main guts of the express version
+# **server.coffee** is the main guts of the express version
 # of Smallest Federated Wiki.  The CLI and Farm are just front ends
 # for setting arguments, and spawning servers.  In a complex system
 # you would probably want to replace the CLI/Farm with your own code,
+# and use server.coffee directly.
 #
 #### Dependencies 
-# anything not in the standard library can be installed with an 
+# anything not in the standard library is included in the repo, or
+# can be installed with an:
 #     npm install
 express = require('express')
 fs = require('fs')
@@ -142,6 +144,8 @@ module.exports = exports = (argv) ->
   )
 
   ##### Get routes
+  # Routes have mostly been kept together by http verb, with the exception
+  # of the openID related routes which are at the end together.
   app.get(///^/remote/([a-zA-Z0-9:\.-]+)/([a-z0-9-]+)\.json$///, (req, res) ->
     getopts = {
       host: req.params[0]
