@@ -580,6 +580,10 @@
     useLocalStorage = function() {
       return $(".login").length > 0;
     };
+    $(".provider input").click(function() {
+      $("footer input:first").val($(this).attr('data-provider'));
+      return $("footer form").submit();
+    });
     urlPages = ((function() {
       var _i, _len, _ref, _results, _step;
       _ref = $(location).attr('pathname').split('/');

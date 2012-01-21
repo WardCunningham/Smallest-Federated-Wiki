@@ -452,6 +452,10 @@ $ ->
 
   useLocalStorage = -> $(".login").length > 0
 
+  $(".provider input").click ->
+    $("footer input:first").val $(this).attr('data-provider')
+    $("footer form").submit()
+
   urlPages = (i for i in $(location).attr('pathname').split('/') by 2)[1..]
   urlLocs = (j for j in $(location).attr('pathname').split('/')[1..] by 2)
   for urlPage, idx in urlPages when urlPage not in pagesInDom()
