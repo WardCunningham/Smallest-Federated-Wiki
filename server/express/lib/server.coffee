@@ -244,7 +244,7 @@ module.exports = exports = (argv) ->
 
   # Remote favicons redirect to the server they are needed from.
   app.get(///^/remote/([a-zA-Z0-9:\.-]+/favicon.png)$///, (req, res) ->
-        res.redirect('remotefav')
+    res.redirect('remotefav')
   )
 
   ##### Put routes
