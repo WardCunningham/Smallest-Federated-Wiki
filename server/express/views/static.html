@@ -29,6 +29,13 @@
       <form action='/login' method='POST'>
         OpenID:
         <input name='identifier' type='text'>
+        or use:
+        <span class='provider'>
+          <input type='button' title='google' value='G' data-provider='https://www.google.com/accounts/o8/id'>
+          <input type='button' title='yahoo' value='Y' data-provider='https://me.yahoo.com'>
+          <input type='button' title='aol' value='A' data-provider='https://www.aol.com'>
+          <input type='button' title='livejournal' value='L' data-provider='http://www.livejournal.com/openid/server.bml'>
+        </span>
       {{/authenticated}}
         <input type='submit' value={{status}}>
       </form>
