@@ -39,7 +39,7 @@ Our first deployment has been in a remote soil temperature sensing application.
 We use Maxium DS18B20 digital thermometers on 20 to 50 foot runs of CAT-3 cable to reach the soil plots of interest.
 We also sense environmental conditions in the garden shed including air temperature, battery voltage and ambient light.
 
-Our directional WiFi tranciever draws several times the current as the Arduino/Ethernet setup.
+Our directional WiFi transceiver draws several times the current as the Arduino/Ethernet setup.
 We've adopted the policy of powering down the radio after five minutes of activity each hour.
 The server software continues to run during this power-save period and could be accumulating data to be reported later.
 
@@ -61,4 +61,4 @@ Another approach would be to make the Arduino a client of some cloud-based serve
 * Minus: Our power-saving strategy requires continually resetting the server clock to avoid drift.
 * Minus: Direct internet access to the server requires our maintaining a tunnel through a firewall.
 
-We also find it ironic that our WiFi transiever has within it a full linux implementation capabable of remote administration during the periods that the 8-bit Arduino allows it to operate.
+We also find it ironic that our WiFi transceiver has within it a full linux implementation capabable of remote administration during the periods that the 8-bit Arduino allows it to operate.
