@@ -139,6 +139,12 @@ class Controller < Sinatra::Base
     sass :style
   end
 
+  get '/system/slugs.json' do
+    content_type 'application/json'
+    cross_origin
+    JSON.pretty_generate(Dir.entries(farm_page.directory).reject{|e|e[0] == '.'})
+  end
+
   get '/favicon.png' do
     content_type 'image/png'
     cross_origin
