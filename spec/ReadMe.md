@@ -5,4 +5,4 @@ We're using RSpec to test the ruby code. The Gemfile is updated to include every
 
 Run the specs with the following where -fn and -c are optional:
 
-  bundle exec rspec -fn -c spec
+	bundle exec rspec -fn -c spec

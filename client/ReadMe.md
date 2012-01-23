@@ -24,7 +24,7 @@ Should you modify the CoffeeScript you will need to translate it to JavaScript. 
 
 The `-wc` option asks coffee not terminate, watch the source files and recompile as you make changes.
 
-We recommend taking time to learn the CoffeeScript syntax and the rationale for the Javascript idioms it employes. Start here:
+We recommend taking time to learn the CoffeeScript syntax and the rationale for the Javascript idioms it employs. Start here:
 
   http://jashkenas.github.com/coffee-script/
 
