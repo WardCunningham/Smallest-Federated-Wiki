@@ -29,7 +29,7 @@ You can revise the welcome page by editing your copy here:
 A suitable random gradient will be generated for you.
 You can remove or replace it here:
 
-		data/status/favicon.png
+    data/status/favicon.png
 
 
 Launching the Server

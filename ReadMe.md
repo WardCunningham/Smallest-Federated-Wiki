@@ -43,7 +43,7 @@ Code contributions are always welcome. We're developing using the `fork and pull
 
 * http://help.github.com/send-pull-requests/
 
-If you'd like to know what we think of your programming idea before you program it, just write up an Issue here on GitHub. You're save us all some time if you read through open issues first:
+If you'd like to know what we think of your programming idea before you program it, just write up an Issue here on GitHub. You'll save us all some time if you read through open issues first:
 
 * [Open Issues](https://github.com/WardCunningham/Smallest-Federated-Wiki/issues?sort=created&direction=desc&state=open&page=1)
 
@@ -94,11 +94,11 @@ The test suite is written using RSpec 2 and utilizes Selenium heavily. You must 
 
 To run an individual spec, run
 
-  bundle exec rspec spec/[spec name].rb
+	bundle exec rspec spec/[spec name].rb
 
 To run all specs, run
 
-  bundle exec rake spec
+	bundle exec rake spec
 
 Looking For Code Bloat
 ======================

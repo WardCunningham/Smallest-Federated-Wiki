@@ -40,7 +40,7 @@ You can either run it from the command line using the executable coffee script
 file /server/express/bin/server or you can require /server/express from another
 node program, and then call it passing in the options you want.
 
-The everything is still changing rapidly, and more use cases will be explored,
+Everything is still changing rapidly, and more use cases will be explored,
 but for now both of these should be supported.
 
 ## Running specs
