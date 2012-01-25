@@ -89,6 +89,10 @@ class Controller < Sinatra::Base
       redirect "/"
     end
 
+    def oops status, message
+      haml :oops, :layout => false, :locals => {:status => status, :message => message}
+    end
+
   end
 
   post "/logout" do
@@ -108,27 +112,25 @@ class Controller < Sinatra::Base
     response = openid_consumer.complete(params, request.url)
     case response.status
       when OpenID::Consumer::FAILURE
-        "Login failure"
-
+        oops 401, "Login failure"
       when OpenID::Consumer::SETUP_NEEDED
-        "'Setup needed'"
-
+        oops 400, "Setup needed"
       when OpenID::Consumer::CANCEL
-        "Login cancelled"
+        oops 400, "Login cancelled"
       when OpenID::Consumer::SUCCESS
         id = params['openid.identity']
         id_file = File.join farm_status, "open_id.identity"
         if File.exist?(id_file)
           stored_id = File.read(id_file)
           if stored_id == id
-            "Success! it matches"
+            # login successful
             authenticate!
           else
-            "this is not your wiki"
+            oops 403, "This is not your wiki"
           end
         else
           File.open(id_file, "w") {|f| f << id }
-          "You have registered this wiki to #{id}"
+          # claim successful
           authenticate!
         end
     end
