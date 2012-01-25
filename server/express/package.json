@@ -12,5 +12,10 @@
     "passport-openid": ">= 0.0.1",
     "hbs": ">= 0.0.1",
     "bouncy": ">= 0.0.1"
+  },
+  "devDependencies": {
+    "docco": "*",
+    "mocha": "*",
+    "should": "*"
   }
 }
