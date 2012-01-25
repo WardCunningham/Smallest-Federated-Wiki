@@ -1,5 +1,6 @@
 # **server.coffee** is the main guts of the express version
-# of Smallest Federated Wiki.  The CLI and Farm are just front ends
+# of (Smallest Federated Wiki)[https://github.com/WardCunningham/Smallest-Federated-Wiki].
+# The CLI and Farm are just front ends
 # for setting arguments, and spawning servers.  In a complex system
 # you would probably want to replace the CLI/Farm with your own code,
 # and use server.coffee directly.
@@ -18,13 +19,13 @@ favicon = require('./favicon.coffee')
 passport = require('passport')
 OpenIDstrat = require('passport-openid').Strategy
 
+# Set export objects for node and coffee to a function that generates a sfw server.
 module.exports = exports = (argv) ->
-  # This takes the argv object that is passed in and then does its
+  # defaultargs.coffee exports a function that takes the argv object that is passed in and then does its
   # best to supply sane defaults for any arguments that are missing.
   argv = require('./defaultargs')(argv)
 
-  # Passes the arguments to the pagehandler, so it knows where to find
-  # data, and default data.
+  # Tell pagehandler where to find data, and default data.
   pagehandler.setup(argv)
 
   #### Setting up Authentication
@@ -53,7 +54,7 @@ module.exports = exports = (argv) ->
 
   setOwner()
 
-  # This is the middleware that make sure that an action can only be taken
+  # Make sure that an action can only be taken
   # by the owner, and returns 403 if someone else tries.
   authenticated = (req, res, next) ->
     console.log(owner) if argv.debug
@@ -94,9 +95,8 @@ module.exports = exports = (argv) ->
 
   #### Express configuration
   app = express.createServer()
-
-  # This sets up all the standard express server options,
-  # including setting up hbs to use handlebars/mustache templates
+  # Set up all the standard express server options,
+  # including hbs to use handlebars/mustache templates
   # saved with a .html extension, and no layout.
   app.configure( ->
     app.set('views', path.join(__dirname, '..', '/views'))
@@ -113,17 +113,17 @@ module.exports = exports = (argv) ->
     app.use(express.static(argv.c))
   )
 
-  # Sets up standard environments.
-  # Dev turns on console.log debugging as well as showing the stack on err.
+  ##### Set up standard environments.
+  # Turn on console.log debugging as well as showing the stack on err.
   app.configure('development', ->
     app.use(express.errorHandler({ dumpExceptions: true, showStack: true }))
     argv.debug = console? and true
   )
 
-  # Shows all of the options a server is using when it is started in dev mode.
+  # Show all of the options a server is using when it is started in dev mode.
   console.log argv if argv.debug
 
-  # Production swallows errors as best it can.
+  # Swallow errors when in production.
   app.configure('production', ->
     app.use(express.errorHandler())
   )
@@ -249,9 +249,11 @@ module.exports = exports = (argv) ->
 
   ##### Put routes
 
+  # actionCB returns a function that handles all of the possible actions to be taken on a page,
+    
+
   app.put(/^\/page\/([a-z0-9-]+)\/action$/i, authenticated, (req, res) ->
     action = JSON.parse(req.body.action)
-    # actionCB handles all of the possible actions to be taken on a page,
     actionCB = (page) ->
       console.log page if argv.debug
       # Using Coffee-Scripts implicit returns we assign page.story to the
@@ -264,7 +266,7 @@ module.exports = exports = (argv) ->
           before = 0
           for item, index in page.story
             if item.id is action.after
-              before = index
+              before = 1 + index
           page.story[before...before] = action.item
           page.story
 
@@ -303,7 +305,7 @@ module.exports = exports = (argv) ->
         resp.on('error', (e) ->
           console.log("Error: #{e}")
         )
-        resp.on('end', ->
+        resp.on('end', -
           actionCB(JSON.parse(responsedata))
         )
       ).on('error', (e) ->
@@ -355,3 +357,4 @@ module.exports = exports = (argv) ->
   #### Starting the server.
   app.listen(argv.p, argv.o if argv.o)
   console.log("Smallest Federated Wiki server listening on #{app.address().port} in mode: #{app.settings.env}")
+  app

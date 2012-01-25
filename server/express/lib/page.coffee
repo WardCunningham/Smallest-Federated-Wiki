@@ -1,4 +1,4 @@
-# ** page.coffee **
+# **page.coffee**
 # This is the module for interacting with pages persisted on the server.
 # Right now everything is stored using json flat files.
 
@@ -29,15 +29,15 @@ load_parse_copy = (defloc, file, cb) ->
     )
   )
 
-blank_page = (loc, cb) ->
+blank_page = (file, cb) ->
   freshpage = {
-    title: path.basename(loc)
+    title: file
     story: [
       { type: 'factory', id: random_id() }
     ]
     journal: []
   }
-  itself.put(loc, freshpage, (err) ->
+  itself.put(file, freshpage, (err) ->
     if err then throw err
   )
   cb(freshpage)
@@ -61,7 +61,7 @@ itself.get = (file, cb) ->
         if exists
           load_parse_copy(defloc, file, cb)
         else
-          blank_page(loc, cb)
+          blank_page(file, cb)
       )
   )
   
@@ -69,7 +69,7 @@ itself.get = (file, cb) ->
 # calls cb with an err if anything goes wrong.
 itself.put = (file, page, cb) ->
   loc = path.join(@argv.db, file)
-  page = JSON.stringify(page)
+  page = JSON.stringify(page, null, 2)
   path.exists(path.dirname(loc), (exists) ->
     if exists
       fs.writeFile(loc, page, (err) ->
