@@ -3,6 +3,7 @@
 path = require 'path'
 
 module.exports = (argv) ->
+  argv or= {}
   argv.o or= ''
   argv.p or= 3000
   argv.r or= path.join(__dirname, '..', '..', '..')
