@@ -4,29 +4,27 @@
 # for setting arguments, and spawning servers.  In a complex system
 # you would probably want to replace the CLI/Farm with your own code,
 # and use server.coffee directly.
-#
-#### Dependencies 
-# anything not in the standard library is included in the repo, or
-# can be installed with an:
-#     npm install
-express = require('express')
-fs = require('fs')
-path = require('path')
-http = require('http')
-hbs = require('hbs')
-pagehandler = require('./page.coffee')
-favicon = require('./favicon.coffee')
-passport = require('passport')
-OpenIDstrat = require('passport-openid').Strategy
 
 # Set export objects for node and coffee to a function that generates a sfw server.
 module.exports = exports = (argv) ->
+  #### Dependencies 
+  # anything not in the standard library is included in the repo, or
+  # can be installed with an:
+  #     npm install
+  express = require('express')
+  fs = require('fs')
+  path = require('path')
+  http = require('http')
+  hbs = require('hbs')
+  favicon = require('./favicon.coffee')
+  passport = require('passport')
+  OpenIDstrat = require('passport-openid').Strategy
   # defaultargs.coffee exports a function that takes the argv object that is passed in and then does its
   # best to supply sane defaults for any arguments that are missing.
   argv = require('./defaultargs')(argv)
 
   # Tell pagehandler where to find data, and default data.
-  pagehandler.setup(argv)
+  pagehandler = require('./page')(argv)
 
   #### Setting up Authentication
   # The owner of a server is simply the open id url that the wiki
