@@ -4,6 +4,7 @@ random = require '../lib/random_id'
 testid = random()
 argv = require('../lib/defaultargs.coffee')({d: path.join('/tmp', 'sfwtests', testid), p: 55555})
 fs = require('fs')
+pagehandler = require('../lib/page.coffee')(argv)
 
 describe 'server', ->
   describe '#actionCB()', ->
@@ -19,13 +20,9 @@ describe 'server', ->
     createSend = (test, done) ->
       (str) ->
         console.log str
-        fs.readFile(file, (err, data) ->
-          if err then throw err
-          test(JSON.parse(data))
-          fs.unlink(file, (e) ->
-            console.log 'deleted'
-            done()
-          )
+        pagehandler.get('asdf-test-page', (data) ->
+          test(data)
+          done()
         )
     
     it 'should move the paragraphs to the order given ', (done) ->
@@ -43,7 +40,7 @@ describe 'server', ->
         item: {id: 'a5', type: 'paragraph', text: 'this is the NEW paragraph'}
       })
       test = (page) ->
-        page.story[2].id.should.equal('a5')
+        page.story[3].id.should.equal('a5')
       res.send = createSend(test, done)
       routeCB(req, res)
 
@@ -53,7 +50,8 @@ describe 'server', ->
         id: 'a2'
       })
       test = (page) ->
-        page.story.length.should.equal(3)
+        page.story.length.should.equal(4)
+        page.story[2].id.should.not.equal('a2')
         page.story[1].id.should.not.equal('a2')
       res.send = createSend(test, done)
       routeCB(req, res)
@@ -65,7 +63,7 @@ describe 'server', ->
         id: 'a3'
       })
       test = (page) ->
-        page.story[2].text.should.equal('edited')
+        page.story[1].text.should.equal('edited')
       res.send = createSend(test, done)
       routeCB(req, res)
 
@@ -75,8 +73,8 @@ describe 'server', ->
       })
       test = (page) ->
         page.story.length.should.equal(4)
-        page.story[1].id.should.equal('a2')
-        page.story[2].text.should.equal('this is the third paragraph')
+        page.story[1].id.should.equal('a3')
+        page.story[3].text.should.equal('this is the fourth paragraph')
       res.send = createSend(test, done)
       routeCB(req, res)
 
