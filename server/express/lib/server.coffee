@@ -28,6 +28,8 @@ module.exports = exports = (argv) ->
   # Tell pagehandler where to find data, and default data.
   pagehandler.setup(argv)
 
+  OPENID = "#{argv.status}/open_id.identity"
+
   #### Setting up Authentication
   # The owner of a server is simply the open id url that the wiki
   # has been claimed with.  It is persisted at argv.status/open_id.identity,
@@ -38,14 +40,13 @@ module.exports = exports = (argv) ->
   # if it is it returns the owner, if not it sets the owner
   # to the id, if it is provided.
   setOwner = (id) ->
-    idpath = "#{argv.status}/open_id.identity"
-    path.exists(idpath, (exists) ->
+    path.exists(OPENID, (exists) ->
       if exists
-        fs.readFile(idpath, (err, data) ->
+        fs.readFile(OPENID, (err, data) ->
           if err then throw err
           owner += data)
       else if id
-        fs.writeFile(idpath, id, (err) ->
+        fs.writeFile(OPENID, id, (err) ->
           if err then throw err
           console.log("Claimed by #{id}")
           owner = id
@@ -54,14 +55,18 @@ module.exports = exports = (argv) ->
 
   setOwner()
 
+  isClaimed = (cb) ->
+    path.exists(OPENID, cb)
+
   # Make sure that an action can only be taken
   # by the owner, and returns 403 if someone else tries.
   authenticated = (req, res, next) ->
-    console.log(owner) if argv.debug
-    console.log(req.user?.id) if argv.debug
-    if req.isAuthenticated() and req.user.id is owner
-      next()
-    else res.send('Access forbidden', 403)
+    isClaimed (claimed) ->
+      if !claimed
+        next()
+      else if req.isAuthenticated() and req.user.id is owner
+        next()
+      else res.send('Access forbidden', 403)
 
   # Simplest possible way to serialize and deserialize a user.
   passport.serializeUser( (user, done) ->
