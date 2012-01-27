@@ -53,18 +53,14 @@ module.exports = exports = (argv) ->
       else cb()
     )
 
-  isClaimed = (cb) ->
-    path.exists(OPENID, cb)
-
   # Make sure that an action can only be taken
   # by the owner, and returns 403 if someone else tries.
   authenticated = (req, res, next) ->
-    isClaimed (claimed) ->
-      if !claimed
-        next()
-      else if req.isAuthenticated() and req.user.id is owner
-        next()
-      else res.send('Access forbidden', 403)
+    unless owner
+      next()
+    else if req.isAuthenticated() and req.user.id is owner
+      next()
+    else res.send('Access forbidden', 403)
 
   # Simplest possible way to serialize and deserialize a user.
   passport.serializeUser( (user, done) ->

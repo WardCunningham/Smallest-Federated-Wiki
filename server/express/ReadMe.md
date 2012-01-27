@@ -52,6 +52,7 @@ but for now both of these should be supported.
 
 * Make sure you have Ruby 1.9.x installed, as well as the 'bundler' gem
 * Run `bundle install` in the root
-* Start the Express server at port 33333, with the data directory set at {root}/spec/data
-	server/express/bin/server.js -p 33333 -d '../../../spec/data/'
+* Start the Express server at port 33333, with the data directory 
+* set at {root}/spec/data by passing the test flag.
+	server/express/bin/server.js --test
 * Run `TEST_NODE=true bundle exec rspec spec/integration_spec.rb`. This will run the integration specs against the node/express server.
