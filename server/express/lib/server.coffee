@@ -39,21 +39,21 @@ module.exports = exports = (argv) ->
   # Attempts figure out if the wiki is claimed or not,
   # if it is it returns the owner, if not it sets the owner
   # to the id, if it is provided.
-  setOwner = (id) ->
+  setOwner = (id, cb) ->
     path.exists(OPENID, (exists) ->
       if exists
         fs.readFile(OPENID, (err, data) ->
           if err then throw err
-          owner += data)
+          owner += data
+          cb())
       else if id
         fs.writeFile(OPENID, id, (err) ->
           if err then throw err
           console.log("Claimed by #{id}")
           owner = id
-        )
+          cb())
+      else cb()
     )
-
-  setOwner()
 
   isClaimed = (cb) ->
     path.exists(OPENID, cb)
@@ -93,8 +93,8 @@ module.exports = exports = (argv) ->
         else
           done(null, false)
       else
-        setOwner(id)
-        done(null, {id})
+        setOwner id, ->
+          done(null, {id})
     )
   )))
 
@@ -360,6 +360,7 @@ module.exports = exports = (argv) ->
   )
 
   #### Starting the server.
-  app.listen(argv.p, argv.o if argv.o)
-  console.log("Smallest Federated Wiki server listening on #{app.address().port} in mode: #{app.settings.env}")
+  setOwner null, ->
+    app.listen(argv.p, argv.o if argv.o)
+    console.log("Smallest Federated Wiki server listening on #{app.address().port} in mode: #{app.settings.env}")
   app
