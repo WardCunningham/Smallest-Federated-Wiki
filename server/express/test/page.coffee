@@ -1,14 +1,12 @@
-page = require '../lib/page.coffee'
 path = require('path')
 random = require('../lib/random_id')
 testid = random()
 argv = require('../lib/defaultargs.coffee')({d: path.join('/tmp', 'sfwtests', testid)})
+page = require('../lib/page.coffee')(argv)
 
 testpage = {title: 'Asdf'}
 
 describe 'page', ->
-  before ->
-    page.setup(argv)
   describe '#page.put()', ->
     it 'should save a page', (done) ->
       page.put('asdf', testpage, (e) ->
