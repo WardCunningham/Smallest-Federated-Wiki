@@ -50,6 +50,10 @@ argv = optimist
     default   : 40000
     describe  : 'Port to start farm servers on.'
   )
+  .options('test',
+    boolean   : true
+    describe  : 'Set server to work with the rspec integration tests'
+  )
   .argv
 
 # If h/help is set print the generated help message and exit.
@@ -59,7 +63,10 @@ if argv.h
 
 # If f/farm is set call../lib/farm.coffee with argv object, else call
 # ../lib/server.coffee with argv object.
-if argv.f
+if argv.test
+  console.log "WARNING: Server started in testing mode, other options ignored"
+  server({p: 33333, d: path.join(argv.r, 'spec', 'data')})
+else if argv.f
   farm(argv)
 else
   server(argv)

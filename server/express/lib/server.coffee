@@ -26,6 +26,8 @@ module.exports = exports = (argv) ->
   # Tell pagehandler where to find data, and default data.
   pagehandler = require('./page')(argv)
 
+  OPENID = "#{argv.status}/open_id.identity"
+
   #### Setting up Authentication
   # The owner of a server is simply the open id url that the wiki
   # has been claimed with.  It is persisted at argv.status/open_id.identity,
@@ -35,29 +37,28 @@ module.exports = exports = (argv) ->
   # Attempts figure out if the wiki is claimed or not,
   # if it is it returns the owner, if not it sets the owner
   # to the id, if it is provided.
-  setOwner = (id) ->
-    idpath = "#{argv.status}/open_id.identity"
-    path.exists(idpath, (exists) ->
+  setOwner = (id, cb) ->
+    path.exists(OPENID, (exists) ->
       if exists
-        fs.readFile(idpath, (err, data) ->
+        fs.readFile(OPENID, (err, data) ->
           if err then throw err
-          owner += data)
+          owner += data
+          cb())
       else if id
-        fs.writeFile(idpath, id, (err) ->
+        fs.writeFile(OPENID, id, (err) ->
           if err then throw err
           console.log("Claimed by #{id}")
           owner = id
-        )
+          cb())
+      else cb()
     )
-
-  setOwner()
 
   # Make sure that an action can only be taken
   # by the owner, and returns 403 if someone else tries.
   authenticated = (req, res, next) ->
-    console.log(owner) if argv.debug
-    console.log(req.user?.id) if argv.debug
-    if req.isAuthenticated() and req.user.id is owner
+    unless owner
+      next()
+    else if req.isAuthenticated() and req.user.id is owner
       next()
     else res.send('Access forbidden', 403)
 
@@ -86,8 +87,8 @@ module.exports = exports = (argv) ->
         else
           done(null, false)
       else
-        setOwner(id)
-        done(null, {id})
+        setOwner id, ->
+          done(null, {id})
     )
   )))
 
@@ -353,6 +354,7 @@ module.exports = exports = (argv) ->
   )
 
   #### Starting the server.
-  app.listen(argv.p, argv.o if argv.o)
-  console.log("Smallest Federated Wiki server listening on #{app.address().port} in mode: #{app.settings.env}")
+  setOwner null, ->
+    app.listen(argv.p, argv.o if argv.o)
+    console.log("Smallest Federated Wiki server listening on #{app.address().port} in mode: #{app.settings.env}")
   app
