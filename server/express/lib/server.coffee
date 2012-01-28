@@ -17,12 +17,14 @@ module.exports = exports = (argv) ->
   http = require('http')
   hbs = require('hbs')
   favicon = require('./favicon.coffee')
-  passport = require('passport')
+  random = require('./random_id.coffee')
+  passportImport = require('passport')
   OpenIDstrat = require('passport-openid').Strategy
   # defaultargs.coffee exports a function that takes the argv object that is passed in and then does its
   # best to supply sane defaults for any arguments that are missing.
   argv = require('./defaultargs')(argv)
-
+ 
+  passport = new passportImport.Passport()
   # Tell pagehandler where to find data, and default data.
   pagehandler = require('./page')(argv)
 
@@ -50,7 +52,8 @@ module.exports = exports = (argv) ->
           console.log("Claimed by #{id}")
           owner = id
           cb())
-      else cb()
+      else
+        cb()
     )
 
   # Make sure that an action can only be taken
@@ -356,5 +359,7 @@ module.exports = exports = (argv) ->
   #### Starting the server.
   setOwner null, ->
     app.listen(argv.p, argv.o if argv.o)
+    app.emit "ready"
     console.log("Smallest Federated Wiki server listening on #{app.address().port} in mode: #{app.settings.env}")
+
   app

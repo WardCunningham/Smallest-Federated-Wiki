@@ -8,8 +8,15 @@ pagehandler = require('../lib/page.coffee')(argv)
 
 describe 'server', ->
   describe '#actionCB()', ->
-    runningServer = server(argv)
-    routeCB = runningServer.routes.routes.put[0].callbacks[1]
+    runningServer = {}
+    routeCB = {}
+    before((done) ->
+      runningServer = server(argv)
+      runningServer.once("ready", ->
+        routeCB = runningServer.routes.routes.put[0].callbacks[1]
+        done()
+      )
+    )
     req = {
       body: {}
       params: [ "asdf-test-page" ]
@@ -78,4 +85,5 @@ describe 'server', ->
       res.send = createSend(test, done)
       routeCB(req, res)
 
-    runningServer.close()
+    after( ->
+      runningServer.close())

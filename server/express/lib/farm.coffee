@@ -27,6 +27,8 @@ module.exports = exports = (argv) ->
       newargv.p = hosts[req.headers.host]
       newargv.d = path.join(argv.r or path.join(__dirname, '..', '..', '..'), 'data', req.headers.host)
       newargv.u = "http://#{req.headers.host}"
-      runningServers.push(server(newargv))
-      bounce(hosts[req.headers.host])
+      local = server(newargv)
+      runningServers.push(local)
+      local.once "ready", ->
+        bounce(hosts[req.headers.host])
   ).listen(argv.p)
