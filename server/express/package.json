@@ -13,6 +13,9 @@
     "hbs": ">= 0.0.1",
     "bouncy": ">= 0.0.1"
   },
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha"
+  },
   "devDependencies": {
     "docco": "*",
     "mocha": "*",
