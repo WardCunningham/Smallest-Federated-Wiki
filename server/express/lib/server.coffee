@@ -63,7 +63,7 @@ module.exports = exports = (argv) ->
       next()
     else if req.isAuthenticated() and req.user.id is owner
       next()
-    else res.send('Access forbidden', 403)
+    else res.send('Access Forbidden', 403)
 
   # Simplest possible way to serialize and deserialize a user.
   passport.serializeUser( (user, done) ->
@@ -95,6 +95,13 @@ module.exports = exports = (argv) ->
     )
   )))
 
+  openIDErr = (err, req, res, next) ->
+    console.log err
+    if err.message[0..5] is 'OpenID'
+      res.render('oops.html', {status: 401, msg:err.message})
+    else
+      next(err)
+
   #### Express configuration
   app = express.createServer()
   # Set up all the standard express server options,
@@ -113,6 +120,7 @@ module.exports = exports = (argv) ->
     app.use(passport.session())
     app.use(app.router)
     app.use(express.static(argv.c))
+    app.use(openIDErr)
   )
 
   ##### Set up standard environments.
@@ -145,8 +153,8 @@ module.exports = exports = (argv) ->
     "http://#{req.params[0]}"
   )
 
-  app.redirect('notyourwiki', (req, res) ->
-    '/notyourwiki'
+  app.redirect('oops', (req, res) ->
+    '/oops'
   )
 
   ##### Get routes
@@ -321,7 +329,7 @@ module.exports = exports = (argv) ->
   # Currently throws an error to next(err) when id is blank.
   # TODO: Handle that error more gracefully.
   app.post('/login',
-    passport.authenticate('openid', { failureRedirect: 'notyourwiki'}),
+    passport.authenticate('openid', { failureRedirect: 'oops'}),
     (req, res) ->
       res.redirect('index')
   )
@@ -340,15 +348,15 @@ module.exports = exports = (argv) ->
 
   # Route that the openID provider redirects user to after login.
   app.get('/login/openid/complete',
-    passport.authenticate('openid', { failureRedirect: 'notyourwiki'}),
+    passport.authenticate('openid', { failureRedirect: 'oops'}),
     (req, res) ->
       res.redirect('index')
   )
 
   # Simple Access forbidden message when someone tries to log into a wiki
   # they do not own.
-  app.get('/notyourwiki', (req, res) ->
-    res.send('This is not your wiki!', 403)
+  app.get('/oops', (req, res) ->
+    res.render('oops.html', {status: 403, msg:'This is not your wiki!'})
   )
 
   # Traditional request to / redirects to index :)
@@ -357,9 +365,9 @@ module.exports = exports = (argv) ->
   )
 
   #### Starting the server.
-  setOwner null, ->
+  setOwner( null, ->
     app.listen(argv.p, argv.o if argv.o)
     app.emit "ready"
     console.log("Smallest Federated Wiki server listening on #{app.address().port} in mode: #{app.settings.env}")
-
+  )
   app

@@ -6,7 +6,7 @@
     <meta content='width=device-width, height=device-height, initial-scale=1.0, user-scalable=no' name='viewport'>
     <link href='/favicon.png' rel='icon' type='image/png'>
     <link href='/style.css' rel='stylesheet' type='text/css'>
-    <script src='/js/jquery-1.6.2.min.js' type='text/javascript'></script>
+    <script src='/js/jquery-1.7.1.min.js' type='text/javascript'></script>
     <script src='/js/jquery-ui-1.8.16.custom.min.js' type='text/javascript'></script>
     <link href='/js/jquery-ui-1.8.16.custom.css' rel='stylesheet' type='text/css'>
     <script src='/js/history.min.js' type='text/javascript'></script>
@@ -24,20 +24,21 @@
     <footer class={{status}}>
       {{#authenticated}}
       <form action='/logout' method='POST'>
+        <input type='submit' value={{status}}>
       {{/authenticated}}
       {{^authenticated}}
       <form action='/login' method='POST'>
         OpenID:
         <input name='identifier' type='text'>
+        <input type='submit' value={{status}}>
         or use:
         <span class='provider'>
-          <input type='button' title='google' value='G' data-provider='https://www.google.com/accounts/o8/id'>
-          <input type='button' title='yahoo' value='Y' data-provider='https://me.yahoo.com'>
-          <input type='button' title='aol' value='A' data-provider='https://www.aol.com'>
-          <input type='button' title='livejournal' value='L' data-provider='http://www.livejournal.com/openid/server.bml'>
+          <input data-provider='https://www.google.com/accounts/o8/id' title='google' type='button' value='G'>
+          <input data-provider='https://me.yahoo.com' title='yahoo' type='button' value='Y'>
+          <input data-provider='https://www.aol.com' title='aol' type='button' value='A'>
+          <input data-provider='http://www.livejournal.com/openid/server.bml' title='livejournal' type='button' value='L'>
         </span>
       {{/authenticated}}
-        <input type='submit' value={{status}}>
       </form>
     </footer>
   </body>
