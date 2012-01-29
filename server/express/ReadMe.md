@@ -12,7 +12,7 @@ node-canvas.  For now, please see node-canvas to install.
 ## Newest Docs
 Command line options can be seen by running:
 
-        bin/server.js -h
+	bin/server.js -h
 
 The most up to date node server specific documentation is in the source
 code, in a way that is best viewed when processed with 
@@ -50,6 +50,8 @@ but for now both of these should be supported.
 
 ## Running specs
 
+* The unit tests can be run with:
+	npm test
 * Make sure you have Ruby 1.9.x installed, as well as the 'bundler' gem
 * Run `bundle install` in the root
 * Start the Express server at port 33333, with the data directory 
