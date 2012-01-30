@@ -1,6 +1,5 @@
 (function() {
-  var __slice = Array.prototype.slice,
-    __indexOf = Array.prototype.indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+  var __slice = Array.prototype.slice, __hasProp = Object.prototype.hasOwnProperty, __indexOf = Array.prototype.indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (__hasProp.call(this, i) && this[i] === item) return i; } return -1; };
 
   Array.prototype.last = function() {
     return this[this.length - 1];
@@ -401,7 +400,11 @@
         if (site != null) {
           $(pageElement).append("<h1><a href=\"//" + site + "\"><img src = \"/remote/" + site + "/favicon.png\" height = \"32px\"></a> " + page.title + "</h1>");
         } else {
-          $(pageElement).append("<h1><a href=\"/\"><img src = \"/favicon.png\" height = \"32px\"></a> " + page.title + "</h1>");
+          $(pageElement).append($("<h1 />").append($("<a />").attr('href', '/').append($("<img>").error(function(e) {
+            return getPlugin('favicon', function(plugin) {
+              return plugin.create();
+            });
+          }).attr('class', 'favicon').attr('src', '/favicon.png').attr('height', '32px')), " " + page.title));
         }
         _ref2 = ['story', 'journal', 'footer'].map(function(className) {
           return $("<div />").addClass(className).appendTo(pageElement);
