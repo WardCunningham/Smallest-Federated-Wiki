@@ -11,6 +11,7 @@ module.exports = exports = (argv) ->
   # anything not in the standard library is included in the repo, or
   # can be installed with an:
   #     npm install
+  mkdirp = require('mkdirp')
   express = require('express')
   fs = require('fs')
   path = require('path')
@@ -258,9 +259,19 @@ module.exports = exports = (argv) ->
       if exists
         res.send('Favicon Exists!')
       else
-        fs.writeFile(favLoc, buf, (e) ->
-          if e then throw e
-          res.send('Favicon Saved')
+        path.exists(argv.status, (exists) ->
+          if exists
+            fs.writeFile(favLoc, buf, (e) ->
+              if e then throw e
+              res.send('Favicon Saved')
+            )
+          else
+            mkdirp(argv.status, 0777, ->
+              fs.writeFile(favLoc, buf, (e) ->
+                if e then throw e
+                res.send('Favicon Saved')
+              )
+            )
         )
     )
   )
