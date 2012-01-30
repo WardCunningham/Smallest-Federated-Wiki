@@ -5,9 +5,8 @@ To install
 
 	npm install
 
+Set production flag to not install testing framework.
 Debug logging is turned on when in the development environment.
-Currently there are some none node dependencies brought in from
-node-canvas.  For now, please see node-canvas to install.
 
 ## Newest Docs
 Command line options can be seen by running:

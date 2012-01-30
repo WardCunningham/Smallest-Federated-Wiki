@@ -300,9 +300,21 @@ $ ->
       wiki.resolutionContext = context
 
       if site?
-        $(pageElement).append "<h1><a href=\"//#{site}\"><img src = \"/remote/#{site}/favicon.png\" height = \"32px\"></a> #{page.title}</h1>"
+        $(pageElement)
+          .append "<h1><a href=\"//#{site}\"><img src = \"/remote/#{site}/favicon.png\" height = \"32px\"></a> #{page.title}</h1>"
       else
-        $(pageElement).append "<h1><a href=\"/\"><img src = \"/favicon.png\" height = \"32px\"></a> #{page.title}</h1>"
+        $(pageElement)
+          .append(
+            $("<h1 />").append(
+              $("<a />").attr('href', '/').append(
+                $("<img>")
+                  .error((e) ->
+                    getPlugin('favicon', (plugin) ->
+                      plugin.create()))
+                  .attr('class', 'favicon')
+                  .attr('src', '/favicon.png')
+                  .attr('height', '32px')
+              ), " #{page.title}"))
 
       [storyElement, journalElement, footerElement] = ['story', 'journal', 'footer'].map (className) ->
         $("<div />").addClass(className).appendTo(pageElement)

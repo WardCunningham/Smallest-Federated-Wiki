@@ -11,12 +11,12 @@ module.exports = exports = (argv) ->
   # anything not in the standard library is included in the repo, or
   # can be installed with an:
   #     npm install
+  mkdirp = require('mkdirp')
   express = require('express')
   fs = require('fs')
   path = require('path')
   http = require('http')
   hbs = require('hbs')
-  favicon = require('./favicon.coffee')
   random = require('./random_id.coffee')
   passportImport = require('passport')
   OpenIDstrat = require('passport-openid').Strategy
@@ -245,10 +245,34 @@ module.exports = exports = (argv) ->
   )
 
   ###### Favicon Routes
-  # Local favicons are handled by the favicon module.
+  # If favLoc doesn't exist send 404 and let the client
+  # deal with it.
+  favLoc = path.join(argv.status, 'favicon.png')
   app.get('/favicon.png', (req,res) ->
-    favicon.get(path.join(argv.status, "favicon.png"), (loc) ->
-      res.sendfile(loc)
+    res.sendfile(favLoc)
+  )
+
+  app.post('/favicon.png', (req, res) ->
+    favicon = req.body.image.replace(///^data:image/png;base64,///, "")
+    buf = new Buffer(favicon, 'base64')
+    path.exists(favLoc, (exists) ->
+      if exists
+        res.send('Favicon Exists!')
+      else
+        path.exists(argv.status, (exists) ->
+          if exists
+            fs.writeFile(favLoc, buf, (e) ->
+              if e then throw e
+              res.send('Favicon Saved')
+            )
+          else
+            mkdirp(argv.status, 0777, ->
+              fs.writeFile(favLoc, buf, (e) ->
+                if e then throw e
+                res.send('Favicon Saved')
+              )
+            )
+        )
     )
   )
 
@@ -336,12 +360,7 @@ module.exports = exports = (argv) ->
 
   # Get and post routes to logout.  The post one is the only one that
   # gets used from client, but the get logout route seemed useful as well.
-  app.post('/logout', (req, res) ->
-    req.logout()
-    res.redirect('index')
-  )
-
-  app.get('/logout', (req, res) ->
+  app.all('/logout', (req, res) ->
     req.logout()
     res.redirect('index')
   )
