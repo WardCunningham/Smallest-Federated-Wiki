@@ -394,7 +394,7 @@ $ ->
     direction = switch event.which
       when LEFTARROW then -1
       when RIGHTARROW then +1
-    if direction && History.enabled
+    if direction && History.enabled && not (event.target.tagName is "TEXTAREA")
       state = History.getState().data
       newIndex = state.pages.indexOf(state.active) + direction
       if 0 <= newIndex < state.pages.length

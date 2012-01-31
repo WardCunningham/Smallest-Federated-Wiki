@@ -506,7 +506,7 @@
             return +1;
         }
       })();
-      if (direction && History.enabled) {
+      if (direction && History.enabled && !(event.target.tagName === "TEXTAREA")) {
         state = History.getState().data;
         newIndex = state.pages.indexOf(state.active) + direction;
         if ((0 <= newIndex && newIndex < state.pages.length)) {
