@@ -217,6 +217,8 @@ class Controller < Sinatra::Base
       ( page['journal'] ||= [] ) << { 'type' => 'fork', 'site' => site }
       farm_page.put name, page
       action.delete 'fork'
+    elsif action['type'] == 'create'
+      page = action['item'].clone
     else
       page = farm_page.get(name)
     end
@@ -230,6 +232,8 @@ class Controller < Sinatra::Base
       page['story'].delete_at page['story'].index{ |item| item['id'] == action['id'] }
     when 'edit'
       page['story'][page['story'].index{ |item| item['id'] == action['id'] }] = action['item']
+    when 'create'
+      page['story'] ||= []
     else
       puts "unfamiliar action: #{action.inspect}"
       status 501

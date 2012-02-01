@@ -74,6 +74,7 @@ $ ->
   pushToLocal = (pageElement, action) ->
     page = localStorage[pageElement.attr("id")]
     page = JSON.parse(page) if page
+    page = action.item if action.type == 'create'
     page ||= pageElement.data("data")
     page.journal = [] unless page.journal?
     page.journal.concat(action)
@@ -357,7 +358,13 @@ $ ->
           if wiki.fetchContext.length > 0
             fetch(slug,callback)
           else
+            site = null
             callback(null)
+
+    create = (slug, callback) ->
+      page = {title: slug}
+      putAction $(pageElement), {type: 'create', id: randomBytes(8), item: page}
+      callback page
 
     if $(pageElement).attr('data-server-generated') == 'true'
       initDragging()
@@ -378,9 +385,13 @@ $ ->
             initDragging()
         else
           fetch slug, (page) ->
-            alert "need new page" unless page?
-            buildPage page
-            initDragging()
+            if page?
+              buildPage page
+              initDragging()
+            else
+              create slug, (page) ->
+                buildPage page
+                initDragging()
 
 # FUNCTIONS and HANDLERS to manage location bar and back button
 

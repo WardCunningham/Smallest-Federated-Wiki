@@ -91,6 +91,7 @@
       var page;
       page = localStorage[pageElement.attr("id")];
       if (page) page = JSON.parse(page);
+      if (action.type === 'create') page = action.item;
       page || (page = pageElement.data("data"));
       if (page.journal == null) page.journal = [];
       page.journal.concat(action);
@@ -311,7 +312,7 @@
       }
     };
     refresh = function() {
-      var buildPage, fetch, initDragging, json, pageElement, site, slug;
+      var buildPage, create, fetch, initDragging, json, pageElement, site, slug;
       pageElement = $(this);
       slug = $(pageElement).attr('id');
       site = $(pageElement).data('site');
@@ -447,10 +448,23 @@
             if (wiki.fetchContext.length > 0) {
               return fetch(slug, callback);
             } else {
+              site = null;
               return callback(null);
             }
           }
         });
+      };
+      create = function(slug, callback) {
+        var page;
+        page = {
+          title: slug
+        };
+        putAction($(pageElement), {
+          type: 'create',
+          id: randomBytes(8),
+          item: page
+        });
+        return callback(page);
       };
       if ($(pageElement).attr('data-server-generated') === 'true') {
         initDragging();
@@ -475,9 +489,15 @@
             });
           } else {
             return fetch(slug, function(page) {
-              if (page == null) alert("need new page");
-              buildPage(page);
-              return initDragging();
+              if (page != null) {
+                buildPage(page);
+                return initDragging();
+              } else {
+                return create(slug, function(page) {
+                  buildPage(page);
+                  return initDragging();
+                });
+              }
             });
           }
         }
