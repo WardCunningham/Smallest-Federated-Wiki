@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// server
+// **server.js**
 // Executable cli for the express port of Smallest Federated Wiki
 
 require('coffee-script');
