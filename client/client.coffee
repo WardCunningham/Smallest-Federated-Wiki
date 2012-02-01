@@ -22,6 +22,7 @@ $ ->
     console.log things if console.log?
 
   wiki.resolutionContext = []
+  wiki.fetchContext = []
   resolveFrom = wiki.resolveFrom = (addition, callback) ->
     wiki.resolutionContext.push addition
     try
@@ -73,6 +74,7 @@ $ ->
   pushToLocal = (pageElement, action) ->
     page = localStorage[pageElement.attr("id")]
     page = JSON.parse(page) if page
+    page = action.item if action.type == 'create'
     page ||= pageElement.data("data")
     page.journal = [] unless page.journal?
     page.journal.concat(action)
@@ -332,6 +334,38 @@ $ ->
         .append("<a class=\"show-page-source\" href=\"/#{slug}.json?random=#{randomBytes(4)}\" title=\"source\">JSON</a> . ")
         .append("<a href=\"#\" class=\"add-factory\" title=\"add paragraph\">[+]</a>")
 
+      if History.enabled
+        setState {pages: pagesInDom(), active: slug, locs: locsInDom() }
+
+    fetch = (slug, callback) ->
+      wiki.fetchContext = ['origin'] unless wiki.fetchContext.length > 0
+      site = wiki.fetchContext.shift()
+      resource = if site=='origin'
+        site = null
+        slug
+      else
+        "remote/#{site}/#{slug}"
+      wiki.log 'fetch', resource
+      $.ajax
+        type: 'GET'
+        dataType: 'json'
+        url: "/#{resource}.json?random=#{randomBytes(4)}"
+        success: (page) ->
+          wiki.log 'fetch success', page, site || 'origin'
+          $(pageElement).data('site', site)
+          callback(page)
+        error: (xhr, type, msg) ->
+          if wiki.fetchContext.length > 0
+            fetch(slug,callback)
+          else
+            site = null
+            callback(null)
+
+    create = (slug, callback) ->
+      page = {title: slug}
+      putAction $(pageElement), {type: 'create', id: randomBytes(8), item: page}
+      callback page
+
     if $(pageElement).attr('data-server-generated') == 'true'
       initDragging()
       pageElement.find('.item').each (i, each) ->
@@ -345,26 +379,38 @@ $ ->
         buildPage JSON.parse(json)
         initDragging()
       else
-        resource = if site? then "remote/#{site}/#{slug}" else slug
-        $.get "/#{resource}.json?random=#{randomBytes(4)}", "", (page) ->
-          buildPage page
-          initDragging()
+        if site?
+          $.get "/remote/#{site}/#{slug}.json?random=#{randomBytes(4)}", "", (page) ->
+            buildPage page
+            initDragging()
+        else
+          fetch slug, (page) ->
+            if page?
+              buildPage page
+              initDragging()
+            else
+              create slug, (page) ->
+                buildPage page
+                initDragging()
 
 # FUNCTIONS and HANDLERS to manage location bar and back button
 
   setState = (state) ->
     if History.enabled
+      wiki.log 'set state', state
       url = ("/#{state.locs?[idx] or 'view'}/#{page}" for page, idx in state.pages).join('') # + "##{state.active}"
       History.pushState state, state.active, url
 
   setActive = (page) ->
     if History.enabled
+      wiki.log 'set active', page
       state = History.getState().data
       state.active = page
       setState state
 
   showState = (state) ->
     # show and refresh correct pages
+    wiki.log 'show state'
     oldPages = pagesInDom()
     newPages = state.pages
     previousPage = newPages
@@ -422,7 +468,7 @@ $ ->
   $(document)
     .ajaxError (event, request, settings) ->
       wiki.log 'ajax error', event, request, settings
-      $('.main').prepend "<li class='error'>Error on #{settings.url}</li>"
+      # $('.main').prepend "<li class='error'>Error on #{settings.url}</li>"
 
   $('.main')
     .delegate '.show-page-source', 'click', (e) ->
@@ -437,13 +483,11 @@ $ ->
     .delegate '.internal', 'click', (e) ->
       e.preventDefault()
       name = $(e.target).data 'pageName'
-      wiki.log 'click', name
+      wiki.fetchContext = $(e.target).attr('title').split(' => ')
+      wiki.log 'click', name, 'context', wiki.fetchContext
       $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
       scrollTo createPage(name).appendTo('.main').each refresh
       # FIXME: can open page multiple times with shift key
-
-      if History.enabled
-        setState {pages: pagesInDom(), active: name, locs: locsInDom() }
 
     .delegate '.action', 'hover', ->
       id = $(this).data('itemId')
@@ -459,9 +503,6 @@ $ ->
         .appendTo($('.main'))
         .each refresh
 
-      if History.enabled
-        setState {pages: pagesInDom(), active: name, locs: locsInDom() }
-
   useLocalStorage = -> $(".login").length > 0
 
   $(".provider input").click ->
@@ -474,6 +515,3 @@ $ ->
       createPage(urlPage, urlLocs[idx]).appendTo('.main')
 
   $('.page').each refresh
-
-  startPages = pagesInDom()
-  setState { pages: startPages, active: startPages[startPages.length-1], locs: locsInDom() }

@@ -197,6 +197,7 @@ class Controller < Sinatra::Base
   get %r{^/([a-z0-9-]+)\.json$} do |name|
     content_type 'application/json'
     cross_origin
+    halt 404 unless File.exists? "#{farm_page.directory}/#{name}" or File.exists? "#{farm_page.default_directory}/#{name}"
     JSON.pretty_generate(farm_page.get(name))
   end
 
@@ -216,6 +217,8 @@ class Controller < Sinatra::Base
       ( page['journal'] ||= [] ) << { 'type' => 'fork', 'site' => site }
       farm_page.put name, page
       action.delete 'fork'
+    elsif action['type'] == 'create'
+      page = action['item'].clone
     else
       page = farm_page.get(name)
     end
@@ -229,6 +232,8 @@ class Controller < Sinatra::Base
       page['story'].delete_at page['story'].index{ |item| item['id'] == action['id'] }
     when 'edit'
       page['story'][page['story'].index{ |item| item['id'] == action['id'] }] = action['item']
+    when 'create'
+      page['story'] ||= []
     else
       puts "unfamiliar action: #{action.inspect}"
       status 501
