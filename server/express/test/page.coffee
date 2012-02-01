@@ -25,7 +25,6 @@ describe 'page', ->
       )
     it 'should create a page if it exists nowhere', (done) ->
       page.get(random(), (got) ->
-        got.story.length.should.equal 1
-        got.story[0].type.should.equal 'factory'
+        got.should.equal('Page not found')
         done()
       )

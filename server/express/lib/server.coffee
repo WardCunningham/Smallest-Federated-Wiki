@@ -7,7 +7,7 @@
 
 # Set export objects for node and coffee to a function that generates a sfw server.
 module.exports = exports = (argv) ->
-  #### Dependencies 
+  #### Dependencies ####
   # anything not in the standard library is included in the repo, or
   # can be installed with an:
   #     npm install
@@ -17,28 +17,28 @@ module.exports = exports = (argv) ->
   path = require('path')
   http = require('http')
   hbs = require('hbs')
-  random = require('./random_id.coffee')
+  random = require('./random_id')
   passportImport = require('passport')
   OpenIDstrat = require('passport-openid').Strategy
   # defaultargs.coffee exports a function that takes the argv object that is passed in and then does its
   # best to supply sane defaults for any arguments that are missing.
   argv = require('./defaultargs')(argv)
- 
+  # Construct authentication handler.
   passport = new passportImport.Passport()
   # Tell pagehandler where to find data, and default data.
   pagehandler = require('./page')(argv)
 
   OPENID = "#{argv.status}/open_id.identity"
 
-  #### Setting up Authentication
+  #### Setting up Authentication ####
   # The owner of a server is simply the open id url that the wiki
   # has been claimed with.  It is persisted at argv.status/open_id.identity,
-  # and kept in memory as owner
+  # and kept in memory as owner.  A falsy owner implies an unclaimed wiki.
   owner = ''
 
-  # Attempts figure out if the wiki is claimed or not,
-  # if it is it returns the owner, if not it sets the owner
-  # to the id, if it is provided.
+  # Attempt to figure out if the wiki is claimed or not,
+  # if it is return the owner, if not set the owner
+  # to the id if it is provided.
   setOwner = (id, cb) ->
     path.exists(OPENID, (exists) ->
       if exists
@@ -56,7 +56,7 @@ module.exports = exports = (argv) ->
         cb()
     )
 
-  # Make sure that an action can only be taken
+  # If claimed, make sure that an action can only be taken
   # by the owner, and returns 403 if someone else tries.
   authenticated = (req, res, next) ->
     unless owner
@@ -74,7 +74,7 @@ module.exports = exports = (argv) ->
     done(null, {id})
   )
 
-  # Telling passport to use the OpenID strategy. And establish
+  # Tell passport to use the OpenID strategy. And establish
   # owner as the test of id.
   passport.use(new OpenIDstrat({
     returnURL: "#{argv.u}/login/openid/complete"
@@ -95,6 +95,8 @@ module.exports = exports = (argv) ->
     )
   )))
 
+  # Handle errors thrown by passport openid by returning the oops page
+  # with the error message.
   openIDErr = (err, req, res, next) ->
     console.log err
     if err.message[0..5] is 'OpenID'
@@ -102,7 +104,7 @@ module.exports = exports = (argv) ->
     else
       next(err)
 
-  #### Express configuration
+  #### Express configuration ####
   app = express.createServer()
   # Set up all the standard express server options,
   # including hbs to use handlebars/mustache templates
@@ -123,14 +125,14 @@ module.exports = exports = (argv) ->
     app.use(openIDErr)
   )
 
-  ##### Set up standard environments.
-  # Turn on console.log debugging as well as showing the stack on err.
+  ##### Set up standard environments. #####
+  # In dev mode turn on console.log debugging as well as showing the stack on err.
   app.configure('development', ->
     app.use(express.errorHandler({ dumpExceptions: true, showStack: true }))
     argv.debug = console? and true
   )
 
-  # Show all of the options a server is using when it is started in dev mode.
+  # Show all of the options a server is using.
   console.log argv if argv.debug
 
   # Swallow errors when in production.
@@ -138,12 +140,12 @@ module.exports = exports = (argv) ->
     app.use(express.errorHandler())
   )
 
-  #### Routes
+  #### Routes ####
   # Routes currently make up the bulk of the Express port of
   # Smallest Federated Wiki. Most routes use literal names,
   # or regexes to match, and then access req.params directly.
 
-  ##### Redirects
+  ##### Redirects #####
   # Common redirects that may get used throughout the routes.
   app.redirect('index', (req, res) ->
     '/view/welcome-visitors'
@@ -157,7 +159,7 @@ module.exports = exports = (argv) ->
     '/oops'
   )
 
-  ##### Get routes
+  ##### Get routes #####
   # Routes have mostly been kept together by http verb, with the exception
   # of the openID related routes which are at the end together.
 
@@ -165,13 +167,12 @@ module.exports = exports = (argv) ->
     res.sendfile("#{argv.r}/server/express/views/style.css")
   )
 
-  # Main route for initial contact.  This is what allows us to
+  # Main route for initial contact.  Allows us to
   # link into a specific set of pages, local and remote.
-  # This can also be handled by the client, but it also sets up
+  # Can also be handled by the client, but it also sets up
   # the login status, and related footer html, which the client
   # relies on to know if it is logged in or not.
   app.get(///^((/[a-zA-Z0-9:.-]+/[a-z0-9-]+)+)$///, (req, res) ->
-    #res.sendfile("#{argv.r}/server/sinatra/views/static.html")
     urlPages = (i for i in req.params[0].split('/') by 2)[1..]
     urlLocs = (j for j in req.params[0].split('/')[1..] by 2)
     info = {
@@ -208,13 +209,13 @@ module.exports = exports = (argv) ->
     )
   )
 
-  ###### Json Routes
-  # These handle fetching local and remote json pages.
-  # Local pages are handled by the pagehandler, module.
+  ###### Json Routes ######
+  # Handle fetching local and remote json pages.
+  # Local pages are handled by the pagehandler module.
   app.get(///^/([a-z0-9-]+)\.json$///, (req, res) ->
     file = req.params[0]
-    pagehandler.get(file, (page) =>
-      res.json(page)
+    pagehandler.get(file, (page, status) ->
+      res.json(page, status)
     )
   )
 
@@ -244,7 +245,7 @@ module.exports = exports = (argv) ->
     )
   )
 
-  ###### Favicon Routes
+  ###### Favicon Routes ######
   # If favLoc doesn't exist send 404 and let the client
   # deal with it.
   favLoc = path.join(argv.status, 'favicon.png')
@@ -252,6 +253,8 @@ module.exports = exports = (argv) ->
     res.sendfile(favLoc)
   )
 
+  # Accept favicon image posted to the server, and if it does not already exist
+  # save it.
   app.post('/favicon.png', (req, res) ->
     favicon = req.body.image.replace(///^data:image/png;base64,///, "")
     buf = new Buffer(favicon, 'base64')
@@ -276,19 +279,27 @@ module.exports = exports = (argv) ->
     )
   )
 
-  # Remote favicons redirect to the server they are needed from.
+  # Redirect remote favicons to the server they are needed from.
   app.get(///^/remote/([a-zA-Z0-9:\.-]+/favicon.png)$///, (req, res) ->
     res.redirect('remotefav')
   )
 
-  ##### Put routes
+  ###### Meta Routes ######
+  # Send an array of pages in the database via json
+  app.get('/system/slugs.json', (req, res) ->
+    fs.readdir(argv.db, (err, files) ->
+      res.send(files)
+    )
+  )
 
-  # actionCB returns a function that handles all of the possible actions to be taken on a page,
-    
+  ##### Put routes #####
 
   app.put(/^\/page\/([a-z0-9-]+)\/action$/i, authenticated, (req, res) ->
     action = JSON.parse(req.body.action)
-    actionCB = (page) ->
+    # Handle all of the possible actions to be taken on a page,
+    actionCB = (page, status) ->
+      if status is 404
+        res.send(page, status)
       console.log page if argv.debug
       # Using Coffee-Scripts implicit returns we assign page.story to the
       # result of a list comprehension by way of a switch expression.
@@ -314,6 +325,8 @@ module.exports = exports = (argv) ->
           console.log "Unfamiliar action: #{action}"
           page.story
 
+      # Add a blank journal if it does not exist.
+      # And add what happened to the journal.
       if not page.journal
         page.journal = []
       page.journal.push(action)
@@ -322,7 +335,10 @@ module.exports = exports = (argv) ->
         res.send('ok')
         console.log 'saved' if argv.debug
       )
+
     console.log(action) if argv.debug
+    # If the action is a fork, get the page from the remote server,
+    # otherwise ask pagehandler for it.
     if action.fork
       getopts = {
         host: action.fork
@@ -349,17 +365,15 @@ module.exports = exports = (argv) ->
       pagehandler.get(req.params[0], actionCB)
   )
 
-  ##### Routes used for openID authentication
-  # Currently throws an error to next(err) when id is blank.
-  # TODO: Handle that error more gracefully.
+  ##### Routes used for openID authentication #####
+  # Redirect to oops when login fails.
   app.post('/login',
     passport.authenticate('openid', { failureRedirect: 'oops'}),
     (req, res) ->
       res.redirect('index')
   )
 
-  # Get and post routes to logout.  The post one is the only one that
-  # gets used from client, but the get logout route seemed useful as well.
+  # Logout when /logout is hit with any http method.
   app.all('/logout', (req, res) ->
     req.logout()
     res.redirect('index')
@@ -372,8 +386,7 @@ module.exports = exports = (argv) ->
       res.redirect('index')
   )
 
-  # Simple Access forbidden message when someone tries to log into a wiki
-  # they do not own.
+  # Return the oops page when login fails.
   app.get('/oops', (req, res) ->
     res.render('oops.html', {status: 403, msg:'This is not your wiki!'})
   )
@@ -383,10 +396,13 @@ module.exports = exports = (argv) ->
     res.redirect('index')
   )
 
-  #### Starting the server.
+  #### Start the server ####
+  # Wait to make sure owner is known before listening.
   setOwner( null, ->
     app.listen(argv.p, argv.o if argv.o)
+    # When server is listening emit a ready event.
     app.emit "ready"
     console.log("Smallest Federated Wiki server listening on #{app.address().port} in mode: #{app.settings.env}")
   )
+  # Return app when called, so that it can be watched for events and shutdown with .close() externally.
   app

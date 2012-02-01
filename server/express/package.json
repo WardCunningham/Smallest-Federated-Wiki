@@ -1,23 +1,34 @@
 {
-  "name": "sfwiki-express",
-  "version": "0.0.1",
+  "name": "sfwiki",
+  "version": "0.0.1a",
+  "main": "index.js",
   "private": true,
+  "bin": {
+    "sfw-noded": "./bin/server.js"
+  },
   "dependencies": {
-    "coffee-script": ">=1.2.0",
-    "express": ">= 2.5.1",
-    "mkdirp": ">= 0.0.1",
-    "optimist": ">= 0.0.1",
-    "passport": ">= 0.0.1",
-    "passport-openid": ">= 0.0.1",
-    "hbs": ">= 0.0.1",
-    "bouncy": ">= 0.0.1"
+    "coffee-script": "~1.2",
+    "express": "~2.5",
+    "mkdirp": "~0.3",
+    "optimist": "~0.3",
+    "passport": "~0.1.5",
+    "passport-openid": "~0.1.1",
+    "hbs": "~1.0.1",
+    "bouncy": "~1.1"
   },
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha"
   },
   "devDependencies": {
-    "docco": "*",
-    "mocha": "*",
-    "should": "*"
+    "docco": "~0.3",
+    "mocha": "~0.10",
+    "should": "~0.5"
+  },
+  "engines": { 
+    "node": "~0.6" 
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WardCunningham/Smallest-Federated-Wiki"
   }
 }
