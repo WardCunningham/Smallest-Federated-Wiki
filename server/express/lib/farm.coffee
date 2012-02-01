@@ -15,6 +15,8 @@ module.exports = exports = (argv) ->
     -> port += 1
   
   bouncy( (req, bounce) ->
+    unless req.headers?.host
+      return
     if req.headers.host[0..3] is "www."
       req.headers.host = req.headers.host[4..]
     if hosts[req.headers.host]
