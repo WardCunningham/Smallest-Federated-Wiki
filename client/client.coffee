@@ -194,6 +194,10 @@ $ ->
 # PLUGINS for each story item type
 
   window.plugins =
+    code:
+      emit: (div, item) -> div.append "<pre>#{item.text}</pre>"
+      bind: (div, item) -> 
+        div.dblclick -> textEditor div, item
     paragraph:
       emit: (div, item) -> div.append "<p>#{resolveLinks(item.text)}</p>"
       bind: (div, item) ->
