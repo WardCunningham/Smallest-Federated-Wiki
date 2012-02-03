@@ -1,4 +1,4 @@
 window.plugins.code =
-  emit: (div, item) -> div.append "<pre>#{item.text}</pre>"
+  emit: (div, item) -> div.append "<pre class='prettyprint'>#{prettyPrintOne(item.text)}</pre>"
   bind: (div, item) ->
-    div.dblclick -> textEditor div, item
+    div.dblclick -> wiki.textEditor div, item
