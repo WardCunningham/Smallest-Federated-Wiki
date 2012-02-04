@@ -238,7 +238,10 @@ module.exports = exports = (argv) ->
         console.log("Error: #{e}")
       )
       resp.on('end', ->
-        res.json(JSON.parse(responsedata))
+        if responsedata
+          res.json(JSON.parse(responsedata))
+        else
+          res.send(404)
       )
     ).on('error', (e) ->
       console.log "Error: #{e}"
@@ -316,6 +319,9 @@ module.exports = exports = (argv) ->
         when 'edit'
           (if item.id is action.id then action.item else item) for item in page.story
 
+        when 'create'
+          page.story or []
+
         else
           console.log "Unfamiliar action: #{action}"
           page.story
@@ -325,6 +331,7 @@ module.exports = exports = (argv) ->
       if not page.journal
         page.journal = []
       page.journal.push(action)
+      console.log page
       pagehandler.put(req.params[0], page, (err) =>
         if err then throw err
         res.send('ok')
@@ -356,6 +363,11 @@ module.exports = exports = (argv) ->
       ).on('error', (e) ->
         console.log "Error: #{e}"
       )
+    else if action.type is 'create'
+      itemCopy = {}
+      for key, value of action.item
+        itemCopy[key] = value
+      actionCB(itemCopy)
     else
       pagehandler.get(req.params[0], actionCB)
   )
