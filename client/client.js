@@ -1,12 +1,13 @@
 (function() {
-  var __slice = Array.prototype.slice, __hasProp = Object.prototype.hasOwnProperty, __indexOf = Array.prototype.indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (__hasProp.call(this, i) && this[i] === item) return i; } return -1; };
+  var __slice = Array.prototype.slice,
+    __indexOf = Array.prototype.indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   Array.prototype.last = function() {
     return this[this.length - 1];
   };
 
   $(function() {
-    var LEFTARROW, RIGHTARROW, addToJournal, asSlug, createPage, doInternalLink, doPlugin, findPage, formatTime, getItem, getPlugin, i, idx, j, locsInDom, pagesInDom, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveFrom, resolveLinks, scripts, scrollTo, setActive, setState, showState, startPages, textEditor, urlLocs, urlPage, urlPages, useLocalStorage, _len;
+    var LEFTARROW, RIGHTARROW, addToJournal, asSlug, createPage, doInternalLink, doPlugin, findPage, formatTime, getItem, getPlugin, i, idx, j, locsInDom, pagesInDom, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveFrom, resolveLinks, scripts, scrollTo, setActive, setState, showState, textEditor, urlLocs, urlPage, urlPages, useLocalStorage, _len;
     window.wiki = {};
     window.dialog = $('<div></div>').html('This dialog will show every time!').dialog({
       autoOpen: false,
@@ -38,6 +39,7 @@
       if (console.log != null) return console.log(things);
     };
     wiki.resolutionContext = [];
+    wiki.fetchContext = [];
     resolveFrom = wiki.resolveFrom = function(addition, callback) {
       wiki.resolutionContext.push(addition);
       try {
@@ -90,6 +92,7 @@
       var page;
       page = localStorage[pageElement.attr("id")];
       if (page) page = JSON.parse(page);
+      if (action.type === 'create') page = action.item;
       page || (page = pageElement.data("data"));
       if (page.journal == null) page.journal = [];
       page.journal.concat(action);
@@ -310,7 +313,7 @@
       }
     };
     refresh = function() {
-      var buildPage, initDragging, json, pageElement, resource, site, slug;
+      var buildPage, create, fetch, initDragging, json, pageElement, site, slug;
       pageElement = $(this);
       slug = $(pageElement).attr('id');
       site = $(pageElement).data('site');
@@ -418,7 +421,51 @@
         $.each(page.journal, function(i, action) {
           return addToJournal(journalElement, action);
         });
-        return footerElement.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ').append("<a class=\"show-page-source\" href=\"/" + slug + ".json?random=" + (randomBytes(4)) + "\" title=\"source\">JSON</a> . ").append("<a href=\"#\" class=\"add-factory\" title=\"add paragraph\">[+]</a>");
+        footerElement.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ').append("<a class=\"show-page-source\" href=\"/" + slug + ".json?random=" + (randomBytes(4)) + "\" title=\"source\">JSON</a> . ").append("<a href=\"#\" class=\"add-factory\" title=\"add paragraph\">[+]</a>");
+        if (History.enabled) {
+          return setState({
+            pages: pagesInDom(),
+            active: slug,
+            locs: locsInDom()
+          });
+        }
+      };
+      fetch = function(slug, callback) {
+        var resource;
+        if (!(wiki.fetchContext.length > 0)) wiki.fetchContext = ['origin'];
+        site = wiki.fetchContext.shift();
+        resource = site === 'origin' ? (site = null, slug) : "remote/" + site + "/" + slug;
+        wiki.log('fetch', resource);
+        return $.ajax({
+          type: 'GET',
+          dataType: 'json',
+          url: "/" + resource + ".json?random=" + (randomBytes(4)),
+          success: function(page) {
+            wiki.log('fetch success', page, site || 'origin');
+            $(pageElement).data('site', site);
+            return callback(page);
+          },
+          error: function(xhr, type, msg) {
+            if (wiki.fetchContext.length > 0) {
+              return fetch(slug, callback);
+            } else {
+              site = null;
+              return callback(null);
+            }
+          }
+        });
+      };
+      create = function(slug, callback) {
+        var page;
+        page = {
+          title: slug
+        };
+        putAction($(pageElement), {
+          type: 'create',
+          id: randomBytes(8),
+          item: page
+        });
+        return callback(page);
       };
       if ($(pageElement).attr('data-server-generated') === 'true') {
         initDragging();
@@ -436,17 +483,31 @@
           buildPage(JSON.parse(json));
           return initDragging();
         } else {
-          resource = site != null ? "remote/" + site + "/" + slug : slug;
-          return $.get("/" + resource + ".json?random=" + (randomBytes(4)), "", function(page) {
-            buildPage(page);
-            return initDragging();
-          });
+          if (site != null) {
+            return $.get("/remote/" + site + "/" + slug + ".json?random=" + (randomBytes(4)), "", function(page) {
+              buildPage(page);
+              return initDragging();
+            });
+          } else {
+            return fetch(slug, function(page) {
+              if (page != null) {
+                buildPage(page);
+                return initDragging();
+              } else {
+                return create(slug, function(page) {
+                  buildPage(page);
+                  return initDragging();
+                });
+              }
+            });
+          }
         }
       }
     };
     setState = function(state) {
       var idx, page, url;
       if (History.enabled) {
+        wiki.log('set state', state);
         url = ((function() {
           var _len, _ref, _ref2, _results;
           _ref = state.pages;
@@ -463,6 +524,7 @@
     setActive = function(page) {
       var state;
       if (History.enabled) {
+        wiki.log('set active', page);
         state = History.getState().data;
         state.active = page;
         return setState(state);
@@ -470,6 +532,7 @@
     };
     showState = function(state) {
       var name, newPages, oldPages, previousPage, _i, _j, _len, _len2;
+      wiki.log('show state');
       oldPages = pagesInDom();
       newPages = state.pages;
       previousPage = newPages;
@@ -536,8 +599,7 @@
       return $("#" + name);
     };
     $(document).ajaxError(function(event, request, settings) {
-      wiki.log('ajax error', event, request, settings);
-      return $('.main').prepend("<li class='error'>Error on " + settings.url + "</li>");
+      return wiki.log('ajax error', event, request, settings);
     });
     $('.main').delegate('.show-page-source', 'click', function(e) {
       var json, pageElement;
@@ -551,16 +613,10 @@
       var name;
       e.preventDefault();
       name = $(e.target).data('pageName');
-      wiki.log('click', name);
+      wiki.fetchContext = $(e.target).attr('title').split(' => ');
+      wiki.log('click', name, 'context', wiki.fetchContext);
       if (!e.shiftKey) $(e.target).parents('.page').nextAll().remove();
-      scrollTo(createPage(name).appendTo('.main').each(refresh));
-      if (History.enabled) {
-        return setState({
-          pages: pagesInDom(),
-          active: name,
-          locs: locsInDom()
-        });
-      }
+      return scrollTo(createPage(name).appendTo('.main').each(refresh));
     }).delegate('.action', 'hover', function() {
       var id;
       id = $(this).data('itemId');
@@ -571,14 +627,7 @@
       name = $(e.target).data('slug');
       wiki.log('click', name, 'site', $(e.target).data('site'));
       if (!e.shiftKey) $(e.target).parents('.page').nextAll().remove();
-      scrollTo(createPage(name).data('site', $(e.target).data('site')).appendTo($('.main')).each(refresh));
-      if (History.enabled) {
-        return setState({
-          pages: pagesInDom(),
-          active: name,
-          locs: locsInDom()
-        });
-      }
+      return scrollTo(createPage(name).data('site', $(e.target).data('site')).appendTo($('.main')).each(refresh));
     });
     useLocalStorage = function() {
       return $(".login").length > 0;
@@ -613,13 +662,7 @@
         createPage(urlPage, urlLocs[idx]).appendTo('.main');
       }
     }
-    $('.page').each(refresh);
-    startPages = pagesInDom();
-    return setState({
-      pages: startPages,
-      active: startPages[startPages.length - 1],
-      locs: locsInDom()
-    });
+    return $('.page').each(refresh);
   });
 
 }).call(this);
