@@ -255,26 +255,21 @@ module.exports = exports = (argv) ->
 
   # Accept favicon image posted to the server, and if it does not already exist
   # save it.
-  app.post('/favicon.png', (req, res) ->
+  app.post('/favicon.png', authenticated, (req, res) ->
     favicon = req.body.image.replace(///^data:image/png;base64,///, "")
     buf = new Buffer(favicon, 'base64')
-    path.exists(favLoc, (exists) ->
+    path.exists(argv.status, (exists) ->
       if exists
-        res.send('Favicon Exists!')
+        fs.writeFile(favLoc, buf, (e) ->
+          if e then throw e
+          res.send('Favicon Saved')
+        )
       else
-        path.exists(argv.status, (exists) ->
-          if exists
-            fs.writeFile(favLoc, buf, (e) ->
-              if e then throw e
-              res.send('Favicon Saved')
-            )
-          else
-            mkdirp(argv.status, 0777, ->
-              fs.writeFile(favLoc, buf, (e) ->
-                if e then throw e
-                res.send('Favicon Saved')
-              )
-            )
+        mkdirp(argv.status, 0777, ->
+          fs.writeFile(favLoc, buf, (e) ->
+            if e then throw e
+            res.send('Favicon Saved')
+          )
         )
     )
   )
