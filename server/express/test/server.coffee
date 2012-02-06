@@ -85,5 +85,22 @@ describe 'server', ->
       res.send = createSend(test, done)
       routeCB(req, res)
 
+    it 'should create a page when asked', (done) ->
+      req.body.action = JSON.stringify({
+        type: 'create'
+        item: {
+          title: 'thetitle'
+        }
+        id: 'b1'
+      })
+      test = (page) ->
+        page.story.should.exist
+        page.journal.should.exist
+      res.send = createSend(test, done)
+      routeCB(req, res)
+
+
+
+
     after( ->
       runningServer.close())
