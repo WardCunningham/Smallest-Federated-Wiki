@@ -36,6 +36,10 @@ class Page
       end
     end
 
+    def exists?(name)
+      File.exists?(File.join(directory, name)) or File.exist?(File.join(default_directory, name))
+    end
+
     # Create or update a page
     #
     # @param [String] name - The name of the file to create/update, relative to Page.directory.
