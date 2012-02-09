@@ -218,10 +218,12 @@ class Controller < Sinatra::Base
       farm_page.put name, page
       action.delete 'fork'
     elsif action['type'] == 'create'
+      return halt 409 if farm_page.exists?(name)
       page = action['item'].clone
     else
       page = farm_page.get(name)
     end
+
     case action['type']
     when 'move'
       page['story'] = action['order'].collect{ |id| page['story'].detect{ |item| item['id'] == id } }

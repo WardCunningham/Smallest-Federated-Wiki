@@ -1,7 +1,5 @@
 require File.dirname(__FILE__) + '/spec_helper'
 require 'json'
-include Rack::Test::Methods
-def app; Controller; end
 
 # TODO: now that there is a Page spec and an integration spec, we should
 # mock and stub the page writing in these tests.
@@ -109,7 +107,8 @@ end
 
 describe "GET /non-existent-test-page" do
   before(:all) do
-    `rm -f data/pages/non-existent-test-page`
+    @non_existent_page = "#{TestDirs::TEST_DATA_DIR}/pages/non-existent-test-page"
+    `rm -f #{@non_existent_page}`
   end
 
   it "should return 404" do
@@ -117,4 +116,47 @@ describe "GET /non-existent-test-page" do
     last_response.status.should == 404
   end
 
+end
+
+describe "PUT /non-existent-test-page" do
+  before(:all) do
+    @non_existent_page = "#{TestDirs::TEST_DATA_DIR}/pages/non-existent-test-page"
+    `rm -f #{@non_existent_page}`
+  end
+
+  it "should create page" do
+    action = {'type' => 'create', 'id' =>  "123foobar", 'item' => {'title' => 'non-existent-test-page'}}
+    put "/page/non-existent-test-page/action", :action => action.to_json
+    last_response.status.should == 200
+    File.exist?(@non_existent_page).should == true
+  end
+end
+
+describe "PUT /welcome-visitors" do
+
+  it "should respond with 409" do
+    action = {'type' => 'create', 'id' =>  "123foobar", 'item' => {'title' => 'welcome-visitors'}}
+    put "/page/welcome-visitors/action", :action => action.to_json
+    last_response.status.should == 409
+  end
+
+end
+
+describe "PUT /foo twice" do
+  it "should return a 409 when recreating existing page" do
+    page_file = "#{TestDirs::TEST_DATA_DIR}/pages/foo"
+    File.exist?(page_file).should == false
+
+    action = {'type' => 'create', 'id' =>  "123foobar", 'item' => {'title' => 'foo'}}
+    put "/page/foo/action", :action => action.to_json
+
+    last_response.status.should == 200
+    File.exist?(page_file).should == true
+    page_file_contents = File.read(page_file)
+
+    action = {'type' => 'create', 'id' =>  "123foobar", 'item' => {'title' => 'spam'}}
+    put "/page/foo/action", :action => action.to_json
+    last_response.status.should == 409
+    File.read(page_file).should == page_file_contents
+  end
 end
