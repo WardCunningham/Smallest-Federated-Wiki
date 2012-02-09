@@ -1,43 +1,10 @@
 require File.dirname(__FILE__) + '/spec_helper'
-require 'capybara/rspec'
 
-require 'capybara/dsl'
 require 'pathname'
 require 'digest/sha1'
 require 'net/http'
 
-module TestDirs
-  ROOT = File.expand_path(File.join(File.dirname(__FILE__), ".."))
-  APP_DATA_DIR = File.join(ROOT, "data")
-  TEST_DATA_DIR = File.join(ROOT, 'spec/data')
-  FIXTURE_DATA_DIR = File.join(ROOT, 'spec/fixtures/data')
-  JS_DIR = File.join(ROOT, "spec/js")
-end
 
-
-if USE_NODE
-  Capybara.app_host = "http://localhost:33333"
-else
-  class TestApp < Controller
-    def self.data_root
-      TestDirs::TEST_DATA_DIR
-    end
-  end
-  Capybara.app = TestApp
-  Capybara.server_port = 31337
-end
-
-Capybara.register_driver :selenium do |app|
-  Capybara::Selenium::Driver.new(app, :resynchronize => true)
-end
-
-RSpec.configure do |config|
-  config.include Capybara::DSL
-  config.before(:each) do
-    `rm -rf #{TestDirs::TEST_DATA_DIR}`
-    Capybara.current_driver = :selenium
-  end
-end
 
 describe "loading a page" do
 
