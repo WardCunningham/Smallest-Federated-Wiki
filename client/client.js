@@ -7,7 +7,7 @@
   };
 
   $(function() {
-    var LEFTARROW, RIGHTARROW, addToJournal, asSlug, createPage, doInternalLink, doPlugin, findPage, formatTime, getItem, getPlugin, i, idx, j, locsInDom, pagesInDom, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveFrom, resolveLinks, scripts, scrollTo, setActive, setState, showState, textEditor, urlLocs, urlPage, urlPages, useLocalStorage, _len;
+    var LEFTARROW, RIGHTARROW, addToJournal, asSlug, createPage, doInternalLink, doPlugin, findPage, formatTime, getItem, getPlugin, i, idx, j, locsInDom, pagesInDom, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveFrom, resolveLinks, scripts, scrollContainer, scrollTo, setActive, setState, showState, textEditor, urlLocs, urlPage, urlPages, useLocalStorage, _len;
     window.wiki = {};
     window.dialog = $('<div></div>').html('This dialog will show every time!').dialog({
       autoOpen: false,
@@ -36,7 +36,9 @@
     wiki.log = function() {
       var things;
       things = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-      if (console.log != null) return console.log(things);
+      if ((typeof console !== "undefined" && console !== null ? console.log : void 0) != null) {
+        return console.log(things);
+      }
     };
     wiki.resolutionContext = [];
     wiki.fetchContext = [];
@@ -228,24 +230,31 @@
       if (page != null) $(page).nextAll().remove();
       return scrollTo(createPage(asSlug(name)).appendTo($('.main')).each(refresh));
     };
+    scrollContainer = function() {
+      return $("body, html").scrollLeft(1).filter(function() {
+        return $(this).scrollLeft() === 1;
+      }).scrollTop(0);
+    };
     scrollTo = function(el) {
-      var contentWidth, maxX, minX, target, width;
-      minX = $("body").scrollLeft();
-      maxX = minX + $("body").width();
+      var bodyWidth, container, contentWidth, maxX, minX, target, width;
+      container = scrollContainer();
+      bodyWidth = $("body").width();
+      minX = container.scrollLeft();
+      maxX = minX + bodyWidth;
       target = el.position().left;
       width = el.outerWidth(true);
       contentWidth = $(".page").outerWidth(true) * $(".page").size();
       if (target < minX) {
-        return $("body").animate({
+        return container.animate({
           scrollLeft: target
         });
       } else if (target + width > maxX) {
-        return $("body").animate({
-          scrollLeft: target - ($("body").width() - width)
+        return container.animate({
+          scrollLeft: target - (bodyWidth - width)
         });
       } else if (maxX > $(".pages").outerWidth()) {
-        return $("body").animate({
-          scrollLeft: Math.min(target, contentWidth - $("body").width())
+        return container.animate({
+          scrollLeft: Math.min(target, contentWidth - bodyWidth)
         });
       }
     };

@@ -19,7 +19,7 @@ $ ->
   randomBytes = (n) -> (randomByte() for [1..n]).join('')
 
   wiki.log = (things...) ->
-    console.log things if console.log?
+    console.log things if console?.log?
 
   wiki.resolutionContext = []
   wiki.fetchContext = []
@@ -175,20 +175,24 @@ $ ->
       .appendTo($('.main'))
       .each refresh
 
-
+  # Find which element is scrollable, body or html
+  scrollContainer = -> $("body, html").scrollLeft(1).filter(-> $(this).scrollLeft() == 1).scrollTop(0)
+    
   scrollTo = (el) ->
-    minX = $("body").scrollLeft()
-    maxX = minX + $("body").width()
+    container = scrollContainer()
+    bodyWidth = $("body").width()
+    minX = container.scrollLeft()
+    maxX = minX + bodyWidth
     target = el.position().left
     width = el.outerWidth(true)
     contentWidth = $(".page").outerWidth(true) * $(".page").size()
 
     if target < minX
-      $("body").animate scrollLeft: target
+      container.animate scrollLeft: target
     else if target + width > maxX
-      $("body").animate scrollLeft: target - ($("body").width() - width)
+      container.animate scrollLeft: target - (bodyWidth - width)
     else if maxX > $(".pages").outerWidth()
-      $("body").animate scrollLeft: Math.min(target, contentWidth - $("body").width())
+      container.animate scrollLeft: Math.min(target, contentWidth - bodyWidth)
 
 
 # PLUGINS for each story item type
