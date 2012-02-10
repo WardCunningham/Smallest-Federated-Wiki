@@ -468,7 +468,8 @@ $ ->
   $(document)
     .ajaxError (event, request, settings) ->
       wiki.log 'ajax error', event, request, settings
-      # $('.main').prepend "<li class='error'>Error on #{settings.url}</li>"
+      msg = "<li class='error'>Error on #{settings.url}: #{request.responseText}</li>"
+      $('.main').prepend msg unless request.status == 404
 
   $('.main')
     .delegate '.show-page-source', 'click', (e) ->

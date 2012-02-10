@@ -599,7 +599,10 @@
       return $("#" + name);
     };
     $(document).ajaxError(function(event, request, settings) {
-      return wiki.log('ajax error', event, request, settings);
+      var msg;
+      wiki.log('ajax error', event, request, settings);
+      msg = "<li class='error'>Error on " + settings.url + ": " + request.responseText + "</li>";
+      if (request.status !== 404) return $('.main').prepend(msg);
     });
     $('.main').delegate('.show-page-source', 'click', function(e) {
       var json, pageElement;
