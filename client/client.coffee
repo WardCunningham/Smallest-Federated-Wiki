@@ -176,23 +176,29 @@ $ ->
       .each refresh
 
   # Find which element is scrollable, body or html
-  scrollContainer = -> $("body, html").scrollLeft(1).filter(-> $(this).scrollLeft() == 1).scrollTop(0)
+  scrollContainer = undefined
+  findScrollContainer = -> 
+    scrolled = $("body, html").filter -> $(this).scrollLeft() > 0
+    if scrolled.length > 0
+      scrolled
+    else
+      $("body, html").scrollLeft(1).filter(-> $(this).scrollLeft() == 1).scrollTop(0)
     
   scrollTo = (el) ->
-    container = scrollContainer()
+    scrollContainer ?= findScrollContainer()
     bodyWidth = $("body").width()
-    minX = container.scrollLeft()
+    minX = scrollContainer.scrollLeft()
     maxX = minX + bodyWidth
     target = el.position().left
     width = el.outerWidth(true)
     contentWidth = $(".page").outerWidth(true) * $(".page").size()
 
     if target < minX
-      container.animate scrollLeft: target
+      scrollContainer.animate scrollLeft: target
     else if target + width > maxX
-      container.animate scrollLeft: target - (bodyWidth - width)
+      scrollContainer.animate scrollLeft: target - (bodyWidth - width)
     else if maxX > $(".pages").outerWidth()
-      container.animate scrollLeft: Math.min(target, contentWidth - bodyWidth)
+      scrollContainer.animate scrollLeft: Math.min(target, contentWidth - bodyWidth)
 
 
 # PLUGINS for each story item type
