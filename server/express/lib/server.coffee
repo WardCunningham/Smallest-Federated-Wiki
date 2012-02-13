@@ -20,13 +20,15 @@ module.exports = exports = (argv) ->
   random = require('./random_id')
   passportImport = require('passport')
   OpenIDstrat = require('passport-openid').Strategy
+  # Create the main application object, app.
+  app = express.createServer()
   # defaultargs.coffee exports a function that takes the argv object that is passed in and then does its
   # best to supply sane defaults for any arguments that are missing.
   argv = require('./defaultargs')(argv)
   # Construct authentication handler.
   passport = new passportImport.Passport()
   # Tell pagehandler where to find data, and default data.
-  pagehandler = require('./page')(argv)
+  app.pagehandler = pagehandler = require('./page')(argv)
 
   OPENID = "#{argv.status}/open_id.identity"
 
@@ -105,7 +107,6 @@ module.exports = exports = (argv) ->
       next(err)
 
   #### Express configuration ####
-  app = express.createServer()
   # Set up all the standard express server options,
   # including hbs to use handlebars/mustache templates
   # saved with a .html extension, and no layout.
