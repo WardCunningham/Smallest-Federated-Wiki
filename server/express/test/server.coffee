@@ -4,7 +4,6 @@ random = require '../lib/random_id'
 testid = random()
 argv = require('../lib/defaultargs.coffee')({d: path.join('/tmp', 'sfwtests', testid), p: 55555})
 fs = require('fs')
-pagehandler = require('../lib/page.coffee')(argv)
 
 describe 'server', ->
   describe '#actionCB()', ->
@@ -27,7 +26,7 @@ describe 'server', ->
     createSend = (test, done) ->
       (str) ->
         console.log str
-        pagehandler.get('asdf-test-page', (data) ->
+        runningServer.pagehandler.get('asdf-test-page', (data) ->
           test(data)
           done()
         )

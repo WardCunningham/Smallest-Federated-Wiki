@@ -21,16 +21,16 @@
         <div class='page' id={{page}} {{origin}}></div>
       {{/pages}}
     </section>
-    <footer class={{status}}>
+    <footer class={{loginStatus}}>
       {{#authenticated}}
       <form action='/logout' method='POST'>
-        <input type='submit' value={{status}}>
+        <input type='submit' value={{loginStatus}}>
       {{/authenticated}}
       {{^authenticated}}
       <form action='/login' method='POST'>
         OpenID:
         <input name='identifier' type='text'>
-        <input type='submit' value={{status}}>
+        <input type='submit' value={{loginStatus}}>
         or use:
         <span class='provider'>
           <input data-provider='https://www.google.com/accounts/o8/id' title='google' type='button' value='G'>
