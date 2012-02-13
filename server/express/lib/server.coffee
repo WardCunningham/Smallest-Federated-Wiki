@@ -178,7 +178,7 @@ module.exports = exports = (argv) ->
     info = {
       pages: []
       authenticated: req.isAuthenticated()
-      status: if owner
+      loginStatus: if owner
         if req.isAuthenticated()
           'logout'
         else 'login'
