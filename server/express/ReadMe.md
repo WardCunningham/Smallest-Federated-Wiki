@@ -50,7 +50,7 @@ To get started with the second pattern checkout lib/farm.coffee as an example.
 		npm test
 * Make sure you have Ruby 1.9.x installed, as well as the 'bundler' gem
 * Run `bundle install` in the root
-* Start the Express server in integration testing mode: 
-		server/express/bin/server.js --test
-* Run the integration specs against the node/express server.
-		TEST_NODE=true bundle exec rspec spec/integration_spec.rb 
+* Start the Express server in integration testing mode:
+  `server/express/bin/server.js --test`
+* Run the integration specs against the node/express server:
+  `TEST_NODE=true bundle exec rspec spec/integration_spec.rb` 
