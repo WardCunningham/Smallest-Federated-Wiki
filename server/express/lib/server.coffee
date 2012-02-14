@@ -320,9 +320,6 @@ module.exports = exports = (argv) ->
         when 'edit'
           (if item.id is action.id then action.item else item) for item in page.story
 
-        when 'create'
-          page.story or []
-
         else
           console.log "Unfamiliar action: #{action}"
           page.story
@@ -366,9 +363,17 @@ module.exports = exports = (argv) ->
       )
     else if action.type is 'create'
       itemCopy = {}
-      for key, value of action.item
+      for own key, value of action.item
         itemCopy[key] = value
-      actionCB(itemCopy)
+      path.exists(path.join(argv.db, req.params[0]), (exists) ->
+        if exists
+          res.send('Page already exists.', 409)
+        else
+          pagehandler.put(req.params[0], itemCopy, (e) ->
+            if e then throw e
+            res.send('ok')
+          )
+      )
     else
       pagehandler.get(req.params[0], actionCB)
   )

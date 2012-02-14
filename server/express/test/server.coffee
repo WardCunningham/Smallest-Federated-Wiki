@@ -84,22 +84,18 @@ describe 'server', ->
       res.send = createSend(test, done)
       routeCB(req, res)
 
-    it 'should create a page when asked', (done) ->
+    it 'should refuse to create over a page', (done) ->
       req.body.action = JSON.stringify({
         type: 'create'
         item: {
-          title: 'thetitle'
+          title: 'Doh'
         }
-        id: 'b1'
+        id: 'c1'
       })
       test = (page) ->
-        page.story.should.exist
-        page.journal.should.exist
+        page.title.should.not.equal('Doh')
       res.send = createSend(test, done)
       routeCB(req, res)
-
-
-
 
     after( ->
       runningServer.close())
