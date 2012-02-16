@@ -474,9 +474,11 @@
         });
       };
       create = function(slug, callback) {
-        var page;
+        var page, title;
+        title = $("a[href=\"/" + slug + ".html\"]").html();
+        title || (title = slug);
         page = {
-          title: slug
+          title: title
         };
         putAction($(pageElement), {
           type: 'create',
@@ -587,7 +589,7 @@
             return +1;
         }
       })();
-      if (direction && History.enabled) {
+      if (direction && History.enabled && !(event.target.tagName === "TEXTAREA")) {
         state = History.getState().data;
         newIndex = state.pages.indexOf(state.active) + direction;
         if ((0 <= newIndex && newIndex < state.pages.length)) {
