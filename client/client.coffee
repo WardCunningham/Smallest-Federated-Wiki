@@ -372,7 +372,9 @@ $ ->
             callback(null)
 
     create = (slug, callback) ->
-      page = {title: slug}
+      title = $("""a[href="/#{slug}.html"]""").html()
+      title or= slug
+      page = {title}
       putAction $(pageElement), {type: 'create', id: randomBytes(8), item: page}
       callback page
 

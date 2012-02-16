@@ -474,9 +474,11 @@
         });
       };
       create = function(slug, callback) {
-        var page;
+        var page, title;
+        title = $("a[href=\"/" + slug + ".html\"]").html();
+        title || (title = slug);
         page = {
-          title: slug
+          title: title
         };
         putAction($(pageElement), {
           type: 'create',
