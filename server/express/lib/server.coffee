@@ -20,13 +20,15 @@ module.exports = exports = (argv) ->
   random = require('./random_id')
   passportImport = require('passport')
   OpenIDstrat = require('passport-openid').Strategy
+  # Create the main application object, app.
+  app = express.createServer()
   # defaultargs.coffee exports a function that takes the argv object that is passed in and then does its
   # best to supply sane defaults for any arguments that are missing.
   argv = require('./defaultargs')(argv)
   # Construct authentication handler.
   passport = new passportImport.Passport()
   # Tell pagehandler where to find data, and default data.
-  pagehandler = require('./page')(argv)
+  app.pagehandler = pagehandler = require('./page')(argv)
 
   OPENID = "#{argv.status}/open_id.identity"
 
@@ -105,7 +107,6 @@ module.exports = exports = (argv) ->
       next(err)
 
   #### Express configuration ####
-  app = express.createServer()
   # Set up all the standard express server options,
   # including hbs to use handlebars/mustache templates
   # saved with a .html extension, and no layout.
@@ -178,7 +179,7 @@ module.exports = exports = (argv) ->
     info = {
       pages: []
       authenticated: req.isAuthenticated()
-      status: if owner
+      loginStatus: if owner
         if req.isAuthenticated()
           'logout'
         else 'login'
@@ -214,7 +215,8 @@ module.exports = exports = (argv) ->
   # Local pages are handled by the pagehandler module.
   app.get(///^/([a-z0-9-]+)\.json$///, (req, res) ->
     file = req.params[0]
-    pagehandler.get(file, (page, status) ->
+    pagehandler.get(file, (e, page, status) ->
+      if e then throw e
       res.json(page, status)
     )
   )
@@ -238,7 +240,10 @@ module.exports = exports = (argv) ->
         console.log("Error: #{e}")
       )
       resp.on('end', ->
-        res.json(JSON.parse(responsedata))
+        if responsedata
+          res.json(JSON.parse(responsedata))
+        else
+          res.send(404)
       )
     ).on('error', (e) ->
       console.log "Error: #{e}"
@@ -255,26 +260,21 @@ module.exports = exports = (argv) ->
 
   # Accept favicon image posted to the server, and if it does not already exist
   # save it.
-  app.post('/favicon.png', (req, res) ->
+  app.post('/favicon.png', authenticated, (req, res) ->
     favicon = req.body.image.replace(///^data:image/png;base64,///, "")
     buf = new Buffer(favicon, 'base64')
-    path.exists(favLoc, (exists) ->
+    path.exists(argv.status, (exists) ->
       if exists
-        res.send('Favicon Exists!')
+        fs.writeFile(favLoc, buf, (e) ->
+          if e then throw e
+          res.send('Favicon Saved')
+        )
       else
-        path.exists(argv.status, (exists) ->
-          if exists
-            fs.writeFile(favLoc, buf, (e) ->
-              if e then throw e
-              res.send('Favicon Saved')
-            )
-          else
-            mkdirp(argv.status, 0777, ->
-              fs.writeFile(favLoc, buf, (e) ->
-                if e then throw e
-                res.send('Favicon Saved')
-              )
-            )
+        mkdirp(argv.status, 0777, ->
+          fs.writeFile(favLoc, buf, (e) ->
+            if e then throw e
+            res.send('Favicon Saved')
+          )
         )
     )
   )
@@ -297,7 +297,8 @@ module.exports = exports = (argv) ->
   app.put(/^\/page\/([a-z0-9-]+)\/action$/i, authenticated, (req, res) ->
     action = JSON.parse(req.body.action)
     # Handle all of the possible actions to be taken on a page,
-    actionCB = (page, status) ->
+    actionCB = (e, page, status) ->
+      if e then throw e
       if status is 404
         res.send(page, status)
       console.log page if argv.debug
@@ -321,6 +322,9 @@ module.exports = exports = (argv) ->
         when 'edit'
           (if item.id is action.id then action.item else item) for item in page.story
 
+        when 'create'
+          page.story or []
+
         else
           console.log "Unfamiliar action: #{action}"
           page.story
@@ -330,8 +334,9 @@ module.exports = exports = (argv) ->
       if not page.journal
         page.journal = []
       page.journal.push(action)
-      pagehandler.put(req.params[0], page, (err) =>
-        if err then throw err
+      console.log page
+      pagehandler.put(req.params[0], page, (e) ->
+        if e then throw e
         res.send('ok')
         console.log 'saved' if argv.debug
       )
@@ -360,6 +365,15 @@ module.exports = exports = (argv) ->
         )
       ).on('error', (e) ->
         console.log "Error: #{e}"
+      )
+    else if action.type is 'create'
+      # Prevent attempt to write circular structure
+      itemCopy = JSON.parse(JSON.stringify(action.item))
+      pagehandler.get(req.params[0], (e, page, status) ->
+        unless status is 404
+          res.send('Page already exists.', 409)
+        else
+          actionCB(null, itemCopy)
       )
     else
       pagehandler.get(req.params[0], actionCB)

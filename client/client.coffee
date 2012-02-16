@@ -19,7 +19,7 @@ $ ->
   randomBytes = (n) -> (randomByte() for [1..n]).join('')
 
   wiki.log = (things...) ->
-    console.log things if console.log?
+    console.log things if console?.log?
 
   wiki.resolutionContext = []
   wiki.fetchContext = []
@@ -175,20 +175,30 @@ $ ->
       .appendTo($('.main'))
       .each refresh
 
-
+  # Find which element is scrollable, body or html
+  scrollContainer = undefined
+  findScrollContainer = -> 
+    scrolled = $("body, html").filter -> $(this).scrollLeft() > 0
+    if scrolled.length > 0
+      scrolled
+    else
+      $("body, html").scrollLeft(1).filter(-> $(this).scrollLeft() == 1).scrollTop(0)
+    
   scrollTo = (el) ->
-    minX = $("body").scrollLeft()
-    maxX = minX + $("body").width()
+    scrollContainer ?= findScrollContainer()
+    bodyWidth = $("body").width()
+    minX = scrollContainer.scrollLeft()
+    maxX = minX + bodyWidth
     target = el.position().left
     width = el.outerWidth(true)
     contentWidth = $(".page").outerWidth(true) * $(".page").size()
 
     if target < minX
-      $("body").animate scrollLeft: target
+      scrollContainer.animate scrollLeft: target
     else if target + width > maxX
-      $("body").animate scrollLeft: target - ($("body").width() - width)
+      scrollContainer.animate scrollLeft: target - (bodyWidth - width)
     else if maxX > $(".pages").outerWidth()
-      $("body").animate scrollLeft: Math.min(target, contentWidth - $("body").width())
+      scrollContainer.animate scrollLeft: Math.min(target, contentWidth - bodyWidth)
 
 
 # PLUGINS for each story item type
@@ -468,7 +478,8 @@ $ ->
   $(document)
     .ajaxError (event, request, settings) ->
       wiki.log 'ajax error', event, request, settings
-      # $('.main').prepend "<li class='error'>Error on #{settings.url}</li>"
+      msg = "<li class='error'>Error on #{settings.url}: #{request.responseText}</li>"
+      $('.main').prepend msg unless request.status == 404
 
   $('.main')
     .delegate '.show-page-source', 'click', (e) ->
