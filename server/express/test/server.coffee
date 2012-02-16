@@ -23,20 +23,44 @@ describe 'server', ->
     file = path.join(argv.db, "asdf-test-page")
     res = {}
     # TODO: When race conditions are fixed in lib/page.coffee clean up function below.
-    createSend = (test, done) ->
+    createSend = (test) ->
       (str) ->
         console.log str
-        runningServer.pagehandler.get('asdf-test-page', (data) ->
+        runningServer.pagehandler.get('asdf-test-page', (e, data) ->
+          if e then throw e
           test(data)
-          done()
         )
-    
+
+    it 'should create a page', (done) ->
+      req.body.action = JSON.stringify({
+      type: 'create'
+      item: {
+        title: "Asdf Test Page"
+        story: [
+          {id: "a1", type: "paragraph", text: "this is the first paragraph"}
+          {id: "a2", type: "paragraph", text: "this is the second paragraph"}
+          {id: "a3", type: "paragraph", text: "this is the third paragraph"}
+          {id: "a4", type: "paragraph", text: "this is the fourth paragraph"}
+          ]
+        journal: []
+      }
+      id: 'd5'
+      })
+      test = (page) ->
+        page.title.should.equal('Asdf Test Page')
+        page.journal[0].type.should.equal('create')
+        page.story[0].id.should.equal('a1')
+        done()
+      res.send = createSend(test)
+      routeCB(req, res)
+
     it 'should move the paragraphs to the order given ', (done) ->
       req.body.action = '{ "type": "move", "order": [ "a1", "a3", "a2", "a4"] }'
       test = (page) ->
         page.story[1].id.should.equal('a3')
         page.story[1].id.should.not.equal('a2')
-      res.send = createSend(test, done)
+        done()
+      res.send = createSend(test)
       routeCB(req, res)
 
     it 'should add a paragraph', (done) ->
@@ -47,7 +71,8 @@ describe 'server', ->
       })
       test = (page) ->
         page.story[3].id.should.equal('a5')
-      res.send = createSend(test, done)
+        done()
+      res.send = createSend(test)
       routeCB(req, res)
 
     it 'should remove a paragraph with given id', (done) ->
@@ -59,7 +84,8 @@ describe 'server', ->
         page.story.length.should.equal(4)
         page.story[2].id.should.not.equal('a2')
         page.story[1].id.should.not.equal('a2')
-      res.send = createSend(test, done)
+        done()
+      res.send = createSend(test)
       routeCB(req, res)
 
     it 'should edit a paragraph in place', (done) ->
@@ -70,7 +96,8 @@ describe 'server', ->
       })
       test = (page) ->
         page.story[1].text.should.equal('edited')
-      res.send = createSend(test, done)
+        done()
+      res.send = createSend(test)
       routeCB(req, res)
 
     it 'should default to no change', (done) ->
@@ -81,7 +108,8 @@ describe 'server', ->
         page.story.length.should.equal(4)
         page.story[1].id.should.equal('a3')
         page.story[3].text.should.equal('this is the fourth paragraph')
-      res.send = createSend(test, done)
+        done()
+      res.send = createSend(test)
       routeCB(req, res)
 
     it 'should refuse to create over a page', (done) ->
@@ -94,7 +122,8 @@ describe 'server', ->
       })
       test = (page) ->
         page.title.should.not.equal('Doh')
-      res.send = createSend(test, done)
+        done()
+      res.send = createSend(test)
       routeCB(req, res)
 
     after( ->

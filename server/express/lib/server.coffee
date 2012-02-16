@@ -215,7 +215,8 @@ module.exports = exports = (argv) ->
   # Local pages are handled by the pagehandler module.
   app.get(///^/([a-z0-9-]+)\.json$///, (req, res) ->
     file = req.params[0]
-    pagehandler.get(file, (page, status) ->
+    pagehandler.get(file, (e, page, status) ->
+      if e then throw e
       res.json(page, status)
     )
   )
@@ -296,7 +297,8 @@ module.exports = exports = (argv) ->
   app.put(/^\/page\/([a-z0-9-]+)\/action$/i, authenticated, (req, res) ->
     action = JSON.parse(req.body.action)
     # Handle all of the possible actions to be taken on a page,
-    actionCB = (page, status) ->
+    actionCB = (e, page, status) ->
+      if e then throw e
       if status is 404
         res.send(page, status)
       console.log page if argv.debug
@@ -320,6 +322,9 @@ module.exports = exports = (argv) ->
         when 'edit'
           (if item.id is action.id then action.item else item) for item in page.story
 
+        when 'create'
+          page.story or []
+
         else
           console.log "Unfamiliar action: #{action}"
           page.story
@@ -330,8 +335,8 @@ module.exports = exports = (argv) ->
         page.journal = []
       page.journal.push(action)
       console.log page
-      pagehandler.put(req.params[0], page, (err) =>
-        if err then throw err
+      pagehandler.put(req.params[0], page, (e) ->
+        if e then throw e
         res.send('ok')
         console.log 'saved' if argv.debug
       )
@@ -362,17 +367,13 @@ module.exports = exports = (argv) ->
         console.log "Error: #{e}"
       )
     else if action.type is 'create'
-      itemCopy = {}
-      for own key, value of action.item
-        itemCopy[key] = value
-      path.exists(path.join(argv.db, req.params[0]), (exists) ->
-        if exists
+      # Prevent attempt to write circular structure
+      itemCopy = JSON.parse(JSON.stringify(action.item))
+      pagehandler.get(req.params[0], (e, page, status) ->
+        unless status is 404
           res.send('Page already exists.', 409)
         else
-          pagehandler.put(req.params[0], itemCopy, (e) ->
-            if e then throw e
-            res.send('ok')
-          )
+          actionCB(null, itemCopy)
       )
     else
       pagehandler.get(req.params[0], actionCB)
