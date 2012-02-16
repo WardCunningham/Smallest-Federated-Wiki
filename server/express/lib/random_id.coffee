@@ -1,8 +1,9 @@
 # ** random_id.coffee **
-# takes no arguments and returns a random id
+# Simple random hex generator, takes an optional number of
+# chars that defaults to 16 and returns a random id.
 
-random_id = ->
-  [0..15].map( ->
+random_id = (chars = 16) ->
+  [0...chars].map( ->
     Math.floor(Math.random() * 16).toString(16)
   ).join('')
 
