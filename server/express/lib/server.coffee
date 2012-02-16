@@ -361,7 +361,7 @@ module.exports = exports = (argv) ->
           console.log("Error: #{e}")
         )
         resp.on('end', ->
-          actionCB(JSON.parse(responsedata))
+          actionCB(null, JSON.parse(responsedata))
         )
       ).on('error', (e) ->
         console.log "Error: #{e}"
