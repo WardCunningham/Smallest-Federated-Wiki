@@ -3,7 +3,6 @@ path = require 'path'
 random = require '../lib/random_id'
 testid = random()
 argv = require('../lib/defaultargs.coffee')({d: path.join('/tmp', 'sfwtests', testid), p: 55555})
-fs = require('fs')
 
 describe 'server', ->
   describe '#actionCB()', ->
