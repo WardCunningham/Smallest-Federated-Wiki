@@ -7,6 +7,7 @@ fs = require('fs')
 path = require('path')
 mkdirp = require('mkdirp')
 random_id = require('./random_id')
+events = require('events')
 
 # Export a function that generates a page handler when called options object.
 module.exports = exports = (argv) ->
@@ -14,17 +15,17 @@ module.exports = exports = (argv) ->
   #### Private utility methods. ####
   load_parse = (loc, cb) ->
     fs.readFile(loc, (err, data) ->
-      if err then throw err
-      cb(JSON.parse(data))
+      if err then cb(err)
+      cb(null, JSON.parse(data))
     )
   
   load_parse_copy = (defloc, file, cb) ->
     fs.readFile(defloc, (err, data) ->
-      if err then throw err
+      if err then cb(err)
       page = JSON.parse(data)
-      cb(page)
+      cb(null, page)
       itself.put(file, page, (err) ->
-        if err then throw err
+        if err then cb(err)
       )
     )
 
@@ -45,7 +46,7 @@ module.exports = exports = (argv) ->
             if exists
               load_parse_copy(defloc, file, cb)
             else
-              cb('Page not found', 404)
+              cb(null, 'Page not found', 404)
           )
       )
     else
@@ -57,7 +58,7 @@ module.exports = exports = (argv) ->
           )
         else
           mkdirp(path.dirname(loc), 0777, (err) ->
-            if err then throw err
+            if err then cb(err)
             fs.writeFile(loc, page, (err) ->
               cb(err)
             )
@@ -66,22 +67,34 @@ module.exports = exports = (argv) ->
 
   # Control variable that tells if the serial queue is currently happening.
   # Set back to 0 when all jobs are complete.
-  working = 0
+  working = false
 
   # Keep file io working on queued jobs, but don't block the main thread.
   serial = (item) ->
     if item
-      working = 1
-      fileio(item.file, item.page, (data, status) ->
+      itself.start()
+      fileio(item.file, item.page, (err, data, status) ->
         process.nextTick( ->
           serial(queue.shift())
         )
-        item.cb(data, status)
+        item.cb(err, data, status)
       )
     else
-      working = 0
-  
-  itself = {}
+      itself.stop()
+
+  # Make the exported object an instance of EventEmitter
+  # so other modules can tell if it is working or not.
+  itself = new events.EventEmitter
+  itself.start = ->
+    working = true
+    @emit 'working'
+  itself.stop = ->
+    working = false
+    @emit 'finished'
+
+  itself.isWorking = ->
+    working
+
   # get takes a slug and a callback, it then calls the callback with the page
   # it wanted, or the same named page from default-data, or a 404 status and message
   # and sends it back.
