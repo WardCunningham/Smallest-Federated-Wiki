@@ -16,6 +16,7 @@ end
 
 if USE_NODE
   Capybara.app_host = "http://localhost:33333"
+  Capybara.server_port = 33333
 else
   require File.expand_path(File.join(File.dirname(__FILE__), "../server/sinatra/server"))
 
