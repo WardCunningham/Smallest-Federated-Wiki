@@ -248,7 +248,16 @@ class Controller < Sinatra::Base
 
   get %r{^/remote/([a-zA-Z0-9:\.-]+)/([a-z0-9-]+)\.json$} do |site, name|
     content_type 'application/json'
-    RestClient.get "#{site}/#{name}.json"
+    RestClient.get "#{site}/#{name}.json" do |response, request, result, &block|
+      case response.code
+      when 200
+        response
+      when 404
+        halt 404
+      else
+        response.return!(request, result, &block)
+      end
+    end
   end
 
   get %r{^/remote/([a-zA-Z0-9:\.-]+)/favicon.png$} do |site|
