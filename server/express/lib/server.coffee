@@ -30,8 +30,6 @@ module.exports = exports = (argv) ->
   # Tell pagehandler where to find data, and default data.
   app.pagehandler = pagehandler = require('./page')(argv)
 
-  OPENID = "#{argv.status}/open_id.identity"
-
   #### Setting up Authentication ####
   # The owner of a server is simply the open id url that the wiki
   # has been claimed with.  It is persisted at argv.status/open_id.identity,
@@ -42,14 +40,14 @@ module.exports = exports = (argv) ->
   # if it is return the owner, if not set the owner
   # to the id if it is provided.
   setOwner = (id, cb) ->
-    path.exists(OPENID, (exists) ->
+    path.exists(argv.id, (exists) ->
       if exists
-        fs.readFile(OPENID, (err, data) ->
+        fs.readFile(argv.id, (err, data) ->
           if err then throw err
           owner += data
           cb())
       else if id
-        fs.writeFile(OPENID, id, (err) ->
+        fs.writeFile(argv.id, id, (err) ->
           if err then throw err
           console.log("Claimed by #{id}")
           owner = id
@@ -105,6 +103,34 @@ module.exports = exports = (argv) ->
       res.render('oops.html', {status: 401, msg:err.message})
     else
       next(err)
+
+
+  remoteGet = (remote, slug, cb) ->
+    [host, port] = remote.split(':')
+    getopts = {
+      host: host
+      port: port or 80
+      path: "/#{slug}.json"
+    }
+    # TODO: This needs more robust error handling, just trying to
+    # keep it from taking down the server.
+    http.get(getopts, (resp) ->
+      responsedata = ''
+      resp.on('data', (chunk) ->
+        responsedata += chunk
+      )
+      resp.on('error', (e) ->
+        cb(e)
+      )
+      resp.on('end', ->
+        if responsedata
+          cb(null, JSON.parse(responsedata), resp.statusCode)
+        else
+          cb(null, 'Page not found', 404)
+      )
+    ).on('error', (e) ->
+      cb(e)
+    )
 
   #### Express configuration ####
   # Set up all the standard express server options,
@@ -173,7 +199,7 @@ module.exports = exports = (argv) ->
   # Can also be handled by the client, but it also sets up
   # the login status, and related footer html, which the client
   # relies on to know if it is logged in or not.
-  app.get(///^((/[a-zA-Z0-9:.-]+/[a-z0-9-]+)+)$///, (req, res) ->
+  app.get(///^((/[a-zA-Z0-9:.-]+/[a-z0-9-]+)+)/?$///, (req, res) ->
     urlPages = (i for i in req.params[0].split('/') by 2)[1..]
     urlLocs = (j for j in req.params[0].split('/')[1..] by 2)
     info = {
@@ -224,29 +250,9 @@ module.exports = exports = (argv) ->
   # Remote pages use the http client to retrieve the page
   # and sends it to the client.  TODO: consider caching remote pages locally.
   app.get(///^/remote/([a-zA-Z0-9:\.-]+)/([a-z0-9-]+)\.json$///, (req, res) ->
-    getopts = {
-      host: req.params[0]
-      port: 80
-      path: "/#{req.params[1]}.json"
-    }
-    # TODO: This needs more robust error handling, just trying to
-    # keep it from taking down the server.
-    http.get(getopts, (resp) ->
-      responsedata = ''
-      resp.on('data', (chunk) ->
-        responsedata += chunk
-      )
-      resp.on('error', (e) ->
-        console.log("Error: #{e}")
-      )
-      resp.on('end', ->
-        if responsedata
-          res.json(JSON.parse(responsedata))
-        else
-          res.send(404)
-      )
-    ).on('error', (e) ->
-      console.log "Error: #{e}"
+    remoteGet(req.params[0], req.params[1], (e, page, status) ->
+      if e then console.log "remoteGet error:", e if argv.debug
+      res.send(page, status)
     )
   )
 
@@ -345,27 +351,7 @@ module.exports = exports = (argv) ->
     # If the action is a fork, get the page from the remote server,
     # otherwise ask pagehandler for it.
     if action.fork
-      getopts = {
-        host: action.fork
-        port: 80
-        path: "/#{req.params[0]}.json"
-      }
-      # TODO: This needs more robust error handling, just trying to
-      # keep it from taking down the server.
-      http.get(getopts, (resp) ->
-        responsedata = ''
-        resp.on('data', (chunk) ->
-          responsedata += chunk
-        )
-        resp.on('error', (e) ->
-          console.log("Error: #{e}")
-        )
-        resp.on('end', ->
-          actionCB(null, JSON.parse(responsedata))
-        )
-      ).on('error', (e) ->
-        console.log "Error: #{e}"
-      )
+      remoteGet(action.fork, req.params[0], actionCB)
     else if action.type is 'create'
       # Prevent attempt to write circular structure
       itemCopy = JSON.parse(JSON.stringify(action.item))

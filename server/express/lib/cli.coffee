@@ -54,6 +54,9 @@ argv = optimist
     boolean   : true
     describe  : 'Set server to work with the rspec integration tests'
   )
+  .options('id',
+    describe  : 'Set the location of the open id file'
+  )
   .argv
 
 # If h/help is set print the generated help message and exit.
