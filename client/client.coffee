@@ -41,7 +41,7 @@ $ ->
       "<a class=\"internal\" href=\"/#{slug}.html\" data-page-name=\"#{slug}\" title=\"#{wiki.resolutionContext.join(' => ')}\">#{name}</a>"
     string
       .replace(/\[\[([^\]]+)\]\]/gi, renderInternalLink)
-      .replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" href=\"$1\">$2</a>")
+      .replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" target=\"_blank\" href=\"$1\">$2</a>")
 
   addToJournal = (journalElement, action) ->
     pageElement = journalElement.parents('.page:first')
@@ -177,7 +177,7 @@ $ ->
 
   # Find which element is scrollable, body or html
   scrollContainer = undefined
-  findScrollContainer = -> 
+  findScrollContainer = ->
     scrolled = $("body, html").filter -> $(this).scrollLeft() > 0
     if scrolled.length > 0
       scrolled
@@ -525,6 +525,6 @@ $ ->
   urlPages = (i for i in $(location).attr('pathname').split('/') by 2)[1..]
   urlLocs = (j for j in $(location).attr('pathname').split('/')[1..] by 2)
   for urlPage, idx in urlPages when urlPage not in pagesInDom()
-      createPage(urlPage, urlLocs[idx]).appendTo('.main')
+    createPage(urlPage, urlLocs[idx]).appendTo('.main') unless urlPage is ''
 
   $('.page').each refresh

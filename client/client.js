@@ -61,7 +61,7 @@
         wiki.log('resolve', slug, 'context', wiki.resolutionContext.join(' => '));
         return "<a class=\"internal\" href=\"/" + slug + ".html\" data-page-name=\"" + slug + "\" title=\"" + (wiki.resolutionContext.join(' => ')) + "\">" + name + "</a>";
       };
-      return string.replace(/\[\[([^\]]+)\]\]/gi, renderInternalLink).replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" href=\"$1\">$2</a>");
+      return string.replace(/\[\[([^\]]+)\]\]/gi, renderInternalLink).replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" target=\"_blank\" href=\"$1\">$2</a>");
     };
     addToJournal = function(journalElement, action) {
       var actionElement, pageElement;
@@ -682,7 +682,7 @@
     for (idx = 0, _len = urlPages.length; idx < _len; idx++) {
       urlPage = urlPages[idx];
       if (__indexOf.call(pagesInDom(), urlPage) < 0) {
-        createPage(urlPage, urlLocs[idx]).appendTo('.main');
+        if (urlPage !== '') createPage(urlPage, urlLocs[idx]).appendTo('.main');
       }
     }
     return $('.page').each(refresh);
