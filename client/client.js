@@ -250,6 +250,7 @@
       bodyWidth = $("body").width();
       minX = scrollContainer.scrollLeft();
       maxX = minX + bodyWidth;
+      wiki.log('scrollTo', el, el.position());
       target = el.position().left;
       width = el.outerWidth(true);
       contentWidth = $(".page").outerWidth(true) * $(".page").size();
@@ -675,13 +676,12 @@
     });
     firstUrlPages = urlPages();
     firstUrlLocs = urlLocs();
+    wiki.log('amost createPage', firstUrlPages, firstUrlLocs, pagesInDom());
     for (idx = 0, _len = firstUrlPages.length; idx < _len; idx++) {
       urlPage = firstUrlPages[idx];
-      if (__indexOf.call(pagesInDom(), urlPage) < 0) {
-        if (urlPage !== '') {
-          createPage(urlPage, firstUrlLocs[idx]).appendTo('.main');
-        }
-      }
+      if (!(__indexOf.call(pagesInDom(), urlPage) < 0)) continue;
+      wiki.log('createPage', urlPage, idx);
+      if (urlPage !== '') createPage(urlPage, firstUrlLocs[idx]).appendTo('.main');
     }
     return $('.page').each(refresh);
   });

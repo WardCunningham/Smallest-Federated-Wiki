@@ -189,6 +189,7 @@ $ ->
     bodyWidth = $("body").width()
     minX = scrollContainer.scrollLeft()
     maxX = minX + bodyWidth
+    wiki.log 'scrollTo', el, el.position()
     target = el.position().left
     width = el.outerWidth(true)
     contentWidth = $(".page").outerWidth(true) * $(".page").size()
@@ -525,7 +526,9 @@ $ ->
 
   firstUrlPages = urlPages()
   firstUrlLocs = urlLocs()
+  wiki.log 'amost createPage', firstUrlPages, firstUrlLocs, pagesInDom()
   for urlPage, idx in firstUrlPages when urlPage not in pagesInDom()
+    wiki.log 'createPage', urlPage, idx
     createPage(urlPage, firstUrlLocs[idx]).appendTo('.main') unless urlPage is ''
 
   $('.page').each refresh
