@@ -344,8 +344,8 @@ $ ->
         .append("<a class=\"show-page-source\" href=\"/#{slug}.json?random=#{randomBytes(4)}\" title=\"source\">JSON</a> . ")
         .append("<a href=\"#\" class=\"add-factory\" title=\"add paragraph\">[+]</a>")
 
-      if History.enabled
-        setState {pages: pagesInDom(), active: slug, locs: locsInDom() }
+      setActive(slug)
+      setState()
 
     fetch = (slug, callback) ->
       wiki.fetchContext = ['origin'] unless wiki.fetchContext.length > 0
@@ -407,43 +407,42 @@ $ ->
 
 # FUNCTIONS and HANDLERS to manage location bar and back button
 
-  setState = (state) ->
-    if History.enabled
-      wiki.log 'set state', state
-      url = ("/#{state.locs?[idx] or 'view'}/#{page}" for page, idx in state.pages).join('') # + "##{state.active}"
-      History.pushState state, state.active, url
+  setState = ->
+    if history and history.pushState
+      locs = locsInDom()
+      pages = pagesInDom()
+      url = ("/#{locs?[idx] or 'view'}/#{page}" for page, idx in pages).join('')
+      unless url is document.location.pathname
+        wiki.log 'set state', locs, pages
+        history.pushState(null, null, url)
 
   setActive = (page) ->
-    if History.enabled
-      wiki.log 'set active', page
-      state = History.getState().data
-      state.active = page
-      setState state
+    wiki.log 'set active', page
+    $(".active").removeClass("active")
+    scrollTo $("#"+page).addClass("active")
 
-  showState = (state) ->
+  showState = ->
     # show and refresh correct pages
     wiki.log 'show state'
     oldPages = pagesInDom()
-    newPages = state.pages
+    newPages = urlPages()
+    oldLocs = locsInDom()
+    newLocs = urlLocs()
+
     previousPage = newPages
 
-    return unless newPages
-
-    for name in newPages
+    return if (newPages is oldPages) and (newLocs is oldLocs)
+    for name, idx in newPages
       if name in oldPages
         delete oldPages[oldPages.indexOf(name)]
       else
-        createPage(name).insertAfter(previousPage).each refresh
-      previousPage = findPage(name)
+        createPage(name, newLocs[idx]).insertAfter(previousPage).each refresh
+      previousPage = $('#'+name)
 
-    name && findPage(name).remove() for name in oldPages
+    $('#'+name)?.remove() for name in oldPages
 
-    # scroll to active
-    $(".active").removeClass("active")
-    scrollTo $("#"+state.active).addClass("active")
-
-  History.Adapter.bind window, 'statechange', () ->
-    showState state if state = History.getState().data
+  $(window).on 'popstate', (event) ->
+    showState()
 
   LEFTARROW = 37
   RIGHTARROW = 39
@@ -452,28 +451,30 @@ $ ->
     direction = switch event.which
       when LEFTARROW then -1
       when RIGHTARROW then +1
-    if direction && History.enabled && not (event.target.tagName is "TEXTAREA")
-      state = History.getState().data
-      newIndex = state.pages.indexOf(state.active) + direction
-      if 0 <= newIndex < state.pages.length
-        state.active = state.pages[newIndex]
-      setState state
+    if direction && not (event.target.tagName is "TEXTAREA")
+      pages = pagesInDom()
+      newIndex = pages.indexOf($('.active').attr('id')) + direction
+      if 0 <= newIndex < pages.length
+        setActive(pages[newIndex])
 
-  pagesInDom = () ->
+  pagesInDom = ->
     $.makeArray $(".page").map (_, el) -> el.id
 
-  locsInDom = () ->
+  urlPages = ->
+    (i for i in $(location).attr('pathname').split('/') by 2)[1..]
+
+  locsInDom = ->
     $.makeArray $(".page").map (_, el) ->
       $(el).data('site') or 'view'
+
+  urlLocs = ->
+    (j for j in $(location).attr('pathname').split('/')[1..] by 2)
 
   createPage = (name, loc) ->
     if loc and (loc isnt ('view' or 'my'))
       $("<div/>").attr('id', name).attr('data-site', loc).addClass("page")
     else
       $("<div/>").attr('id', name).addClass("page")
-
-  findPage = (name) ->
-    $("#"+name)
 
 # HANDLERS for jQuery events
 
@@ -522,9 +523,9 @@ $ ->
     $("footer input:first").val $(this).attr('data-provider')
     $("footer form").submit()
 
-  urlPages = (i for i in $(location).attr('pathname').split('/') by 2)[1..]
-  urlLocs = (j for j in $(location).attr('pathname').split('/')[1..] by 2)
-  for urlPage, idx in urlPages when urlPage not in pagesInDom()
-    createPage(urlPage, urlLocs[idx]).appendTo('.main') unless urlPage is ''
+  firstUrlPages = urlPages()
+  firstUrlLocs = urlLocs()
+  for urlPage, idx in firstUrlPages when urlPage not in pagesInDom()
+    createPage(urlPage, firstUrlLocs[idx]).appendTo('.main') unless urlPage is ''
 
   $('.page').each refresh

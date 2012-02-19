@@ -7,7 +7,7 @@
   };
 
   $(function() {
-    var LEFTARROW, RIGHTARROW, addToJournal, asSlug, createPage, doInternalLink, doPlugin, findPage, findScrollContainer, formatTime, getItem, getPlugin, i, idx, j, locsInDom, pagesInDom, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveFrom, resolveLinks, scripts, scrollContainer, scrollTo, setActive, setState, showState, textEditor, urlLocs, urlPage, urlPages, useLocalStorage, _len;
+    var LEFTARROW, RIGHTARROW, addToJournal, asSlug, createPage, doInternalLink, doPlugin, findScrollContainer, firstUrlLocs, firstUrlPages, formatTime, getItem, getPlugin, idx, locsInDom, pagesInDom, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveFrom, resolveLinks, scripts, scrollContainer, scrollTo, setActive, setState, showState, textEditor, urlLocs, urlPage, urlPages, useLocalStorage, _len;
     window.wiki = {};
     window.dialog = $('<div></div>').html('This dialog will show every time!').dialog({
       autoOpen: false,
@@ -440,13 +440,8 @@
           return addToJournal(journalElement, action);
         });
         footerElement.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ').append("<a class=\"show-page-source\" href=\"/" + slug + ".json?random=" + (randomBytes(4)) + "\" title=\"source\">JSON</a> . ").append("<a href=\"#\" class=\"add-factory\" title=\"add paragraph\">[+]</a>");
-        if (History.enabled) {
-          return setState({
-            pages: pagesInDom(),
-            active: slug,
-            locs: locsInDom()
-          });
-        }
+        setActive(slug);
+        return setState();
       };
       fetch = function(slug, callback) {
         var resource;
@@ -524,63 +519,63 @@
         }
       }
     };
-    setState = function(state) {
-      var idx, page, url;
-      if (History.enabled) {
-        wiki.log('set state', state);
+    setState = function() {
+      var idx, locs, page, pages, url;
+      if (history && history.pushState) {
+        locs = locsInDom();
+        pages = pagesInDom();
         url = ((function() {
-          var _len, _ref, _ref2, _results;
-          _ref = state.pages;
+          var _len, _results;
           _results = [];
-          for (idx = 0, _len = _ref.length; idx < _len; idx++) {
-            page = _ref[idx];
-            _results.push("/" + (((_ref2 = state.locs) != null ? _ref2[idx] : void 0) || 'view') + "/" + page);
+          for (idx = 0, _len = pages.length; idx < _len; idx++) {
+            page = pages[idx];
+            _results.push("/" + ((locs != null ? locs[idx] : void 0) || 'view') + "/" + page);
           }
           return _results;
         })()).join('');
-        return History.pushState(state, state.active, url);
+        if (url !== document.location.pathname) {
+          wiki.log('set state', locs, pages);
+          return history.pushState(null, null, url);
+        }
       }
     };
     setActive = function(page) {
-      var state;
-      if (History.enabled) {
-        wiki.log('set active', page);
-        state = History.getState().data;
-        state.active = page;
-        return setState(state);
-      }
+      wiki.log('set active', page);
+      $(".active").removeClass("active");
+      return scrollTo($("#" + page).addClass("active"));
     };
-    showState = function(state) {
-      var name, newPages, oldPages, previousPage, _i, _j, _len, _len2;
+    showState = function() {
+      var idx, name, newLocs, newPages, oldLocs, oldPages, previousPage, _i, _len, _len2, _ref, _results;
       wiki.log('show state');
       oldPages = pagesInDom();
-      newPages = state.pages;
+      newPages = urlPages();
+      oldLocs = locsInDom();
+      newLocs = urlLocs();
       previousPage = newPages;
-      if (!newPages) return;
-      for (_i = 0, _len = newPages.length; _i < _len; _i++) {
-        name = newPages[_i];
+      if ((newPages === oldPages) && (newLocs === oldLocs)) return;
+      for (idx = 0, _len = newPages.length; idx < _len; idx++) {
+        name = newPages[idx];
         if (__indexOf.call(oldPages, name) >= 0) {
           delete oldPages[oldPages.indexOf(name)];
         } else {
-          createPage(name).insertAfter(previousPage).each(refresh);
+          createPage(name, newLocs[idx]).insertAfter(previousPage).each(refresh);
         }
-        previousPage = findPage(name);
+        previousPage = $('#' + name);
       }
-      for (_j = 0, _len2 = oldPages.length; _j < _len2; _j++) {
-        name = oldPages[_j];
-        name && findPage(name).remove();
+      _results = [];
+      for (_i = 0, _len2 = oldPages.length; _i < _len2; _i++) {
+        name = oldPages[_i];
+        _results.push((_ref = $('#' + name)) != null ? _ref.remove() : void 0);
       }
-      $(".active").removeClass("active");
-      return scrollTo($("#" + state.active).addClass("active"));
+      return _results;
     };
-    History.Adapter.bind(window, 'statechange', function() {
-      var state;
-      if (state = History.getState().data) return showState(state);
+    $(window).on('popstate', function(event) {
+      return showState();
     });
     LEFTARROW = 37;
     RIGHTARROW = 39;
     $(document).keydown(function(event) {
-      var direction, newIndex, state;
+      var direction, newIndex, pages;
       direction = (function() {
         switch (event.which) {
           case LEFTARROW:
@@ -589,13 +584,12 @@
             return +1;
         }
       })();
-      if (direction && History.enabled && !(event.target.tagName === "TEXTAREA")) {
-        state = History.getState().data;
-        newIndex = state.pages.indexOf(state.active) + direction;
-        if ((0 <= newIndex && newIndex < state.pages.length)) {
-          state.active = state.pages[newIndex];
+      if (direction && !(event.target.tagName === "TEXTAREA")) {
+        pages = pagesInDom();
+        newIndex = pages.indexOf($('.active').attr('id')) + direction;
+        if ((0 <= newIndex && newIndex < pages.length)) {
+          return setActive(pages[newIndex]);
         }
-        return setState(state);
       }
     });
     pagesInDom = function() {
@@ -603,10 +597,33 @@
         return el.id;
       }));
     };
+    urlPages = function() {
+      var i;
+      return ((function() {
+        var _i, _len, _ref, _results, _step;
+        _ref = $(location).attr('pathname').split('/');
+        _results = [];
+        for (_i = 0, _len = _ref.length, _step = 2; _i < _len; _i += _step) {
+          i = _ref[_i];
+          _results.push(i);
+        }
+        return _results;
+      })()).slice(1);
+    };
     locsInDom = function() {
       return $.makeArray($(".page").map(function(_, el) {
         return $(el).data('site') || 'view';
       }));
+    };
+    urlLocs = function() {
+      var j, _i, _len, _ref, _results, _step;
+      _ref = $(location).attr('pathname').split('/').slice(1);
+      _results = [];
+      for (_i = 0, _len = _ref.length, _step = 2; _i < _len; _i += _step) {
+        j = _ref[_i];
+        _results.push(j);
+      }
+      return _results;
     };
     createPage = function(name, loc) {
       if (loc && (loc !== ('view' || 'my'))) {
@@ -614,9 +631,6 @@
       } else {
         return $("<div/>").attr('id', name).addClass("page");
       }
-    };
-    findPage = function(name) {
-      return $("#" + name);
     };
     $(document).ajaxError(function(event, request, settings) {
       var msg;
@@ -659,30 +673,14 @@
       $("footer input:first").val($(this).attr('data-provider'));
       return $("footer form").submit();
     });
-    urlPages = ((function() {
-      var _i, _len, _ref, _results, _step;
-      _ref = $(location).attr('pathname').split('/');
-      _results = [];
-      for (_i = 0, _len = _ref.length, _step = 2; _i < _len; _i += _step) {
-        i = _ref[_i];
-        _results.push(i);
-      }
-      return _results;
-    })()).slice(1);
-    urlLocs = (function() {
-      var _i, _len, _ref, _results, _step;
-      _ref = $(location).attr('pathname').split('/').slice(1);
-      _results = [];
-      for (_i = 0, _len = _ref.length, _step = 2; _i < _len; _i += _step) {
-        j = _ref[_i];
-        _results.push(j);
-      }
-      return _results;
-    })();
-    for (idx = 0, _len = urlPages.length; idx < _len; idx++) {
-      urlPage = urlPages[idx];
+    firstUrlPages = urlPages();
+    firstUrlLocs = urlLocs();
+    for (idx = 0, _len = firstUrlPages.length; idx < _len; idx++) {
+      urlPage = firstUrlPages[idx];
       if (__indexOf.call(pagesInDom(), urlPage) < 0) {
-        if (urlPage !== '') createPage(urlPage, urlLocs[idx]).appendTo('.main');
+        if (urlPage !== '') {
+          createPage(urlPage, firstUrlLocs[idx]).appendTo('.main');
+        }
       }
     }
     return $('.page').each(refresh);
