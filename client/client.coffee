@@ -170,10 +170,12 @@ $ ->
       error(err)
 
   doInternalLink = wiki.doInternalLink = (name, page) ->
+    name = asSlug(name)
     $(page).nextAll().remove() if page?
-    scrollTo createPage(asSlug(name))
+    createPage(name)
       .appendTo($('.main'))
       .each refresh
+    setActive(name)
 
   # Find which element is scrollable, body or html
   scrollContainer = undefined
@@ -345,12 +347,12 @@ $ ->
         .append("<a class=\"show-page-source\" href=\"/#{slug}.json?random=#{randomBytes(4)}\" title=\"source\">JSON</a> . ")
         .append("<a href=\"#\" class=\"add-factory\" title=\"add paragraph\">[+]</a>")
 
-      setActive(slug)
       setState()
 
-    fetch = (slug, callback) ->
+    fetch = (slug, callback, localContext) ->
       wiki.fetchContext = ['origin'] unless wiki.fetchContext.length > 0
-      site = wiki.fetchContext.shift()
+      localContext ?= (i for own i in wiki.fetchContext)
+      site = localContext.shift()
       resource = if site=='origin'
         site = null
         slug
@@ -366,8 +368,8 @@ $ ->
           $(pageElement).data('site', site)
           callback(page)
         error: (xhr, type, msg) ->
-          if wiki.fetchContext.length > 0
-            fetch(slug,callback)
+          if localContext.length > 0
+            fetch(slug, callback, localContext)
           else
             site = null
             callback(null)
@@ -424,11 +426,12 @@ $ ->
 
   showState = ->
     # show and refresh correct pages
-    wiki.log 'show state'
     oldPages = pagesInDom()
     newPages = urlPages()
     oldLocs = locsInDom()
     newLocs = urlLocs()
+
+    wiki.log 'showState', oldPages, newPages, oldLocs, newLocs
 
     previousPage = newPages
 
@@ -442,7 +445,10 @@ $ ->
 
     $('#'+name)?.remove() for name in oldPages
 
+    setActive($('.page').last().attr('id'))
+
   $(window).on 'popstate', (event) ->
+    wiki.log 'popstate', event
     showState()
 
   LEFTARROW = 37
@@ -501,7 +507,8 @@ $ ->
       wiki.fetchContext = $(e.target).attr('title').split(' => ')
       wiki.log 'click', name, 'context', wiki.fetchContext
       $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
-      scrollTo createPage(name).appendTo('.main').each refresh
+      createPage(name).appendTo('.main').each refresh
+      setActive(name)
       # FIXME: can open page multiple times with shift key
 
     .delegate '.action', 'hover', ->
@@ -513,16 +520,19 @@ $ ->
       name = $(e.target).data('slug')
       wiki.log 'click', name, 'site', $(e.target).data('site')
       $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
-      scrollTo createPage(name)
+      createPage(name)
         .data('site',$(e.target).data('site'))
         .appendTo($('.main'))
         .each refresh
+      setActive(name)
 
   useLocalStorage = -> $(".login").length > 0
 
   $(".provider input").click ->
     $("footer input:first").val $(this).attr('data-provider')
     $("footer form").submit()
+
+  setState()
 
   firstUrlPages = urlPages()
   firstUrlLocs = urlLocs()
@@ -532,3 +542,4 @@ $ ->
     createPage(urlPage, firstUrlLocs[idx]).appendTo('.main') unless urlPage is ''
 
   $('.page').each refresh
+  setActive($('.page').last().attr('id'))
