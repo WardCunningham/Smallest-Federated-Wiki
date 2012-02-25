@@ -41,7 +41,7 @@ $ ->
       "<a class=\"internal\" href=\"/#{slug}.html\" data-page-name=\"#{slug}\" title=\"#{wiki.resolutionContext.join(' => ')}\">#{name}</a>"
     string
       .replace(/\[\[([^\]]+)\]\]/gi, renderInternalLink)
-      .replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" href=\"$1\">$2</a>")
+      .replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" target=\"_blank\" href=\"$1\">$2</a>")
 
   addToJournal = (journalElement, action) ->
     pageElement = journalElement.parents('.page:first')
@@ -170,14 +170,16 @@ $ ->
       error(err)
 
   doInternalLink = wiki.doInternalLink = (name, page) ->
+    name = asSlug(name)
     $(page).nextAll().remove() if page?
-    scrollTo createPage(asSlug(name))
+    createPage(name)
       .appendTo($('.main'))
       .each refresh
+    setActive(name)
 
   # Find which element is scrollable, body or html
   scrollContainer = undefined
-  findScrollContainer = -> 
+  findScrollContainer = ->
     scrolled = $("body, html").filter -> $(this).scrollLeft() > 0
     if scrolled.length > 0
       scrolled
@@ -189,6 +191,7 @@ $ ->
     bodyWidth = $("body").width()
     minX = scrollContainer.scrollLeft()
     maxX = minX + bodyWidth
+    wiki.log 'scrollTo', el, el.position()
     target = el.position().left
     width = el.outerWidth(true)
     contentWidth = $(".page").outerWidth(true) * $(".page").size()
@@ -344,12 +347,12 @@ $ ->
         .append("<a class=\"show-page-source\" href=\"/#{slug}.json?random=#{randomBytes(4)}\" title=\"source\">JSON</a> . ")
         .append("<a href=\"#\" class=\"add-factory\" title=\"add paragraph\">[+]</a>")
 
-      if History.enabled
-        setState {pages: pagesInDom(), active: slug, locs: locsInDom() }
+      setUrl()
 
-    fetch = (slug, callback) ->
+    fetch = (slug, callback, localContext) ->
       wiki.fetchContext = ['origin'] unless wiki.fetchContext.length > 0
-      site = wiki.fetchContext.shift()
+      localContext ?= (i for own i in wiki.fetchContext)
+      site = localContext.shift()
       resource = if site=='origin'
         site = null
         slug
@@ -365,8 +368,8 @@ $ ->
           $(pageElement).data('site', site)
           callback(page)
         error: (xhr, type, msg) ->
-          if wiki.fetchContext.length > 0
-            fetch(slug,callback)
+          if localContext.length > 0
+            fetch(slug, callback, localContext)
           else
             site = null
             callback(null)
@@ -407,43 +410,43 @@ $ ->
 
 # FUNCTIONS and HANDLERS to manage location bar and back button
 
-  setState = (state) ->
-    if History.enabled
-      wiki.log 'set state', state
-      url = ("/#{state.locs?[idx] or 'view'}/#{page}" for page, idx in state.pages).join('') # + "##{state.active}"
-      History.pushState state, state.active, url
+  setUrl = ->
+    if history and history.pushState
+      locs = locsInDom()
+      pages = pagesInDom()
+      url = ("/#{locs?[idx] or 'view'}/#{page}" for page, idx in pages).join('')
+      unless url is $(location).attr('pathname')
+        wiki.log 'set state', locs, pages
+        history.pushState(null, null, url)
 
   setActive = (page) ->
-    if History.enabled
-      wiki.log 'set active', page
-      state = History.getState().data
-      state.active = page
-      setState state
+    wiki.log 'set active', page
+    $(".active").removeClass("active")
+    scrollTo $("#"+page).addClass("active")
 
-  showState = (state) ->
+  showState = ->
     # show and refresh correct pages
-    wiki.log 'show state'
     oldPages = pagesInDom()
-    newPages = state.pages
+    newPages = urlPages()
+    oldLocs = locsInDom()
+    newLocs = urlLocs()
+
+    wiki.log 'showState', oldPages, newPages, oldLocs, newLocs
+
     previousPage = newPages
 
-    return unless newPages
-
-    for name in newPages
+    return if (newPages is oldPages) and (newLocs is oldLocs)
+    for name, idx in newPages
       if name in oldPages
         delete oldPages[oldPages.indexOf(name)]
       else
-        createPage(name).insertAfter(previousPage).each refresh
-      previousPage = findPage(name)
+        createPage(name, newLocs[idx]).insertAfter(previousPage).each refresh
+      previousPage = $('#'+name)
 
-    name && findPage(name).remove() for name in oldPages
+    $('#'+name)?.remove() for name in oldPages
 
-    # scroll to active
-    $(".active").removeClass("active")
-    scrollTo $("#"+state.active).addClass("active")
+    setActive($('.page').last().attr('id'))
 
-  History.Adapter.bind window, 'statechange', () ->
-    showState state if state = History.getState().data
 
   LEFTARROW = 37
   RIGHTARROW = 39
@@ -452,19 +455,27 @@ $ ->
     direction = switch event.which
       when LEFTARROW then -1
       when RIGHTARROW then +1
-    if direction && History.enabled && not (event.target.tagName is "TEXTAREA")
-      state = History.getState().data
-      newIndex = state.pages.indexOf(state.active) + direction
-      if 0 <= newIndex < state.pages.length
-        state.active = state.pages[newIndex]
-      setState state
+    if direction && not (event.target.tagName is "TEXTAREA")
+      pages = pagesInDom()
+      newIndex = pages.indexOf($('.active').attr('id')) + direction
+      if 0 <= newIndex < pages.length
+        setActive(pages[newIndex])
 
-  pagesInDom = () ->
+# FUNCTIONS for finding the current state of pages and locations in the
+# URL or DOM
+
+  pagesInDom = ->
     $.makeArray $(".page").map (_, el) -> el.id
 
-  locsInDom = () ->
+  urlPages = ->
+    (i for i in $(location).attr('pathname').split('/') by 2)[1..]
+
+  locsInDom = ->
     $.makeArray $(".page").map (_, el) ->
       $(el).data('site') or 'view'
+
+  urlLocs = ->
+    (j for j in $(location).attr('pathname').split('/')[1..] by 2)
 
   createPage = (name, loc) ->
     if loc and (loc isnt ('view' or 'my'))
@@ -472,10 +483,11 @@ $ ->
     else
       $("<div/>").attr('id', name).addClass("page")
 
-  findPage = (name) ->
-    $("#"+name)
-
 # HANDLERS for jQuery events
+
+  $(window).on 'popstate', (event) ->
+    wiki.log 'popstate', event
+    showState()
 
   $(document)
     .ajaxError (event, request, settings) ->
@@ -499,7 +511,8 @@ $ ->
       wiki.fetchContext = $(e.target).attr('title').split(' => ')
       wiki.log 'click', name, 'context', wiki.fetchContext
       $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
-      scrollTo createPage(name).appendTo('.main').each refresh
+      createPage(name).appendTo('.main').each refresh
+      setActive(name)
       # FIXME: can open page multiple times with shift key
 
     .delegate '.action', 'hover', ->
@@ -511,10 +524,11 @@ $ ->
       name = $(e.target).data('slug')
       wiki.log 'click', name, 'site', $(e.target).data('site')
       $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
-      scrollTo createPage(name)
+      createPage(name)
         .data('site',$(e.target).data('site'))
         .appendTo($('.main'))
         .each refresh
+      setActive(name)
 
   useLocalStorage = -> $(".login").length > 0
 
@@ -522,9 +536,14 @@ $ ->
     $("footer input:first").val $(this).attr('data-provider')
     $("footer form").submit()
 
-  urlPages = (i for i in $(location).attr('pathname').split('/') by 2)[1..]
-  urlLocs = (j for j in $(location).attr('pathname').split('/')[1..] by 2)
-  for urlPage, idx in urlPages when urlPage not in pagesInDom()
-      createPage(urlPage, urlLocs[idx]).appendTo('.main')
+  setUrl()
+
+  firstUrlPages = urlPages()
+  firstUrlLocs = urlLocs()
+  wiki.log 'amost createPage', firstUrlPages, firstUrlLocs, pagesInDom()
+  for urlPage, idx in firstUrlPages when urlPage not in pagesInDom()
+    wiki.log 'createPage', urlPage, idx
+    createPage(urlPage, firstUrlLocs[idx]).appendTo('.main') unless urlPage is ''
 
   $('.page').each refresh
+  setActive($('.page').last().attr('id'))
