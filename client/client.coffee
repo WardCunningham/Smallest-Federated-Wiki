@@ -347,7 +347,7 @@ $ ->
         .append("<a class=\"show-page-source\" href=\"/#{slug}.json?random=#{randomBytes(4)}\" title=\"source\">JSON</a> . ")
         .append("<a href=\"#\" class=\"add-factory\" title=\"add paragraph\">[+]</a>")
 
-      setState()
+      setUrl()
 
     fetch = (slug, callback, localContext) ->
       wiki.fetchContext = ['origin'] unless wiki.fetchContext.length > 0
@@ -410,12 +410,12 @@ $ ->
 
 # FUNCTIONS and HANDLERS to manage location bar and back button
 
-  setState = ->
+  setUrl = ->
     if history and history.pushState
       locs = locsInDom()
       pages = pagesInDom()
       url = ("/#{locs?[idx] or 'view'}/#{page}" for page, idx in pages).join('')
-      unless url is document.location.pathname
+      unless url is $(location).attr('pathname')
         wiki.log 'set state', locs, pages
         history.pushState(null, null, url)
 
@@ -447,9 +447,6 @@ $ ->
 
     setActive($('.page').last().attr('id'))
 
-  $(window).on 'popstate', (event) ->
-    wiki.log 'popstate', event
-    showState()
 
   LEFTARROW = 37
   RIGHTARROW = 39
@@ -463,6 +460,9 @@ $ ->
       newIndex = pages.indexOf($('.active').attr('id')) + direction
       if 0 <= newIndex < pages.length
         setActive(pages[newIndex])
+
+# FUNCTIONS for finding the current state of pages and locations in the
+# URL or DOM
 
   pagesInDom = ->
     $.makeArray $(".page").map (_, el) -> el.id
@@ -484,6 +484,10 @@ $ ->
       $("<div/>").attr('id', name).addClass("page")
 
 # HANDLERS for jQuery events
+
+  $(window).on 'popstate', (event) ->
+    wiki.log 'popstate', event
+    showState()
 
   $(document)
     .ajaxError (event, request, settings) ->
@@ -532,7 +536,7 @@ $ ->
     $("footer input:first").val $(this).attr('data-provider')
     $("footer form").submit()
 
-  setState()
+  setUrl()
 
   firstUrlPages = urlPages()
   firstUrlLocs = urlLocs()

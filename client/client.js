@@ -7,7 +7,7 @@
   };
 
   $(function() {
-    var LEFTARROW, RIGHTARROW, addToJournal, asSlug, createPage, doInternalLink, doPlugin, findScrollContainer, firstUrlLocs, firstUrlPages, formatTime, getItem, getPlugin, idx, locsInDom, pagesInDom, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveFrom, resolveLinks, scripts, scrollContainer, scrollTo, setActive, setState, showState, textEditor, urlLocs, urlPage, urlPages, useLocalStorage, _len;
+    var LEFTARROW, RIGHTARROW, addToJournal, asSlug, createPage, doInternalLink, doPlugin, findScrollContainer, firstUrlLocs, firstUrlPages, formatTime, getItem, getPlugin, idx, locsInDom, pagesInDom, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveFrom, resolveLinks, scripts, scrollContainer, scrollTo, setActive, setUrl, showState, textEditor, urlLocs, urlPage, urlPages, useLocalStorage, _len;
     window.wiki = {};
     window.dialog = $('<div></div>').html('This dialog will show every time!').dialog({
       autoOpen: false,
@@ -443,7 +443,7 @@
           return addToJournal(journalElement, action);
         });
         footerElement.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ').append("<a class=\"show-page-source\" href=\"/" + slug + ".json?random=" + (randomBytes(4)) + "\" title=\"source\">JSON</a> . ").append("<a href=\"#\" class=\"add-factory\" title=\"add paragraph\">[+]</a>");
-        return setState();
+        return setUrl();
       };
       fetch = function(slug, callback, localContext) {
         var i, resource;
@@ -533,7 +533,7 @@
         }
       }
     };
-    setState = function() {
+    setUrl = function() {
       var idx, locs, page, pages, url;
       if (history && history.pushState) {
         locs = locsInDom();
@@ -547,7 +547,7 @@
           }
           return _results;
         })()).join('');
-        if (url !== document.location.pathname) {
+        if (url !== $(location).attr('pathname')) {
           wiki.log('set state', locs, pages);
           return history.pushState(null, null, url);
         }
@@ -582,10 +582,6 @@
       }
       return setActive($('.page').last().attr('id'));
     };
-    $(window).on('popstate', function(event) {
-      wiki.log('popstate', event);
-      return showState();
-    });
     LEFTARROW = 37;
     RIGHTARROW = 39;
     $(document).keydown(function(event) {
@@ -646,6 +642,10 @@
         return $("<div/>").attr('id', name).addClass("page");
       }
     };
+    $(window).on('popstate', function(event) {
+      wiki.log('popstate', event);
+      return showState();
+    });
     $(document).ajaxError(function(event, request, settings) {
       var msg;
       wiki.log('ajax error', event, request, settings);
@@ -689,7 +689,7 @@
       $("footer input:first").val($(this).attr('data-provider'));
       return $("footer form").submit();
     });
-    setState();
+    setUrl();
     firstUrlPages = urlPages();
     firstUrlLocs = urlLocs();
     wiki.log('amost createPage', firstUrlPages, firstUrlLocs, pagesInDom());
