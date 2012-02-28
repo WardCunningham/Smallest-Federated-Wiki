@@ -120,7 +120,7 @@ module.exports = exports = (argv) ->
         responsedata += chunk
       )
       resp.on('error', (e) ->
-        cb(e)
+        cb(e, 'Page not found', 404)
       )
       resp.on('end', ->
         if responsedata
@@ -129,7 +129,7 @@ module.exports = exports = (argv) ->
           cb(null, 'Page not found', 404)
       )
     ).on('error', (e) ->
-      cb(e)
+      cb(e, 'Page not found', 404)
     )
 
   #### Express configuration ####
