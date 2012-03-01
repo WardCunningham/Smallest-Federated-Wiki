@@ -4,32 +4,39 @@
 # for setting arguments, and spawning servers.  In a complex system
 # you would probably want to replace the CLI/Farm with your own code,
 # and use server.coffee directly.
+#
+#### Dependencies ####
+# anything not in the standard library is included in the repo, or
+# can be installed with an:
+#     npm install
+mkdirp = require('mkdirp')
+express = require('express')
+fs = require('fs')
+path = require('path')
+http = require('http')
+hbs = require('hbs')
+random = require('./random_id')
+passportImport = require('passport')
+OpenIDstrat = require('passport-openid').Strategy
+defargs = require('./defaultargs')
+# pageFactory can be easily replaced here by requiring your own page handler
+# factory, which gets called with the argv object, and then has get and put
+# methods that accept the same arguments and callbacks. That would be the
+# easiest way to use the Smallest Federated Wiki with a database backend.
+pageFactory = require('./page')
 
 # Set export objects for node and coffee to a function that generates a sfw server.
 module.exports = exports = (argv) ->
-  #### Dependencies ####
-  # anything not in the standard library is included in the repo, or
-  # can be installed with an:
-  #     npm install
-  mkdirp = require('mkdirp')
-  express = require('express')
-  fs = require('fs')
-  path = require('path')
-  http = require('http')
-  hbs = require('hbs')
-  random = require('./random_id')
-  passportImport = require('passport')
-  OpenIDstrat = require('passport-openid').Strategy
   # Create the main application object, app.
   app = express.createServer()
   # defaultargs.coffee exports a function that takes the argv object
   # that is passed in and then does its
   # best to supply sane defaults for any arguments that are missing.
-  argv = require('./defaultargs')(argv)
+  argv = defargs(argv)
   # Construct authentication handler.
   passport = new passportImport.Passport()
   # Tell pagehandler where to find data, and default data.
-  app.pagehandler = pagehandler = require('./page')(argv)
+  app.pagehandler = pagehandler = pageFactory(argv)
 
   #### Setting up Authentication ####
   # The owner of a server is simply the open id url that the wiki
