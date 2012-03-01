@@ -62,6 +62,7 @@ $ ->
       pageElement.find('h1 img').attr('src', '/favicon.png')
       pageElement.find('h1 a').attr('href', '/')
       pageElement.data('site', null)
+      setUrl()
       addToJournal pageElement.find('.journal'),
         type: 'fork'
         site: site
@@ -185,7 +186,7 @@ $ ->
       scrolled
     else
       $("body, html").scrollLeft(1).filter(-> $(this).scrollLeft() == 1).scrollTop(0)
-    
+
   scrollTo = (el) ->
     scrollContainer ?= findScrollContainer()
     bodyWidth = $("body").width()
