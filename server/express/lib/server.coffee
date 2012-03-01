@@ -22,7 +22,8 @@ module.exports = exports = (argv) ->
   OpenIDstrat = require('passport-openid').Strategy
   # Create the main application object, app.
   app = express.createServer()
-  # defaultargs.coffee exports a function that takes the argv object that is passed in and then does its
+  # defaultargs.coffee exports a function that takes the argv object
+  # that is passed in and then does its
   # best to supply sane defaults for any arguments that are missing.
   argv = require('./defaultargs')(argv)
   # Construct authentication handler.
@@ -120,7 +121,7 @@ module.exports = exports = (argv) ->
         responsedata += chunk
       )
       resp.on('error', (e) ->
-        cb(e)
+        cb(e, 'Page not found', 404)
       )
       resp.on('end', ->
         if responsedata
@@ -129,7 +130,7 @@ module.exports = exports = (argv) ->
           cb(null, 'Page not found', 404)
       )
     ).on('error', (e) ->
-      cb(e)
+      cb(e, 'Page not found', 404)
     )
 
   #### Express configuration ####
@@ -339,6 +340,9 @@ module.exports = exports = (argv) ->
       # And add what happened to the journal.
       if not page.journal
         page.journal = []
+      if action.fork
+        page.journal.push({type: "fork", site: action.fork})
+        delete action.fork
       page.journal.push(action)
       console.log page
       pagehandler.put(req.params[0], page, (e) ->

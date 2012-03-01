@@ -1,6 +1,6 @@
 # **farm.coffee *
 # The farm module works by putting a bouncy host based proxy
-# in front of servers that it creates 
+# in front of servers that it creates
 
 path = require 'path'
 bouncy = require 'bouncy'
@@ -9,11 +9,11 @@ server = require '../'
 module.exports = exports = (argv) ->
   hosts = {}
   runningServers = []
-  
+
   nextport = do ->
     port = argv.F - 1
     -> port += 1
-  
+
   bouncy( (req, bounce) ->
     unless req.headers?.host
       return
@@ -27,7 +27,10 @@ module.exports = exports = (argv) ->
       for key, value of argv
         newargv[key] = value
       newargv.p = hosts[req.headers.host]
-      newargv.d = path.join(argv.r or path.join(__dirname, '..', '..', '..'), 'data', req.headers.host)
+      newargv.d = if argv.d
+        path.join(argv.d, req.headers.host)
+      else
+        path.join(argv.r or path.join(__dirname, '..', '..', '..'), 'data', req.headers.host)
       newargv.u = "http://#{req.headers.host}"
       local = server(newargv)
       runningServers.push(local)
