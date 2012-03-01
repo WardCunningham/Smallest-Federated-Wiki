@@ -73,6 +73,8 @@ We're using Ruby 1.9.2 which we manage with rvm:
 	rvm install 1.9.2
 	rvm use 1.9.2
 
+The software has been known to run trouble-free under version 1.8.5 so long as appropriate gem versions are installed. The latest releases of OSX work better with 1.9.3.
+
 The server is a ruby bundle. Get the bundler gem and then use it to get everything else:
 
 	gem install bundler
