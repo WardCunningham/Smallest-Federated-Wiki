@@ -1,5 +1,2 @@
-require File.join(File.expand_path(File.dirname(__FILE__)), 'server')
-
-map '/' do
-  run Controller
-end
+require File.expand_path('../server', __FILE__)
+run Controller
