@@ -24,6 +24,11 @@ defargs = require('./defaultargs')
 # methods that accept the same arguments and callbacks. That would be the
 # easiest way to use the Smallest Federated Wiki with a database backend.
 pageFactory = require('./page')
+child_process = require('child_process')
+version = ''
+gitVersion = child_process.exec('git rev-parse HEAD', (err, stdout, stderr) ->
+  version = stdout
+  )
 
 # Set export objects for node and coffee to a function that generates a sfw server.
 module.exports = exports = (argv) ->
@@ -218,6 +223,7 @@ module.exports = exports = (argv) ->
           'logout'
         else 'login'
       else 'claim'
+      sha: version
     }
     for page, idx in urlPages
       if urlLocs[idx] is 'view'
