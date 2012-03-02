@@ -15,16 +15,20 @@ fs = require('fs')
 path = require('path')
 http = require('http')
 hbs = require('hbs')
+child_process = require('child_process')
 random = require('./random_id')
 passportImport = require('passport')
 OpenIDstrat = require('passport-openid').Strategy
 defargs = require('./defaultargs')
+
 # pageFactory can be easily replaced here by requiring your own page handler
 # factory, which gets called with the argv object, and then has get and put
 # methods that accept the same arguments and callbacks. That would be the
 # easiest way to use the Smallest Federated Wiki with a database backend.
 pageFactory = require('./page')
-child_process = require('child_process')
+
+# When server factory is first started attempt to
+# set version to the git sha id of the last commit.
 version = ''
 gitVersion = child_process.exec('git rev-parse HEAD', (err, stdout, stderr) ->
   version = stdout
