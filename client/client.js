@@ -242,8 +242,8 @@
       if (scrolled.length > 0) {
         return scrolled;
       } else {
-        return $("body, html").scrollLeft(1).filter(function() {
-          return $(this).scrollLeft() === 1;
+        return $("body, html").scrollLeft(4).filter(function() {
+          return $(this).scrollLeft() > 0;
         }).scrollTop(0);
       }
     };

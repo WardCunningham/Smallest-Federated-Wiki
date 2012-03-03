@@ -185,7 +185,7 @@ $ ->
     if scrolled.length > 0
       scrolled
     else
-      $("body, html").scrollLeft(1).filter(-> $(this).scrollLeft() == 1).scrollTop(0)
+      $("body, html").scrollLeft(4).filter(-> $(this).scrollLeft() > 0).scrollTop(0)
 
   scrollTo = (el) ->
     scrollContainer ?= findScrollContainer()
@@ -203,7 +203,6 @@ $ ->
       scrollContainer.animate scrollLeft: target - (bodyWidth - width)
     else if maxX > $(".pages").outerWidth()
       scrollContainer.animate scrollLeft: Math.min(target, contentWidth - bodyWidth)
-
 
 # PLUGINS for each story item type
 
