@@ -2,14 +2,15 @@
 # Module for interacting with pages persisted on the server.
 # Everything is stored using json flat files.
 
-#### Require some stuff, nothing special here. ####
-fs = require('fs')
-path = require('path')
-mkdirp = require('mkdirp')
-random_id = require('./random_id')
-events = require('events')
+#### Requires ####
+fs = require 'fs'
+path = require 'path'
+mkdirp = require 'mkdirp'
+random_id = require './random_id'
+events = require 'events'
 
-# Export a function that generates a page handler when called options object.
+# Export a function that generates a page handler
+# when called with options object.
 module.exports = exports = (argv) ->
 
   #### Private utility methods. ####
@@ -18,7 +19,7 @@ module.exports = exports = (argv) ->
       if err then cb(err)
       cb(null, JSON.parse(data))
     )
-  
+
   load_parse_copy = (defloc, file, cb) ->
     fs.readFile(defloc, (err, data) ->
       if err then cb(err)
@@ -32,8 +33,8 @@ module.exports = exports = (argv) ->
   # Reads and writes are async, but serially queued to avoid race conditions.
   queue = []
 
-  # Main file io function, when called without page it reads, when called with page
-  # it writes.
+  # Main file io function, when called without page it reads,
+  # when called with page it writes.
   fileio = (file, page, cb) ->
     loc = path.join(argv.db, file)
     unless page?
@@ -65,8 +66,8 @@ module.exports = exports = (argv) ->
           )
       )
 
-  # Control variable that tells if the serial queue is currently happening.
-  # Set back to 0 when all jobs are complete.
+  # Control variable that tells if the serial queue is currently working.
+  # Set back to false when all jobs are complete.
   working = false
 
   # Keep file io working on queued jobs, but don't block the main thread.
@@ -82,6 +83,7 @@ module.exports = exports = (argv) ->
     else
       itself.stop()
 
+  #### Public stuff ####
   # Make the exported object an instance of EventEmitter
   # so other modules can tell if it is working or not.
   itself = new events.EventEmitter
@@ -95,16 +97,14 @@ module.exports = exports = (argv) ->
   itself.isWorking = ->
     working
 
-  # get takes a slug and a callback, it then calls the callback with the page
-  # it wanted, or the same named page from default-data, or a 404 status and message
-  # and sends it back.
+  # get method takes a slug and a callback, adding them to the queue,
+  # starting serial if it isn't already working.
   itself.get = (file, cb) ->
     queue.push({file, page: null, cb})
     serial(queue.shift()) unless working
-  
-    
+
   # put takes a slugged name, the page as a json object, and a callback.
-  # calls cb with an err if anything goes wrong.
+  # adds them to the queue, and starts it unless it is working.
   itself.put =  (file, page, cb) ->
       queue.push({file, page, cb})
       serial(queue.shift()) unless working

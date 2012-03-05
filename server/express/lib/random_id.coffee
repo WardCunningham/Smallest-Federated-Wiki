@@ -1,4 +1,4 @@
-# ** random_id.coffee **
+# **random_id.coffee**
 # Simple random hex generator, takes an optional number of
 # chars that defaults to 16 and returns a random id.
 
