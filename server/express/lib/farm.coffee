@@ -25,32 +25,35 @@ module.exports = exports = (argv) ->
   # redirecting the requests at the port specified when
   # the bounce function is called.
   bouncy( (req, bounce) ->
-    # Don't do anything for requests without a host header.
-    unless req.headers?.host
+    # If the incoming request has a host, asign it to incHost
+    # otherwise do nothing and return.
+    if req.headers?.host
+      incHost = req.headers.host
+    else
       return
     # If the host starts with "www." treat it the same as if it didn't
-    if req.headers.host[0..3] is "www."
-      req.headers.host = req.headers.host[4..]
+    if incHost[0..3] is "www."
+      incHost = incHost[4..]
     # if we already have a port for this host, forward the request to it.
-    if hosts[req.headers.host]
-      bounce(hosts[req.headers.host])
+    if hosts[incHost]
+      bounce(hosts[incHost])
     else
-      hosts[req.headers.host] = nextport()
+      hosts[incHost] = nextport()
       # Create a new options object, copy over the options used to start the
       # farm, and modify them to make sense for servers spawned from the farm.
       newargv = {}
       for key, value of argv
         newargv[key] = value
-      newargv.p = hosts[req.headers.host]
+      newargv.p = hosts[incHost]
       newargv.d = if argv.d
-        path.join(argv.d, req.headers.host)
+        path.join(argv.d, incHost)
       else
-        path.join(argv.r or path.join(__dirname, '..', '..', '..'), 'data', req.headers.host)
-      newargv.u = "http://#{req.headers.host}"
+        path.join(argv.r or path.join(__dirname, '..', '..', '..'), 'data', incHost)
+      newargv.u = "http://#{incHost}"
       # Create a new server, add it to the list of servers, and
       # once it's ready send the request to it.
       local = server(newargv)
       runningServers.push(local)
-      local.once "ready", ->
-        bounce(hosts[req.headers.host])
+      local.once "listening", ->
+        bounce(hosts[incHost])
   ).listen(argv.p)
