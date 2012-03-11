@@ -7,8 +7,9 @@
   };
 
   $(function() {
-    var LEFTARROW, RIGHTARROW, addToJournal, asSlug, createPage, doInternalLink, doPlugin, findScrollContainer, firstUrlLocs, firstUrlPages, formatTime, getItem, getPlugin, idx, locsInDom, pagesInDom, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveFrom, resolveLinks, scripts, scrollContainer, scrollTo, setActive, setUrl, showState, textEditor, urlLocs, urlPage, urlPages, useLocalStorage, _len;
+    var LEFTARROW, RIGHTARROW, addToJournal, asSlug, createPage, dataDash, doInternalLink, doPlugin, findScrollContainer, firstUrlLocs, firstUrlPages, formatTime, getItem, getPlugin, idx, locsInDom, pageToJson, pagesInDom, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveFrom, resolveLinks, scripts, scrollContainer, scrollTo, setActive, setUrl, showState, textEditor, urlLocs, urlPage, urlPages, useLocalStorage, _len;
     window.wiki = {};
+    dataDash = DataDash();
     window.dialog = $('<div></div>').html('This dialog will show every time!').dialog({
       autoOpen: false,
       title: 'Basic Dialog',
@@ -66,18 +67,18 @@
     addToJournal = function(journalElement, action) {
       var actionElement, pageElement;
       pageElement = journalElement.parents('.page:first');
-      actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(action.type[0]).data('itemId', action.id || "0").appendTo(journalElement);
+      actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(action.type[0]).dataDash(action).dataDash('id', action.id || "0").appendTo(journalElement);
       if (action.type === 'fork') {
-        return actionElement.css("background-image", "url(//" + action.site + "/favicon.png)").attr("href", "//" + action.site + "/" + (pageElement.attr('id')) + ".html").data("site", action.site).data("slug", pageElement.attr('id'));
+        return actionElement.css("background-image", "url(//" + action.site + "/favicon.png)").attr("href", "//" + action.site + "/" + (pageElement.attr('id')) + ".html").dataDash("site", action.site).dataDash("slug", pageElement.attr('id'));
       }
     };
     putAction = wiki.putAction = function(pageElement, action) {
       var site;
-      if ((site = pageElement.data('site')) != null) {
+      if ((site = pageElement.dataDash('site')) != null) {
         action.fork = site;
         pageElement.find('h1 img').attr('src', '/favicon.png');
         pageElement.find('h1 a').attr('href', '/');
-        pageElement.data('site', null);
+        pageElement.dataDash('site', null);
         setUrl();
         addToJournal(pageElement.find('.journal'), {
           type: 'fork',
@@ -96,11 +97,11 @@
       page = localStorage[pageElement.attr("id")];
       if (page) page = JSON.parse(page);
       if (action.type === 'create') page = action.item;
-      page || (page = pageElement.data("data"));
+      page || (page = pageToJson(pageElement));
       if (page.journal == null) page.journal = [];
       page.journal.concat(action);
       page.story = $(pageElement).find(".item").map(function() {
-        return $(this).data("item");
+        return $(this).dataDash();
       }).get();
       localStorage[pageElement.attr("id")] = JSON.stringify(page);
       return addToJournal(pageElement.find('.journal'), action);
@@ -162,7 +163,7 @@
     };
     getItem = function(element) {
       if ($(element).length > 0) {
-        return $(element).data("item") || JSON.parse($(element).data('staticItem'));
+        return $(element).dataDash() || JSON.parse($(element).dataDash('staticItem'));
       }
     };
     wiki.getData = function() {
@@ -189,7 +190,7 @@
         _ref2 = $(p).find('.item');
         for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
           i = _ref2[_j];
-          wiki.log('.item', i, 'data-item', $(i).data('item'));
+          wiki.log('.item', i, 'data-item', $(i).dataDash());
         }
       }
       return null;
@@ -211,7 +212,7 @@
       };
       try {
         div.data('pageElement', div.parents(".page"));
-        div.data('item', item);
+        div.dataDash(item);
         return getPlugin(item.type, function(plugin) {
           if (plugin == null) {
             throw TypeError("Can't find plugin for '" + item.type + "'");
@@ -300,7 +301,7 @@
       chart: {
         emit: function(div, item) {
           var captionElement, chartElement;
-          chartElement = $('<p />').addClass('readout').appendTo(div).text(item.data.last().last());
+          chartElement = $('<p />').addClass('readout').appendTo(div).text(item.dataDash.last().last());
           return captionElement = $('<p />').html(resolveLinks(item.caption)).appendTo(div);
         },
         bind: function(div, item) {
@@ -338,7 +339,7 @@
       var buildPage, create, fetch, initDragging, json, pageElement, site, slug;
       pageElement = $(this);
       slug = $(pageElement).attr('id');
-      site = $(pageElement).data('site');
+      site = $(pageElement).dataDash('site');
       pageElement.find(".add-factory").live("click", function(evt) {
         var before, beforeElement, item, itemElement;
         evt.preventDefault();
@@ -348,8 +349,8 @@
         };
         itemElement = $("<div />", {
           "class": "item factory"
-        }).data('item', item).attr('data-id', item.id);
-        itemElement.data('pageElement', pageElement);
+        }).dataDash(item);
+        itemElement.dataDash('pageElement', pageElement);
         pageElement.find(".story").append(itemElement);
         doPlugin(itemElement, item);
         beforeElement = itemElement.prev('.item');
@@ -370,7 +371,7 @@
             itemElement = ui.item;
             item = getItem(itemElement);
             thisPageElement = $(this).parents('.page:first');
-            sourcePageElement = itemElement.data('pageElement');
+            sourcePageElement = itemElement.dataDash('pageElement');
             destinationPageElement = itemElement.parents('.page:first');
             journalElement = thisPageElement.find('.journal');
             equals = function(a, b) {
@@ -380,13 +381,13 @@
             moveFromPage = !moveWithinPage && equals(thisPageElement, sourcePageElement);
             moveToPage = !moveWithinPage && equals(thisPageElement, destinationPageElement);
             action = moveWithinPage ? (order = $(this).children().map(function(_, value) {
-              return $(value).attr('data-id');
+              return $(value).dataDash('id');
             }).get(), {
               type: 'move',
               order: order
             }) : moveFromPage ? {
               type: 'remove'
-            } : moveToPage ? (itemElement.data('pageElement', thisPageElement), beforeElement = itemElement.prev('.item'), before = getItem(beforeElement), {
+            } : moveToPage ? (itemElement.dataDash('pageElement', thisPageElement), beforeElement = itemElement.prev('.item'), before = getItem(beforeElement), {
               type: 'add',
               item: item,
               after: before != null ? before.id : void 0
@@ -398,7 +399,7 @@
         });
       };
       buildPage = function(data) {
-        var action, addContext, context, empty, footerElement, journalElement, page, storyElement, _i, _len, _ref, _ref2;
+        var action, addContext, context, empty, footerElement, journalElement, page, storyElement, title, _i, _len, _ref, _ref2;
         empty = {
           title: 'empty',
           synopsys: 'empty',
@@ -406,7 +407,10 @@
           journal: []
         };
         page = $.extend(empty, data);
-        $(pageElement).data("data", data);
+        title = data.title;
+        $(pageElement).dataDash({
+          title: title
+        });
         context = ['origin'];
         addContext = function(string) {
           if (string != null) {
@@ -436,7 +440,7 @@
         }), storyElement = _ref2[0], journalElement = _ref2[1], footerElement = _ref2[2];
         $.each(page.story, function(i, item) {
           var div;
-          div = $("<div />").addClass("item").addClass(item.type).attr("data-id", item.id);
+          div = $("<div />").addClass("item").addClass(item.type).dataDash(item);
           storyElement.append(div);
           return doPlugin(div, item);
         });
@@ -470,7 +474,9 @@
           url: "/" + resource + ".json?random=" + (randomBytes(4)),
           success: function(page) {
             wiki.log('fetch success', page, site || 'origin');
-            $(pageElement).data('site', site);
+            $(pageElement).dataDash({
+              site: site
+            });
             return callback(page);
           },
           error: function(xhr, type, msg) {
@@ -497,7 +503,7 @@
         });
         return callback(page);
       };
-      if ($(pageElement).attr('data-server-generated') === 'true') {
+      if ($(pageElement).dataDash('server-generated') === 'true') {
         initDragging();
         return pageElement.find('.item').each(function(i, each) {
           var div, item;
@@ -623,7 +629,7 @@
     };
     locsInDom = function() {
       return $.makeArray($(".page").map(function(_, el) {
-        return $(el).data('site') || 'view';
+        return $(el).dataDash('site') || 'view';
       }));
     };
     urlLocs = function() {
@@ -638,7 +644,7 @@
     };
     createPage = function(name, loc) {
       if (loc && (loc !== ('view' || 'my'))) {
-        return $("<div/>").attr('id', name).attr('data-site', loc).addClass("page");
+        return $("<div/>").attr('id', name).dataDash('site', loc).addClass("page");
       } else {
         return $("<div/>").attr('id', name).addClass("page");
       }
@@ -653,18 +659,25 @@
       msg = "<li class='error'>Error on " + settings.url + ": " + request.responseText + "</li>";
       if (request.status !== 404) return $('.main').prepend(msg);
     });
+    pageToJson = function(element) {
+      return {
+        title: element.dataDash('title'),
+        story: element.children('.story').children().dataDash(),
+        journal: element.children('.journal').children().dataDash()
+      };
+    };
     $('.main').delegate('.show-page-source', 'click', function(e) {
       var json, pageElement;
       e.preventDefault();
       pageElement = $(this).parent().parent();
-      json = pageElement.data('data');
+      json = pageToJson(pageElement);
       return wiki.dialog("JSON for " + json.title, $('<pre/>').text(JSON.stringify(json, null, 2)));
     }).delegate('.page', 'click', function(e) {
       if (!$(e.target).is("a")) return setActive(this.id);
     }).delegate('.internal', 'click', function(e) {
       var name;
       e.preventDefault();
-      name = $(e.target).data('pageName');
+      name = $(e.target).dataDash('pageName');
       wiki.fetchContext = $(e.target).attr('title').split(' => ');
       wiki.log('click', name, 'context', wiki.fetchContext);
       if (!e.shiftKey) $(e.target).parents('.page').nextAll().remove();
@@ -672,22 +685,22 @@
       return setActive(name);
     }).delegate('.action', 'hover', function() {
       var id;
-      id = $(this).data('itemId');
+      id = $(this).dataDash('id');
       return $("[data-id=" + id + "]").toggleClass('target');
     }).delegate('.action.fork, .remote', 'click', function(e) {
       var name;
       e.preventDefault();
-      name = $(e.target).data('slug');
-      wiki.log('click', name, 'site', $(e.target).data('site'));
+      name = $(e.target).dataDash('slug');
+      wiki.log('click', name, 'site', $(e.target).dataDash('site'));
       if (!e.shiftKey) $(e.target).parents('.page').nextAll().remove();
-      createPage(name).data('site', $(e.target).data('site')).appendTo($('.main')).each(refresh);
+      createPage(name).dataDash('site', $(e.target).dataDash('site')).appendTo($('.main')).each(refresh);
       return setActive(name);
     });
     useLocalStorage = function() {
       return $(".login").length > 0;
     };
     $(".provider input").click(function() {
-      $("footer input:first").val($(this).attr('data-provider'));
+      $("footer input:first").val($(this).dataDash('provider'));
       return $("footer form").submit();
     });
     setUrl();
