@@ -9,7 +9,9 @@
   $(function() {
     var LEFTARROW, RIGHTARROW, addToJournal, asSlug, createPage, dataDash, doInternalLink, doPlugin, findScrollContainer, firstUrlLocs, firstUrlPages, formatTime, getItem, getPlugin, idx, locsInDom, pageToJson, pagesInDom, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveFrom, resolveLinks, scripts, scrollContainer, scrollTo, setActive, setUrl, showState, textEditor, urlLocs, urlPage, urlPages, useLocalStorage, _len;
     window.wiki = {};
-    dataDash = DataDash();
+    dataDash = wiki.dataDash = DataDash({
+      stats: true
+    });
     window.dialog = $('<div></div>').html('This dialog will show every time!').dialog({
       autoOpen: false,
       title: 'Basic Dialog',

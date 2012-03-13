@@ -1,8 +1,12 @@
-var DataDash = (function (opt) {
+var DataDash = function (opt) {
   'use strict';
   // DataDash is a factory that you can call with options to create
   // an interface with your data- attributes.  Typical usage to get started
   // would be: `dataDash = DataDash();`
+  //
+  // Mit Licensed, https://github.com/nrn/dataDash
+  // Copyright (c)  Nick Niemeir <nick.niemeir@gmail.com>,
+  //                Matt Niemeir <matt.niemeir@gmail.com>
 
   opt || (opt = {});
 
@@ -12,8 +16,13 @@ var DataDash = (function (opt) {
 
   opt.prefix || (opt.prefix = '');
 
+  var stats = {};
   var fnName = camelCase('data-dash-' + opt.prefix);
   var attrName = dasherize('data-' + opt.prefix + '-');
+  var camName = '';
+  if (!(opt.prefix === '')) {
+    camName = dasherize(opt.prefix + '-');
+  }
 
   var stringify = function (stuff) {
     try {
@@ -43,11 +52,30 @@ var DataDash = (function (opt) {
     }
   };
 
+  // if (opt.stats) updateStats(element, name, data);
+
+  function updateStats(element, name, data) {
+    if (!stats[name]) {
+      stats[name] = {
+        get: 0,
+        set: 0,
+        on: {}
+      }
+    }
+    if (data) {
+      stats[name].set += 1;
+    } else {
+      stats[name].get += 1;
+    }
+    stats[name].on[element.tagName] = true;
+  };
+
   function io (elements, name, data) {
     var _i, _len, _results;
     if (typeof data === 'undefined') {
-      name = camelCase(name)
+      name = name ? camelCase(camName + name) : '';
       if (!(elements.length > 0)) {
+        if (opt.stats) updateStats(elements, name, data);
         return parse(elements.dataset[name]);
       } else {
         _results = [];
@@ -63,6 +91,7 @@ var DataDash = (function (opt) {
     } else {
       name = dasherize(name)
       if (!(elements.length > 0)) {
+        if (opt.stats) updateStats(elements, name, data);
         if (data === null) {
           elements.removeAttribute(attrName + name);
         }else{
@@ -70,6 +99,7 @@ var DataDash = (function (opt) {
         }
       } else {
         for (_i = 0, _len = elements.length; _i < _len; _i += 1) {
+          if (opt.stats) updateStats(elements[_i], name, data);
           if (data === null) {
             elements[_i].removeAttribute(attrName + name);
           }else{
@@ -85,13 +115,22 @@ var DataDash = (function (opt) {
     var _i, _result;
     if (name === '') {
       _result = {};
+      var prefix = camelCase(opt.prefix);
       for (_i in parse(element.dataset)) {
-        _result[_i] = parse(element.dataset[_i]);
+        if (opt.stats) updateStats(element, _i);
+        if (_i.slice(0, prefix.length) === prefix) {
+          _result[_i.slice(prefix.length, prefix.length + 1).toLowerCase() + _i.slice(prefix.length + 1)] = parse(element.dataset[_i]);
+        }
       }
       return _result;
     } else {
+      if (opt.stats) updateStats(element, name);
       return parse(element.dataset[name]);
     }
+  };
+
+  dataDash.stats = function () {
+    return stats;
   };
 
   function dasherize (name) {
@@ -131,5 +170,5 @@ var DataDash = (function (opt) {
   }
 
   return dataDash;
-});
+};
 
