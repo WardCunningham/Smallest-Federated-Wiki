@@ -42,6 +42,11 @@ module.exports = exports = (argv) ->
   # that is passed in and then does its
   # best to supply sane defaults for any arguments that are missing.
   argv = defargs(argv)
+  app.startOpts = do ->
+    options = {}
+    for own k, v of argv
+      options[k] = v
+    options
   # Construct authentication handler.
   passport = new passportImport.Passport()
   # Tell pagehandler where to find data, and default data.
@@ -421,8 +426,6 @@ module.exports = exports = (argv) ->
   # Wait to make sure owner is known before listening.
   setOwner( null, ->
     app.listen(argv.p, argv.o if argv.o)
-    # When server is listening emit a ready event.
-    app.emit "ready"
     console.log("Smallest Federated Wiki server listening on #{app.address().port} in mode: #{app.settings.env}")
   )
   # Return app when called, so that it can be watched for events and shutdown with .close() externally.
