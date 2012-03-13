@@ -3,8 +3,17 @@
 
   window.plugins.calculator = {
     emit: function(div, item) {
-      var pre, text;
-      text = calculate(item.text).join("\n");
+      var field, pre, text;
+      item.data = (function() {
+        var _results;
+        _results = [];
+        for (field in wiki.getData()) {
+          _results.push(field);
+        }
+        return _results;
+      })();
+      wiki.log('calculator', item);
+      text = calculate(item).join("\n");
       pre = $('<pre style="font-size: 16px;"/>').text(text);
       return div.append(pre);
     },
@@ -15,20 +24,20 @@
     }
   };
 
-  calculate = function(text) {
-    var col, line, sum, sums, _i, _len, _ref, _ref2, _results;
-    _ref = [{}, 0], sums = _ref[0], sum = _ref[1];
-    _ref2 = text.split("\n");
+  calculate = function(item) {
+    var col, line, sum, _i, _len, _ref, _results;
+    sum = 0;
+    _ref = item.text.split("\n");
     _results = [];
-    for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-      line = _ref2[_i];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      line = _ref[_i];
       col = line.split(/\s+/);
       col[0] = col[0].replace(/^[A-Z]+$/, function(x) {
-        var _ref3;
-        if (!((sums[x] != null) && x !== 'SUM')) {
-          _ref3 = [sum, 0], sums[x] = _ref3[0], sum = _ref3[1];
+        var _ref2;
+        if (!((item.data[x] != null) && x !== 'SUM')) {
+          _ref2 = [sum, 0], item.data[x] = _ref2[0], sum = _ref2[1];
         }
-        return sums[x].toFixed(2);
+        return item.data[x].toFixed(2);
       });
       col[0] = col[0].replace(/^\-?[0-9\.]+$/, function(x) {
         sum = sum + (function() {

@@ -166,7 +166,13 @@
       }
     };
     wiki.getData = function() {
-      return $('.chart,.data').last().data('item').data;
+      var who;
+      who = $('.chart,.data,.calculator').last();
+      if (who != null) {
+        return who.data('item').data;
+      } else {
+        return {};
+      }
     };
     scripts = {};
     wiki.getScript = function(url, callback) {

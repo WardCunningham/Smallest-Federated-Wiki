@@ -128,7 +128,8 @@ $ ->
     $(element).data("item") or JSON.parse($(element).data('staticItem')) if $(element).length > 0
 
   wiki.getData = ->
-    $('.chart,.data').last().data('item').data
+    who = $('.chart,.data,.calculator').last()
+    if who? then who.data('item').data else {}
 
   scripts = {}
   wiki.getScript = (url, callback = () ->) ->

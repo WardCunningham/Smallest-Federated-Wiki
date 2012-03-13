@@ -1,18 +1,20 @@
 window.plugins.calculator =
   emit: (div, item) ->
-    text = calculate(item.text).join "\n"
+    item.data = (field for field of wiki.getData())
+    wiki.log 'calculator', item
+    text = calculate(item).join "\n"
     pre = $('<pre style="font-size: 16px;"/>').text text
     div.append pre
   bind: (div, item) ->
     div.dblclick -> wiki.textEditor div, item
 
-calculate = (text) ->
-  [sums, sum] = [{}, 0]
-  for line in text.split "\n"
+calculate = (item) ->
+  sum = 0
+  for line in item.text.split "\n"
     col = line.split /\s+/
     col[0] = col[0].replace /^[A-Z]+$/, (x) ->
-      [sums[x], sum] = [sum, 0] unless sums[x]? && x != 'SUM' 
-      sums[x].toFixed 2
+      [item.data[x], sum] = [sum, 0] unless item.data[x]? && x != 'SUM'
+      item.data[x].toFixed 2
     col[0] = col[0].replace /^\-?[0-9\.]+$/, (x) ->
       sum = sum + switch col[1]
         when 'CR', 'DB' then x/-1
