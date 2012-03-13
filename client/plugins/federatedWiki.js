@@ -6,7 +6,9 @@
       slug = item.slug || 'welcome-visitors';
       wiki.log('emit', slug, 'site', item.site);
       return wiki.resolveFrom(item.site, function() {
-        div.append($("<h3 style='margin-bottom:3px;'><img src='//" + item.site + "/favicon.png' class='remote' width='16px' height='16px'> " + (item.title || slug) + "</h3>"));
+        var title;
+        title = wiki.resolveLinks("[[" + (item.title || slug) + "]]");
+        div.append($("<h3 style='margin-bottom:3px;'><img src='//" + item.site + "/favicon.png' class='remote' width='16px' height='16px'> " + title + "</h3>"));
         div.append($("<div>" + (wiki.resolveLinks(item.text)) + "</div>"));
         return div.find('img').data('slug', slug).data('site', item.site);
       });
