@@ -7,6 +7,7 @@ var DataDash = function (opt) {
   // Mit Licensed, https://github.com/nrn/dataDash
   // Copyright (c)  Nick Niemeir <nick.niemeir@gmail.com>,
   //                Matt Niemeir <matt.niemeir@gmail.com>
+  var stats = {}, stringify, parse, dataDash, fnName, attrName, camName;
 
   opt || (opt = {});
 
@@ -16,15 +17,14 @@ var DataDash = function (opt) {
 
   opt.prefix || (opt.prefix = '');
 
-  var stats = {};
-  var fnName = camelCase('data-dash-' + opt.prefix);
-  var attrName = dasherize('data-' + opt.prefix + '-');
-  var camName = '';
+  fnName = camelCase('data-dash-' + opt.prefix);
+  attrName = dasherize('data-' + opt.prefix + '-');
+  camName = '';
   if (!(opt.prefix === '')) {
     camName = dasherize(opt.prefix + '-');
   }
 
-  var stringify = function (stuff, ele, _i) {
+  stringify = function (stuff, ele, _i) {
     if (typeof stuff === 'function') {
       stuff = stuff.call(ele, _i);
     }
@@ -35,7 +35,7 @@ var DataDash = function (opt) {
     }
   };
 
-  var parse = function (stuff) {
+  parse = function (stuff) {
     try {
       return JSON.parse(stuff);
     } catch (e) {
@@ -43,7 +43,7 @@ var DataDash = function (opt) {
     }
   };
 
-  var dataDash = function (elements, name, data) {
+  dataDash = function (elements, name, data) {
     var _i, _result, _tmp;
     if (typeof name === 'object') {
       for (_i in name) {
@@ -57,13 +57,13 @@ var DataDash = function (opt) {
 
   // if (opt.stats) updateStats(element, name, data);
 
-  function updateStats(element, name, data) {
+  function updateStats (element, name, data) {
     if (!stats[name]) {
       stats[name] = {
         get: 0,
         set: 0,
         on: {}
-      }
+      };
     }
     if (data) {
       stats[name].set += 1;
