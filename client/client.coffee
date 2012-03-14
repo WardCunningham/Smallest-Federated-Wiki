@@ -243,6 +243,12 @@ $ ->
         div.find('input').click ->
           localStorage.clear()
           div.find('li').remove()
+    stats:
+      emit: (div, item) ->
+        div.append("""<p>#{resolveLinks(item.text)}<br>
+          <pre>#{JSON.stringify(wiki.dataDash.stats(), null, 2)}</pre></p>""")
+      bind: (div, item) ->
+        div.dblclick -> textEditor div, item
 
 # RENDERING for a page when found or retrieved
 

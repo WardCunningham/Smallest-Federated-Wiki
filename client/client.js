@@ -335,6 +335,16 @@
             return div.find('li').remove();
           });
         }
+      },
+      stats: {
+        emit: function(div, item) {
+          return div.append("<p>" + (resolveLinks(item.text)) + "<br>\n<pre>" + (JSON.stringify(wiki.dataDash.stats(), null, 2)) + "</pre></p>");
+        },
+        bind: function(div, item) {
+          return div.dblclick(function() {
+            return textEditor(div, item);
+          });
+        }
       }
     };
     refresh = function() {
