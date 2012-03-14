@@ -697,8 +697,8 @@
       return setActive(name);
     }).delegate('.action', 'hover', function() {
       var id;
-      id = $(this).dataDash('id');
-      return $("[data-id=" + id + "]").toggleClass('target');
+      id = JSON.stringify($(this).dataDash('id'));
+      return $("[data-id=\"" + id + "\"].item").toggleClass('target');
     }).delegate('.action.fork, .remote', 'click', function(e) {
       var name;
       e.preventDefault();

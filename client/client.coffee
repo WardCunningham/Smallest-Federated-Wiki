@@ -534,8 +534,8 @@ $ ->
       # FIXME: can open page multiple times with shift key
 
     .delegate '.action', 'hover', ->
-      id = $(this).dataDash('id')
-      $("[data-id=#{id}]").toggleClass('target')
+      id = JSON.stringify($(this).dataDash('id'))
+      $("[data-id=\"#{id}\"].item").toggleClass('target')
 
     .delegate '.action.fork, .remote', 'click', (e) ->
       e.preventDefault()
