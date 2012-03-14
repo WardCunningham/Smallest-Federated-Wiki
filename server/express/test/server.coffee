@@ -10,7 +10,7 @@ describe 'server', ->
     routeCB = {}
     before((done) ->
       runningServer = server(argv)
-      runningServer.once("ready", ->
+      runningServer.once("listening", ->
         routeCB = runningServer.routes.routes.put[0].callbacks[1]
         done()
       )
