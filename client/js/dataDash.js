@@ -24,7 +24,10 @@ var DataDash = function (opt) {
     camName = dasherize(opt.prefix + '-');
   }
 
-  var stringify = function (stuff) {
+  var stringify = function (stuff, ele, _i) {
+    if (typeof stuff === 'function') {
+      stuff = stuff.call(ele, _i);
+    }
     try {
       return JSON.stringify(stuff);
     } catch (e) {
@@ -89,21 +92,21 @@ var DataDash = function (opt) {
         }
       }
     } else {
-      name = dasherize(name)
+      name = dasherize(name);
       if (!(elements.length > 0)) {
         if (opt.stats) updateStats(elements, name, data);
         if (data === null) {
           elements.removeAttribute(attrName + name);
-        }else{
-          elements.setAttribute(attrName + name, stringify(data));
+        } else {
+          elements.setAttribute(attrName + name, stringify(data, elements, 0));
         }
       } else {
         for (_i = 0, _len = elements.length; _i < _len; _i += 1) {
           if (opt.stats) updateStats(elements[_i], name, data);
           if (data === null) {
             elements[_i].removeAttribute(attrName + name);
-          }else{
-            elements[_i].setAttribute(attrName + name, stringify(data));
+          } else {
+            elements[_i].setAttribute(attrName + name, stringify(data, elements[_i], _i));
           }
         }
       }
@@ -130,7 +133,11 @@ var DataDash = function (opt) {
   };
 
   dataDash.stats = function () {
-    return stats;
+    if (opt.stats) {
+      return stats;
+    } else {
+      return;
+    }
   };
 
   function dasherize (name) {
