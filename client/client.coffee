@@ -245,10 +245,11 @@ $ ->
           div.find('li').remove()
     stats:
       emit: (div, item) ->
-        div.append("""<p>#{resolveLinks(item.text)}<br>
-          <pre>#{JSON.stringify(wiki.dataDash.stats(), null, 2)}</pre></p>""")
+        div.append("<pre>#{JSON.stringify(wiki.dataDash.stats(), null, 2)}</pre></p>")
+           .append($('<input type="button" value="update" />').css('margin-top', '10px'))
       bind: (div, item) ->
-        div.dblclick -> textEditor div, item
+        div.find('input').click ->
+          div.find('pre').html(JSON.stringify(wiki.dataDash.stats(), null, 2))
 
 # RENDERING for a page when found or retrieved
 

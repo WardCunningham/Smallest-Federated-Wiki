@@ -338,11 +338,11 @@
       },
       stats: {
         emit: function(div, item) {
-          return div.append("<p>" + (resolveLinks(item.text)) + "<br>\n<pre>" + (JSON.stringify(wiki.dataDash.stats(), null, 2)) + "</pre></p>");
+          return div.append("<pre>" + (JSON.stringify(wiki.dataDash.stats(), null, 2)) + "</pre></p>").append($('<input type="button" value="update" />').css('margin-top', '10px'));
         },
         bind: function(div, item) {
-          return div.dblclick(function() {
-            return textEditor(div, item);
+          return div.find('input').click(function() {
+            return div.find('pre').html(JSON.stringify(wiki.dataDash.stats(), null, 2));
           });
         }
       }
