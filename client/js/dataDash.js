@@ -142,7 +142,9 @@ var DataDash = function (opt) {
     var _i;
     if (typeof name === 'object') {
       for (_i in name) {
-        io(elements, _i, name[_i]);
+        if (name.hasOwnProperty(_i)) {
+          io(elements, _i, name[_i]);
+        }
       }
       return elements;
     } else {
