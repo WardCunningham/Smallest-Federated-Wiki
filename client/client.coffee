@@ -49,7 +49,6 @@ $ ->
     actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type)
       .text(action.type[0])
       .dataDash(action)
-      .dataDash('id', action.id || "0")
       .appendTo(journalElement)
     if action.type == 'fork'
       actionElement
@@ -68,6 +67,7 @@ $ ->
       addToJournal pageElement.find('.journal'),
         type: 'fork'
         site: site
+        id: 0
     if useLocalStorage()
       pushToLocal(pageElement, action)
       pageElement.addClass("local")
@@ -288,7 +288,7 @@ $ ->
           moveToPage = not moveWithinPage and equals(thisPageElement, destinationPageElement)
 
           action = if moveWithinPage
-            order = $(this).children().map((_, value) -> $(value).dataDash('id')[0]).get()
+            order = $(this).find('.item').dataDash('id')
             {type: 'move', order: order}
           else if moveFromPage
             {type: 'remove'}

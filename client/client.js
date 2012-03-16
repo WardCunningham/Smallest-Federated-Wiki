@@ -69,7 +69,7 @@
     addToJournal = function(journalElement, action) {
       var actionElement, pageElement;
       pageElement = journalElement.parents('.page:first');
-      actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(action.type[0]).dataDash(action).dataDash('id', action.id || "0").appendTo(journalElement);
+      actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(action.type[0]).dataDash(action).appendTo(journalElement);
       if (action.type === 'fork') {
         return actionElement.css("background-image", "url(//" + action.site + "/favicon.png)").attr("href", "//" + action.site + "/" + (pageElement.attr('id')) + ".html").dataDash("site", action.site).dataDash("slug", pageElement.attr('id'));
       }
@@ -84,7 +84,8 @@
         setUrl();
         addToJournal(pageElement.find('.journal'), {
           type: 'fork',
-          site: site
+          site: site,
+          id: 0
         });
       }
       if (useLocalStorage()) {
@@ -392,9 +393,7 @@
             moveWithinPage = !sourcePageElement || equals(sourcePageElement, destinationPageElement);
             moveFromPage = !moveWithinPage && equals(thisPageElement, sourcePageElement);
             moveToPage = !moveWithinPage && equals(thisPageElement, destinationPageElement);
-            action = moveWithinPage ? (order = $(this).children().map(function(_, value) {
-              return $(value).dataDash('id')[0];
-            }).get(), {
+            action = moveWithinPage ? (order = $(this).find('.item').dataDash('id'), {
               type: 'move',
               order: order
             }) : moveFromPage ? {

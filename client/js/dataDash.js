@@ -139,12 +139,12 @@ var DataDash = function (opt) {
   };
 
   dataDash = function (elements, name, data) {
-    var _i, _result, _tmp;
+    var _i;
     if (typeof name === 'object') {
       for (_i in name) {
-        _result = io(elements, _i, name[_i]);
+        io(elements, _i, name[_i]);
       }
-      return _result;
+      return elements;
     } else {
       return io(elements, name, data);
     }
