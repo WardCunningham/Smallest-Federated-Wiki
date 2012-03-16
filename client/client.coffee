@@ -59,7 +59,7 @@ $ ->
         .dataDash("slug", pageElement.attr('id'))
 
   putAction = wiki.putAction = (pageElement, action) ->
-    if (site = pageElement.dataDash('site'))?
+    if (site = pageElement.dataDash('site')[0])?
       action.fork = site
       pageElement.find('h1 img').attr('src', '/favicon.png')
       pageElement.find('h1 a').attr('href', '/')
@@ -127,7 +127,7 @@ $ ->
     "#{h}:#{mi} #{am}<br>#{d.getDate()} #{mo} #{d.getFullYear()}"
 
   getItem = (element) ->
-    $(element).dataDash() or JSON.parse($(element).dataDash('staticItem')) if $(element).length > 0
+    $(element).dataDash() or JSON.parse($(element).dataDash('staticItem')[0]) if $(element).length > 0
 
   wiki.getData = ->
     $('.chart,.data').last().data('item').data
@@ -245,8 +245,8 @@ $ ->
           div.find('li').remove()
     stats:
       emit: (div, item) ->
-        div.append("<pre>#{JSON.stringify(wiki.dataDash.stats(), null, 2)}</pre></p>")
-           .append($('<input type="button" value="update" />').css('margin-top', '10px'))
+        div.append($('<input type="button" value="update" />').css('margin-top', '10px'))
+          .append("<pre>#{JSON.stringify(wiki.dataDash.stats(), null, 2)}</pre></p>")
       bind: (div, item) ->
         div.find('input').click ->
           div.find('pre').html(JSON.stringify(wiki.dataDash.stats(), null, 2))
@@ -256,7 +256,7 @@ $ ->
   refresh = ->
     pageElement = $(this)
     slug = $(pageElement).attr('id')
-    site = $(pageElement).dataDash('site')
+    site = $(pageElement).dataDash('site')[0]
 
     pageElement.find(".add-factory").live "click", (evt) ->
       evt.preventDefault()
@@ -278,7 +278,7 @@ $ ->
           itemElement = ui.item
           item = getItem(itemElement)
           thisPageElement = $(this).parents('.page:first')
-          sourcePageElement = itemElement.dataDash('pageElement')
+          sourcePageElement = itemElement.dataDash('pageElement')[0]
           destinationPageElement = itemElement.parents('.page:first')
           journalElement = thisPageElement.find('.journal')
           equals = (a, b) -> a and b and a.get(0) == b.get(0)
@@ -288,7 +288,7 @@ $ ->
           moveToPage = not moveWithinPage and equals(thisPageElement, destinationPageElement)
 
           action = if moveWithinPage
-            order = $(this).children().map((_, value) -> $(value).dataDash('id')).get()
+            order = $(this).children().map((_, value) -> $(value).dataDash('id')[0]).get()
             {type: 'move', order: order}
           else if moveFromPage
             {type: 'remove'}
@@ -391,7 +391,7 @@ $ ->
       putAction $(pageElement), {type: 'create', id: randomBytes(8), item: page}
       callback page
 
-    if $(pageElement).dataDash('server-generated') == 'true'
+    if $(pageElement).dataDash('server-generated')[0] == 'true'
       initDragging()
       pageElement.find('.item').each (i, each) ->
         div = $(each)
@@ -482,7 +482,7 @@ $ ->
 
   locsInDom = ->
     $.makeArray $(".page").map (_, el) ->
-      $(el).dataDash('site') or 'view'
+      $(el).dataDash('site')[0] or 'view'
 
   urlLocs = ->
     (j for j in $(location).attr('pathname').split('/')[1..] by 2)
@@ -507,7 +507,7 @@ $ ->
 
   pageToJson = (element) ->
     return {
-      title: element.dataDash('title')
+      title: element.dataDash('title')[0]
       story: element.children('.story').children().dataDash()
       journal: element.children('.journal').children().dataDash()
     }
@@ -525,7 +525,7 @@ $ ->
 
     .delegate '.internal', 'click', (e) ->
       e.preventDefault()
-      name = $(e.target).dataDash 'pageName'
+      name = $(e.target).dataDash('pageName')[0]
       wiki.fetchContext = $(e.target).attr('title').split(' => ')
       wiki.log 'click', name, 'context', wiki.fetchContext
       $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
@@ -534,16 +534,16 @@ $ ->
       # FIXME: can open page multiple times with shift key
 
     .delegate '.action', 'hover', ->
-      id = JSON.stringify($(this).dataDash('id'))
+      id = JSON.stringify($(this).dataDash('id')[0])
       $("[data-id=\"#{id}\"].item").toggleClass('target')
 
     .delegate '.action.fork, .remote', 'click', (e) ->
       e.preventDefault()
-      name = $(e.target).dataDash('slug')
-      wiki.log 'click', name, 'site', $(e.target).dataDash('site')
+      name = $(e.target).dataDash('slug')[0]
+      wiki.log 'click', name, 'site', $(e.target).dataDash('site')[0]
       $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
       createPage(name)
-        .dataDash('site',$(e.target).dataDash('site'))
+        .dataDash('site',$(e.target).dataDash('site')[0])
         .appendTo($('.main'))
         .each refresh
       setActive(name)
@@ -551,7 +551,7 @@ $ ->
   useLocalStorage = -> $(".login").length > 0
 
   $(".provider input").click ->
-    $("footer input:first").val $(this).dataDash('provider')
+    $("footer input:first").val $(this).dataDash('provider')[0]
     $("footer form").submit()
 
   setUrl()

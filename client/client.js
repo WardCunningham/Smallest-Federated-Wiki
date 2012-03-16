@@ -76,7 +76,7 @@
     };
     putAction = wiki.putAction = function(pageElement, action) {
       var site;
-      if ((site = pageElement.dataDash('site')) != null) {
+      if ((site = pageElement.dataDash('site')[0]) != null) {
         action.fork = site;
         pageElement.find('h1 img').attr('src', '/favicon.png');
         pageElement.find('h1 a').attr('href', '/');
@@ -165,7 +165,7 @@
     };
     getItem = function(element) {
       if ($(element).length > 0) {
-        return $(element).dataDash() || JSON.parse($(element).dataDash('staticItem'));
+        return $(element).dataDash() || JSON.parse($(element).dataDash('staticItem')[0]);
       }
     };
     wiki.getData = function() {
@@ -338,7 +338,7 @@
       },
       stats: {
         emit: function(div, item) {
-          return div.append("<pre>" + (JSON.stringify(wiki.dataDash.stats(), null, 2)) + "</pre></p>").append($('<input type="button" value="update" />').css('margin-top', '10px'));
+          return div.append($('<input type="button" value="update" />').css('margin-top', '10px')).append("<pre>" + (JSON.stringify(wiki.dataDash.stats(), null, 2)) + "</pre></p>");
         },
         bind: function(div, item) {
           return div.find('input').click(function() {
@@ -351,7 +351,7 @@
       var buildPage, create, fetch, initDragging, json, pageElement, site, slug;
       pageElement = $(this);
       slug = $(pageElement).attr('id');
-      site = $(pageElement).dataDash('site');
+      site = $(pageElement).dataDash('site')[0];
       pageElement.find(".add-factory").live("click", function(evt) {
         var before, beforeElement, item, itemElement;
         evt.preventDefault();
@@ -383,7 +383,7 @@
             itemElement = ui.item;
             item = getItem(itemElement);
             thisPageElement = $(this).parents('.page:first');
-            sourcePageElement = itemElement.dataDash('pageElement');
+            sourcePageElement = itemElement.dataDash('pageElement')[0];
             destinationPageElement = itemElement.parents('.page:first');
             journalElement = thisPageElement.find('.journal');
             equals = function(a, b) {
@@ -393,7 +393,7 @@
             moveFromPage = !moveWithinPage && equals(thisPageElement, sourcePageElement);
             moveToPage = !moveWithinPage && equals(thisPageElement, destinationPageElement);
             action = moveWithinPage ? (order = $(this).children().map(function(_, value) {
-              return $(value).dataDash('id');
+              return $(value).dataDash('id')[0];
             }).get(), {
               type: 'move',
               order: order
@@ -515,7 +515,7 @@
         });
         return callback(page);
       };
-      if ($(pageElement).dataDash('server-generated') === 'true') {
+      if ($(pageElement).dataDash('server-generated')[0] === 'true') {
         initDragging();
         return pageElement.find('.item').each(function(i, each) {
           var div, item;
@@ -641,7 +641,7 @@
     };
     locsInDom = function() {
       return $.makeArray($(".page").map(function(_, el) {
-        return $(el).dataDash('site') || 'view';
+        return $(el).dataDash('site')[0] || 'view';
       }));
     };
     urlLocs = function() {
@@ -673,7 +673,7 @@
     });
     pageToJson = function(element) {
       return {
-        title: element.dataDash('title'),
+        title: element.dataDash('title')[0],
         story: element.children('.story').children().dataDash(),
         journal: element.children('.journal').children().dataDash()
       };
@@ -689,7 +689,7 @@
     }).delegate('.internal', 'click', function(e) {
       var name;
       e.preventDefault();
-      name = $(e.target).dataDash('pageName');
+      name = $(e.target).dataDash('pageName')[0];
       wiki.fetchContext = $(e.target).attr('title').split(' => ');
       wiki.log('click', name, 'context', wiki.fetchContext);
       if (!e.shiftKey) $(e.target).parents('.page').nextAll().remove();
@@ -697,22 +697,22 @@
       return setActive(name);
     }).delegate('.action', 'hover', function() {
       var id;
-      id = JSON.stringify($(this).dataDash('id'));
+      id = JSON.stringify($(this).dataDash('id')[0]);
       return $("[data-id=\"" + id + "\"].item").toggleClass('target');
     }).delegate('.action.fork, .remote', 'click', function(e) {
       var name;
       e.preventDefault();
-      name = $(e.target).dataDash('slug');
-      wiki.log('click', name, 'site', $(e.target).dataDash('site'));
+      name = $(e.target).dataDash('slug')[0];
+      wiki.log('click', name, 'site', $(e.target).dataDash('site')[0]);
       if (!e.shiftKey) $(e.target).parents('.page').nextAll().remove();
-      createPage(name).dataDash('site', $(e.target).dataDash('site')).appendTo($('.main')).each(refresh);
+      createPage(name).dataDash('site', $(e.target).dataDash('site')[0]).appendTo($('.main')).each(refresh);
       return setActive(name);
     });
     useLocalStorage = function() {
       return $(".login").length > 0;
     };
     $(".provider input").click(function() {
-      $("footer input:first").val($(this).dataDash('provider'));
+      $("footer input:first").val($(this).dataDash('provider')[0]);
       return $("footer form").submit();
     });
     setUrl();

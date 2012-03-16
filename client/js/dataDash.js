@@ -24,9 +24,9 @@ var DataDash = function (opt) {
     camName = dasherize(opt.prefix + '-');
   }
 
-  stringify = function (stuff, ele, _i) {
+  stringify = function (stuff, ele, idx, list) {
     if (typeof stuff === 'function') {
-      stuff = stuff.call(ele, _i);
+      stuff = stuff.call(ele, ele, idx, list);
     }
     try {
       return JSON.stringify(stuff);
@@ -43,29 +43,18 @@ var DataDash = function (opt) {
     }
   };
 
-  dataDash = function (elements, name, data) {
-    var _i, _result, _tmp;
-    if (typeof name === 'object') {
-      for (_i in name) {
-        _result = io(elements, _i, name[_i]);
-      }
-      return _result;
-    } else {
-      return io(elements, name, data);
-    }
-  };
-
-  // if (opt.stats) updateStats(element, name, data);
-
   function updateStats (element, name, data) {
     if (!stats[name]) {
       stats[name] = {
         get: 0,
         set: 0,
+        remove: 0,
         on: {}
       };
     }
-    if (data) {
+    if (data === null) {
+      stats[name].remove += 1;
+    } else if (data) {
       stats[name].set += 1;
     } else {
       stats[name].get += 1;
@@ -74,40 +63,33 @@ var DataDash = function (opt) {
   };
 
   function io (elements, name, data) {
-    var _i, _len, _results;
+    var _i, _len, _results, _tmp;
     if (typeof data === 'undefined') {
       name = name ? camelCase(camName + name) : '';
       if (!(elements.length > 0)) {
-        if (opt.stats) updateStats(elements, name, data);
-        return parse(elements.dataset[name]);
-      } else {
-        _results = [];
-        for (_i = 0, _len = elements.length; _i < _len; _i += 1) {
-          _results.push(getName(elements[_i], name));
-        }
-        if (_results.length === 1) {
-          return _results[0];
-        } else {
-          return _results;
-        }
+        _tmp = [];
+        _tmp.push(elements);
+        elements = _tmp;
       }
+      _results = [];
+      for (_i = 0, _len = elements.length; _i < _len; _i += 1) {
+        if (opt.stats) updateStats(elements[_i], name);
+        _results.push(getName(elements[_i], name));
+      }
+      return _results;
     } else {
       name = dasherize(name);
       if (!(elements.length > 0)) {
-        if (opt.stats) updateStats(elements, name, data);
+        _tmp = [];
+        _tmp.push(elements);
+        elements = _tmp;
+      }
+      for (_i = 0, _len = elements.length; _i < _len; _i += 1) {
         if (data === null) {
-          elements.removeAttribute(attrName + name);
-        } else {
-          elements.setAttribute(attrName + name, stringify(data, elements, 0));
-        }
-      } else {
-        for (_i = 0, _len = elements.length; _i < _len; _i += 1) {
           if (opt.stats) updateStats(elements[_i], name, data);
-          if (data === null) {
-            elements[_i].removeAttribute(attrName + name);
-          } else {
-            elements[_i].setAttribute(attrName + name, stringify(data, elements[_i], _i));
-          }
+          elements[_i].removeAttribute(attrName + name);
+        } else {
+          elements[_i].setAttribute(attrName + name, stringify(data, elements[_i], _i, elements));
         }
       }
       return elements;
@@ -129,14 +111,6 @@ var DataDash = function (opt) {
     } else {
       if (opt.stats) updateStats(element, name);
       return parse(element.dataset[name]);
-    }
-  };
-
-  dataDash.stats = function () {
-    if (opt.stats) {
-      return stats;
-    } else {
-      return;
     }
   };
 
@@ -162,6 +136,26 @@ var DataDash = function (opt) {
       }
     }
     return camelized.join('');
+  };
+
+  dataDash = function (elements, name, data) {
+    var _i, _result, _tmp;
+    if (typeof name === 'object') {
+      for (_i in name) {
+        _result = io(elements, _i, name[_i]);
+      }
+      return _result;
+    } else {
+      return io(elements, name, data);
+    }
+  };
+
+  dataDash.stats = function () {
+    if (opt.stats) {
+      return stats;
+    } else {
+      return;
+    }
   };
 
   if (!opt.noMethod && window.jQuery && !window.jQuery.fn[fnName]) {
