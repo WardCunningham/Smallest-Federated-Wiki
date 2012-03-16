@@ -130,7 +130,7 @@ $ ->
     $(element).dataDash() or JSON.parse($(element).dataDash('staticItem')[0]) if $(element).length > 0
 
   wiki.getData = ->
-    $('.chart,.data').last().data('item').data
+    $('.chart,.data').dataDash('data').last()
 
   scripts = {}
   wiki.getScript = (url, callback = () ->) ->
@@ -223,7 +223,7 @@ $ ->
         div.find('img').dblclick -> wiki.dialog item.text, this
     chart:
       emit: (div, item) ->
-        chartElement = $('<p />').addClass('readout').appendTo(div).text(item.dataDash.last().last())
+        chartElement = $('<p />').addClass('readout').appendTo(div).text(item.data.last().last())
         captionElement = $('<p />').html(resolveLinks(item.caption)).appendTo(div)
       bind: (div, item) ->
         div.find('p:first').mousemove (e) ->
@@ -237,7 +237,7 @@ $ ->
         div.append ul = $('<ul />').append if localStorage.length then $('<input type="button" value="discard all" />').css('margin-top','10px') else $('<p>empty</p>')
         for i in [0...localStorage.length]
           key = localStorage.key(i)
-          a = $('<a class="internal" href="#" />').append(key).data('pageName', key)
+          a = $('<a class="internal" href="#" />').append(key).dataDash('pageName', key)
           ul.prepend($('<li />').append(a))
       bind: (div, item) ->
         div.find('input').click ->
