@@ -73,7 +73,6 @@ var DataDash = function (opt) {
       }
       _results = [];
       for (_i = 0, _len = elements.length; _i < _len; _i += 1) {
-        if (opt.stats) updateStats(elements[_i], name);
         _results.push(getName(elements[_i], name));
       }
       return _results;
@@ -85,8 +84,8 @@ var DataDash = function (opt) {
         elements = _tmp;
       }
       for (_i = 0, _len = elements.length; _i < _len; _i += 1) {
+        if (opt.stats) updateStats(elements[_i], name, data);
         if (data === null) {
-          if (opt.stats) updateStats(elements[_i], name, data);
           elements[_i].removeAttribute(attrName + name);
         } else {
           elements[_i].setAttribute(attrName + name, stringify(data, elements[_i], _i, elements));
