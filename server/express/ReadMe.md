@@ -26,23 +26,23 @@ from another node program, and then call it passing in the options you want to
 start the server.  To get started with the first method check out the
 command line options:
 
-	bin/server.js -h
+	./bin/server.js -h
 
 To get started with the second pattern checkout lib/farm.coffee as an example.
 
 ## Launching the Node/Express Server ##
 To run in the default development mode at localhost:3000 just execute:
 
-	bin/server.js
+	./bin/server.js
 
 To run in production mode:
 
-	NODE_ENV=production bin/server.js -p 80 -u 'http://example.com'
+	NODE_ENV=production ./bin/server.js -p 80 -u 'http://example.com'
 
 Debug logging is turned on when in the development environment. Add any options
 you want to the call.  A typical usage would be:
 
-  bin/server.js -p 8080 -fF 22222
+	./bin/server.js -p 8080 -fF 22222
 
 And then proxy all hosts that you want pointed at a SFW to port 8080.
 
@@ -59,12 +59,12 @@ node, coffee-script, and express.
 ## Running specs ##
 
 * The unit tests can be run with a simple:
-		npm test
+  `npm test`
 * The Integration tests are a bit more involved.
 * Make sure you have Ruby 1.9.x installed, as well as the 'bundler' gem
 * Run `bundle install` in the root
 * Start the Express server in integration testing mode:
-  `server/express/bin/server.js --test`
+  `./server/express/bin/server.js --test`
 * Run the integration specs against the node/express server:
   `TEST_NODE=true bundle exec rspec spec/integration_spec.rb`
 
