@@ -11,6 +11,12 @@
     <link href='/js/jquery-ui-1.8.16.custom.css' rel='stylesheet' type='text/css'>
     <script src='/js/underscore-min.js' type='text/javascript'></script>
     <script src='/client.js' type='text/javascript'></script>
+    <!--
+    This wiki is served by the SFW node server, the source can be found at:
+    https://github.com/WardCunningham/Smallest-Federated-Wiki
+
+    {{gitlog}}
+    -->
   </head>
   <body>
     <header></header>
@@ -37,9 +43,6 @@
           <input data-provider='http://www.livejournal.com/openid/server.bml' title='livejournal' type='button' value='L'>
         </span>
       {{/authenticated}}
-      <a href="https://github.com/WardCunningham/Smallest-Federated-Wiki/tree/{{sha}}" target='_blank'>
-        View Source on github.
-      </a>
       </form>
     </footer>
   </body>
