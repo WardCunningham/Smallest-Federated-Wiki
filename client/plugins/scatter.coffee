@@ -25,9 +25,9 @@ window.plugins.scatter =
           step = Math.pow 10, Math.floor Math.log(hi-lo) / Math.log(10)
           [step*Math.floor(lo/step), step*Math.ceil(hi/step)]
 
-        w = 380
+        w = 360
         h = 275
-        p = 40
+        p = 20
         x = d3.scale.linear().domain(extent xdat).range([ 0, w ])
         y = d3.scale.linear().domain(extent ydat).range([ h, 0 ])
         fill = d3.scale.category20()
