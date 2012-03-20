@@ -7,6 +7,7 @@ window.plugins.scatter =
           <style>
           svg {
             font: 10px sans-serif;
+            background: #eee;
           }
           circle {
             fill: gray;
@@ -14,11 +15,22 @@ window.plugins.scatter =
           }
          </style>
         '''
-        data = wiki.getData()
+
+        who = $('.chart,.data,.calculator').last()
+        data = who.data('item').data
         horz = "Energy/GHG Emissions Intensity Total"
-        vert = "Water/Land Intensity Total"
+        vert = "Total Score"
         xdat = (d) -> +d[horz]
         ydat = (d) -> +d[vert]
+        who.bind 'thumb', (e, thumb) ->
+          return if thumb == horz
+          wiki.log 'thumb', thumb
+          horz = thumb
+          x = d3.scale.linear().domain(extent xdat).range([ 0, w ])
+          d3.selectAll("circle").transition()
+            .duration(500)
+            .delay((d, i) -> i * 10)
+            .attr("cx", (d) -> x(xdat(d)))
 
         extent = (f) ->
           [lo, hi] = [d3.min(data,f), d3.max(data,f)]

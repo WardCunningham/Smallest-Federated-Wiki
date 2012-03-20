@@ -7,6 +7,7 @@ window.plugins.data =
       thumb = thumbs(item)[Math.floor(thumbs(item).length * e.offsetX / e.target.offsetWidth)]
       $(e.target).siblings("p").last().html thumb
       $(e.target).text(readout(item.data[thumb])) if item.data.object?
+      $(div).triggerHandler('thumb', thumb)
 
 summary = (item) ->
   return "#{item.data.length}x#{item.columns.length}" if item.columns?

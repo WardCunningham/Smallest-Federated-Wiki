@@ -12,9 +12,8 @@
         var thumb;
         thumb = thumbs(item)[Math.floor(thumbs(item).length * e.offsetX / e.target.offsetWidth)];
         $(e.target).siblings("p").last().html(thumb);
-        if (item.data.object != null) {
-          return $(e.target).text(readout(item.data[thumb]));
-        }
+        if (item.data.object != null) $(e.target).text(readout(item.data[thumb]));
+        return $(div).triggerHandler('thumb', thumb);
       });
     }
   };

@@ -5,17 +5,30 @@
     emit: function(div, item) {
       return wiki.getScript('/js/d3/d3.js', function() {
         return wiki.getScript('/js/d3/d3.time.js', function() {
-          var data, extent, fill, h, horz, p, vert, vis, w, x, xdat, y, ydat;
-          div.append(' <style>\n svg {\n   font: 10px sans-serif;\n }\n circle {\n   fill: gray;\n   stroke: white;\n }\n</style>');
-          data = wiki.getData();
+          var data, extent, fill, h, horz, p, vert, vis, w, who, x, xdat, y, ydat;
+          div.append(' <style>\n svg {\n   font: 10px sans-serif;\n   background: #eee;\n }\n circle {\n   fill: gray;\n   stroke: white;\n }\n</style>');
+          who = $('.chart,.data,.calculator').last();
+          data = who.data('item').data;
           horz = "Energy/GHG Emissions Intensity Total";
-          vert = "Water/Land Intensity Total";
+          vert = "Total Score";
           xdat = function(d) {
             return +d[horz];
           };
           ydat = function(d) {
             return +d[vert];
           };
+          who.bind('thumb', function(e, thumb) {
+            var x;
+            if (thumb === horz) return;
+            wiki.log('thumb', thumb);
+            horz = thumb;
+            x = d3.scale.linear().domain(extent(xdat)).range([0, w]);
+            return d3.selectAll("circle").transition().duration(500).delay(function(d, i) {
+              return i * 10;
+            }).attr("cx", function(d) {
+              return x(xdat(d));
+            });
+          });
           extent = function(f) {
             var hi, lo, step, _ref;
             _ref = [d3.min(data, f), d3.max(data, f)], lo = _ref[0], hi = _ref[1];
