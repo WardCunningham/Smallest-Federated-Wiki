@@ -264,7 +264,7 @@ $ ->
         type: "factory"
         id: randomBytes(8)
       itemElement = $("<div />", class: "item factory").dataDash(item)
-      itemElement.dataDash 'pageElement', pageElement
+      itemElement.data 'pageElement', pageElement
       pageElement.find(".story").append(itemElement)
       doPlugin itemElement, item
       beforeElement = itemElement.prev('.item')
@@ -278,7 +278,7 @@ $ ->
           itemElement = ui.item
           item = getItem(itemElement)
           thisPageElement = $(this).parents('.page:first')
-          sourcePageElement = itemElement.dataDash('pageElement')[0]
+          sourcePageElement = itemElement.data('pageElement')
           destinationPageElement = itemElement.parents('.page:first')
           journalElement = thisPageElement.find('.journal')
           equals = (a, b) -> a and b and a.get(0) == b.get(0)
@@ -293,7 +293,7 @@ $ ->
           else if moveFromPage
             {type: 'remove'}
           else if moveToPage
-            itemElement.dataDash 'pageElement', thisPageElement
+            itemElement.data 'pageElement', thisPageElement
             beforeElement = itemElement.prev('.item')
             before = getItem(beforeElement)
             {type: 'add', item: item, after: before?.id}
