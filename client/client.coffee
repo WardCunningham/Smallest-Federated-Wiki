@@ -130,7 +130,8 @@ $ ->
     $(element).dataDash() or JSON.parse($(element).dataDash('staticItem')[0]) if $(element).length > 0
 
   wiki.getData = ->
-    $('.chart,.data').dataDash('data').last()
+    who = $('.chart,.data,.calculator').last()
+    if who? then who.dataDash('data') else {}
 
   scripts = {}
   wiki.getScript = (url, callback = () ->) ->

@@ -11,30 +11,20 @@ farm = require './farm'
 
 argv = optimist
   .usage('Usage: $0')
-  .options('d',
-    alias     : 'data'
-    default   : ''
-    describe  : 'location of flat file data'
-  )
-  .options('h',
-    alias     : 'help'
-    boolean   : true
-    describe  : 'Show this help info and exit'
-  )
-  .options('o',
-    alias     : 'host'
-    default   : ''
-    describe  : 'Host to accept connections on, falsy == any'
-  )
   .options('u',
     alias     : 'url'
     default   : ''
-    describe  : 'Url to be used for the realm in openID'
+    describe  : 'Important: Your server URL for use with openID'
   )
   .options('p',
     alias     : 'port'
     default   : 3000
     describe  : 'Port'
+  )
+  .options('d',
+    alias     : 'data'
+    default   : ''
+    describe  : 'location of flat file data'
   )
   .options('r',
     alias     : 'root'
@@ -51,12 +41,22 @@ argv = optimist
     default   : 40000
     describe  : 'Port to start farm servers on.'
   )
+  .options('o',
+    alias     : 'host'
+    default   : ''
+    describe  : 'Host to accept connections on, falsy == any'
+  )
+  .options('id',
+    describe  : 'Set the location of the open id file'
+  )
   .options('test',
     boolean   : true
     describe  : 'Set server to work with the rspec integration tests'
   )
-  .options('id',
-    describe  : 'Set the location of the open id file'
+  .options('h',
+    alias     : 'help'
+    boolean   : true
+    describe  : 'Show this help info and exit'
   )
   .argv
 
@@ -72,3 +72,4 @@ else if argv.f
   farm(argv)
 else
   server(argv)
+

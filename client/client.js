@@ -170,7 +170,13 @@
       }
     };
     wiki.getData = function() {
-      return $('.chart,.data').dataDash('data').last();
+      var who;
+      who = $('.chart,.data,.calculator').last();
+      if (who != null) {
+        return who.dataDash('data');
+      } else {
+        return {};
+      }
     };
     scripts = {};
     wiki.getScript = function(url, callback) {

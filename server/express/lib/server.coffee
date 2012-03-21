@@ -27,11 +27,10 @@ defargs = require('./defaultargs')
 # easiest way to use the Smallest Federated Wiki with a database backend.
 pageFactory = require('./page')
 
-# When server factory is first started attempt to
-# set version to the git sha id of the last commit.
-version = ''
-gitVersion = child_process.exec('git rev-parse HEAD', (err, stdout, stderr) ->
-  version = stdout
+# When the server factory is first started attempt to retrieve the gitlog.
+gitlog = ''
+gitVersion = child_process.exec('git log -10 --oneline || echo no git log', (err, stdout, stderr) ->
+  gitlog = stdout
   )
 
 # Set export objects for node and coffee to a function that generates a sfw server.
@@ -232,7 +231,7 @@ module.exports = exports = (argv) ->
           'logout'
         else 'login'
       else 'claim'
-      sha: version
+      gitlog
     }
     for page, idx in urlPages
       if urlLocs[idx] is 'view'
