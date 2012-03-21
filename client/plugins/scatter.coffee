@@ -16,8 +16,7 @@ window.plugins.scatter =
          </style>
         '''
 
-        who = $('.chart,.data,.calculator').last()
-        data = who.data('item').data
+        data = wiki.getData()
         horz = "Energy/GHG Emissions Intensity Total"
         vert = "Total Score"
         xdat = (d) -> +d[horz]

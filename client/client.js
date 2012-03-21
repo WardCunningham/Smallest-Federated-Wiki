@@ -173,7 +173,7 @@
       var who;
       who = $('.chart,.data,.calculator').last();
       if (who != null) {
-        return who.dataDash('data');
+        return who.dataDash('data')[0];
       } else {
         return {};
       }

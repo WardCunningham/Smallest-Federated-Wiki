@@ -131,7 +131,7 @@ $ ->
 
   wiki.getData = ->
     who = $('.chart,.data,.calculator').last()
-    if who? then who.dataDash('data') else {}
+    if who? then who.dataDash('data')[0] else {}
 
   scripts = {}
   wiki.getScript = (url, callback = () ->) ->
