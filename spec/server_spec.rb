@@ -4,6 +4,10 @@ require 'json'
 # TODO: now that there is a Page spec and an integration spec, we should
 # mock and stub the page writing in these tests.
 shared_examples_for "Welcome as HTML" do
+  let!(:versions) {
+    log = `git log -10 --oneline`
+    log.split("\n").map{ |e| e.split(' ').first }
+  }
   it "renders the page" do
     last_response.status.should == 200
   end
@@ -14,6 +18,12 @@ shared_examples_for "Welcome as HTML" do
 
   it "has a div with class 'page' and id 'welcome-visitors'" do
     @body.should match(/<div class='page' .*?id='welcome-visitors'>/)
+  end
+
+  it "has the latest commit in the head" do
+    versions.each do |version|
+      @body.should match(version)
+    end
   end
 end
 
