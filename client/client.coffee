@@ -53,9 +53,9 @@ $ ->
     if action.type == 'fork'
       actionElement
         .css("background-image", "url(//#{action.site}/favicon.png)")
-        .attr("href", "//#{action.site}/#{pageElement.attr('id')}.html")
+        .attr("href", "//#{action.site}/#{pageElement.dataDash('slug')[0]}.html")
         .dataDash("site", action.site)
-        .dataDash("slug", pageElement.attr('id'))
+        .dataDash("slug", pageElement.dataDash('slug')[0])
 
   putAction = wiki.putAction = (pageElement, action) ->
     if (site = pageElement.dataDash('site')[0])?
@@ -75,20 +75,20 @@ $ ->
       pushToServer(pageElement, action)
 
   pushToLocal = (pageElement, action) ->
-    page = localStorage[pageElement.attr("id")]
+    page = localStorage[pageElement.dataDash('slug')[0]]
     page = JSON.parse(page) if page
     page = action.item if action.type == 'create'
     page ||= pageToJson(pageElement)
     page.journal = [] unless page.journal?
     page.journal.concat(action)
     page.story = $(pageElement).find(".item").map(-> $(@).dataDash()).get()
-    localStorage[pageElement.attr("id")] = JSON.stringify(page)
+    localStorage[pageElement.dataDash('slug')] = JSON.stringify(page)
     addToJournal pageElement.find('.journal'), action
 
   pushToServer = (pageElement, action) ->
     $.ajax
       type: 'PUT'
-      url: "/page/#{pageElement.attr('id')}/action"
+      url: "/page/#{pageElement.dataDash('slug')[0]}/action"
       data:
         'action': JSON.stringify(action)
       success: () ->
@@ -133,10 +133,10 @@ $ ->
     if vis
       idx = $('.item').index(vis)
       who = $(".item:lt(#{idx})").filter('.chart,.data,.calculator').last()
-      if who? then who.dataDash('data')[0] else {}
+      if who then who.dataDash('data')[0] else {}
     else
       who = $('.chart,.data,.calculator').last()
-      if who? then who.dataDash('data')[0] else {}
+      if who then who.dataDash('data')[0] else {}
 
   scripts = {}
   wiki.getScript = (url, callback = () ->) ->
@@ -261,8 +261,9 @@ $ ->
 
   refresh = ->
     pageElement = $(this)
-    slug = $(pageElement).attr('id')
-    site = $(pageElement).dataDash('site')[0]
+
+    slug = pageElement.dataDash('slug')[0]
+    site = pageElement.dataDash('site')[0]
 
     pageElement.find(".add-factory").live "click", (evt) ->
       evt.preventDefault()
@@ -405,7 +406,7 @@ $ ->
         getPlugin item.type, (plugin) ->
           plugin.bind div, item
     else
-      if useLocalStorage() and json = localStorage[pageElement.attr("id")]
+      if useLocalStorage() and json = localStorage[pageElement.dataDash('slug')[0]]
         pageElement.addClass("local")
         buildPage JSON.parse(json)
         initDragging()
@@ -450,17 +451,15 @@ $ ->
 
     wiki.log 'showState', oldPages, newPages, oldLocs, newLocs
 
-    previousPage = newPages
-
-    return if (newPages is oldPages) and (newLocs is oldLocs)
+    previous = $('.page').eq(0)
     for name, idx in newPages
-      if name in oldPages
-        delete oldPages[oldPages.indexOf(name)]
-      else
-        createPage(name, newLocs[idx]).insertAfter(previousPage).each refresh
-      previousPage = $('#'+name)
+      unless name is oldPages[idx]
+        old = $('.page').eq(idx)
+        old.remove() if old
+        createPage(name, newLocs[idx]).insertAfter(previous).each refresh
+      previous = $('.page').eq(idx)
 
-    $('#'+name)?.remove() for name in oldPages
+    previous.nextAll().remove()
 
     setActive($('.page').last())
 
@@ -482,23 +481,22 @@ $ ->
 # URL or DOM
 
   pagesInDom = ->
-    $.makeArray $(".page").map (_, el) -> el.id
+    $('.page').dataDash('slug')
 
   urlPages = ->
     (i for i in $(location).attr('pathname').split('/') by 2)[1..]
 
   locsInDom = ->
-    $.makeArray $(".page").map (_, el) ->
-      $(el).dataDash('site')[0] or 'view'
+    $('.page').dataDash('site')
 
   urlLocs = ->
     (j for j in $(location).attr('pathname').split('/')[1..] by 2)
 
-  createPage = (name, loc) ->
-    if loc and (loc isnt ('view' or 'my'))
-      $("<div/>").attr('id', name).dataDash('site', loc).addClass("page")
+  createPage = (slug, site) ->
+    if site and (site isnt ('view' or 'my'))
+      $("<div/>").dataDash({site, slug}).addClass("page")
     else
-      $("<div/>").attr('id', name).addClass("page")
+      $("<div/>").addClass("page").dataDash({slug})
 
 # HANDLERS for jQuery events
 

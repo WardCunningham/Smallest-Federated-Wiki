@@ -71,7 +71,7 @@
       pageElement = journalElement.parents('.page:first');
       actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(action.type[0]).dataDash(action).appendTo(journalElement);
       if (action.type === 'fork') {
-        return actionElement.css("background-image", "url(//" + action.site + "/favicon.png)").attr("href", "//" + action.site + "/" + (pageElement.attr('id')) + ".html").dataDash("site", action.site).dataDash("slug", pageElement.attr('id'));
+        return actionElement.css("background-image", "url(//" + action.site + "/favicon.png)").attr("href", "//" + action.site + "/" + (pageElement.dataDash('slug')[0]) + ".html").dataDash("site", action.site).dataDash("slug", pageElement.dataDash('slug')[0]);
       }
     };
     putAction = wiki.putAction = function(pageElement, action) {
@@ -97,7 +97,7 @@
     };
     pushToLocal = function(pageElement, action) {
       var page;
-      page = localStorage[pageElement.attr("id")];
+      page = localStorage[pageElement.dataDash('slug')[0]];
       if (page) page = JSON.parse(page);
       if (action.type === 'create') page = action.item;
       page || (page = pageToJson(pageElement));
@@ -106,13 +106,13 @@
       page.story = $(pageElement).find(".item").map(function() {
         return $(this).dataDash();
       }).get();
-      localStorage[pageElement.attr("id")] = JSON.stringify(page);
+      localStorage[pageElement.dataDash('slug')] = JSON.stringify(page);
       return addToJournal(pageElement.find('.journal'), action);
     };
     pushToServer = function(pageElement, action) {
       return $.ajax({
         type: 'PUT',
-        url: "/page/" + (pageElement.attr('id')) + "/action",
+        url: "/page/" + (pageElement.dataDash('slug')[0]) + "/action",
         data: {
           'action': JSON.stringify(action)
         },
@@ -174,14 +174,14 @@
       if (vis) {
         idx = $('.item').index(vis);
         who = $(".item:lt(" + idx + ")").filter('.chart,.data,.calculator').last();
-        if (who != null) {
+        if (who) {
           return who.dataDash('data')[0];
         } else {
           return {};
         }
       } else {
         who = $('.chart,.data,.calculator').last();
-        if (who != null) {
+        if (who) {
           return who.dataDash('data')[0];
         } else {
           return {};
@@ -367,8 +367,8 @@
     refresh = function() {
       var buildPage, create, fetch, initDragging, json, pageElement, site, slug;
       pageElement = $(this);
-      slug = $(pageElement).attr('id');
-      site = $(pageElement).dataDash('site')[0];
+      slug = pageElement.dataDash('slug')[0];
+      site = pageElement.dataDash('site')[0];
       pageElement.find(".add-factory").live("click", function(evt) {
         var before, beforeElement, item, itemElement;
         evt.preventDefault();
@@ -541,7 +541,7 @@
           });
         });
       } else {
-        if (useLocalStorage() && (json = localStorage[pageElement.attr("id")])) {
+        if (useLocalStorage() && (json = localStorage[pageElement.dataDash('slug')[0]])) {
           pageElement.addClass("local");
           buildPage(JSON.parse(json));
           return initDragging();
@@ -594,27 +594,23 @@
       return scrollTo(el.addClass("active"));
     };
     showState = function() {
-      var idx, name, newLocs, newPages, oldLocs, oldPages, previousPage, _i, _len, _len2, _ref;
+      var idx, name, newLocs, newPages, old, oldLocs, oldPages, previous, _len;
       oldPages = pagesInDom();
       newPages = urlPages();
       oldLocs = locsInDom();
       newLocs = urlLocs();
       wiki.log('showState', oldPages, newPages, oldLocs, newLocs);
-      previousPage = newPages;
-      if ((newPages === oldPages) && (newLocs === oldLocs)) return;
+      previous = $('.page').eq(0);
       for (idx = 0, _len = newPages.length; idx < _len; idx++) {
         name = newPages[idx];
-        if (__indexOf.call(oldPages, name) >= 0) {
-          delete oldPages[oldPages.indexOf(name)];
-        } else {
-          createPage(name, newLocs[idx]).insertAfter(previousPage).each(refresh);
+        if (name !== oldPages[idx]) {
+          old = $('.page').eq(idx);
+          if (old) old.remove();
+          createPage(name, newLocs[idx]).insertAfter(previous).each(refresh);
         }
-        previousPage = $('#' + name);
+        previous = $('.page').eq(idx);
       }
-      for (_i = 0, _len2 = oldPages.length; _i < _len2; _i++) {
-        name = oldPages[_i];
-        if ((_ref = $('#' + name)) != null) _ref.remove();
-      }
+      previous.nextAll().remove();
       return setActive($('.page').last());
     };
     LEFTARROW = 37;
@@ -638,9 +634,7 @@
       }
     });
     pagesInDom = function() {
-      return $.makeArray($(".page").map(function(_, el) {
-        return el.id;
-      }));
+      return $('.page').dataDash('slug');
     };
     urlPages = function() {
       var i;
@@ -656,9 +650,7 @@
       })()).slice(1);
     };
     locsInDom = function() {
-      return $.makeArray($(".page").map(function(_, el) {
-        return $(el).dataDash('site')[0] || 'view';
-      }));
+      return $('.page').dataDash('site');
     };
     urlLocs = function() {
       var j, _i, _len, _ref, _results, _step;
@@ -670,11 +662,16 @@
       }
       return _results;
     };
-    createPage = function(name, loc) {
-      if (loc && (loc !== ('view' || 'my'))) {
-        return $("<div/>").attr('id', name).dataDash('site', loc).addClass("page");
+    createPage = function(slug, site) {
+      if (site && (site !== ('view' || 'my'))) {
+        return $("<div/>").dataDash({
+          site: site,
+          slug: slug
+        }).addClass("page");
       } else {
-        return $("<div/>").attr('id', name).addClass("page");
+        return $("<div/>").addClass("page").dataDash({
+          slug: slug
+        });
       }
     };
     $(window).on('popstate', function(event) {
