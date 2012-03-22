@@ -169,13 +169,23 @@
         return $(element).dataDash() || JSON.parse($(element).dataDash('staticItem')[0]);
       }
     };
-    wiki.getData = function() {
-      var who;
-      who = $('.chart,.data,.calculator').last();
-      if (who != null) {
-        return who.dataDash('data')[0];
+    wiki.getData = function(vis) {
+      var idx, who;
+      if (vis) {
+        idx = $('.item').index(vis);
+        who = $(".item:lt(" + idx + ")").filter('.chart,.data,.calculator').last();
+        if (who != null) {
+          return who.dataDash('data')[0];
+        } else {
+          return {};
+        }
       } else {
-        return {};
+        who = $('.chart,.data,.calculator').last();
+        if (who != null) {
+          return who.dataDash('data')[0];
+        } else {
+          return {};
+        }
       }
     };
     scripts = {};

@@ -129,9 +129,14 @@ $ ->
   getItem = (element) ->
     $(element).dataDash() or JSON.parse($(element).dataDash('staticItem')[0]) if $(element).length > 0
 
-  wiki.getData = ->
-    who = $('.chart,.data,.calculator').last()
-    if who? then who.dataDash('data')[0] else {}
+  wiki.getData = (vis) ->
+    if vis
+      idx = $('.item').index(vis)
+      who = $(".item:lt(#{idx})").filter('.chart,.data,.calculator').last()
+      if who? then who.dataDash('data')[0] else {}
+    else
+      who = $('.chart,.data,.calculator').last()
+      if who? then who.dataDash('data')[0] else {}
 
   scripts = {}
   wiki.getScript = (url, callback = () ->) ->
