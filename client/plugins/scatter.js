@@ -5,9 +5,10 @@
     emit: function(div, item) {
       return wiki.getScript('/js/d3/d3.js', function() {
         return wiki.getScript('/js/d3/d3.time.js', function() {
-          var data, extent, fill, h, horz, p, vert, vis, w, x, xdat, y, ydat;
+          var data, extent, fill, h, horz, p, vert, vis, w, who, x, xdat, y, ydat;
           div.append(' <style>\n svg {\n   font: 10px sans-serif;\n   background: #eee;\n }\n circle {\n   fill: gray;\n   stroke: white;\n }\n</style>');
-          data = wiki.getData();
+          who = $('.chart,.data,.calculator').last();
+          data = who.dataDash('data')[0];
           horz = "Energy/GHG Emissions Intensity Total";
           vert = "Total Score";
           xdat = function(d) {
