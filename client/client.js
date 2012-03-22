@@ -251,7 +251,7 @@
       name = asSlug(name);
       if (page != null) $(page).nextAll().remove();
       createPage(name).appendTo($('.main')).each(refresh);
-      return setActive(name);
+      return setActive($('.page').last());
     };
     scrollContainer = void 0;
     findScrollContainer = function() {
@@ -587,10 +587,11 @@
         }
       }
     };
-    setActive = function(page) {
-      wiki.log('set active', page);
+    setActive = function(el) {
+      el = $(el);
+      wiki.log('set active', el);
       $(".active").removeClass("active");
-      return scrollTo($("#" + page).addClass("active"));
+      return scrollTo(el.addClass("active"));
     };
     showState = function() {
       var idx, name, newLocs, newPages, oldLocs, oldPages, previousPage, _i, _len, _len2, _ref;
@@ -614,7 +615,7 @@
         name = oldPages[_i];
         if ((_ref = $('#' + name)) != null) _ref.remove();
       }
-      return setActive($('.page').last().attr('id'));
+      return setActive($('.page').last());
     };
     LEFTARROW = 37;
     RIGHTARROW = 39;
@@ -629,8 +630,8 @@
         }
       })();
       if (direction && !(event.target.tagName === "TEXTAREA")) {
-        pages = pagesInDom();
-        newIndex = pages.indexOf($('.active').attr('id')) + direction;
+        pages = $('.page');
+        newIndex = pages.index($('.active')) + direction;
         if ((0 <= newIndex && newIndex < pages.length)) {
           return setActive(pages[newIndex]);
         }
@@ -700,7 +701,7 @@
       json = pageToJson(pageElement);
       return wiki.dialog("JSON for " + json.title, $('<pre/>').text(JSON.stringify(json, null, 2)));
     }).delegate('.page', 'click', function(e) {
-      if (!$(e.target).is("a")) return setActive(this.id);
+      if (!$(e.target).is("a")) return setActive(this);
     }).delegate('.internal', 'click', function(e) {
       var name;
       e.preventDefault();
@@ -709,7 +710,7 @@
       wiki.log('click', name, 'context', wiki.fetchContext);
       if (!e.shiftKey) $(e.target).parents('.page').nextAll().remove();
       createPage(name).appendTo('.main').each(refresh);
-      return setActive(name);
+      return setActive(this);
     }).delegate('.action', 'hover', function() {
       var id;
       id = JSON.stringify($(this).dataDash('id')[0]);
@@ -721,7 +722,7 @@
       wiki.log('click', name, 'site', $(e.target).dataDash('site')[0]);
       if (!e.shiftKey) $(e.target).parents('.page').nextAll().remove();
       createPage(name).dataDash('site', $(e.target).dataDash('site')[0]).appendTo($('.main')).each(refresh);
-      return setActive(name);
+      return setActive(this);
     });
     useLocalStorage = function() {
       return $(".login").length > 0;
@@ -741,7 +742,7 @@
       if (urlPage !== '') createPage(urlPage, firstUrlLocs[idx]).appendTo('.main');
     }
     $('.page').each(refresh);
-    return setActive($('.page').last().attr('id'));
+    return setActive($('.page').last());
   });
 
 }).call(this);

@@ -184,7 +184,7 @@ $ ->
     createPage(name)
       .appendTo($('.main'))
       .each refresh
-    setActive(name)
+    setActive($('.page').last())
 
   # Find which element is scrollable, body or html
   scrollContainer = undefined
@@ -435,10 +435,11 @@ $ ->
         wiki.log 'set state', locs, pages
         history.pushState(null, null, url)
 
-  setActive = (page) ->
-    wiki.log 'set active', page
+  setActive = (el) ->
+    el = $(el)
+    wiki.log 'set active', el
     $(".active").removeClass("active")
-    scrollTo $("#"+page).addClass("active")
+    scrollTo el.addClass("active")
 
   showState = ->
     # show and refresh correct pages
@@ -461,7 +462,7 @@ $ ->
 
     $('#'+name)?.remove() for name in oldPages
 
-    setActive($('.page').last().attr('id'))
+    setActive($('.page').last())
 
 
   LEFTARROW = 37
@@ -472,8 +473,8 @@ $ ->
       when LEFTARROW then -1
       when RIGHTARROW then +1
     if direction && not (event.target.tagName is "TEXTAREA")
-      pages = pagesInDom()
-      newIndex = pages.indexOf($('.active').attr('id')) + direction
+      pages = $('.page')
+      newIndex = pages.index($('.active')) + direction
       if 0 <= newIndex < pages.length
         setActive(pages[newIndex])
 
@@ -527,7 +528,7 @@ $ ->
       wiki.dialog "JSON for #{json.title}",  $('<pre/>').text(JSON.stringify(json, null, 2))
 
     .delegate '.page', 'click', (e) ->
-      setActive this.id unless $(e.target).is("a")
+      setActive this unless $(e.target).is("a")
 
     .delegate '.internal', 'click', (e) ->
       e.preventDefault()
@@ -536,7 +537,7 @@ $ ->
       wiki.log 'click', name, 'context', wiki.fetchContext
       $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
       createPage(name).appendTo('.main').each refresh
-      setActive(name)
+      setActive(this)
       # FIXME: can open page multiple times with shift key
 
     .delegate '.action', 'hover', ->
@@ -552,7 +553,7 @@ $ ->
         .dataDash('site',$(e.target).dataDash('site')[0])
         .appendTo($('.main'))
         .each refresh
-      setActive(name)
+      setActive(this)
 
   useLocalStorage = -> $(".login").length > 0
 
@@ -570,4 +571,4 @@ $ ->
     createPage(urlPage, firstUrlLocs[idx]).appendTo('.main') unless urlPage is ''
 
   $('.page').each refresh
-  setActive($('.page').last().attr('id'))
+  setActive($('.page').last())
