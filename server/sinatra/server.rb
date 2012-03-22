@@ -194,6 +194,19 @@ class Controller < Sinatra::Base
     haml :view, :locals => {:pages => pages}
   end
 
+  get '/recent-changes.json' do
+    content_type 'application/json'
+    cross_origin
+    story = Dir.chdir(farm_page.directory) do
+      Dir.glob("*").collect do |slug|
+        title = farm_page.get(slug)['title']
+        {'type' => 'paragraph', 'text' => "[[#{title}]]", 'id' => '872638476823'}
+      end
+    end
+    page = {'title' => 'Recent Changes', 'story' => story}
+    JSON.pretty_generate(page)
+  end
+
   get %r{^/([a-z0-9-]+)\.json$} do |name|
     content_type 'application/json'
     cross_origin
