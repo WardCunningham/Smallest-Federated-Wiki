@@ -75,15 +75,11 @@ $ ->
       pushToServer(pageElement, action)
 
   pushToLocal = (pageElement, action) ->
-    page = localStorage[pageElement.dataDash('slug')[0]]
-    page = JSON.parse(page) if page
     page = action.item if action.type == 'create'
+    addToJournal pageElement.find('.journal'), action
     page ||= pageToJson(pageElement)
     page.journal = [] unless page.journal?
-    page.journal.concat(action)
-    page.story = $(pageElement).find(".item").map(-> $(@).dataDash()).get()
-    localStorage[pageElement.dataDash('slug')] = JSON.stringify(page)
-    addToJournal pageElement.find('.journal'), action
+    localStorage[pageElement.dataDash('slug')[0]] = JSON.stringify(page)
 
   pushToServer = (pageElement, action) ->
     $.ajax

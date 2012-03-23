@@ -97,17 +97,11 @@
     };
     pushToLocal = function(pageElement, action) {
       var page;
-      page = localStorage[pageElement.dataDash('slug')[0]];
-      if (page) page = JSON.parse(page);
       if (action.type === 'create') page = action.item;
+      addToJournal(pageElement.find('.journal'), action);
       page || (page = pageToJson(pageElement));
       if (page.journal == null) page.journal = [];
-      page.journal.concat(action);
-      page.story = $(pageElement).find(".item").map(function() {
-        return $(this).dataDash();
-      }).get();
-      localStorage[pageElement.dataDash('slug')] = JSON.stringify(page);
-      return addToJournal(pageElement.find('.journal'), action);
+      return localStorage[pageElement.dataDash('slug')[0]] = JSON.stringify(page);
     };
     pushToServer = function(pageElement, action) {
       return $.ajax({
