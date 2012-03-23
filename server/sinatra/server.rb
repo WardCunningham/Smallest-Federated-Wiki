@@ -197,10 +197,20 @@ class Controller < Sinatra::Base
   get '/recent-changes.json' do
     content_type 'application/json'
     cross_origin
-    story = Dir.chdir(farm_page.directory) do
+    bins = Hash.new {|hash, key| hash[key] = Array.new}
+    Dir.chdir(farm_page.directory) do
       Dir.glob("*").collect do |slug|
-        title = farm_page.get(slug)['title']
-        {'type' => 'paragraph', 'text' => "[[#{title}]]", 'id' => '872638476823'}
+        dt = Time.now - File.new(slug).mtime
+        bins[(dt/=60)<1?'Minute':(dt/=60)<1?'Hour':(dt/=24)<1?'Day':(dt/=7)<1?'Week':(dt/=4)<1?'Month':(dt/=3)<1?'Season':(dt/=4)<1?'Year':'Forever']<<slug
+      end
+    end
+    story = []
+    ['Minute', 'Hour', 'Day', 'Week', 'Month', 'Season', 'Year'].each do |key|
+      next unless bins[key].length>0
+      story << {'type' => 'paragraph', 'text' => "<h3>Within a #{key}</h3>", 'id' => RandomId.generate}
+      bins[key].each do |slug|
+        page = farm_page.get(slug)
+        story << {'type' => 'paragraph', 'text' => "[[#{page['title']}]] (#{page['story'].length.to_s })", 'id' => RandomId.generate}
       end
     end
     page = {'title' => 'Recent Changes', 'story' => story}
