@@ -211,6 +211,7 @@ class Controller < Sinatra::Base
       story << {'type' => 'paragraph', 'text' => "<h3>Within a #{key}</h3>", 'id' => RandomId.generate}
       bins[key].each do |slug|
         page = farm_page.get(slug)
+        next if page['story'].length == 0
         story << {'type' => 'paragraph', 'text' => "[[#{page['title']}]] (#{page['story'].length.to_s })", 'id' => RandomId.generate}
       end
     end
