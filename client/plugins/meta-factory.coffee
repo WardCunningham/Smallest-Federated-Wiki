@@ -14,7 +14,7 @@ window.plugins.factory =
       pageElement = div.parents('.page:first')
       try
         div.data 'pageElement', pageElement
-        div.data 'item', item
+        div.dataDash(item)
         wiki.getPlugin item.type, (plugin) ->
           plugin.emit div, item
           plugin.bind div, item
