@@ -60,7 +60,7 @@ var DataDash = function (opt) {
       stats[name].get += 1;
     }
     stats[name].on[element.tagName] = true;
-  };
+  }
 
   function io (elements, name, data) {
     var _i, _len, _results, _tmp;
@@ -88,18 +88,19 @@ var DataDash = function (opt) {
         if (data === null) {
           elements[_i].removeAttribute(attrName + name);
         } else {
-          elements[_i].setAttribute(attrName + name, stringify(data, elements[_i], _i, elements));
+          // elements[_i].setAttribute(attrName + name, stringify(data, elements[_i], _i, elements));
+          elements[_i].dataset[camelCase(camName + name)] = stringify(data, elements[_i], _i, elements);
         }
       }
       return elements;
     }
-  };
+  }
 
   function getName (element, name) {
-    var _i, _result;
+    var _i, _result, prefix;
     if (name === '') {
       _result = {};
-      var prefix = camelCase(opt.prefix);
+      prefix = camelCase(opt.prefix);
       for (_i in parse(element.dataset)) {
         if (opt.stats) updateStats(element, _i);
         if (_i.slice(0, prefix.length) === prefix) {
@@ -111,7 +112,7 @@ var DataDash = function (opt) {
       if (opt.stats) updateStats(element, name);
       return parse(element.dataset[name]);
     }
-  };
+  }
 
   function dasherize (name) {
     if (!name) {
