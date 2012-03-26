@@ -47,6 +47,7 @@
         return wiki.textEditor(div, item);
       });
       div.find('a').click(function(evt) {
+        evt.preventDefault();
         div.removeClass('factory').addClass(item.type = evt.target.text.toLowerCase());
         div.unbind();
         return wiki.textEditor(div, item);

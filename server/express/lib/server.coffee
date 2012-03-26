@@ -77,6 +77,14 @@ module.exports = exports = (argv) ->
         cb()
     )
 
+  #### Middleware ####
+  #
+  # Allow json to be got cross origin.
+  cors = (req, res, next) ->
+    res.header('Access-Control-Allow-Origin', '*')
+    next()
+
+
   # If claimed, make sure that an action can only be taken
   # by the owner, and returns 403 if someone else tries.
   authenticated = (req, res, next) ->
@@ -262,7 +270,7 @@ module.exports = exports = (argv) ->
   ###### Json Routes ######
   # Handle fetching local and remote json pages.
   # Local pages are handled by the pagehandler module.
-  app.get(///^/([a-z0-9-]+)\.json$///, (req, res) ->
+  app.get( ///^/([a-z0-9-]+)\.json$///, cors, (req, res) ->
     file = req.params[0]
     pagehandler.get(file, (e, page, status) ->
       if e then throw e
@@ -315,7 +323,7 @@ module.exports = exports = (argv) ->
 
   ###### Meta Routes ######
   # Send an array of pages in the database via json
-  app.get('/system/slugs.json', (req, res) ->
+  app.get('/system/slugs.json', cors, (req, res) ->
     fs.readdir(argv.db, (err, files) ->
       res.send(files)
     )
