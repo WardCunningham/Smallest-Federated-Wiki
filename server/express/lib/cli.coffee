@@ -41,6 +41,10 @@ argv = optimist
     default   : 40000
     describe  : 'Port to start farm servers on.'
   )
+  .options('s',
+    alias     : 'startSlug'
+    describe  : 'The page to go to instead of index.html'
+  )
   .options('o',
     alias     : 'host'
     default   : ''

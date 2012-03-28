@@ -204,7 +204,7 @@ module.exports = exports = (argv) ->
   ##### Redirects #####
   # Common redirects that may get used throughout the routes.
   app.redirect('index', (req, res) ->
-    '/view/welcome-visitors'
+    '/view/' + argv.s
   )
 
   app.redirect('remotefav', (req, res) ->
@@ -291,7 +291,7 @@ module.exports = exports = (argv) ->
   # If favLoc doesn't exist send 404 and let the client
   # deal with it.
   favLoc = path.join(argv.status, 'favicon.png')
-  app.get('/favicon.png', (req,res) ->
+  app.get('/favicon.png', cors, (req,res) ->
     res.sendfile(favLoc)
   )
 
