@@ -571,11 +571,13 @@
           _results = [];
           for (idx = 0, _len = pages.length; idx < _len; idx++) {
             page = pages[idx];
-            _results.push("/" + ((locs != null ? locs[idx] : void 0) || 'view') + "/" + page);
+            if (page) {
+              _results.push("/" + ((locs != null ? locs[idx] : void 0) || 'view') + "/" + page);
+            }
           }
           return _results;
         })()).join('');
-        if (url !== $(location).attr('pathname')) {
+        if (url && url !== $(location).attr('pathname')) {
           wiki.log('set state', locs, pages);
           return history.pushState(null, null, url);
         }
@@ -587,12 +589,14 @@
       $(".active").removeClass("active");
       return scrollTo(el.addClass("active"));
     };
-    showState = function() {
+    showState = function(e) {
       var idx, name, newLocs, newPages, old, oldLocs, oldPages, previous, _len;
+      wiki.log('popstate', e);
       oldPages = pagesInDom();
       newPages = urlPages();
       oldLocs = locsInDom();
       newLocs = urlLocs();
+      if (!location.pathname || location.pathname === '/') return;
       wiki.log('showState', oldPages, newPages, oldLocs, newLocs);
       previous = $('.page').eq(0);
       for (idx = 0, _len = newPages.length; idx < _len; idx++) {
@@ -668,10 +672,7 @@
         });
       }
     };
-    $(window).on('popstate', function(event) {
-      wiki.log('popstate', event);
-      return showState();
-    });
+    $(window).on('popstate', showState);
     $(document).ajaxError(function(event, request, settings) {
       var msg;
       wiki.log('ajax error', event, request, settings);
@@ -730,7 +731,7 @@
       urlPage = firstUrlPages[idx];
       if (!(__indexOf.call(pagesInDom(), urlPage) < 0)) continue;
       wiki.log('createPage', urlPage, idx);
-      if (urlPage !== '') createPage(urlPage, firstUrlLocs[idx]).appendTo('.main');
+      if (urlPage) createPage(urlPage, firstUrlLocs[idx]).appendTo('.main');
     }
     $('.page').each(refresh);
     return setActive($('.page').last());

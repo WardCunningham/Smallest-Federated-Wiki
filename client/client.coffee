@@ -427,8 +427,8 @@ $ ->
     if history and history.pushState
       locs = locsInDom()
       pages = pagesInDom()
-      url = ("/#{locs?[idx] or 'view'}/#{page}" for page, idx in pages).join('')
-      unless url is $(location).attr('pathname')
+      url = ("/#{locs?[idx] or 'view'}/#{page}" for page, idx in pages when page).join('')
+      if url and url isnt $(location).attr('pathname')
         wiki.log 'set state', locs, pages
         history.pushState(null, null, url)
 
@@ -438,12 +438,15 @@ $ ->
     $(".active").removeClass("active")
     scrollTo el.addClass("active")
 
-  showState = ->
+  showState = (e) ->
     # show and refresh correct pages
+    wiki.log('popstate', e)
     oldPages = pagesInDom()
     newPages = urlPages()
     oldLocs = locsInDom()
     newLocs = urlLocs()
+
+    return if (!location.pathname or location.pathname is '/')
 
     wiki.log 'showState', oldPages, newPages, oldLocs, newLocs
 
@@ -496,9 +499,7 @@ $ ->
 
 # HANDLERS for jQuery events
 
-  $(window).on 'popstate', (event) ->
-    wiki.log 'popstate', event
-    showState()
+  $(window).on 'popstate', showState
 
   $(document)
     .ajaxError (event, request, settings) ->
@@ -562,7 +563,7 @@ $ ->
   wiki.log 'amost createPage', firstUrlPages, firstUrlLocs, pagesInDom()
   for urlPage, idx in firstUrlPages when urlPage not in pagesInDom()
     wiki.log 'createPage', urlPage, idx
-    createPage(urlPage, firstUrlLocs[idx]).appendTo('.main') unless urlPage is ''
+    createPage(urlPage, firstUrlLocs[idx]).appendTo('.main') if urlPage
 
   $('.page').each refresh
   setActive($('.page').last())
