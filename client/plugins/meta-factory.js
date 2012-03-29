@@ -27,7 +27,7 @@
         pageElement = div.parents('.page:first');
         try {
           div.data('pageElement', pageElement);
-          div.data('item', item);
+          div.dataDash(item);
           wiki.getPlugin(item.type, function(plugin) {
             plugin.emit(div, item);
             return plugin.bind(div, item);
@@ -47,6 +47,7 @@
         return wiki.textEditor(div, item);
       });
       div.find('a').click(function(evt) {
+        evt.preventDefault();
         div.removeClass('factory').addClass(item.type = evt.target.text.toLowerCase());
         div.unbind();
         return wiki.textEditor(div, item);

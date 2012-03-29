@@ -33,10 +33,7 @@ window.plugins.radar =
         percents = (obj) ->
           (100.0*obj[k]/limit[k] for k in keys.concat(keys[0]))
 
-        idx = $('.item').index(div)
-        who = $(".item:lt(#{idx})").filter('.data')
-        data = ($(d).data('item').data[0] for d in who)
-
+        data = (i[0] for i in wiki.getDataNodes(div).dataDash('data'))
 
         # Adapted from https://gist.github.com/1630683
 

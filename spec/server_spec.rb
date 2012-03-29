@@ -16,8 +16,8 @@ shared_examples_for "Welcome as HTML" do
     @body.should match(/<section class='main'>/)
   end
 
-  it "has a div with class 'page' and id 'welcome-visitors'" do
-    @body.should match(/<div class='page' .*?id='welcome-visitors'>/)
+  it "has a div with class 'page' and slug 'welcome-visitors'" do
+    @body.should match(/<div class='page' .*?data-slug='welcome-visitors'>/)
   end
 
   it "has the latest commit in the head" do
@@ -66,8 +66,8 @@ describe "GET /view/welcome-visitors/view/indie-web-camp" do
 
   it_behaves_like 'Welcome as HTML'
 
-  it "has a div with class 'page' and id 'indie-web-camp'" do
-    @body.should match(/<div class='page' id='indie-web-camp'>/)
+  it "has a div with class 'page' and slug 'indie-web-camp'" do
+    @body.should match(/<div class='page' data-slug='indie-web-camp'>/)
   end
 end
 

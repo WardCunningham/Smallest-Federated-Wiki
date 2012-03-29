@@ -14,7 +14,7 @@ window.plugins.factory =
       pageElement = div.parents('.page:first')
       try
         div.data 'pageElement', pageElement
-        div.data 'item', item
+        div.dataDash(item)
         wiki.getPlugin item.type, (plugin) ->
           plugin.emit div, item
           plugin.bind div, item
@@ -28,6 +28,7 @@ window.plugins.factory =
       wiki.textEditor div, item
 
     div.find('a').click (evt)->
+      evt.preventDefault()
       div.removeClass('factory').addClass(item.type=evt.target.text.toLowerCase())
       div.unbind()
       wiki.textEditor div, item

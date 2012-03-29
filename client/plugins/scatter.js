@@ -8,7 +8,7 @@
           var data, extent, fill, h, horz, p, vert, vis, w, who, x, xdat, y, ydat;
           div.append(' <style>\n svg {\n   font: 10px sans-serif;\n   background: #eee;\n }\n circle {\n   fill: gray;\n   stroke: white;\n }\n</style>');
           who = $('.chart,.data,.calculator').last();
-          data = who.data('item').data;
+          data = who.dataDash('data')[0];
           horz = "Energy/GHG Emissions Intensity Total";
           vert = "Total Score";
           xdat = function(d) {

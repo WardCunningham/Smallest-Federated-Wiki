@@ -7,7 +7,7 @@
         return wiki.getScript('/js/d3/d3.time.js', function() {
           var data, extent, h, p, series, start, vis, w, x, xrules, y, yrules;
           div.append('<style>\nsvg {\n  font: 10px sans-serif;\n}\n\n.rule line {\n  stroke: #eee;\n  shape-rendering: crispEdges;\n}\n\n.rule line.axis {\n  stroke: #000;\n}\n\n.line {\n  fill: none;\n  stroke: steelblue;\n  stroke-width: 1.5px;\n}\n\ncircle.line {\n  fill: #fff;\n}\n</style>');
-          series = wiki.getData();
+          series = wiki.getData(div);
           data = (start = series[0][0]) > 1000000000000 ? (function() {
             var _i, _len, _results;
             _results = [];

@@ -4,5 +4,4 @@
 .rvmrc
 /data
 /spec/data
-/client/js
 /server/express/node_modules
