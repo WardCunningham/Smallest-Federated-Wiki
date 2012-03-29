@@ -9,8 +9,34 @@ window.plugins.radar =
          </style>
         '''
 
-        who = $('.chart,.data,.calculator').last()
-        data = who.data('item').data
+        limit =
+          "Carcinogenicity": 7
+          "Acute Toxicity": 7
+          "Chronic Toxicity": 7
+          "Reproductive/Endocrine Disrupter Toxicity": 4
+          "Chemistry Total": 25
+          "Energy Intensity": 10
+          "GHG Emissions Intensity": 15
+          "Energy/GHG Emissions Total": 25
+          "Water Intensity": 18
+          "Land Use Intensity": 7
+          "Water/ Land Use Total": 25
+          "Hazardous Waste": 10
+          "MSW": 6.25
+          "Industrial waste": 5
+          "Recyclable/ Compostable waste": 2.5
+          "Mineral waste": 1.25
+          "Physical Waste Total": 25
+          "Total score": 100
+
+        keys = Object.keys(limit)
+        percents = (obj) ->
+          (100.0*obj[k]/limit[k] for k in keys.concat(keys[0]))
+
+        idx = $('.item').index(div)
+        who = $(".item:lt(#{idx})").filter('.data')
+        data = ($(d).data('item').data[0] for d in who)
+
 
         # Adapted from https://gist.github.com/1630683
 
@@ -22,28 +48,14 @@ window.plugins.radar =
           bottom: 15
           left: 0
 
-        dimension = 7
+        dimension = keys.length
         ruleColor = "#CCC"
 
-        randomFromTo = randomFromTo = (from, to) ->
-          Math.floor Math.random() * (to - from + 1) + from
+        series = (percents(d) for d in data)
 
-        series = [ [], [] ]
-        hours = []
-        i = 0
-        while i < dimension
-          series[0][i] = randomFromTo(-10, 20)
-          series[1][i] = randomFromTo(5, 20)
-          hours[i] = i
-          i += 1
-        mergedArr = series[0].concat(series[1])
-        minVal = d3.min(mergedArr)
-        maxVal = d3.max(mergedArr)
-        maxVal = maxVal + ((maxVal - minVal) * 0.15)
-        i = 0
-        while i < series.length
-          series[i].push series[i][0]
-          i += 1
+        hours = [0..dimension-1]
+        minVal = 0
+        maxVal = 100
 
         viz = d3.select(div.get(0))
           .append("svg:svg")
@@ -76,10 +88,11 @@ window.plugins.radar =
           .style("stroke", ruleColor)
           .style "fill", "none"
         circleAxes.append("svg:text")
-          .attr("text-anchor", "middle")
+          .attr("text-anchor", "end")
           .style("stroke", ruleColor)
           .attr("dy", (d) -> -1 * radius(d) )
           .text String
+
         lineAxes = vizBody.selectAll(".line-ticks")
           .data(hours)
           .enter()
@@ -91,12 +104,13 @@ window.plugins.radar =
           .style("stroke", ruleColor)
           .style "fill", "none"
         lineAxes.append("svg:text")
-          .text(String)
-          .attr("text-anchor", "middle")
+          .text((d,i) -> keys[i])
+          .attr("text-anchor", "start")
           .style("stroke", ruleColor)
-          .attr "transform", (d, i) -> (if (i / hours.length * 360) < 180 then null else "rotate(180)")
+          .attr "transform", "rotate(180)"
 
-        colorSelector = (d, i) -> if i is 0 then "green" else "blue"
+        fill = d3.scale.category10()
+        colorSelector = (d, i) -> fill i
         vizBody.selectAll(".series")
           .data(series)
           .enter()
@@ -112,4 +126,5 @@ window.plugins.radar =
           .attr("d", d3.svg.line.radial()
             .radius((d) -> radius d )
             .angle((d, i) -> (i / dimension) * 2 * Math.PI ))
-          .append("svg:title").text((d,i) -> "Material #{i+1}")
+          .append("svg:title").text((d,i) -> data[i]["Material name"])
+
