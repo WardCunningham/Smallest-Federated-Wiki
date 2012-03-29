@@ -359,12 +359,41 @@
         }
       },
       stats: {
-        emit: function(div, item) {
-          return div.append($('<input type="button" value="update" />').css('margin-top', '10px')).append("<pre>" + (JSON.stringify(wiki.dataDash.stats(), null, 2)) + "</pre></p>");
-        },
+        emit: function(div, item) {},
         bind: function(div, item) {
+          var report, row, table;
+          row = function(key, value) {
+            var objs;
+            objs = function() {
+              var obj;
+              return ((function() {
+                var _results;
+                _results = [];
+                for (obj in value['on']) {
+                  _results.push(obj);
+                }
+                return _results;
+              })()).join(' ');
+            };
+            return "<tr><td>" + key + "<td>" + value['get'] + "<td>" + value['set'] + "<td>" + value['remove'] + "<td>" + (objs());
+          };
+          table = function() {
+            var key, stats;
+            stats = wiki.dataDash.stats();
+            return "<table>" + (((function() {
+              var _results;
+              _results = [];
+              for (key in stats) {
+                _results.push(row(key, stats[key]));
+              }
+              return _results;
+            })()).join("\n")) + "</table>";
+          };
+          div.append($('<input type="button" value="update" /><p />').css('margin-top', '10px'));
+          report = div.find('p');
+          report.html(table);
           return div.find('input').click(function() {
-            return div.find('pre').html(JSON.stringify(wiki.dataDash.stats(), null, 2));
+            return report.html(table);
           });
         }
       }

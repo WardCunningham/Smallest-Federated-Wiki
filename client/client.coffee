@@ -256,11 +256,17 @@ $ ->
           div.find('li').remove()
     stats:
       emit: (div, item) ->
-        div.append($('<input type="button" value="update" />').css('margin-top', '10px'))
-          .append("<pre>#{JSON.stringify(wiki.dataDash.stats(), null, 2)}</pre></p>")
       bind: (div, item) ->
-        div.find('input').click ->
-          div.find('pre').html(JSON.stringify(wiki.dataDash.stats(), null, 2))
+        row = (key, value) ->
+          objs = -> (obj for obj of value['on']).join(' ')
+          "<tr><td>#{key}<td>#{value['get']}<td>#{value['set']}<td>#{value['remove']}<td>#{objs()}"
+        table = ->
+          stats = wiki.dataDash.stats()
+          "<table>#{(row key, stats[key] for key of stats).join("\n")}</table>"
+        div.append($('<input type="button" value="update" /><p />').css('margin-top', '10px'))
+        report = div.find 'p'
+        report.html table
+        div.find('input').click -> report.html table
 
 # RENDERING for a page when found or retrieved
 
