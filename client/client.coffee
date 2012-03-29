@@ -3,6 +3,7 @@ Array::last = ->
 
 $ ->
   window.wiki = {}
+  dataDash = wiki.dataDash = DataDash({stats: true})
 
 #prepare a Dialog to popup
   window.dialog = $('<div></div>')
@@ -47,25 +48,26 @@ $ ->
     pageElement = journalElement.parents('.page:first')
     actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type)
       .text(action.type[0])
-      .data('itemId', action.id || "0")
+      .dataDash(action)
       .appendTo(journalElement)
     if action.type == 'fork'
       actionElement
         .css("background-image", "url(//#{action.site}/favicon.png)")
-        .attr("href", "//#{action.site}/#{pageElement.attr('id')}.html")
-        .data("site", action.site)
-        .data("slug", pageElement.attr('id'))
+        .attr("href", "//#{action.site}/#{pageElement.dataDash('slug')[0]}.html")
+        .dataDash("site", action.site)
+        .dataDash("slug", pageElement.dataDash('slug')[0])
 
   putAction = wiki.putAction = (pageElement, action) ->
-    if (site = pageElement.data('site'))?
+    if (site = pageElement.dataDash('site')[0])?
       action.fork = site
       pageElement.find('h1 img').attr('src', '/favicon.png')
       pageElement.find('h1 a').attr('href', '/')
-      pageElement.data('site', null)
+      pageElement.dataDash('site', null)
       setUrl()
       addToJournal pageElement.find('.journal'),
         type: 'fork'
         site: site
+        id: 0
     if useLocalStorage()
       pushToLocal(pageElement, action)
       pageElement.addClass("local")
@@ -73,20 +75,16 @@ $ ->
       pushToServer(pageElement, action)
 
   pushToLocal = (pageElement, action) ->
-    page = localStorage[pageElement.attr("id")]
-    page = JSON.parse(page) if page
     page = action.item if action.type == 'create'
-    page ||= pageElement.data("data")
-    page.journal = [] unless page.journal?
-    page.journal.concat(action)
-    page.story = $(pageElement).find(".item").map(-> $(@).data("item")).get()
-    localStorage[pageElement.attr("id")] = JSON.stringify(page)
     addToJournal pageElement.find('.journal'), action
+    page ||= pageToJson(pageElement)
+    page.journal = [] unless page.journal?
+    localStorage[pageElement.dataDash('slug')[0]] = JSON.stringify(page)
 
   pushToServer = (pageElement, action) ->
     $.ajax
       type: 'PUT'
-      url: "/page/#{pageElement.attr('id')}/action"
+      url: "/page/#{pageElement.dataDash('slug')[0]}/action"
       data:
         'action': JSON.stringify(action)
       success: () ->
@@ -125,11 +123,25 @@ $ ->
     "#{h}:#{mi} #{am}<br>#{d.getDate()} #{mo} #{d.getFullYear()}"
 
   getItem = (element) ->
-    $(element).data("item") or JSON.parse($(element).data('staticItem')) if $(element).length > 0
+    $(element).dataDash() or JSON.parse($(element).dataDash('staticItem')[0]) if $(element).length > 0
 
-  wiki.getData = ->
-    who = $('.chart,.data,.calculator').last()
-    if who? then who.data('item').data else {}
+  wiki.getDataNodes = (vis) ->
+    if vis
+      idx = $('.item').index(vis)
+      who = $(".item:lt(#{idx})").filter('.chart,.data,.calculator').toArray().reverse()
+      $(who)
+    else
+      who = $('.chart,.data,.calculator').toArray().reverse()
+      $(who)
+
+  wiki.getData = (vis) ->
+    if vis
+      idx = $('.item').index(vis)
+      who = $(".item:lt(#{idx})").filter('.chart,.data,.calculator').last()
+      if who then who.dataDash('data')[0] else {}
+    else
+      who = $('.chart,.data,.calculator').last()
+      if who then who.dataDash('data')[0] else {}
 
   scripts = {}
   wiki.getScript = (url, callback = () ->) ->
@@ -144,7 +156,7 @@ $ ->
   wiki.dump = ->
     for p in $('.page')
       wiki.log '.page', p
-      wiki.log '.item', i, 'data-item', $(i).data('item') for i in $(p).find('.item')
+      wiki.log '.item', i, 'data-item', $(i).dataDash() for i in $(p).find('.item')
     null
 
   getPlugin = wiki.getPlugin = (name, callback) ->
@@ -160,7 +172,7 @@ $ ->
 
     try
       div.data 'pageElement', div.parents(".page")
-      div.data 'item', item
+      div.dataDash item
       getPlugin item.type, (plugin) ->
         throw TypeError("Can't find plugin for '#{item.type}'") unless plugin?
         try
@@ -177,7 +189,7 @@ $ ->
     createPage(name)
       .appendTo($('.main'))
       .each refresh
-    setActive(name)
+    setActive($('.page').last())
 
   # Find which element is scrollable, body or html
   scrollContainer = undefined
@@ -236,26 +248,34 @@ $ ->
         div.append ul = $('<ul />').append if localStorage.length then $('<input type="button" value="discard all" />').css('margin-top','10px') else $('<p>empty</p>')
         for i in [0...localStorage.length]
           key = localStorage.key(i)
-          a = $('<a class="internal" href="#" />').append(key).data('pageName', key)
+          a = $('<a class="internal" href="#" />').append(key).dataDash('pageName', key)
           ul.prepend($('<li />').append(a))
       bind: (div, item) ->
         div.find('input').click ->
           localStorage.clear()
           div.find('li').remove()
+    stats:
+      emit: (div, item) ->
+        div.append($('<input type="button" value="update" />').css('margin-top', '10px'))
+          .append("<pre>#{JSON.stringify(wiki.dataDash.stats(), null, 2)}</pre></p>")
+      bind: (div, item) ->
+        div.find('input').click ->
+          div.find('pre').html(JSON.stringify(wiki.dataDash.stats(), null, 2))
 
 # RENDERING for a page when found or retrieved
 
   refresh = ->
     pageElement = $(this)
-    slug = $(pageElement).attr('id')
-    site = $(pageElement).data('site')
+
+    slug = pageElement.dataDash('slug')[0]
+    site = pageElement.dataDash('site')[0]
 
     pageElement.find(".add-factory").live "click", (evt) ->
       evt.preventDefault()
       item =
         type: "factory"
         id: randomBytes(8)
-      itemElement = $("<div />", class: "item factory").data('item',item).attr('data-id', item.id)
+      itemElement = $("<div />", class: "item factory").dataDash(item)
       itemElement.data 'pageElement', pageElement
       pageElement.find(".story").append(itemElement)
       doPlugin itemElement, item
@@ -280,7 +300,7 @@ $ ->
           moveToPage = not moveWithinPage and equals(thisPageElement, destinationPageElement)
 
           action = if moveWithinPage
-            order = $(this).children().map((_, value) -> $(value).attr('data-id')).get()
+            order = $(this).find('.item').dataDash('id')
             {type: 'move', order: order}
           else if moveFromPage
             {type: 'remove'}
@@ -303,7 +323,8 @@ $ ->
         journal: []
 
       page = $.extend(empty, data)
-      $(pageElement).data("data", data)
+      {title} = data
+      $(pageElement).dataDash({title})
 
       context = ['origin']
       addContext = (string) ->
@@ -336,7 +357,7 @@ $ ->
         $("<div />").addClass(className).appendTo(pageElement)
 
       $.each page.story, (i, item) ->
-        div = $("<div />").addClass("item").addClass(item.type).attr("data-id", item.id)
+        div = $("<div />").addClass("item").addClass(item.type).dataDash(item)
         storyElement.append div
         doPlugin div, item
 
@@ -366,7 +387,7 @@ $ ->
         url: "/#{resource}.json?random=#{randomBytes(4)}"
         success: (page) ->
           wiki.log 'fetch success', page, site || 'origin'
-          $(pageElement).data('site', site)
+          $(pageElement).dataDash({site})
           callback(page)
         error: (xhr, type, msg) ->
           if localContext.length > 0
@@ -382,7 +403,7 @@ $ ->
       putAction $(pageElement), {type: 'create', id: randomBytes(8), item: page}
       callback page
 
-    if $(pageElement).attr('data-server-generated') == 'true'
+    if $(pageElement).dataDash('server-generated')[0] == 'true'
       initDragging()
       pageElement.find('.item').each (i, each) ->
         div = $(each)
@@ -390,7 +411,7 @@ $ ->
         getPlugin item.type, (plugin) ->
           plugin.bind div, item
     else
-      if useLocalStorage() and json = localStorage[pageElement.attr("id")]
+      if useLocalStorage() and json = localStorage[pageElement.dataDash('slug')[0]]
         pageElement.addClass("local")
         buildPage JSON.parse(json)
         initDragging()
@@ -415,38 +436,40 @@ $ ->
     if history and history.pushState
       locs = locsInDom()
       pages = pagesInDom()
-      url = ("/#{locs?[idx] or 'view'}/#{page}" for page, idx in pages).join('')
-      unless url is $(location).attr('pathname')
+      url = ("/#{locs?[idx] or 'view'}/#{page}" for page, idx in pages when page).join('')
+      if url and url isnt $(location).attr('pathname')
         wiki.log 'set state', locs, pages
         history.pushState(null, null, url)
 
-  setActive = (page) ->
-    wiki.log 'set active', page
+  setActive = (el) ->
+    el = $(el)
+    wiki.log 'set active', el
     $(".active").removeClass("active")
-    scrollTo $("#"+page).addClass("active")
+    scrollTo el.addClass("active")
 
-  showState = ->
+  showState = (e) ->
     # show and refresh correct pages
+    wiki.log('popstate', e)
     oldPages = pagesInDom()
     newPages = urlPages()
     oldLocs = locsInDom()
     newLocs = urlLocs()
 
+    return if (!location.pathname or location.pathname is '/')
+
     wiki.log 'showState', oldPages, newPages, oldLocs, newLocs
 
-    previousPage = newPages
-
-    return if (newPages is oldPages) and (newLocs is oldLocs)
+    previous = $('.page').eq(0)
     for name, idx in newPages
-      if name in oldPages
-        delete oldPages[oldPages.indexOf(name)]
-      else
-        createPage(name, newLocs[idx]).insertAfter(previousPage).each refresh
-      previousPage = $('#'+name)
+      unless name is oldPages[idx]
+        old = $('.page').eq(idx)
+        old.remove() if old
+        createPage(name, newLocs[idx]).insertAfter(previous).each refresh
+      previous = $('.page').eq(idx)
 
-    $('#'+name)?.remove() for name in oldPages
+    previous.nextAll().remove()
 
-    setActive($('.page').last().attr('id'))
+    setActive($('.page').last())
 
 
   LEFTARROW = 37
@@ -457,8 +480,8 @@ $ ->
       when LEFTARROW then -1
       when RIGHTARROW then +1
     if direction && not (event.target.tagName is "TEXTAREA")
-      pages = pagesInDom()
-      newIndex = pages.indexOf($('.active').attr('id')) + direction
+      pages = $('.page')
+      newIndex = pages.index($('.active')) + direction
       if 0 <= newIndex < pages.length
         setActive(pages[newIndex])
 
@@ -466,29 +489,26 @@ $ ->
 # URL or DOM
 
   pagesInDom = ->
-    $.makeArray $(".page").map (_, el) -> el.id
+    $('.page').dataDash('slug')
 
   urlPages = ->
     (i for i in $(location).attr('pathname').split('/') by 2)[1..]
 
   locsInDom = ->
-    $.makeArray $(".page").map (_, el) ->
-      $(el).data('site') or 'view'
+    $('.page').dataDash('site')
 
   urlLocs = ->
     (j for j in $(location).attr('pathname').split('/')[1..] by 2)
 
-  createPage = (name, loc) ->
-    if loc and (loc isnt ('view' or 'my'))
-      $("<div/>").attr('id', name).attr('data-site', loc).addClass("page")
+  createPage = (slug, site) ->
+    if site and (site isnt ('view' or 'my'))
+      $("<div/>").dataDash({site, slug}).addClass("page")
     else
-      $("<div/>").attr('id', name).addClass("page")
+      $("<div/>").addClass("page").dataDash({slug})
 
 # HANDLERS for jQuery events
 
-  $(window).on 'popstate', (event) ->
-    wiki.log 'popstate', event
-    showState()
+  $(window).on 'popstate', showState
 
   $(document)
     .ajaxError (event, request, settings) ->
@@ -496,45 +516,53 @@ $ ->
       msg = "<li class='error'>Error on #{settings.url}: #{request.responseText}</li>"
       $('.main').prepend msg unless request.status == 404
 
+  pageToJson = (element) ->
+    return {
+      title: element.dataDash('title')[0]
+      story: element.children('.story').children().dataDash()
+      journal: element.children('.journal').children().dataDash()
+    }
+
+
   $('.main')
     .delegate '.show-page-source', 'click', (e) ->
       e.preventDefault()
       pageElement = $(this).parent().parent()
-      json = pageElement.data('data')
+      json = pageToJson(pageElement)
       wiki.dialog "JSON for #{json.title}",  $('<pre/>').text(JSON.stringify(json, null, 2))
 
     .delegate '.page', 'click', (e) ->
-      setActive this.id unless $(e.target).is("a")
+      setActive this unless $(e.target).is("a")
 
     .delegate '.internal', 'click', (e) ->
       e.preventDefault()
-      name = $(e.target).data 'pageName'
+      name = $(e.target).dataDash('pageName')[0]
       wiki.fetchContext = $(e.target).attr('title').split(' => ')
       wiki.log 'click', name, 'context', wiki.fetchContext
       $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
       createPage(name).appendTo('.main').each refresh
-      setActive(name)
+      setActive(this)
       # FIXME: can open page multiple times with shift key
 
     .delegate '.action', 'hover', ->
-      id = $(this).data('itemId')
-      $("[data-id=#{id}]").toggleClass('target')
+      id = JSON.stringify($(this).dataDash('id')[0])
+      $("[data-id=\"#{id}\"].item").toggleClass('target')
 
     .delegate '.action.fork, .remote', 'click', (e) ->
       e.preventDefault()
-      name = $(e.target).data('slug')
-      wiki.log 'click', name, 'site', $(e.target).data('site')
+      name = $(e.target).dataDash('slug')[0]
+      wiki.log 'click', name, 'site', $(e.target).dataDash('site')[0]
       $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
       createPage(name)
-        .data('site',$(e.target).data('site'))
+        .dataDash('site',$(e.target).dataDash('site')[0])
         .appendTo($('.main'))
         .each refresh
-      setActive(name)
+      setActive(this)
 
   useLocalStorage = -> $(".login").length > 0
 
   $(".provider input").click ->
-    $("footer input:first").val $(this).attr('data-provider')
+    $("footer input:first").val $(this).dataDash('provider')[0]
     $("footer form").submit()
 
   setUrl()
@@ -544,7 +572,7 @@ $ ->
   wiki.log 'amost createPage', firstUrlPages, firstUrlLocs, pagesInDom()
   for urlPage, idx in firstUrlPages when urlPage not in pagesInDom()
     wiki.log 'createPage', urlPage, idx
-    createPage(urlPage, firstUrlLocs[idx]).appendTo('.main') unless urlPage is ''
+    createPage(urlPage, firstUrlLocs[idx]).appendTo('.main') if urlPage
 
   $('.page').each refresh
-  setActive($('.page').last().attr('id'))
+  setActive($('.page').last())

@@ -77,6 +77,14 @@ module.exports = exports = (argv) ->
         cb()
     )
 
+  #### Middleware ####
+  #
+  # Allow json to be got cross origin.
+  cors = (req, res, next) ->
+    res.header('Access-Control-Allow-Origin', '*')
+    next()
+
+
   # If claimed, make sure that an action can only be taken
   # by the owner, and returns 403 if someone else tries.
   authenticated = (req, res, next) ->
@@ -196,7 +204,7 @@ module.exports = exports = (argv) ->
   ##### Redirects #####
   # Common redirects that may get used throughout the routes.
   app.redirect('index', (req, res) ->
-    '/view/welcome-visitors'
+    '/view/' + argv.s
   )
 
   app.redirect('remotefav', (req, res) ->
@@ -237,7 +245,7 @@ module.exports = exports = (argv) ->
       if urlLocs[idx] is 'view'
         pageDiv = {page}
       else
-        pageDiv = {page, origin: "data-site=#{urlLocs[idx]}"}
+        pageDiv = {page, origin: """data-site="#{urlLocs[idx]}" """}
       info.pages.push(pageDiv)
     res.render('static.html', info)
   )
@@ -247,7 +255,8 @@ module.exports = exports = (argv) ->
               window.catalog = {
                 "ByteBeat": {"menu": "8-bit Music by Formula"},
                 "MathJax": {"menu": "TeX Formatted Equations"},
-                "Calculator": {"menu": "Running Sums for Expenses"}
+                "Calculator": {"menu": "Running Sums for Expenses"},
+                "stats": {"menue": "Stats on html5 'data-' usage"}
               };
 
               """
@@ -261,7 +270,7 @@ module.exports = exports = (argv) ->
   ###### Json Routes ######
   # Handle fetching local and remote json pages.
   # Local pages are handled by the pagehandler module.
-  app.get(///^/([a-z0-9-]+)\.json$///, (req, res) ->
+  app.get( ///^/([a-z0-9-]+)\.json$///, cors, (req, res) ->
     file = req.params[0]
     pagehandler.get(file, (e, page, status) ->
       if e then throw e
@@ -282,7 +291,7 @@ module.exports = exports = (argv) ->
   # If favLoc doesn't exist send 404 and let the client
   # deal with it.
   favLoc = path.join(argv.status, 'favicon.png')
-  app.get('/favicon.png', (req,res) ->
+  app.get('/favicon.png', cors, (req,res) ->
     res.sendfile(favLoc)
   )
 
@@ -314,7 +323,7 @@ module.exports = exports = (argv) ->
 
   ###### Meta Routes ######
   # Send an array of pages in the database via json
-  app.get('/system/slugs.json', (req, res) ->
+  app.get('/system/slugs.json', cors, (req, res) ->
     fs.readdir(argv.db, (err, files) ->
       res.send(files)
     )

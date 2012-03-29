@@ -5,7 +5,7 @@
     emit: function(div, item) {
       return wiki.getScript('/js/d3/d3.js', function() {
         return wiki.getScript('/js/d3/d3.time.js', function() {
-          var centerXPos, centerYPos, circleAxes, circleConstraint, colorSelector, d, data, dimension, fill, h, heightCircleConstraint, hours, idx, keys, limit, lineAxes, maxVal, minVal, percents, radialTicks, radius, radiusLength, ruleColor, series, viz, vizBody, vizPadding, w, who, widthCircleConstraint, _i, _ref, _results;
+          var centerXPos, centerYPos, circleAxes, circleConstraint, colorSelector, d, data, dimension, fill, h, heightCircleConstraint, hours, i, keys, limit, lineAxes, maxVal, minVal, percents, radialTicks, radius, radiusLength, ruleColor, series, viz, vizBody, vizPadding, w, widthCircleConstraint, _i, _ref, _results;
           div.append(' <style>\n svg { font: 10px sans-serif; }\n</style>');
           limit = {
             "Carcinogenicity": 7,
@@ -38,14 +38,13 @@
             }
             return _results;
           };
-          idx = $('.item').index(div);
-          who = $(".item:lt(" + idx + ")").filter('.data');
           data = (function() {
-            var _i, _len, _results;
+            var _i, _len, _ref, _results;
+            _ref = wiki.getDataNodes(div).dataDash('data');
             _results = [];
-            for (_i = 0, _len = who.length; _i < _len; _i++) {
-              d = who[_i];
-              _results.push($(d).data('item').data[0]);
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              i = _ref[_i];
+              _results.push(i[0]);
             }
             return _results;
           })();

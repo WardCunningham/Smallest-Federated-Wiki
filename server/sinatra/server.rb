@@ -172,7 +172,8 @@ class Controller < Sinatra::Base
     catalog = 'window.catalog = {
       "ByteBeat": {"menu": "8-bit Music by Formula"},
       "MathJax": {"menu": "TeX Formatted Equations"},
-      "Calculator": {"menu": "Running Sums for Expenses"}
+      "Calculator": {"menu": "Running Sums for Expenses"},
+      "Stats": {"menu": "Basic stats from dataDash"}
     };'
     catalog + File.read(File.join(APP_ROOT, "client/plugins/meta-factory.js"))
   end

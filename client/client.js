@@ -7,8 +7,11 @@
   };
 
   $(function() {
-    var LEFTARROW, RIGHTARROW, addToJournal, asSlug, createPage, doInternalLink, doPlugin, findScrollContainer, firstUrlLocs, firstUrlPages, formatTime, getItem, getPlugin, idx, locsInDom, pagesInDom, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveFrom, resolveLinks, scripts, scrollContainer, scrollTo, setActive, setUrl, showState, textEditor, urlLocs, urlPage, urlPages, useLocalStorage, _len;
+    var LEFTARROW, RIGHTARROW, addToJournal, asSlug, createPage, dataDash, doInternalLink, doPlugin, findScrollContainer, firstUrlLocs, firstUrlPages, formatTime, getItem, getPlugin, idx, locsInDom, pageToJson, pagesInDom, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveFrom, resolveLinks, scripts, scrollContainer, scrollTo, setActive, setUrl, showState, textEditor, urlLocs, urlPage, urlPages, useLocalStorage, _len;
     window.wiki = {};
+    dataDash = wiki.dataDash = DataDash({
+      stats: true
+    });
     window.dialog = $('<div></div>').html('This dialog will show every time!').dialog({
       autoOpen: false,
       title: 'Basic Dialog',
@@ -66,22 +69,23 @@
     addToJournal = function(journalElement, action) {
       var actionElement, pageElement;
       pageElement = journalElement.parents('.page:first');
-      actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(action.type[0]).data('itemId', action.id || "0").appendTo(journalElement);
+      actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(action.type[0]).dataDash(action).appendTo(journalElement);
       if (action.type === 'fork') {
-        return actionElement.css("background-image", "url(//" + action.site + "/favicon.png)").attr("href", "//" + action.site + "/" + (pageElement.attr('id')) + ".html").data("site", action.site).data("slug", pageElement.attr('id'));
+        return actionElement.css("background-image", "url(//" + action.site + "/favicon.png)").attr("href", "//" + action.site + "/" + (pageElement.dataDash('slug')[0]) + ".html").dataDash("site", action.site).dataDash("slug", pageElement.dataDash('slug')[0]);
       }
     };
     putAction = wiki.putAction = function(pageElement, action) {
       var site;
-      if ((site = pageElement.data('site')) != null) {
+      if ((site = pageElement.dataDash('site')[0]) != null) {
         action.fork = site;
         pageElement.find('h1 img').attr('src', '/favicon.png');
         pageElement.find('h1 a').attr('href', '/');
-        pageElement.data('site', null);
+        pageElement.dataDash('site', null);
         setUrl();
         addToJournal(pageElement.find('.journal'), {
           type: 'fork',
-          site: site
+          site: site,
+          id: 0
         });
       }
       if (useLocalStorage()) {
@@ -93,22 +97,16 @@
     };
     pushToLocal = function(pageElement, action) {
       var page;
-      page = localStorage[pageElement.attr("id")];
-      if (page) page = JSON.parse(page);
       if (action.type === 'create') page = action.item;
-      page || (page = pageElement.data("data"));
+      addToJournal(pageElement.find('.journal'), action);
+      page || (page = pageToJson(pageElement));
       if (page.journal == null) page.journal = [];
-      page.journal.concat(action);
-      page.story = $(pageElement).find(".item").map(function() {
-        return $(this).data("item");
-      }).get();
-      localStorage[pageElement.attr("id")] = JSON.stringify(page);
-      return addToJournal(pageElement.find('.journal'), action);
+      return localStorage[pageElement.dataDash('slug')[0]] = JSON.stringify(page);
     };
     pushToServer = function(pageElement, action) {
       return $.ajax({
         type: 'PUT',
-        url: "/page/" + (pageElement.attr('id')) + "/action",
+        url: "/page/" + (pageElement.dataDash('slug')[0]) + "/action",
         data: {
           'action': JSON.stringify(action)
         },
@@ -162,16 +160,37 @@
     };
     getItem = function(element) {
       if ($(element).length > 0) {
-        return $(element).data("item") || JSON.parse($(element).data('staticItem'));
+        return $(element).dataDash() || JSON.parse($(element).dataDash('staticItem')[0]);
       }
     };
-    wiki.getData = function() {
-      var who;
-      who = $('.chart,.data,.calculator').last();
-      if (who != null) {
-        return who.data('item').data;
+    wiki.getDataNodes = function(vis) {
+      var idx, who;
+      if (vis) {
+        idx = $('.item').index(vis);
+        who = $(".item:lt(" + idx + ")").filter('.chart,.data,.calculator').toArray().reverse();
+        return $(who);
       } else {
-        return {};
+        who = $('.chart,.data,.calculator').toArray().reverse();
+        return $(who);
+      }
+    };
+    wiki.getData = function(vis) {
+      var idx, who;
+      if (vis) {
+        idx = $('.item').index(vis);
+        who = $(".item:lt(" + idx + ")").filter('.chart,.data,.calculator').last();
+        if (who) {
+          return who.dataDash('data')[0];
+        } else {
+          return {};
+        }
+      } else {
+        who = $('.chart,.data,.calculator').last();
+        if (who) {
+          return who.dataDash('data')[0];
+        } else {
+          return {};
+        }
       }
     };
     scripts = {};
@@ -195,7 +214,7 @@
         _ref2 = $(p).find('.item');
         for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
           i = _ref2[_j];
-          wiki.log('.item', i, 'data-item', $(i).data('item'));
+          wiki.log('.item', i, 'data-item', $(i).dataDash());
         }
       }
       return null;
@@ -217,7 +236,7 @@
       };
       try {
         div.data('pageElement', div.parents(".page"));
-        div.data('item', item);
+        div.dataDash(item);
         return getPlugin(item.type, function(plugin) {
           if (plugin == null) {
             throw TypeError("Can't find plugin for '" + item.type + "'");
@@ -237,7 +256,7 @@
       name = asSlug(name);
       if (page != null) $(page).nextAll().remove();
       createPage(name).appendTo($('.main')).each(refresh);
-      return setActive(name);
+      return setActive($('.page').last());
     };
     scrollContainer = void 0;
     findScrollContainer = function() {
@@ -327,7 +346,7 @@
           _results = [];
           for (i = 0, _ref = localStorage.length; 0 <= _ref ? i < _ref : i > _ref; 0 <= _ref ? i++ : i--) {
             key = localStorage.key(i);
-            a = $('<a class="internal" href="#" />').append(key).data('pageName', key);
+            a = $('<a class="internal" href="#" />').append(key).dataDash('pageName', key);
             _results.push(ul.prepend($('<li />').append(a)));
           }
           return _results;
@@ -338,13 +357,23 @@
             return div.find('li').remove();
           });
         }
+      },
+      stats: {
+        emit: function(div, item) {
+          return div.append($('<input type="button" value="update" />').css('margin-top', '10px')).append("<pre>" + (JSON.stringify(wiki.dataDash.stats(), null, 2)) + "</pre></p>");
+        },
+        bind: function(div, item) {
+          return div.find('input').click(function() {
+            return div.find('pre').html(JSON.stringify(wiki.dataDash.stats(), null, 2));
+          });
+        }
       }
     };
     refresh = function() {
       var buildPage, create, fetch, initDragging, json, pageElement, site, slug;
       pageElement = $(this);
-      slug = $(pageElement).attr('id');
-      site = $(pageElement).data('site');
+      slug = pageElement.dataDash('slug')[0];
+      site = pageElement.dataDash('site')[0];
       pageElement.find(".add-factory").live("click", function(evt) {
         var before, beforeElement, item, itemElement;
         evt.preventDefault();
@@ -354,7 +383,7 @@
         };
         itemElement = $("<div />", {
           "class": "item factory"
-        }).data('item', item).attr('data-id', item.id);
+        }).dataDash(item);
         itemElement.data('pageElement', pageElement);
         pageElement.find(".story").append(itemElement);
         doPlugin(itemElement, item);
@@ -385,9 +414,7 @@
             moveWithinPage = !sourcePageElement || equals(sourcePageElement, destinationPageElement);
             moveFromPage = !moveWithinPage && equals(thisPageElement, sourcePageElement);
             moveToPage = !moveWithinPage && equals(thisPageElement, destinationPageElement);
-            action = moveWithinPage ? (order = $(this).children().map(function(_, value) {
-              return $(value).attr('data-id');
-            }).get(), {
+            action = moveWithinPage ? (order = $(this).find('.item').dataDash('id'), {
               type: 'move',
               order: order
             }) : moveFromPage ? {
@@ -404,7 +431,7 @@
         });
       };
       buildPage = function(data) {
-        var action, addContext, context, empty, footerElement, journalElement, page, storyElement, _i, _len, _ref, _ref2;
+        var action, addContext, context, empty, footerElement, journalElement, page, storyElement, title, _i, _len, _ref, _ref2;
         empty = {
           title: 'empty',
           synopsys: 'empty',
@@ -412,7 +439,10 @@
           journal: []
         };
         page = $.extend(empty, data);
-        $(pageElement).data("data", data);
+        title = data.title;
+        $(pageElement).dataDash({
+          title: title
+        });
         context = ['origin'];
         addContext = function(string) {
           if (string != null) {
@@ -442,7 +472,7 @@
         }), storyElement = _ref2[0], journalElement = _ref2[1], footerElement = _ref2[2];
         $.each(page.story, function(i, item) {
           var div;
-          div = $("<div />").addClass("item").addClass(item.type).attr("data-id", item.id);
+          div = $("<div />").addClass("item").addClass(item.type).dataDash(item);
           storyElement.append(div);
           return doPlugin(div, item);
         });
@@ -476,7 +506,9 @@
           url: "/" + resource + ".json?random=" + (randomBytes(4)),
           success: function(page) {
             wiki.log('fetch success', page, site || 'origin');
-            $(pageElement).data('site', site);
+            $(pageElement).dataDash({
+              site: site
+            });
             return callback(page);
           },
           error: function(xhr, type, msg) {
@@ -503,7 +535,7 @@
         });
         return callback(page);
       };
-      if ($(pageElement).attr('data-server-generated') === 'true') {
+      if ($(pageElement).dataDash('server-generated')[0] === 'true') {
         initDragging();
         return pageElement.find('.item').each(function(i, each) {
           var div, item;
@@ -514,7 +546,7 @@
           });
         });
       } else {
-        if (useLocalStorage() && (json = localStorage[pageElement.attr("id")])) {
+        if (useLocalStorage() && (json = localStorage[pageElement.dataDash('slug')[0]])) {
           pageElement.addClass("local");
           buildPage(JSON.parse(json));
           return initDragging();
@@ -550,44 +582,45 @@
           _results = [];
           for (idx = 0, _len = pages.length; idx < _len; idx++) {
             page = pages[idx];
-            _results.push("/" + ((locs != null ? locs[idx] : void 0) || 'view') + "/" + page);
+            if (page) {
+              _results.push("/" + ((locs != null ? locs[idx] : void 0) || 'view') + "/" + page);
+            }
           }
           return _results;
         })()).join('');
-        if (url !== $(location).attr('pathname')) {
+        if (url && url !== $(location).attr('pathname')) {
           wiki.log('set state', locs, pages);
           return history.pushState(null, null, url);
         }
       }
     };
-    setActive = function(page) {
-      wiki.log('set active', page);
+    setActive = function(el) {
+      el = $(el);
+      wiki.log('set active', el);
       $(".active").removeClass("active");
-      return scrollTo($("#" + page).addClass("active"));
+      return scrollTo(el.addClass("active"));
     };
-    showState = function() {
-      var idx, name, newLocs, newPages, oldLocs, oldPages, previousPage, _i, _len, _len2, _ref;
+    showState = function(e) {
+      var idx, name, newLocs, newPages, old, oldLocs, oldPages, previous, _len;
+      wiki.log('popstate', e);
       oldPages = pagesInDom();
       newPages = urlPages();
       oldLocs = locsInDom();
       newLocs = urlLocs();
+      if (!location.pathname || location.pathname === '/') return;
       wiki.log('showState', oldPages, newPages, oldLocs, newLocs);
-      previousPage = newPages;
-      if ((newPages === oldPages) && (newLocs === oldLocs)) return;
+      previous = $('.page').eq(0);
       for (idx = 0, _len = newPages.length; idx < _len; idx++) {
         name = newPages[idx];
-        if (__indexOf.call(oldPages, name) >= 0) {
-          delete oldPages[oldPages.indexOf(name)];
-        } else {
-          createPage(name, newLocs[idx]).insertAfter(previousPage).each(refresh);
+        if (name !== oldPages[idx]) {
+          old = $('.page').eq(idx);
+          if (old) old.remove();
+          createPage(name, newLocs[idx]).insertAfter(previous).each(refresh);
         }
-        previousPage = $('#' + name);
+        previous = $('.page').eq(idx);
       }
-      for (_i = 0, _len2 = oldPages.length; _i < _len2; _i++) {
-        name = oldPages[_i];
-        if ((_ref = $('#' + name)) != null) _ref.remove();
-      }
-      return setActive($('.page').last().attr('id'));
+      previous.nextAll().remove();
+      return setActive($('.page').last());
     };
     LEFTARROW = 37;
     RIGHTARROW = 39;
@@ -602,17 +635,15 @@
         }
       })();
       if (direction && !(event.target.tagName === "TEXTAREA")) {
-        pages = pagesInDom();
-        newIndex = pages.indexOf($('.active').attr('id')) + direction;
+        pages = $('.page');
+        newIndex = pages.index($('.active')) + direction;
         if ((0 <= newIndex && newIndex < pages.length)) {
           return setActive(pages[newIndex]);
         }
       }
     });
     pagesInDom = function() {
-      return $.makeArray($(".page").map(function(_, el) {
-        return el.id;
-      }));
+      return $('.page').dataDash('slug');
     };
     urlPages = function() {
       var i;
@@ -628,9 +659,7 @@
       })()).slice(1);
     };
     locsInDom = function() {
-      return $.makeArray($(".page").map(function(_, el) {
-        return $(el).data('site') || 'view';
-      }));
+      return $('.page').dataDash('site');
     };
     urlLocs = function() {
       var j, _i, _len, _ref, _results, _step;
@@ -642,58 +671,67 @@
       }
       return _results;
     };
-    createPage = function(name, loc) {
-      if (loc && (loc !== ('view' || 'my'))) {
-        return $("<div/>").attr('id', name).attr('data-site', loc).addClass("page");
+    createPage = function(slug, site) {
+      if (site && (site !== ('view' || 'my'))) {
+        return $("<div/>").dataDash({
+          site: site,
+          slug: slug
+        }).addClass("page");
       } else {
-        return $("<div/>").attr('id', name).addClass("page");
+        return $("<div/>").addClass("page").dataDash({
+          slug: slug
+        });
       }
     };
-    $(window).on('popstate', function(event) {
-      wiki.log('popstate', event);
-      return showState();
-    });
+    $(window).on('popstate', showState);
     $(document).ajaxError(function(event, request, settings) {
       var msg;
       wiki.log('ajax error', event, request, settings);
       msg = "<li class='error'>Error on " + settings.url + ": " + request.responseText + "</li>";
       if (request.status !== 404) return $('.main').prepend(msg);
     });
+    pageToJson = function(element) {
+      return {
+        title: element.dataDash('title')[0],
+        story: element.children('.story').children().dataDash(),
+        journal: element.children('.journal').children().dataDash()
+      };
+    };
     $('.main').delegate('.show-page-source', 'click', function(e) {
       var json, pageElement;
       e.preventDefault();
       pageElement = $(this).parent().parent();
-      json = pageElement.data('data');
+      json = pageToJson(pageElement);
       return wiki.dialog("JSON for " + json.title, $('<pre/>').text(JSON.stringify(json, null, 2)));
     }).delegate('.page', 'click', function(e) {
-      if (!$(e.target).is("a")) return setActive(this.id);
+      if (!$(e.target).is("a")) return setActive(this);
     }).delegate('.internal', 'click', function(e) {
       var name;
       e.preventDefault();
-      name = $(e.target).data('pageName');
+      name = $(e.target).dataDash('pageName')[0];
       wiki.fetchContext = $(e.target).attr('title').split(' => ');
       wiki.log('click', name, 'context', wiki.fetchContext);
       if (!e.shiftKey) $(e.target).parents('.page').nextAll().remove();
       createPage(name).appendTo('.main').each(refresh);
-      return setActive(name);
+      return setActive(this);
     }).delegate('.action', 'hover', function() {
       var id;
-      id = $(this).data('itemId');
-      return $("[data-id=" + id + "]").toggleClass('target');
+      id = JSON.stringify($(this).dataDash('id')[0]);
+      return $("[data-id=\"" + id + "\"].item").toggleClass('target');
     }).delegate('.action.fork, .remote', 'click', function(e) {
       var name;
       e.preventDefault();
-      name = $(e.target).data('slug');
-      wiki.log('click', name, 'site', $(e.target).data('site'));
+      name = $(e.target).dataDash('slug')[0];
+      wiki.log('click', name, 'site', $(e.target).dataDash('site')[0]);
       if (!e.shiftKey) $(e.target).parents('.page').nextAll().remove();
-      createPage(name).data('site', $(e.target).data('site')).appendTo($('.main')).each(refresh);
-      return setActive(name);
+      createPage(name).dataDash('site', $(e.target).dataDash('site')[0]).appendTo($('.main')).each(refresh);
+      return setActive(this);
     });
     useLocalStorage = function() {
       return $(".login").length > 0;
     };
     $(".provider input").click(function() {
-      $("footer input:first").val($(this).attr('data-provider'));
+      $("footer input:first").val($(this).dataDash('provider')[0]);
       return $("footer form").submit();
     });
     setUrl();
@@ -704,10 +742,10 @@
       urlPage = firstUrlPages[idx];
       if (!(__indexOf.call(pagesInDom(), urlPage) < 0)) continue;
       wiki.log('createPage', urlPage, idx);
-      if (urlPage !== '') createPage(urlPage, firstUrlLocs[idx]).appendTo('.main');
+      if (urlPage) createPage(urlPage, firstUrlLocs[idx]).appendTo('.main');
     }
     $('.page').each(refresh);
-    return setActive($('.page').last().attr('id'));
+    return setActive($('.page').last());
   });
 
 }).call(this);
