@@ -163,6 +163,17 @@
         return $(element).dataDash() || JSON.parse($(element).dataDash('staticItem')[0]);
       }
     };
+    wiki.getDataNodes = function(vis) {
+      var idx, who;
+      if (vis) {
+        idx = $('.item').index(vis);
+        who = $(".item:lt(" + idx + ")").filter('.chart,.data,.calculator').toArray().reverse();
+        return $(who);
+      } else {
+        who = $('.chart,.data,.calculator').toArray().reverse();
+        return $(who);
+      }
+    };
     wiki.getData = function(vis) {
       var idx, who;
       if (vis) {

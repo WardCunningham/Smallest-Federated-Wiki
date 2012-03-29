@@ -125,6 +125,15 @@ $ ->
   getItem = (element) ->
     $(element).dataDash() or JSON.parse($(element).dataDash('staticItem')[0]) if $(element).length > 0
 
+  wiki.getDataNodes = (vis) ->
+    if vis
+      idx = $('.item').index(vis)
+      who = $(".item:lt(#{idx})").filter('.chart,.data,.calculator').toArray().reverse()
+      $(who)
+    else
+      who = $('.chart,.data,.calculator').toArray().reverse()
+      $(who)
+
   wiki.getData = (vis) ->
     if vis
       idx = $('.item').index(vis)
