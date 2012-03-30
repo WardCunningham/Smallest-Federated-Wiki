@@ -62,7 +62,20 @@ window.plugins.radar =
         dimension = keys.length
         ruleColor = "#CCC"
 
+        angle = (i) ->
+          (i / dimension) * 2 * Math.PI
+        rotate = (i) ->
+          "rotate(#{((i / dimension * 360) - 90)})"
+        translate = (percent) ->
+         "translate(#{radius maxVal * percent/100 })"
+
         series = (percents(d) for d in data)
+        comments = []
+        for m in [0..data.length-1]
+          for d in [0..dimension-1]
+             if (c = data[m][keys[d]].comment)?
+              comments.push
+                material: m, dimension: d, comment: c
 
         hours = [0..dimension-1]
         minVal = 0
@@ -108,7 +121,7 @@ window.plugins.radar =
           .data(hours)
           .enter()
           .append("svg:g")
-          .attr("transform", (d, i) -> "rotate(" + ((i / hours.length * 360) - 90) + ")translate(" + radius(maxVal) + ")" )
+          .attr("transform", (d, i) -> rotate(i)+translate(100) )
           .attr("class", "line-ticks")
         lineAxes.append("svg:line")
           .attr("x2", -1 * radius(maxVal))
@@ -140,6 +153,20 @@ window.plugins.radar =
           .style("fill", colorSelector)
           .attr("d", d3.svg.line.radial()
             .radius((d) -> radius d )
-            .angle((d, i) -> (i / dimension) * 2 * Math.PI ))
+            .angle((d, i) -> angle i ))
           .append("svg:title").text((d,i) -> data[i]["Material name"])
 
+          vizBody.selectAll(".comments")
+            .data(comments)
+            .enter()
+            .append("svg:g")
+            .attr("class", "comments")
+            .append("svg:text")
+            .style("font-size", "40px")
+            .style("fill", colorSelector)
+            .attr("text-anchor", "mid")
+            .attr("transform", (d) ->
+              percent = series[d.material][d.dimension]
+              rotate(d.dimension)+translate(percent) )
+            .text('*')
+            .append("svg:title").text((d) -> d.comment)

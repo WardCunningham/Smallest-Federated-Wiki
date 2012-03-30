@@ -5,7 +5,7 @@
     emit: function(div, item) {
       return wiki.getScript('/js/d3/d3.js', function() {
         return wiki.getScript('/js/d3/d3.time.js', function() {
-          var centerXPos, centerYPos, circleAxes, circleConstraint, colorSelector, d, data, dimension, fill, h, heightCircleConstraint, hours, idx, keys, limit, lineAxes, maxVal, minVal, percents, radialTicks, radius, radiusLength, ruleColor, series, value, viz, vizBody, vizPadding, w, who, widthCircleConstraint, _i, _ref, _results;
+          var angle, c, centerXPos, centerYPos, circleAxes, circleConstraint, colorSelector, comments, d, data, dimension, fill, h, heightCircleConstraint, hours, idx, keys, limit, lineAxes, m, maxVal, minVal, percents, radialTicks, radius, radiusLength, rotate, ruleColor, series, translate, value, viz, vizBody, vizPadding, w, who, widthCircleConstraint, _i, _ref, _ref2, _ref3, _results;
           div.append(' <style>\n svg { font: 10px sans-serif; }\n</style>');
           limit = {
             "Carcinogenicity": 7,
@@ -76,6 +76,15 @@
           };
           dimension = keys.length;
           ruleColor = "#CCC";
+          angle = function(i) {
+            return (i / dimension) * 2 * Math.PI;
+          };
+          rotate = function(i) {
+            return "rotate(" + ((i / dimension * 360) - 90) + ")";
+          };
+          translate = function(percent) {
+            return "translate(" + (radius(maxVal * percent / 100)) + ")";
+          };
           series = (function() {
             var _i, _len, _results;
             _results = [];
@@ -85,9 +94,21 @@
             }
             return _results;
           })();
+          comments = [];
+          for (m = 0, _ref = data.length - 1; 0 <= _ref ? m <= _ref : m >= _ref; 0 <= _ref ? m++ : m--) {
+            for (d = 0, _ref2 = dimension - 1; 0 <= _ref2 ? d <= _ref2 : d >= _ref2; 0 <= _ref2 ? d++ : d--) {
+              if ((c = data[m][keys[d]].comment) != null) {
+                comments.push({
+                  material: m,
+                  dimension: d,
+                  comment: c
+                });
+              }
+            }
+          }
           hours = (function() {
             _results = [];
-            for (var _i = 0, _ref = dimension - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; 0 <= _ref ? _i++ : _i--){ _results.push(_i); }
+            for (var _i = 0, _ref3 = dimension - 1; 0 <= _ref3 ? _i <= _ref3 : _i >= _ref3; 0 <= _ref3 ? _i++ : _i--){ _results.push(_i); }
             return _results;
           }).apply(this);
           minVal = 0;
@@ -111,7 +132,7 @@
             return -1 * radius(d);
           }).text(String);
           lineAxes = vizBody.selectAll(".line-ticks").data(hours).enter().append("svg:g").attr("transform", function(d, i) {
-            return "rotate(" + ((i / hours.length * 360) - 90) + ")translate(" + radius(maxVal) + ")";
+            return rotate(i) + translate(100);
           }).attr("class", "line-ticks");
           lineAxes.append("svg:line").attr("x2", -1 * radius(maxVal)).style("stroke", ruleColor).style("fill", "none");
           lineAxes.append("svg:text").text(function(d, i) {
@@ -124,12 +145,19 @@
           colorSelector = function(d, i) {
             return fill(i);
           };
-          return vizBody.selectAll(".series").data(series).enter().append("svg:g").attr("class", "series").append("svg:path").attr("class", "line").style("fill", colorSelector).style("stroke", colorSelector).style("stroke-width", 3).style("fill-opacity", .1).style("fill", colorSelector).attr("d", d3.svg.line.radial().radius(function(d) {
+          vizBody.selectAll(".series").data(series).enter().append("svg:g").attr("class", "series").append("svg:path").attr("class", "line").style("fill", colorSelector).style("stroke", colorSelector).style("stroke-width", 3).style("fill-opacity", .1).style("fill", colorSelector).attr("d", d3.svg.line.radial().radius(function(d) {
             return radius(d);
           }).angle(function(d, i) {
-            return (i / dimension) * 2 * Math.PI;
+            return angle(i);
           })).append("svg:title").text(function(d, i) {
             return data[i]["Material name"];
+          });
+          return vizBody.selectAll(".comments").data(comments).enter().append("svg:g").attr("class", "comments").append("svg:text").style("font-size", "40px").style("fill", colorSelector).attr("text-anchor", "mid").attr("transform", function(d) {
+            var percent;
+            percent = series[d.material][d.dimension];
+            return rotate(d.dimension) + translate(percent);
+          }).text('*').append("svg:title").text(function(d) {
+            return d.comment;
           });
         });
       });
