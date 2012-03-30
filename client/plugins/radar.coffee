@@ -107,7 +107,11 @@ window.plugins.radar =
           .text((d,i) -> keys[i])
           .attr("text-anchor", "start")
           .style("stroke", ruleColor)
-          .attr "transform", "rotate(180)"
+          .attr("transform", "rotate(180)")
+          .on("click", (d) ->
+            $(div).parents('.page').nextAll().remove()
+            wiki.doInternalLink(keys[d])
+          )
 
         fill = d3.scale.category10()
         colorSelector = (d, i) -> fill i
