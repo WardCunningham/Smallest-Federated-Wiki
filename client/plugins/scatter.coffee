@@ -18,7 +18,7 @@ window.plugins.scatter =
 
         who = $('.chart,.data,.calculator').last()
         data = who.dataDash('data')[0]
-        horz = "Energy/GHG Emissions Intensity Total"
+        horz = "Water/Land Intensity Total"
         vert = "Total Score"
         xdat = (d) -> +d[horz]
         ydat = (d) -> +d[vert]

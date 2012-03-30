@@ -9,7 +9,7 @@
           div.append(' <style>\n svg {\n   font: 10px sans-serif;\n   background: #eee;\n }\n circle {\n   fill: gray;\n   stroke: white;\n }\n</style>');
           who = $('.chart,.data,.calculator').last();
           data = who.dataDash('data')[0];
-          horz = "Energy/GHG Emissions Intensity Total";
+          horz = "Water/Land Intensity Total";
           vert = "Total Score";
           xdat = function(d) {
             return +d[horz];
