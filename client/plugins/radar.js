@@ -5,7 +5,7 @@
     emit: function(div, item) {
       return wiki.getScript('/js/d3/d3.js', function() {
         return wiki.getScript('/js/d3/d3.time.js', function() {
-          var centerXPos, centerYPos, circleAxes, circleConstraint, colorSelector, d, data, dimension, fill, h, heightCircleConstraint, hours, idx, keys, limit, lineAxes, maxVal, minVal, percents, radialTicks, radius, radiusLength, ruleColor, series, viz, vizBody, vizPadding, w, who, widthCircleConstraint, _i, _ref, _results;
+          var centerXPos, centerYPos, circleAxes, circleConstraint, colorSelector, d, data, dimension, fill, h, heightCircleConstraint, hours, idx, keys, limit, lineAxes, maxVal, minVal, percents, radialTicks, radius, radiusLength, ruleColor, series, value, viz, vizBody, vizPadding, w, who, widthCircleConstraint, _i, _ref, _results;
           div.append(' <style>\n svg { font: 10px sans-serif; }\n</style>');
           limit = {
             "Carcinogenicity": 7,
@@ -28,13 +28,30 @@
             "Total score": 100
           };
           keys = Object.keys(limit);
+          value = function(obj) {
+            if (obj == null) return NaN;
+            switch (obj.constructor) {
+              case Number:
+                return obj;
+              case String:
+                return +obj;
+              case Array:
+                return value(obj[0]);
+              case Object:
+                return value(obj.value);
+              case Function:
+                return obj();
+              default:
+                return Nan;
+            }
+          };
           percents = function(obj) {
             var k, _i, _len, _ref, _results;
             _ref = keys.concat(keys[0]);
             _results = [];
             for (_i = 0, _len = _ref.length; _i < _len; _i++) {
               k = _ref[_i];
-              _results.push(100.0 * obj[k] / limit[k]);
+              _results.push(100.0 * value(obj[k]) / limit[k]);
             }
             return _results;
           };

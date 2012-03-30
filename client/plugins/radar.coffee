@@ -30,8 +30,19 @@ window.plugins.radar =
           "Total score": 100
 
         keys = Object.keys(limit)
+
+        value = (obj) ->
+          return NaN unless obj?
+          switch obj.constructor
+            when Number then obj
+            when String then +obj
+            when Array then value(obj[0])
+            when Object then value(obj.value)
+            when Function then obj()
+            else Nan
+
         percents = (obj) ->
-          (100.0*obj[k]/limit[k] for k in keys.concat(keys[0]))
+          (100.0*value(obj[k])/limit[k] for k in keys.concat(keys[0]))
 
         idx = $('.item').index(div)
         who = $(".item:lt(#{idx})").filter('.data')
