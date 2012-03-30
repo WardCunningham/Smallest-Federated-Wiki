@@ -159,9 +159,7 @@
       return "" + h + ":" + mi + " " + am + "<br>" + (d.getDate()) + " " + mo + " " + (d.getFullYear());
     };
     getItem = function(element) {
-      if ($(element).length > 0) {
-        return $(element).dataDash() || JSON.parse($(element).dataDash('staticItem')[0]);
-      }
+      return $(element).dataDash()[0];
     };
     wiki.getDataNodes = function(vis) {
       var idx, who;
