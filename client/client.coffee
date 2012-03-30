@@ -123,7 +123,7 @@ $ ->
     "#{h}:#{mi} #{am}<br>#{d.getDate()} #{mo} #{d.getFullYear()}"
 
   getItem = (element) ->
-    $(element).dataDash() or JSON.parse($(element).dataDash('staticItem')[0]) if $(element).length > 0
+    $(element).dataDash()[0]
 
   wiki.getDataNodes = (vis) ->
     if vis
