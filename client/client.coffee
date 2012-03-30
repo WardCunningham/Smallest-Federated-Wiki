@@ -336,6 +336,9 @@ $ ->
         $("<div />").addClass(className).appendTo(pageElement)
 
       $.each page.story, (i, item) ->
+        if $.isArray item
+          wiki.log 'fixing corrupted item', i, item
+          item = item[0]
         div = $("<div />").addClass("item").addClass(item.type).attr("data-id", item.id)
         storyElement.append div
         doPlugin div, item

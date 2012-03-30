@@ -442,6 +442,10 @@
         }), storyElement = _ref2[0], journalElement = _ref2[1], footerElement = _ref2[2];
         $.each(page.story, function(i, item) {
           var div;
+          if ($.isArray(item)) {
+            wiki.log('fixing corrupted item', i, item);
+            item = item[0];
+          }
           div = $("<div />").addClass("item").addClass(item.type).attr("data-id", item.id);
           storyElement.append(div);
           return doPlugin(div, item);
