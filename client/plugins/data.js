@@ -1,5 +1,5 @@
 (function() {
-  var readout, summary, thumbs,
+  var summary, thumbs,
     __hasProp = Object.prototype.hasOwnProperty;
 
   window.plugins.data = {
@@ -8,13 +8,65 @@
       return $('<p />').html(wiki.resolveLinks(item.text || 'data')).appendTo(div);
     },
     bind: function(div, item) {
-      return div.find('p:first').mousemove(function(e) {
+      var average, label, lastThumb, readout, value;
+      lastThumb = null;
+      div.find('p:first').mousemove(function(e) {
         var thumb;
         thumb = thumbs(item)[Math.floor(thumbs(item).length * e.offsetX / e.target.offsetWidth)];
-        $(e.target).siblings("p").last().html(thumb);
-        if (item.data.object != null) $(e.target).text(readout(item.data[thumb]));
+        if (thumb === lastThumb || null === (lastThumb = thumb)) return;
+        $(e.target).siblings("p").last().html(label(thumb));
+        $(e.target).text(readout(thumb));
         return $(div).triggerHandler('thumb', thumb);
       });
+      value = function(obj) {
+        if (obj == null) return NaN;
+        switch (obj.constructor) {
+          case Number:
+            return obj;
+          case String:
+            return +obj;
+          case Array:
+            return value(obj[0]);
+          case Object:
+            return value(obj.value);
+          case Function:
+            return obj();
+          default:
+            return NaN;
+        }
+      };
+      average = function(thumb) {
+        var result, values;
+        values = _.map(item.data, function(obj) {
+          return value(obj[thumb]);
+        });
+        values = _.reject(values, function(obj) {
+          return obj === NaN;
+        });
+        result = _.reduce(values, (function(m, n) {
+          return m + n;
+        }), 0) / values.length;
+        if (values.length > 1) {
+          return result.toFixed(2);
+        } else {
+          return result;
+        }
+      };
+      readout = function(thumb) {
+        var field;
+        if (item.columns != null) return average(thumb);
+        if (item.data.object == null) return summary(item);
+        field = item.data[thumb];
+        if (field.value != null) return "" + field.value;
+        if (field.constructor === Number) return "" + (field.toFixed(2));
+        return NaN;
+      };
+      return label = function(thumb) {
+        if ((item.columns != null) && item.data.length > 1) {
+          return "Averaged:<br>" + thumb;
+        }
+        return thumb;
+      };
     }
   };
 
@@ -26,12 +78,6 @@
       return "" + item.data.nodes.length + "/" + item.data.links.length;
     }
     return "1x" + (thumbs(item).length);
-    return "data";
-  };
-
-  readout = function(field) {
-    if (field.value != null) return "" + field.value;
-    if (field.constructor === Number) return "" + (field.toFixed(2));
     return "data";
   };
 
