@@ -5,7 +5,7 @@
     emit: function(div, item) {
       return wiki.getScript('/js/d3/d3.js', function() {
         return wiki.getScript('/js/d3/d3.time.js', function() {
-          var data, extent, fill, h, horz, p, vert, vis, w, who, x, xdat, y, ydat;
+          var data, extent, fill, h, horz, p, title, vert, vis, w, who, x, xdat, y, ydat;
           div.append(' <style>\n svg {\n   font: 10px sans-serif;\n   background: #eee;\n }\n circle {\n   fill: gray;\n   stroke: white;\n }\n</style>');
           who = $('.chart,.data,.calculator').last();
           data = who.data('item').data;
@@ -17,6 +17,9 @@
           ydat = function(d) {
             return +d[vert];
           };
+          title = function(d) {
+            return "" + d.Material + "\n" + horz + ": " + d[horz] + "\n" + vert + ": " + d[vert] + "\nRank: " + d['Rank'];
+          };
           who.bind('thumb', function(e, thumb) {
             var x;
             if (thumb === horz) return;
@@ -27,7 +30,7 @@
               return i * 10;
             }).attr("cx", function(d) {
               return x(xdat(d));
-            });
+            }).selectAll("title").text(title);
           });
           extent = function(f) {
             var hi, lo, step, _ref;
@@ -51,9 +54,7 @@
           }).attr("r", 10).on("click", function(d) {
             $(div).parents('.page').nextAll().remove();
             return wiki.doInternalLink(d.Material);
-          }).append("svg:title").text(function(d) {
-            return d.Material;
-          });
+          }).append("svg:title").text(title);
         });
       });
     }

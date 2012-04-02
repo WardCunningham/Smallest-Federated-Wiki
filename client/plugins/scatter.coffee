@@ -22,6 +22,14 @@ window.plugins.scatter =
         vert = "Total Score"
         xdat = (d) -> +d[horz]
         ydat = (d) -> +d[vert]
+        title = (d) ->
+          """
+          #{d.Material}
+          #{horz}: #{d[horz]}
+          #{vert}: #{d[vert]}
+          Rank: #{d['Rank']}
+          """
+
         who.bind 'thumb', (e, thumb) ->
           return if thumb == horz
           wiki.log 'thumb', thumb
@@ -31,6 +39,7 @@ window.plugins.scatter =
             .duration(500)
             .delay((d, i) -> i * 10)
             .attr("cx", (d) -> x(xdat(d)))
+            .selectAll("title").text title
 
         extent = (f) ->
           [lo, hi] = [d3.min(data,f), d3.max(data,f)]
@@ -63,5 +72,5 @@ window.plugins.scatter =
           .on("click", (d) ->
             $(div).parents('.page').nextAll().remove()
             wiki.doInternalLink(d.Material))
-          .append("svg:title").text((d) -> d.Material)
+          .append("svg:title").text title
 
