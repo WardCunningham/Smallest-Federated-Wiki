@@ -42,7 +42,7 @@
               case Function:
                 return obj();
               default:
-                return Nan;
+                return NaN;
             }
           };
           percents = function(obj) {

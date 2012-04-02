@@ -39,7 +39,7 @@ window.plugins.radar =
             when Array then value(obj[0])
             when Object then value(obj.value)
             when Function then obj()
-            else Nan
+            else NaN
 
         percents = (obj) ->
           (100.0*value(obj[k])/limit[k] for k in keys.concat(keys[0]))
