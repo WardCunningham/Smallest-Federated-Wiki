@@ -7,12 +7,18 @@ window.plugins.data =
     $('<p />').html(wiki.resolveLinks(item.text||'data')).appendTo(div)
   bind: (div, item) ->
     lastThumb = null
-    div.find('p:first').mousemove (e) ->
-      thumb = thumbs(item)[Math.floor(thumbs(item).length * e.offsetX / e.target.offsetWidth)]
-      return if thumb == lastThumb || null == (lastThumb = thumb)
-      $(e.target).siblings("p").last().html label(thumb)
-      $(e.target).text(readout(thumb))
-      $(div).triggerHandler('thumb', thumb)
+    div.find('p:first')
+      .mousemove (e) ->
+        thumb = thumbs(item)[Math.floor(thumbs(item).length * e.offsetX / e.target.offsetWidth)]
+        return if thumb == lastThumb || null == (lastThumb = thumb)
+        $(e.target).siblings("p").last().html label(thumb)
+        $(e.target).text(readout(thumb))
+        $(div).triggerHandler('thumb', thumb)
+      .dblclick (e) ->
+        wiki.dialog "JSON for #{item.text}",  $('<pre/>').text(JSON.stringify(item, null, 2))
+    div.find('p:last')
+      .dblclick ->
+        wiki.textEditor div, item
 
     value = (obj) ->
       return NaN unless obj?

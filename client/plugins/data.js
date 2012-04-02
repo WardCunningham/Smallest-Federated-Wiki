@@ -17,6 +17,11 @@
         $(e.target).siblings("p").last().html(label(thumb));
         $(e.target).text(readout(thumb));
         return $(div).triggerHandler('thumb', thumb);
+      }).dblclick(function(e) {
+        return wiki.dialog("JSON for " + item.text, $('<pre/>').text(JSON.stringify(item, null, 2)));
+      });
+      div.find('p:last').dblclick(function() {
+        return wiki.textEditor(div, item);
       });
       value = function(obj) {
         if (obj == null) return NaN;
