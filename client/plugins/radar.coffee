@@ -98,7 +98,13 @@ window.plugins.radar =
         radiusLength = radius(maxVal)
         centerXPos = widthCircleConstraint / 2 + vizPadding.left
         centerYPos = heightCircleConstraint / 2 + vizPadding.top
-        vizBody.attr "transform", "translate(" + centerXPos + ", " + centerYPos + ")"
+        vizBody.attr "transform", "translate(#{centerXPos},#{centerYPos})" + rotate(0)
+
+        lastThumb = null
+        who.bind 'thumb', (e, thumb) ->
+          return if thumb == lastThumb || -1 == (index = keys.indexOf lastThumb = thumb)
+          vizBody.transition().duration(750)
+            .attr "transform", "translate(#{centerXPos},#{centerYPos})" + rotate(-index)
 
         radialTicks = radius.ticks(5)
         circleAxes = vizBody.selectAll(".circle-ticks")

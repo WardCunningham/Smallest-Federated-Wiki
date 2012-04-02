@@ -5,7 +5,7 @@
     emit: function(div, item) {
       return wiki.getScript('/js/d3/d3.js', function() {
         return wiki.getScript('/js/d3/d3.time.js', function() {
-          var angle, c, centerXPos, centerYPos, circleAxes, circleConstraint, colorSelector, comments, d, data, dimension, fill, h, heightCircleConstraint, hours, idx, keys, limit, lineAxes, m, maxVal, minVal, percents, radialTicks, radius, radiusLength, rotate, ruleColor, series, translate, value, viz, vizBody, vizPadding, w, who, widthCircleConstraint, _i, _ref, _ref2, _ref3, _results;
+          var angle, c, centerXPos, centerYPos, circleAxes, circleConstraint, colorSelector, comments, d, data, dimension, fill, h, heightCircleConstraint, hours, idx, keys, lastThumb, limit, lineAxes, m, maxVal, minVal, percents, radialTicks, radius, radiusLength, rotate, ruleColor, series, translate, value, viz, vizBody, vizPadding, w, who, widthCircleConstraint, _i, _ref, _ref2, _ref3, _results;
           div.append(' <style>\n svg { font: 10px sans-serif; }\n</style>');
           limit = {
             "Carcinogenicity": 7,
@@ -122,7 +122,15 @@
           radiusLength = radius(maxVal);
           centerXPos = widthCircleConstraint / 2 + vizPadding.left;
           centerYPos = heightCircleConstraint / 2 + vizPadding.top;
-          vizBody.attr("transform", "translate(" + centerXPos + ", " + centerYPos + ")");
+          vizBody.attr("transform", ("translate(" + centerXPos + "," + centerYPos + ")") + rotate(0));
+          lastThumb = null;
+          who.bind('thumb', function(e, thumb) {
+            var index;
+            if (thumb === lastThumb || -1 === (index = keys.indexOf(lastThumb = thumb))) {
+              return;
+            }
+            return vizBody.transition().duration(750).attr("transform", ("translate(" + centerXPos + "," + centerYPos + ")") + rotate(-index));
+          });
           radialTicks = radius.ticks(5);
           circleAxes = vizBody.selectAll(".circle-ticks").data(radialTicks).enter().append("svg:g").attr("class", "circle-ticks");
           circleAxes.append("svg:circle").attr("r", function(d, i) {
