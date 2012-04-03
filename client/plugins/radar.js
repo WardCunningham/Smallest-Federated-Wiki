@@ -145,7 +145,7 @@
           lineAxes.append("svg:line").attr("x2", -1 * radius(maxVal)).style("stroke", ruleColor).style("fill", "none");
           lineAxes.append("svg:text").text(function(d, i) {
             return keys[i];
-          }).attr("text-anchor", "start").style("stroke", ruleColor).attr("transform", "rotate(180)").on("click", function(d) {
+          }).attr("text-anchor", "start").style("stroke", ruleColor).style("cursor", 'pointer').attr("transform", "rotate(180)").on("click", function(d) {
             $(div).parents('.page').nextAll().remove();
             return wiki.doInternalLink(keys[d]);
           });

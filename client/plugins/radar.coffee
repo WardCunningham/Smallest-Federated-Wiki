@@ -137,6 +137,7 @@ window.plugins.radar =
           .text((d,i) -> keys[i])
           .attr("text-anchor", "start")
           .style("stroke", ruleColor)
+          .style("cursor", 'pointer')
           .attr("transform", "rotate(180)")
           .on("click", (d) ->
             $(div).parents('.page').nextAll().remove()
