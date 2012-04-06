@@ -68,6 +68,7 @@ window.plugins.scatter =
           .attr("cx", (d) -> x(xdat(d)))
           .attr("cy", (d) -> y(ydat(d)))
           .style("fill", (d,i) -> fill(d.Material.split(/\s+/).reverse()[0]))
+          .style("cursor", 'pointer')
           .attr("r", 10)
           .on("click", (d) ->
             $(div).parents('.page').nextAll().remove()

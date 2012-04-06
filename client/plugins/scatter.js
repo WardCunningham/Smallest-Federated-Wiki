@@ -51,7 +51,7 @@
             return y(ydat(d));
           }).style("fill", function(d, i) {
             return fill(d.Material.split(/\s+/).reverse()[0]);
-          }).attr("r", 10).on("click", function(d) {
+          }).style("cursor", 'pointer').attr("r", 10).on("click", function(d) {
             $(div).parents('.page').nextAll().remove();
             return wiki.doInternalLink(d.Material);
           }).append("svg:title").text(title);
