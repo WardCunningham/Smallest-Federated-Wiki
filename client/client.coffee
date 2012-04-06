@@ -47,6 +47,7 @@ $ ->
     pageElement = journalElement.parents('.page:first')
     actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type)
       .text(action.type[0])
+      .attr('title',action.type)
       .data('itemId', action.id || "0")
       .appendTo(journalElement)
     if action.type == 'fork'

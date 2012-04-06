@@ -66,7 +66,7 @@
     addToJournal = function(journalElement, action) {
       var actionElement, pageElement;
       pageElement = journalElement.parents('.page:first');
-      actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(action.type[0]).data('itemId', action.id || "0").appendTo(journalElement);
+      actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(action.type[0]).attr('title', action.type).data('itemId', action.id || "0").appendTo(journalElement);
       if (action.type === 'fork') {
         return actionElement.css("background-image", "url(//" + action.site + "/favicon.png)").attr("href", "//" + action.site + "/" + (pageElement.attr('id')) + ".html").data("site", action.site).data("slug", pageElement.attr('id'));
       }
