@@ -157,6 +157,11 @@ class Controller < Sinatra::Base
   end
 
   get '/random.png' do
+    unless authenticated? or !claimed?
+      halt 403
+      return
+    end
+
     content_type 'image/png'
     local = File.join farm_status, 'favicon.png'
     Favicon.create local
