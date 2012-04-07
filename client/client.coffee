@@ -101,9 +101,9 @@ $ ->
         if item.text = textarea.val()
           doPlugin div.empty(), item
           return if item.text == original
-          putAction div.parents('.page:first'), {type: 'edit', id: item.id, item: item}
+          putAction div.parents('.page:first'), {type: 'edit', id: item.id, date: Date.parse(new Date()), item: item}
         else
-          putAction div.parents('.page:first'), {type: 'remove', id: item.id}
+          putAction div.parents('.page:first'), {type: 'remove', id: item.id, date: Date.parse(new Date())}
           div.remove()
         null
       .bind 'keydown', (e) ->
@@ -262,7 +262,7 @@ $ ->
       doPlugin itemElement, item
       beforeElement = itemElement.prev('.item')
       before = getItem(beforeElement)
-      putAction pageElement, {item: item, id: item.id, type: "add", after: before?.id}
+      putAction pageElement, {type: "add", id: item.id, date: Date.parse(new Date()), item: item, after: before?.id}
 
     initDragging = ->
       storyElement = pageElement.find('.story')
@@ -292,6 +292,7 @@ $ ->
             {type: 'add', item: item, after: before?.id}
 
           action.id = item.id
+          action.date = Date.parse(new Date())
           putAction pageElement, action
 
         connectWith: '.page .story'
@@ -383,7 +384,7 @@ $ ->
       title = $("""a[href="/#{slug}.html"]""").html()
       title or= slug
       page = {title}
-      putAction $(pageElement), {type: 'create', id: randomBytes(8), item: page}
+      putAction $(pageElement), {type: 'create', id: randomBytes(8), date: Date.parse(new Date()), item: page}
       callback page
 
     if $(pageElement).attr('data-server-generated') == 'true'

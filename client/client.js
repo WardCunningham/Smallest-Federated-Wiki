@@ -129,12 +129,14 @@
           putAction(div.parents('.page:first'), {
             type: 'edit',
             id: item.id,
+            date: Date.parse(new Date()),
             item: item
           });
         } else {
           putAction(div.parents('.page:first'), {
             type: 'remove',
-            id: item.id
+            id: item.id,
+            date: Date.parse(new Date())
           });
           div.remove();
         }
@@ -361,9 +363,10 @@
         beforeElement = itemElement.prev('.item');
         before = getItem(beforeElement);
         return putAction(pageElement, {
-          item: item,
-          id: item.id,
           type: "add",
+          id: item.id,
+          date: Date.parse(new Date()),
+          item: item,
           after: before != null ? before.id : void 0
         });
       });
@@ -398,6 +401,7 @@
               after: before != null ? before.id : void 0
             }) : void 0;
             action.id = item.id;
+            action.date = Date.parse(new Date());
             return putAction(pageElement, action);
           },
           connectWith: '.page .story'
@@ -503,6 +507,7 @@
         putAction($(pageElement), {
           type: 'create',
           id: randomBytes(8),
+          date: Date.parse(new Date()),
           item: page
         });
         return callback(page);
