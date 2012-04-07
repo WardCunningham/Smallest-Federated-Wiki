@@ -1,0 +1,28 @@
+{
+  "name": "sfwiki",
+  "version": "0.0.1a",
+  "main": "index.js",
+  "private": true,
+  "bin": {
+    "sfw-noded": "./bin/server.js"
+  },
+  "dependencies": {
+    "coffee-script": "*",
+    "jquery-browserify": "*",
+    "browserify": "*"
+  },
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "expect": "*"
+  },
+  "engines": { 
+    "node": "~0.6" 
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WardCunningham/Smallest-Federated-Wiki"
+  }
+}
