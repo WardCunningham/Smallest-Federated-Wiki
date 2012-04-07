@@ -9366,11 +9366,16 @@ require.define("/test/util.coffee", function (require, module, exports, __dirnam
   util = require('../lib/util.coffee');
 
   module.exports = describe('util', function() {
-    return it('should make random bytes', function() {
+    it('should make random bytes', function() {
       var a;
       a = util.randomByte();
       expect(a).to.be.a('string');
-      return expect(a.length).to.be(2);
+      return expect(a.length).to.be(3);
+    });
+    return it('should make random byte strings', function() {
+      var s;
+      s = util.randomBytes(4);
+      return expect(s.length).to.be(8);
     });
   });
 
