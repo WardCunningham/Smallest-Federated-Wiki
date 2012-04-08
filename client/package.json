@@ -1,25 +1,23 @@
 {
-  "name": "sfwiki",
+  "name": "sfw",
   "version": "0.0.1a",
-  "main": "index.js",
+  "main": "client.coffee",
   "private": true,
-  "bin": {
-    "sfw-noded": "./bin/server.js"
-  },
   "dependencies": {
     "coffee-script": "*",
     "jquery-browserify": "*",
     "browserify": "*"
   },
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha"
+    "test": "./node_modules/.bin/browserify testclient.coffee -o test/testclient.js",
+    "start": "./node_modules/.bin/browserify client.coffee -o client.js"
   },
   "devDependencies": {
     "mocha": "*",
     "expect": "*"
   },
-  "engines": { 
-    "node": "~0.6" 
+  "engines": {
+    "node": "~0.6"
   },
   "repository": {
     "type": "git",
