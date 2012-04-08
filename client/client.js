@@ -356,7 +356,7 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
   };
 
   $(function() {
-    var LEFTARROW, RIGHTARROW, addToJournal, asSlug, createPage, doInternalLink, doPlugin, findScrollContainer, firstUrlLocs, firstUrlPages, formatTime, getItem, getPlugin, idx, locsInDom, pagesInDom, pushToLocal, pushToServer, putAction, refresh, resolveFrom, resolveLinks, scripts, scrollContainer, scrollTo, setActive, setUrl, showState, textEditor, urlLocs, urlPage, urlPages, useLocalStorage, _len;
+    var LEFTARROW, RIGHTARROW, addToJournal, asSlug, createPage, doInternalLink, doPlugin, findScrollContainer, firstUrlLocs, firstUrlPages, getItem, getPlugin, idx, locsInDom, pagesInDom, pushToLocal, pushToServer, putAction, refresh, resolveFrom, resolveLinks, scripts, scrollContainer, scrollTo, setActive, setUrl, showState, textEditor, urlLocs, urlPage, urlPages, useLocalStorage, _len;
     window.wiki = {};
     window.dialog = $('<div></div>').html('This dialog will show every time!').dialog({
       autoOpen: false,
@@ -485,16 +485,6 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       });
       div.html(textarea);
       return textarea.focus();
-    };
-    formatTime = function(time) {
-      var am, d, h, mi, mo;
-      d = new Date((time > 10000000000 ? time : time * 1000));
-      mo = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()];
-      h = d.getHours();
-      am = h < 12 ? 'AM' : 'PM';
-      h = h === 0 ? 12 : h > 12 ? h - 12 : h;
-      mi = (d.getMinutes() < 10 ? "0" : "") + d.getMinutes();
-      return "" + h + ":" + mi + " " + am + "<br>" + (d.getDate()) + " " + mo + " " + (d.getFullYear());
     };
     getItem = function(element) {
       if ($(element).length > 0) {
@@ -650,7 +640,7 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
             var sample, time, _ref;
             _ref = item.data[Math.floor(item.data.length * e.offsetX / e.target.offsetWidth)], time = _ref[0], sample = _ref[1];
             $(e.target).text(sample.toFixed(1));
-            return $(e.target).siblings("p").last().html(formatTime(time));
+            return $(e.target).siblings("p").last().html(util.formatTime(time));
           }).dblclick(function() {
             return wiki.dialog("JSON for " + item.caption, $('<pre/>').text(JSON.stringify(item.data, null, 2)));
           });
@@ -1073,6 +1063,17 @@ require.define("/lib/util.coffee", function (require, module, exports, __dirname
       }
       return _results;
     })()).join('');
+  };
+
+  util.formatTime = function(time) {
+    var am, d, h, mi, mo;
+    d = new Date((time > 10000000000 ? time : time * 1000));
+    mo = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()];
+    h = d.getHours();
+    am = h < 12 ? 'AM' : 'PM';
+    h = h === 0 ? 12 : h > 12 ? h - 12 : h;
+    mi = (d.getMinutes() < 10 ? "0" : "") + d.getMinutes();
+    return "" + h + ":" + mi + " " + am + "<br>" + (d.getDate()) + " " + mo + " " + (d.getFullYear());
   };
 
 }).call(this);

@@ -365,6 +365,17 @@ require.define("/lib/util.coffee", function (require, module, exports, __dirname
     })()).join('');
   };
 
+  util.formatTime = function(time) {
+    var am, d, h, mi, mo;
+    d = new Date((time > 10000000000 ? time : time * 1000));
+    mo = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()];
+    h = d.getHours();
+    am = h < 12 ? 'AM' : 'PM';
+    h = h === 0 ? 12 : h > 12 ? h - 12 : h;
+    mi = (d.getMinutes() < 10 ? "0" : "") + d.getMinutes();
+    return "" + h + ":" + mi + " " + am + "<br>" + (d.getDate()) + " " + mo + " " + (d.getFullYear());
+  };
+
 }).call(this);
 
 });
@@ -9370,12 +9381,24 @@ require.define("/test/util.coffee", function (require, module, exports, __dirnam
       var a;
       a = util.randomByte();
       expect(a).to.be.a('string');
-      return expect(a.length).to.be(3);
+      return expect(a.length).to.be(2);
     });
-    return it('should make random byte strings', function() {
+    it('should make random byte strings', function() {
       var s;
       s = util.randomBytes(4);
       return expect(s.length).to.be(8);
+    });
+    it('should format unix time', function() {
+      var s;
+      s = util.formatTime(1333843344);
+      expect(s).to.be.a('string');
+      return expect(s).to.be('5:02 PM<br>7 Apr 2012');
+    });
+    return it('should format javascript time', function() {
+      var s;
+      s = util.formatTime(1333843344000);
+      expect(s).to.be.a('string');
+      return expect(s).to.be('5:02 PM<br>7 Apr 2012');
     });
   });
 
