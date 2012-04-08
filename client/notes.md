@@ -2,6 +2,8 @@ Notes
 =====
 
 client source in /lib
+npm install
+sudo npm install -g browerify
 build with browserify
   browserify client.coffee -o client.js
 build to client.js
