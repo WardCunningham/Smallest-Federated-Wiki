@@ -1,4 +1,5 @@
 util = require('./util.coffee')
+fetch = require('./fetch.coffee')
 
 Array::last = ->
   this[@length - 1]
@@ -286,122 +287,72 @@ $ ->
 
         connectWith: '.page .story'
 
-    buildPage = (data) ->
-      empty =
-        title: 'empty'
-        synopsys: 'empty'
-        story: []
-        journal: []
+    buildPage = (data, site) ->
+      # note: site may have changed due to fetch handling 404s
+      unless $(pageElement).attr('data-server-generated') == 'true'
+        empty =
+          title: 'empty'
+          synopsys: 'empty'
+          story: []
+          journal: []
 
-      page = $.extend(empty, data)
-      $(pageElement).data("data", data)
+        page = $.extend(empty, data)
+        $(pageElement).data("data", data)
 
-      context = ['origin']
-      addContext = (string) ->
-        if string?
-          context = _.without context, string
-          context.push string
-      addContext action.site for action in page.journal
-      addContext site
-      wiki.log 'build', slug, 'context', context.join ' => '
-      wiki.resolutionContext = context
+        context = ['origin']
+        addContext = (string) ->
+          if string?
+            context = _.without context, string
+            context.push string
+        addContext action.site for action in page.journal
+        addContext site
+        wiki.log 'build', slug, 'site', site, 'context', context.join ' => '
+        wiki.resolutionContext = context
 
-      if site?
-        $(pageElement)
-          .append "<h1><a href=\"//#{site}\"><img src = \"/remote/#{site}/favicon.png\" height = \"32px\"></a> #{page.title}</h1>"
-      else
-        $(pageElement)
-          .append(
-            $("<h1 />").append(
-              $("<a />").attr('href', '/').append(
-                $("<img>")
-                  .error((e) ->
-                    getPlugin('favicon', (plugin) ->
-                      plugin.create()))
-                  .attr('class', 'favicon')
-                  .attr('src', '/favicon.png')
-                  .attr('height', '32px')
-              ), " #{page.title}"))
-
-      [storyElement, journalElement, footerElement] = ['story', 'journal', 'footer'].map (className) ->
-        $("<div />").addClass(className).appendTo(pageElement)
-
-      $.each page.story, (i, item) ->
-        if $.isArray item
-          wiki.log 'fixing corrupted item', i, item
-          item = item[0]
-        div = $("<div />").addClass("item").addClass(item.type).attr("data-id", item.id)
-        storyElement.append div
-        doPlugin div, item
-
-      $.each page.journal, (i, action) ->
-        addToJournal journalElement, action
-
-      footerElement
-        .append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ')
-        .append("<a class=\"show-page-source\" href=\"/#{slug}.json?random=#{util.randomBytes(4)}\" title=\"source\">JSON</a> . ")
-        .append("<a href=\"#\" class=\"add-factory\" title=\"add paragraph\">[+]</a>")
-
-      setUrl()
-
-    fetch = (slug, callback, localContext) ->
-      wiki.fetchContext = ['origin'] unless wiki.fetchContext.length > 0
-      localContext ?= (i for own i in wiki.fetchContext)
-      site = localContext.shift()
-      resource = if site=='origin'
-        site = null
-        slug
-      else
-        "remote/#{site}/#{slug}"
-      wiki.log 'fetch', resource
-      $.ajax
-        type: 'GET'
-        dataType: 'json'
-        url: "/#{resource}.json?random=#{util.randomBytes(4)}"
-        success: (page) ->
-          wiki.log 'fetch success', page, site || 'origin'
-          $(pageElement).data('site', site)
-          callback(page)
-        error: (xhr, type, msg) ->
-          if localContext.length > 0
-            fetch(slug, callback, localContext)
-          else
-            site = null
-            callback(null)
-
-    create = (slug, callback) ->
-      title = $("""a[href="/#{slug}.html"]""").html()
-      title or= slug
-      page = {title}
-      putAction $(pageElement), {type: 'create', id: util.randomBytes(8), item: page}
-      callback page
-
-    if $(pageElement).attr('data-server-generated') == 'true'
-      initDragging()
-      pageElement.find('.item').each (i, each) ->
-        div = $(each)
-        item = getItem(div)
-        getPlugin item.type, (plugin) ->
-          plugin.bind div, item
-    else
-      if useLocalStorage() and json = localStorage[pageElement.attr("id")]
-        pageElement.addClass("local")
-        buildPage JSON.parse(json)
-        initDragging()
-      else
         if site?
-          $.get "/remote/#{site}/#{slug}.json?random=#{util.randomBytes(4)}", "", (page) ->
-            buildPage page
-            initDragging()
+          $(pageElement)
+            .append "<h1><a href=\"//#{site}\"><img src = \"/remote/#{site}/favicon.png\" height = \"32px\"></a> #{page.title}</h1>"
         else
-          fetch slug, (page) ->
-            if page?
-              buildPage page
-              initDragging()
-            else
-              create slug, (page) ->
-                buildPage page
-                initDragging()
+          $(pageElement)
+            .append(
+              $("<h1 />").append(
+                $("<a />").attr('href', '/').append(
+                  $("<img>")
+                    .error((e) ->
+                      getPlugin('favicon', (plugin) ->
+                        plugin.create()))
+                    .attr('class', 'favicon')
+                    .attr('src', '/favicon.png')
+                    .attr('height', '32px')
+                ), " #{page.title}"))
+
+        [storyElement, journalElement, footerElement] = ['story', 'journal', 'footer'].map (className) ->
+          $("<div />").addClass(className).appendTo(pageElement)
+
+        $.each page.story, (i, item) ->
+          if $.isArray item
+            wiki.log 'fixing corrupted item', i, item
+            item = item[0]
+          div = $("<div />").addClass("item").addClass(item.type).attr("data-id", item.id)
+          storyElement.append div
+          doPlugin div, item
+
+        $.each page.journal, (i, action) ->
+          addToJournal journalElement, action
+
+        footerElement
+          .append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ')
+          .append("<a class=\"show-page-source\" href=\"/#{slug}.json?random=#{util.randomBytes(4)}\" title=\"source\">JSON</a> . ")
+          .append("<a href=\"#\" class=\"add-factory\" title=\"add paragraph\">[+]</a>")
+
+        setUrl()
+
+      initDragging()
+
+    fetch({
+      pageElement
+      buildPage
+    })
 
 # FUNCTIONS and HANDLERS to manage location bar and back button
 
@@ -525,7 +476,7 @@ $ ->
         .each refresh
       setActive(name)
 
-  useLocalStorage = -> $(".login").length > 0
+  wiki.useLocalStorage = useLocalStorage = -> $(".login").length > 0
 
   $(".provider input").click ->
     $("footer input:first").val $(this).attr('data-provider')
