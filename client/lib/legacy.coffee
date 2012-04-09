@@ -1,12 +1,12 @@
+window.wiki = {}
 util = require('./util.coffee')
 fetch = require('./fetch.coffee')
+plugin = require('./plugin.coffee')
 
 Array::last = ->
   this[@length - 1]
 
 $ ->
-  window.wiki = {}
-
 #prepare a Dialog to popup
   window.dialog = $('<div></div>')
 	  .html('This dialog will show every time!')
@@ -30,13 +30,10 @@ $ ->
     finally
       wiki.resolutionContext.pop()
 
-  asSlug = (name) ->
-    name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase()
-
   resolveLinks = wiki.resolveLinks = (string) ->
     renderInternalLink = (match, name) ->
       # spaces become 'slugs', non-alpha-num get removed
-      slug = asSlug name
+      slug = util.asSlug name
       wiki.log 'resolve', slug, 'context', wiki.resolutionContext.join(' => ')
       "<a class=\"internal\" href=\"/#{slug}.html\" data-page-name=\"#{slug}\" title=\"#{wiki.resolutionContext.join(' => ')}\">#{name}</a>"
     string
@@ -99,7 +96,7 @@ $ ->
     textarea = $("<textarea>#{original = item.text ? ''}</textarea>")
       .focusout ->
         if item.text = textarea.val()
-          doPlugin div.empty(), item
+          plugin.do div.empty(), item
           return if item.text == original
           putAction div.parents('.page:first'), {type: 'edit', id: item.id, item: item}
         else
@@ -123,48 +120,15 @@ $ ->
     who = $('.chart,.data,.calculator').last()
     if who? then who.data('item').data else {}
 
-  scripts = {}
-  wiki.getScript = (url, callback = () ->) ->
-    if scripts[url]?
-      callback()
-    else
-      $.getScript(url, ->
-        scripts[url] = true
-        callback()
-      )
-
   wiki.dump = ->
     for p in $('.page')
       wiki.log '.page', p
       wiki.log '.item', i, 'data-item', $(i).data('item') for i in $(p).find('.item')
     null
 
-  getPlugin = wiki.getPlugin = (name, callback) ->
-    return callback(plugin) if plugin = window.plugins[name]
-    wiki.getScript "/plugins/#{name}.js", () ->
-      callback(window.plugins[name])
-
-  doPlugin = wiki.doPlugin = (div, item) ->
-    error = (ex) ->
-      errorElement = $("<div />").addClass('error')
-      errorElement.text(ex.toString())
-      div.append(errorElement)
-
-    try
-      div.data 'pageElement', div.parents(".page")
-      div.data 'item', item
-      getPlugin item.type, (plugin) ->
-        throw TypeError("Can't find plugin for '#{item.type}'") unless plugin?
-        try
-          plugin.emit div, item
-          plugin.bind div, item
-        catch err
-          error(err)
-    catch err
-      error(err)
 
   doInternalLink = wiki.doInternalLink = (name, page) ->
-    name = asSlug(name)
+    name = util.asSlug(name)
     $(page).nextAll().remove() if page?
     createPage(name)
       .appendTo($('.main'))
@@ -197,44 +161,6 @@ $ ->
     else if maxX > $(".pages").outerWidth()
       scrollContainer.animate scrollLeft: Math.min(target, contentWidth - bodyWidth)
 
-# PLUGINS for each story item type
-
-  window.plugins =
-    paragraph:
-      emit: (div, item) -> div.append "<p>#{resolveLinks(item.text)}</p>"
-      bind: (div, item) ->
-        div.dblclick -> textEditor div, item
-    image:
-      emit: (div, item) ->
-        item.text ||= item.caption
-        wiki.log 'image', item
-        div.append "<img src=\"#{item.url}\"> <p>#{resolveLinks(item.text)}</p>"
-      bind: (div, item) ->
-        div.dblclick -> textEditor div, item
-        div.find('img').dblclick -> wiki.dialog item.text, this
-    chart:
-      emit: (div, item) ->
-        chartElement = $('<p />').addClass('readout').appendTo(div).text(item.data.last().last())
-        captionElement = $('<p />').html(resolveLinks(item.caption)).appendTo(div)
-      bind: (div, item) ->
-        div.find('p:first').mousemove (e) ->
-          [time, sample] = item.data[Math.floor(item.data.length * e.offsetX / e.target.offsetWidth)]
-          $(e.target).text sample.toFixed(1)
-          $(e.target).siblings("p").last().html util.formatTime(time)
-        .dblclick ->
-          wiki.dialog "JSON for #{item.caption}", $('<pre/>').text(JSON.stringify(item.data, null, 2))
-    changes:
-      emit: (div, item) ->
-        div.append ul = $('<ul />').append if localStorage.length then $('<input type="button" value="discard all" />').css('margin-top','10px') else $('<p>empty</p>')
-        for i in [0...localStorage.length]
-          key = localStorage.key(i)
-          a = $('<a class="internal" href="#" />').append(key).data('pageName', key)
-          ul.prepend($('<li />').append(a))
-      bind: (div, item) ->
-        div.find('input').click ->
-          localStorage.clear()
-          div.find('li').remove()
-
 # RENDERING for a page when found or retrieved
 
   refresh = ->
@@ -250,7 +176,7 @@ $ ->
       itemElement = $("<div />", class: "item factory").data('item',item).attr('data-id', item.id)
       itemElement.data 'pageElement', pageElement
       pageElement.find(".story").append(itemElement)
-      doPlugin itemElement, item
+      plugin.do itemElement, item
       beforeElement = itemElement.prev('.item')
       before = getItem(beforeElement)
       putAction pageElement, {item: item, id: item.id, type: "add", after: before?.id}
@@ -319,8 +245,8 @@ $ ->
                 $("<a />").attr('href', '/').append(
                   $("<img>")
                     .error((e) ->
-                      getPlugin('favicon', (plugin) ->
-                        plugin.create()))
+                      plugin.get('favicon', (favicon) ->
+                        favicon.create()))
                     .attr('class', 'favicon')
                     .attr('src', '/favicon.png')
                     .attr('height', '32px')
@@ -335,7 +261,7 @@ $ ->
             item = item[0]
           div = $("<div />").addClass("item").addClass(item.type).attr("data-id", item.id)
           storyElement.append div
-          doPlugin div, item
+          plugin.do div, item
 
         $.each page.journal, (i, action) ->
           addToJournal journalElement, action

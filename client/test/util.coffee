@@ -6,12 +6,14 @@ module.exports = describe 'util', ->
     expect(a.length).to.be 2
   it 'should make random byte strings', ->
     s = util.randomBytes(4)
+    expect(s).to.be.a 'string'
     expect(s.length).to.be 8
   it 'should format unix time', ->
     s = util.formatTime 1333843344
-    expect(s).to.be.a 'string'
     expect(s).to.be '5:02 PM<br>7 Apr 2012'
   it 'should format javascript time', ->
     s = util.formatTime 1333843344000
-    expect(s).to.be.a 'string'
     expect(s).to.be '5:02 PM<br>7 Apr 2012'
+  it 'should slug a name', ->
+    s = util.asSlug 'Welcome Visitors'
+    expect(s).to.be 'welcome-visitors'

@@ -1,8 +1,10 @@
-util = require('./lib/util.coffee')
 $ = require('jquery-browserify')
 
 mocha.setup('bdd')
 
+window.wiki = {}
+
 $ ->
   require('./test/util.coffee')
+  require('./test/plugin.coffee')
   mocha.run()

@@ -344,42 +344,6 @@ exports.extname = function(path) {
 
 });
 
-require.define("/lib/util.coffee", function (require, module, exports, __dirname, __filename) {
-(function() {
-  var util;
-
-  module.exports = util = {};
-
-  util.randomByte = function() {
-    return (((1 + Math.random()) * 0x100) | 0).toString(16).substring(1);
-  };
-
-  util.randomBytes = function(n) {
-    return ((function() {
-      var _i, _results;
-      _results = [];
-      for (_i = 1; 1 <= n ? _i <= n : _i >= n; 1 <= n ? _i++ : _i--) {
-        _results.push(util.randomByte());
-      }
-      return _results;
-    })()).join('');
-  };
-
-  util.formatTime = function(time) {
-    var am, d, h, mi, mo;
-    d = new Date((time > 10000000000 ? time : time * 1000));
-    mo = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()];
-    h = d.getHours();
-    am = h < 12 ? 'AM' : 'PM';
-    h = h === 0 ? 12 : h > 12 ? h - 12 : h;
-    mi = (d.getMinutes() < 10 ? "0" : "") + d.getMinutes();
-    return "" + h + ":" + mi + " " + am + "<br>" + (d.getDate()) + " " + mo + " " + (d.getFullYear());
-  };
-
-}).call(this);
-
-});
-
 require.define("/node_modules/jquery-browserify/package.json", function (require, module, exports, __dirname, __filename) {
 module.exports = {"main":"./lib/jquery-1.6.2.js","browserify":{"dependencies":"","main":"lib/jquery-1.6.2.js"}}
 });
@@ -9386,19 +9350,23 @@ require.define("/test/util.coffee", function (require, module, exports, __dirnam
     it('should make random byte strings', function() {
       var s;
       s = util.randomBytes(4);
+      expect(s).to.be.a('string');
       return expect(s.length).to.be(8);
     });
     it('should format unix time', function() {
       var s;
       s = util.formatTime(1333843344);
-      expect(s).to.be.a('string');
       return expect(s).to.be('5:02 PM<br>7 Apr 2012');
     });
-    return it('should format javascript time', function() {
+    it('should format javascript time', function() {
       var s;
       s = util.formatTime(1333843344000);
-      expect(s).to.be.a('string');
       return expect(s).to.be('5:02 PM<br>7 Apr 2012');
+    });
+    return it('should slug a name', function() {
+      var s;
+      s = util.asSlug('Welcome Visitors');
+      return expect(s).to.be('welcome-visitors');
     });
   });
 
@@ -9406,18 +9374,198 @@ require.define("/test/util.coffee", function (require, module, exports, __dirnam
 
 });
 
+require.define("/lib/util.coffee", function (require, module, exports, __dirname, __filename) {
+(function() {
+  var util;
+
+  module.exports = util = {};
+
+  util.randomByte = function() {
+    return (((1 + Math.random()) * 0x100) | 0).toString(16).substring(1);
+  };
+
+  util.randomBytes = function(n) {
+    return ((function() {
+      var _i, _results;
+      _results = [];
+      for (_i = 1; 1 <= n ? _i <= n : _i >= n; 1 <= n ? _i++ : _i--) {
+        _results.push(util.randomByte());
+      }
+      return _results;
+    })()).join('');
+  };
+
+  util.formatTime = function(time) {
+    var am, d, h, mi, mo;
+    d = new Date((time > 10000000000 ? time : time * 1000));
+    mo = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()];
+    h = d.getHours();
+    am = h < 12 ? 'AM' : 'PM';
+    h = h === 0 ? 12 : h > 12 ? h - 12 : h;
+    mi = (d.getMinutes() < 10 ? "0" : "") + d.getMinutes();
+    return "" + h + ":" + mi + " " + am + "<br>" + (d.getDate()) + " " + mo + " " + (d.getFullYear());
+  };
+
+  util.asSlug = function(name) {
+    return name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase();
+  };
+
+}).call(this);
+
+});
+
+require.define("/test/plugin.coffee", function (require, module, exports, __dirname, __filename) {
+(function() {
+  var plugin;
+
+  plugin = require('../lib/plugin.coffee');
+
+  describe('plugin', function() {
+    it('should have default paragraph type', function() {
+      return expect(window.plugins).to.have.property('paragraph');
+    });
+    return it('should have', function() {});
+  });
+
+}).call(this);
+
+});
+
+require.define("/lib/plugin.coffee", function (require, module, exports, __dirname, __filename) {
+(function() {
+  var getScript, plugin, scripts;
+
+  module.exports = plugin = {};
+
+  scripts = {};
+
+  getScript = wiki.getScript = function(url, callback) {
+    if (callback == null) callback = function() {};
+    if (scripts[url] != null) {
+      return callback();
+    } else {
+      return $.getScript(url, function() {
+        scripts[url] = true;
+        return callback();
+      });
+    }
+  };
+
+  plugin.get = wiki.getPlugin = function(name, callback) {
+    if (window.plugins[name]) return callback(window.plugins[name]);
+    return getScript("/plugins/" + name + ".js", function() {
+      return callback(window.plugins[name]);
+    });
+  };
+
+  plugin["do"] = wiki.doPlugin = function(div, item) {
+    var error;
+    error = function(ex) {
+      var errorElement;
+      errorElement = $("<div />").addClass('error');
+      errorElement.text(ex.toString());
+      return div.append(errorElement);
+    };
+    try {
+      div.data('pageElement', div.parents(".page"));
+      div.data('item', item);
+      return plugin.get(item.type, function(script) {
+        if (script == null) {
+          throw TypeError("Can't find plugin for '" + item.type + "'");
+        }
+        try {
+          script.emit(div, item);
+          return script.bind(div, item);
+        } catch (err) {
+          return error(err);
+        }
+      });
+    } catch (err) {
+      return error(err);
+    }
+  };
+
+  window.plugins = {
+    paragraph: {
+      emit: function(div, item) {
+        return div.append("<p>" + (wiki.resolveLinks(item.text)) + "</p>");
+      },
+      bind: function(div, item) {
+        return div.dblclick(function() {
+          return wiki.textEditor(div, item);
+        });
+      }
+    },
+    image: {
+      emit: function(div, item) {
+        item.text || (item.text = item.caption);
+        wiki.log('image', item);
+        return div.append("<img src=\"" + item.url + "\"> <p>" + (wiki.resolveLinks(item.text)) + "</p>");
+      },
+      bind: function(div, item) {
+        div.dblclick(function() {
+          return wiki.textEditor(div, item);
+        });
+        return div.find('img').dblclick(function() {
+          return wiki.dialog(item.text, this);
+        });
+      }
+    },
+    chart: {
+      emit: function(div, item) {
+        var captionElement, chartElement;
+        chartElement = $('<p />').addClass('readout').appendTo(div).text(item.data.last().last());
+        return captionElement = $('<p />').html(wiki.resolveLinks(item.caption)).appendTo(div);
+      },
+      bind: function(div, item) {
+        return div.find('p:first').mousemove(function(e) {
+          var sample, time, _ref;
+          _ref = item.data[Math.floor(item.data.length * e.offsetX / e.target.offsetWidth)], time = _ref[0], sample = _ref[1];
+          $(e.target).text(sample.toFixed(1));
+          return $(e.target).siblings("p").last().html(util.formatTime(time));
+        }).dblclick(function() {
+          return wiki.dialog("JSON for " + item.caption, $('<pre/>').text(JSON.stringify(item.data, null, 2)));
+        });
+      }
+    },
+    changes: {
+      emit: function(div, item) {
+        var a, i, key, ul, _ref, _results;
+        div.append(ul = $('<ul />').append(localStorage.length ? $('<input type="button" value="discard all" />').css('margin-top', '10px') : $('<p>empty</p>')));
+        _results = [];
+        for (i = 0, _ref = localStorage.length; 0 <= _ref ? i < _ref : i > _ref; 0 <= _ref ? i++ : i--) {
+          key = localStorage.key(i);
+          a = $('<a class="internal" href="#" />').append(key).data('pageName', key);
+          _results.push(ul.prepend($('<li />').append(a)));
+        }
+        return _results;
+      },
+      bind: function(div, item) {
+        return div.find('input').click(function() {
+          localStorage.clear();
+          return div.find('li').remove();
+        });
+      }
+    }
+  };
+
+}).call(this);
+
+});
+
 require.define("/testclient.coffee", function (require, module, exports, __dirname, __filename) {
     (function() {
-  var $, util;
-
-  util = require('./lib/util.coffee');
+  var $;
 
   $ = require('jquery-browserify');
 
   mocha.setup('bdd');
 
+  window.wiki = {};
+
   $(function() {
     require('./test/util.coffee');
+    require('./test/plugin.coffee');
     return mocha.run();
   });
 

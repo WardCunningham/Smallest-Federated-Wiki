@@ -15,3 +15,6 @@ util.formatTime = (time) ->
   mi = (if d.getMinutes() < 10 then "0" else "") + d.getMinutes()
   "#{h}:#{mi} #{am}<br>#{d.getDate()} #{mo} #{d.getFullYear()}"
 
+util.asSlug = (name) ->
+  name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase()
+
