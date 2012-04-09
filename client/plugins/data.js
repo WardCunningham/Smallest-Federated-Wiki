@@ -46,7 +46,7 @@
           return value(obj[thumb]);
         });
         values = _.reject(values, function(obj) {
-          return obj === NaN;
+          return isNaN(obj);
         });
         result = _.reduce(values, (function(m, n) {
           return m + n;
