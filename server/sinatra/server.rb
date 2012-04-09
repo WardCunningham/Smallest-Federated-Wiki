@@ -217,7 +217,8 @@ class Controller < Sinatra::Base
       bins[key].each do |slug|
         page = farm_page.get(slug)
         next if page['story'].length == 0
-        story << {'type' => 'paragraph', 'text' => "[[#{page['title']}]] (#{page['story'].length.to_s })", 'id' => RandomId.generate}
+        site = "#{request.host}#{request.port==80 ? '' : ':'+request.port.to_s}"
+        story << {'type' => 'federatedWiki', 'site' => site, 'slug' => slug, 'title' => page['title'], 'text' => "", 'id' => RandomId.generate}
       end
     end
     page = {'title' => 'Recent Changes', 'story' => story}
