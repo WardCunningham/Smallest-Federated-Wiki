@@ -225,6 +225,31 @@ class Controller < Sinatra::Base
     JSON.pretty_generate(page)
   end
 
+  get '/global-changes.json' do
+    content_type 'application/json'
+    cross_origin
+    bins = Hash.new {|hash, key| hash[key] = Array.new}
+    Dir.chdir(farm_page.directory) do
+      Dir.glob("*").collect do |slug|
+        dt = Time.now - File.new(slug).mtime
+        bins[(dt/=60)<1?'Minute':(dt/=60)<1?'Hour':(dt/=24)<1?'Day':(dt/=7)<1?'Week':(dt/=4)<1?'Month':(dt/=3)<1?'Season':(dt/=4)<1?'Year':'Forever']<<slug
+      end
+    end
+    story = []
+    ['Minute', 'Hour', 'Day', 'Week', 'Month', 'Season', 'Year'].each do |key|
+      next unless bins[key].length>0
+      story << {'type' => 'paragraph', 'text' => "<h3>Within a #{key}</h3>", 'id' => RandomId.generate}
+      bins[key].each do |slug|
+        page = farm_page.get(slug)
+        next if page['story'].length == 0
+        site = "#{request.host}#{request.port==80 ? '' : ':'+request.port.to_s}"
+        story << {'type' => 'federatedWiki', 'site' => site, 'slug' => slug, 'title' => page['title'], 'text' => "", 'id' => RandomId.generate}
+      end
+    end
+    page = {'title' => 'Recent Changes', 'story' => story}
+    JSON.pretty_generate(page)
+  end
+
   get %r{^/([a-z0-9-]+)\.json$} do |name|
     content_type 'application/json'
     cross_origin
