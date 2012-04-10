@@ -1,11 +1,11 @@
 util = require('./util')
 
 module.exports = (params) ->
-  {buildPage, pageElement} = params
+  {buildPage, putAction, pageElement} = params
   slug = $(pageElement).attr('id')
   site = $(pageElement).data('site')
 
-  fetch = (slug, callback, localContext) ->
+  probe = (slug, callback, localContext) ->
     wiki.fetchContext = ['origin'] unless wiki.fetchContext.length > 0
     localContext ?= (i for own i in wiki.fetchContext)
     site = localContext.shift()
@@ -24,7 +24,7 @@ module.exports = (params) ->
         callback(page)
       error: (xhr, type, msg) ->
         if localContext.length > 0
-          fetch(slug, callback, localContext)
+          probe slug, callback, localContext
         else
           site = null
           callback(null)
@@ -37,25 +37,19 @@ module.exports = (params) ->
     callback page
 
   if $(pageElement).attr('data-server-generated') == 'true'
-    buildPage(null, site)
-    pageElement.find('.item').each (i, each) ->
-      div = $(each)
-      item = getItem(div)
-      wiki.getPlugin item.type, (plugin) ->
-        plugin.bind div, item
+    buildPage null
   else
     if wiki.useLocalStorage() and json = localStorage[pageElement.attr("id")]
       pageElement.addClass("local")
-      buildPage JSON.parse(json), site
+      buildPage JSON.parse(json)
     else
       if site?
         $.get "/remote/#{site}/#{slug}.json?random=#{util.randomBytes(4)}", "", (page) ->
-          buildPage page, site
+          buildPage page
       else
-        fetch slug, (page) ->
+        probe slug, (page) ->
           if page?
-            buildPage page, site
+            buildPage page
           else
             create slug, (page) ->
-              buildPage page, site
-
+              buildPage page

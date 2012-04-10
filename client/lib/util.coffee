@@ -15,3 +15,10 @@ util.formatTime = (time) ->
   mi = (if d.getMinutes() < 10 then "0" else "") + d.getMinutes()
   "#{h}:#{mi} #{am}<br>#{d.getDate()} #{mo} #{d.getFullYear()}"
 
+
+# DEFAULTS for required fields
+
+util.emptyPage =
+  title: 'empty'
+  story: []
+  journal: []

@@ -7,7 +7,8 @@ Array::last = ->
 $ ->
   window.wiki = {}
 
-#prepare a Dialog to popup
+# ELEMENTS used for details popup
+
   window.dialog = $('<div></div>')
 	  .html('This dialog will show every time!')
 	  .dialog { autoOpen: false, title: 'Basic Dialog', height: 600, width: 800 }
@@ -20,6 +21,12 @@ $ ->
 
   wiki.log = (things...) ->
     console.log things if console?.log?
+
+  wiki.dump = ->
+    for p in $('.page')
+      wiki.log '.page', p
+      wiki.log '.item', i, 'data-item', $(i).data('item') for i in $(p).find('.item')
+    null
 
   wiki.resolutionContext = []
   wiki.fetchContext = []
@@ -56,6 +63,10 @@ $ ->
         .attr("href", "//#{action.site}/#{pageElement.attr('id')}.html")
         .data("site", action.site)
         .data("slug", pageElement.attr('id'))
+
+  useLocalStorage = wiki.useLocalStorage = ->
+    wiki.log 'useLocalStorage', $(".login").length > 0
+    $(".login").length > 0
 
   putAction = wiki.putAction = (pageElement, action) ->
     if (site = pageElement.data('site'))?
@@ -128,16 +139,9 @@ $ ->
     if scripts[url]?
       callback()
     else
-      $.getScript(url, ->
+      $.getScript url, ->
         scripts[url] = true
         callback()
-      )
-
-  wiki.dump = ->
-    for p in $('.page')
-      wiki.log '.page', p
-      wiki.log '.item', i, 'data-item', $(i).data('item') for i in $(p).find('.item')
-    null
 
   getPlugin = wiki.getPlugin = (name, callback) ->
     return callback(plugin) if plugin = window.plugins[name]
@@ -170,32 +174,6 @@ $ ->
       .appendTo($('.main'))
       .each refresh
     setActive(name)
-
-  # Find which element is scrollable, body or html
-  scrollContainer = undefined
-  findScrollContainer = ->
-    scrolled = $("body, html").filter -> $(this).scrollLeft() > 0
-    if scrolled.length > 0
-      scrolled
-    else
-      $("body, html").scrollLeft(4).filter(-> $(this).scrollLeft() > 0).scrollTop(0)
-
-  scrollTo = (el) ->
-    scrollContainer ?= findScrollContainer()
-    bodyWidth = $("body").width()
-    minX = scrollContainer.scrollLeft()
-    maxX = minX + bodyWidth
-    wiki.log 'scrollTo', el, el.position()
-    target = el.position().left
-    width = el.outerWidth(true)
-    contentWidth = $(".page").outerWidth(true) * $(".page").size()
-
-    if target < minX
-      scrollContainer.animate scrollLeft: target
-    else if target + width > maxX
-      scrollContainer.animate scrollLeft: target - (bodyWidth - width)
-    else if maxX > $(".pages").outerWidth()
-      scrollContainer.animate scrollLeft: Math.min(target, contentWidth - bodyWidth)
 
 # PLUGINS for each story item type
 
@@ -237,11 +215,40 @@ $ ->
 
 # RENDERING for a page when found or retrieved
 
-  refresh = ->
-    pageElement = $(this)
-    slug = $(pageElement).attr('id')
-    site = $(pageElement).data('site')
+  handleDragging = (evt, ui) ->
+    itemElement = ui.item
+    item = getItem(itemElement)
+    thisPageElement = $(this).parents('.page:first')
+    sourcePageElement = itemElement.data('pageElement')
+    destinationPageElement = itemElement.parents('.page:first')
+    journalElement = thisPageElement.find('.journal')
+    equals = (a, b) -> a and b and a.get(0) == b.get(0)
 
+    moveWithinPage = not sourcePageElement or equals(sourcePageElement, destinationPageElement)
+    moveFromPage = not moveWithinPage and equals(thisPageElement, sourcePageElement)
+    moveToPage = not moveWithinPage and equals(thisPageElement, destinationPageElement)
+
+    action = if moveWithinPage
+      order = $(this).children().map((_, value) -> $(value).attr('data-id')).get()
+      {type: 'move', order: order}
+    else if moveFromPage
+      {type: 'remove'}
+    else if moveToPage
+      itemElement.data 'pageElement', thisPageElement
+      beforeElement = itemElement.prev('.item')
+      before = getItem(beforeElement)
+      {type: 'add', item: item, after: before?.id}
+
+    action.id = item.id
+    putAction thisPageElement, action
+
+  initDragging = (pageElement) ->
+    storyElement = pageElement.find('.story')
+    storyElement.sortable
+      update: handleDragging
+      connectWith: '.page .story'
+
+  initAddButton = (pageElement) ->
     pageElement.find(".add-factory").live "click", (evt) ->
       evt.preventDefault()
       item =
@@ -255,84 +262,53 @@ $ ->
       before = getItem(beforeElement)
       putAction pageElement, {item: item, id: item.id, type: "add", after: before?.id}
 
-    initDragging = ->
-      storyElement = pageElement.find('.story')
-      storyElement.sortable
-        update: (evt, ui) ->
-          itemElement = ui.item
-          item = getItem(itemElement)
-          thisPageElement = $(this).parents('.page:first')
-          sourcePageElement = itemElement.data('pageElement')
-          destinationPageElement = itemElement.parents('.page:first')
-          journalElement = thisPageElement.find('.journal')
-          equals = (a, b) -> a and b and a.get(0) == b.get(0)
+  emitHeader = (pageElement, page) ->
+    site = $(pageElement).data('site')
+    if site?
+      $(pageElement)
+        .append "<h1><a href=\"//#{site}\"><img src = \"/remote/#{site}/favicon.png\" height = \"32px\"></a> #{page.title}</h1>"
+    else
+      $(pageElement)
+        .append(
+          $("<h1 />").append(
+            $("<a />").attr('href', '/').append(
+              $("<img>")
+                .error((e) ->
+                  getPlugin('favicon', (plugin) ->
+                    plugin.create()))
+                .attr('class', 'favicon')
+                .attr('src', '/favicon.png')
+                .attr('height', '32px')
+            ), " #{page.title}"))
 
-          moveWithinPage = not sourcePageElement or equals(sourcePageElement, destinationPageElement)
-          moveFromPage = not moveWithinPage and equals(thisPageElement, sourcePageElement)
-          moveToPage = not moveWithinPage and equals(thisPageElement, destinationPageElement)
+  refresh = ->
+    pageElement = $(this)
 
-          action = if moveWithinPage
-            order = $(this).children().map((_, value) -> $(value).attr('data-id')).get()
-            {type: 'move', order: order}
-          else if moveFromPage
-            {type: 'remove'}
-          else if moveToPage
-            itemElement.data 'pageElement', thisPageElement
-            beforeElement = itemElement.prev('.item')
-            before = getItem(beforeElement)
-            {type: 'add', item: item, after: before?.id}
+    buildPage = (data) ->
+      if not data?
+        pageElement.find('.item').each (i, each) ->
+          item = getItem($(each))
+          wiki.getPlugin item.type, (plugin) ->
+            plugin.bind $(each), item
+      else
+        page = $.extend(util.emptyPage, data)
+        $(pageElement).data("data", page)
+        slug = $(pageElement).attr('id')
+        site = $(pageElement).data('site')
 
-          action.id = item.id
-          putAction pageElement, action
-
-        connectWith: '.page .story'
-
-    buildPage = (data, site) ->
-      # note: site may have changed due to fetch handling 404s
-      unless $(pageElement).attr('data-server-generated') == 'true'
-        empty =
-          title: 'empty'
-          synopsys: 'empty'
-          story: []
-          journal: []
-
-        page = $.extend(empty, data)
-        $(pageElement).data("data", data)
-
-        context = ['origin']
-        addContext = (string) ->
-          if string?
-            context = _.without context, string
-            context.push string
-        addContext action.site for action in page.journal
-        addContext site
-        wiki.log 'build', slug, 'site', site, 'context', context.join ' => '
+        context = ['origin', site]
+        addContext = (site) -> context.push site if site? and not _.include context, site
+        addContext action.site for action in page.journal.reverse()
         wiki.resolutionContext = context
 
-        if site?
-          $(pageElement)
-            .append "<h1><a href=\"//#{site}\"><img src = \"/remote/#{site}/favicon.png\" height = \"32px\"></a> #{page.title}</h1>"
-        else
-          $(pageElement)
-            .append(
-              $("<h1 />").append(
-                $("<a />").attr('href', '/').append(
-                  $("<img>")
-                    .error((e) ->
-                      getPlugin('favicon', (plugin) ->
-                        plugin.create()))
-                    .attr('class', 'favicon')
-                    .attr('src', '/favicon.png')
-                    .attr('height', '32px')
-                ), " #{page.title}"))
+        wiki.log 'build', slug, 'site', site, 'context', context.join ' => '
+        emitHeader pageElement, page
 
         [storyElement, journalElement, footerElement] = ['story', 'journal', 'footer'].map (className) ->
           $("<div />").addClass(className).appendTo(pageElement)
 
         $.each page.story, (i, item) ->
-          if $.isArray item
-            wiki.log 'fixing corrupted item', i, item
-            item = item[0]
+          item = item[0] if $.isArray item # unwrap accidentally wrapped items
           div = $("<div />").addClass("item").addClass(item.type).attr("data-id", item.id)
           storyElement.append div
           doPlugin div, item
@@ -347,14 +323,41 @@ $ ->
 
         setUrl()
 
-      initDragging()
+      initDragging pageElement
+      initAddButton pageElement
 
     fetch({
-      pageElement
       buildPage
+      putAction
+      pageElement
     })
 
 # FUNCTIONS and HANDLERS to manage location bar and back button
+
+  scrollContainer = undefined
+  findScrollContainer = ->
+    scrolled = $("body, html").filter -> $(this).scrollLeft() > 0
+    if scrolled.length > 0
+      scrolled
+    else
+      $("body, html").scrollLeft(4).filter(-> $(this).scrollLeft() > 0).scrollTop(0)
+
+  scrollTo = (el) ->
+    scrollContainer ?= findScrollContainer()
+    bodyWidth = $("body").width()
+    minX = scrollContainer.scrollLeft()
+    maxX = minX + bodyWidth
+    wiki.log 'scrollTo', el, el.position()
+    target = el.position().left
+    width = el.outerWidth(true)
+    contentWidth = $(".page").outerWidth(true) * $(".page").size()
+
+    if target < minX
+      scrollContainer.animate scrollLeft: target
+    else if target + width > maxX
+      scrollContainer.animate scrollLeft: target - (bodyWidth - width)
+    else if maxX > $(".pages").outerWidth()
+      scrollContainer.animate scrollLeft: Math.min(target, contentWidth - bodyWidth)
 
   setUrl = ->
     if history and history.pushState
@@ -393,7 +396,6 @@ $ ->
 
     setActive($('.page').last().attr('id'))
 
-
   LEFTARROW = 37
   RIGHTARROW = 39
 
@@ -407,8 +409,7 @@ $ ->
       if 0 <= newIndex < pages.length
         setActive(pages[newIndex])
 
-# FUNCTIONS for finding the current state of pages and locations in the
-# URL or DOM
+# FUNCTIONS sensing extant and desired page configurations
 
   pagesInDom = ->
     $.makeArray $(".page").map (_, el) -> el.id
@@ -476,11 +477,12 @@ $ ->
         .each refresh
       setActive(name)
 
-  wiki.useLocalStorage = useLocalStorage = -> $(".login").length > 0
-
   $(".provider input").click ->
     $("footer input:first").val $(this).attr('data-provider')
     $("footer form").submit()
+
+
+# CODE that gets the web page application started
 
   setUrl()
 
