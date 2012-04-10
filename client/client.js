@@ -68,6 +68,7 @@
       pageElement = journalElement.parents('.page:first');
       if (action.date != null) {
         actionTitle = action.type + ': ' + formatDate(action.date);
+        $('.date').html(formatDate(action.date));
       } else {
         actionTitle = action.type;
       }
@@ -473,6 +474,8 @@
             dateStr = formatDate(lastJournalDate);
             $(pageElement).append($('<div />').addClass('date').html(dateStr));
           }
+        } else {
+          $(pageElement).append($('<div />').addClass('date'));
         }
         _ref2 = ['story', 'journal', 'footer'].map(function(className) {
           return $("<div />").addClass(className).appendTo(pageElement);

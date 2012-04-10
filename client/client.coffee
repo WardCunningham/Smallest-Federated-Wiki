@@ -47,6 +47,9 @@ $ ->
     pageElement = journalElement.parents('.page:first')
     if action.date?
       actionTitle = action.type + ': ' + formatDate(action.date)
+      # also update the date at top of page
+      $('.date').html(formatDate(action.date))
+
     else
       actionTitle = action.type
     actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type)
@@ -363,6 +366,8 @@ $ ->
          dateStr = formatDate(lastJournalDate)
          $(pageElement).append(
            $('<div />').addClass('date').html(dateStr))
+      else
+        $(pageElement).append($('<div />').addClass('date'))  #we want this div here in case the date is added from an action
 
       [storyElement, journalElement, footerElement] = ['story', 'journal', 'footer'].map (className) ->
         $("<div />").addClass(className).appendTo(pageElement)
