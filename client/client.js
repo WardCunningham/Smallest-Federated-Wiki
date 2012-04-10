@@ -732,7 +732,7 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
               return context.push(site);
             }
           };
-          _ref = page.journal.reverse();
+          _ref = page.journal.slice(0).reverse();
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             action = _ref[_i];
             addContext(action.site);
@@ -751,6 +751,7 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
             return doPlugin(div, item);
           });
           $.each(page.journal, function(i, action) {
+            console.log(action.type);
             return addToJournal(journalElement, action);
           });
           footerElement.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ').append("<a class=\"show-page-source\" href=\"/" + slug + ".json?random=" + (util.randomBytes(4)) + "\" title=\"source\">JSON</a> . ").append("<a href=\"#\" class=\"add-factory\" title=\"add paragraph\">[+]</a>");

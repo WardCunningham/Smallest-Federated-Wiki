@@ -298,7 +298,7 @@ $ ->
 
         context = ['origin', site]
         addContext = (site) -> context.push site if site? and not _.include context, site
-        addContext action.site for action in page.journal.reverse()
+        addContext action.site for action in page.journal.slice(0).reverse()
         wiki.resolutionContext = context
 
         wiki.log 'build', slug, 'site', site, 'context', context.join ' => '
