@@ -1,5 +1,3 @@
-$ = require('jquery-browserify')
-
 mocha.setup('bdd')
 
 window.wiki = {}
