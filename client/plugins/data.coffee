@@ -32,7 +32,7 @@ window.plugins.data =
 
     average = (thumb) ->
       values = _.map(item.data, (obj) -> value(obj[thumb]))
-      values = _.reject(values, (obj) -> obj == NaN)
+      values = _.reject(values, (obj) -> isNaN obj)
       result = _.reduce(values, ((m,n) -> m+n), 0) / values.length
       if values.length > 1 then result.toFixed 2 else result
 
