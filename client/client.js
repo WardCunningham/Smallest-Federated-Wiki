@@ -7,7 +7,7 @@
   };
 
   $(function() {
-    var LEFTARROW, RIGHTARROW, addToJournal, asSlug, createPage, doInternalLink, doPlugin, findScrollContainer, firstUrlLocs, firstUrlPages, formatTime, getItem, getPlugin, idx, locsInDom, pagesInDom, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveFrom, resolveLinks, scripts, scrollContainer, scrollTo, setActive, setUrl, showState, textEditor, urlLocs, urlPage, urlPages, useLocalStorage, _len;
+    var LEFTARROW, RIGHTARROW, addToJournal, asSlug, createPage, doInternalLink, doPlugin, findScrollContainer, firstUrlLocs, firstUrlPages, formatDate, formatTime, getItem, getPlugin, idx, locsInDom, msSinceEpoch, pagesInDom, pushToLocal, pushToServer, putAction, randomByte, randomBytes, refresh, resolveFrom, resolveLinks, scripts, scrollContainer, scrollTo, setActive, setUrl, showState, textEditor, urlLocs, urlPage, urlPages, useLocalStorage, _len;
     window.wiki = {};
     window.dialog = $('<div></div>').html('This dialog will show every time!').dialog({
       autoOpen: false,
@@ -64,9 +64,14 @@
       return string.replace(/\[\[([^\]]+)\]\]/gi, renderInternalLink).replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" target=\"_blank\" href=\"$1\">$2</a>");
     };
     addToJournal = function(journalElement, action) {
-      var actionElement, pageElement;
+      var actionElement, actionTitle, pageElement;
       pageElement = journalElement.parents('.page:first');
-      actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(action.type[0]).attr('title', action.type).data('itemId', action.id || "0").appendTo(journalElement);
+      if (action.date != null) {
+        actionTitle = action.type + ': ' + formatDate(action.date);
+      } else {
+        actionTitle = action.type;
+      }
+      actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(action.type[0]).attr('title', actionTitle).data('itemId', action.id || "0").appendTo(journalElement);
       if (action.type === 'fork') {
         return actionElement.css("background-image", "url(//" + action.site + "/favicon.png)").attr("href", "//" + action.site + "/" + (pageElement.attr('id')) + ".html").data("site", action.site).data("slug", pageElement.attr('id'));
       }
@@ -129,14 +134,14 @@
           putAction(div.parents('.page:first'), {
             type: 'edit',
             id: item.id,
-            date: Date.parse(new Date()),
+            date: msSinceEpoch(),
             item: item
           });
         } else {
           putAction(div.parents('.page:first'), {
             type: 'remove',
             id: item.id,
-            date: Date.parse(new Date())
+            date: msSinceEpoch()
           });
           div.remove();
         }
@@ -161,6 +166,20 @@
       h = h === 0 ? 12 : h > 12 ? h - 12 : h;
       mi = (d.getMinutes() < 10 ? "0" : "") + d.getMinutes();
       return "" + h + ":" + mi + " " + am + "<br>" + (d.getDate()) + " " + mo + " " + (d.getFullYear());
+    };
+    formatDate = function(msSinceEpoch) {
+      var am, d, day, h, mi, mo, sec, wk, yr;
+      d = new Date(msSinceEpoch);
+      wk = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d.getDay()];
+      mo = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()];
+      day = d.getDate();
+      yr = d.getFullYear();
+      h = d.getHours();
+      am = h < 12 ? 'AM' : 'PM';
+      h = h === 0 ? 12 : h > 12 ? h - 12 : h;
+      mi = (d.getMinutes() < 10 ? "0" : "") + d.getMinutes();
+      sec = (d.getSeconds() < 10 ? "0" : "") + d.getSeconds();
+      return "" + wk + " " + mo + " " + day + " " + yr + " " + h + ":" + mi + ":" + sec + " " + am;
     };
     getItem = function(element) {
       if ($(element).length > 0) {
@@ -187,6 +206,12 @@
           return callback();
         });
       }
+    };
+    msSinceEpoch = function() {
+      var now, nowUtc;
+      now = new Date();
+      nowUtc = now.toUTCString();
+      return Date.parse(nowUtc);
     };
     wiki.dump = function() {
       var i, p, _i, _j, _len, _len2, _ref, _ref2;
@@ -365,7 +390,7 @@
         return putAction(pageElement, {
           type: "add",
           id: item.id,
-          date: Date.parse(new Date()),
+          date: msSinceEpoch(),
           item: item,
           after: before != null ? before.id : void 0
         });
@@ -401,14 +426,14 @@
               after: before != null ? before.id : void 0
             }) : void 0;
             action.id = item.id;
-            action.date = Date.parse(new Date());
+            action.date = msSinceEpoch();
             return putAction(pageElement, action);
           },
           connectWith: '.page .story'
         });
       };
       buildPage = function(data) {
-        var action, addContext, context, empty, footerElement, journalElement, page, storyElement, _i, _len, _ref, _ref2;
+        var action, addContext, context, dateStr, empty, footerElement, journalElement, lastJournalDate, len, page, storyElement, _i, _len, _ref, _ref2;
         empty = {
           title: 'empty',
           synopsys: 'empty',
@@ -440,6 +465,14 @@
               return plugin.create();
             });
           }).attr('class', 'favicon').attr('src', '/favicon.png').attr('height', '32px')), " " + page.title));
+        }
+        if (data.journal != null) {
+          len = data.journal.length;
+          lastJournalDate = data.journal[len - 1].date;
+          if (lastJournalDate) {
+            dateStr = formatDate(lastJournalDate);
+            $(pageElement).append($('<div />').addClass('date').html(dateStr));
+          }
         }
         _ref2 = ['story', 'journal', 'footer'].map(function(className) {
           return $("<div />").addClass(className).appendTo(pageElement);
@@ -507,7 +540,7 @@
         putAction($(pageElement), {
           type: 'create',
           id: randomBytes(8),
-          date: Date.parse(new Date()),
+          date: msSinceEpoch(),
           item: page
         });
         return callback(page);

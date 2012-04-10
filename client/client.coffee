@@ -45,9 +45,13 @@ $ ->
 
   addToJournal = (journalElement, action) ->
     pageElement = journalElement.parents('.page:first')
+    if action.date?
+      actionTitle = action.type + ': ' + formatDate(action.date)
+    else
+      actionTitle = action.type
     actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type)
       .text(action.type[0])
-      .attr('title',action.type)
+      .attr('title',actionTitle)
       .data('itemId', action.id || "0")
       .appendTo(journalElement)
     if action.type == 'fork'
@@ -101,9 +105,9 @@ $ ->
         if item.text = textarea.val()
           doPlugin div.empty(), item
           return if item.text == original
-          putAction div.parents('.page:first'), {type: 'edit', id: item.id, date: Date.parse(new Date()), item: item}
+          putAction div.parents('.page:first'), {type: 'edit', id: item.id, date: msSinceEpoch(), item: item}
         else
-          putAction div.parents('.page:first'), {type: 'remove', id: item.id, date: Date.parse(new Date())}
+          putAction div.parents('.page:first'), {type: 'remove', id: item.id, date: msSinceEpoch() }
           div.remove()
         null
       .bind 'keydown', (e) ->
@@ -125,6 +129,19 @@ $ ->
     mi = (if d.getMinutes() < 10 then "0" else "") + d.getMinutes()
     "#{h}:#{mi} #{am}<br>#{d.getDate()} #{mo} #{d.getFullYear()}"
 
+  formatDate = (msSinceEpoch) ->
+    d = new Date(msSinceEpoch)
+    wk = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d.getDay()]
+    mo = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()]
+    day = d.getDate();
+    yr = d.getFullYear();
+    h = d.getHours()
+    am = if h < 12 then 'AM' else 'PM'
+    h = if h == 0 then 12 else if h > 12 then h - 12 else h
+    mi = (if d.getMinutes() < 10 then "0" else "") + d.getMinutes()
+    sec = (if d.getSeconds() < 10 then "0" else "") + d.getSeconds()
+    "#{wk} #{mo} #{day} #{yr} #{h}:#{mi}:#{sec} #{am}"
+
   getItem = (element) ->
     $(element).data("item") or JSON.parse($(element).data('staticItem')) if $(element).length > 0
 
@@ -141,6 +158,11 @@ $ ->
         scripts[url] = true
         callback()
       )
+
+  msSinceEpoch = ->
+    now = new Date()
+    nowUtc = now.toUTCString()
+    Date.parse(nowUtc)
 
   wiki.dump = ->
     for p in $('.page')
@@ -262,7 +284,7 @@ $ ->
       doPlugin itemElement, item
       beforeElement = itemElement.prev('.item')
       before = getItem(beforeElement)
-      putAction pageElement, {type: "add", id: item.id, date: Date.parse(new Date()), item: item, after: before?.id}
+      putAction pageElement, {type: "add", id: item.id, date: msSinceEpoch(), item: item, after: before?.id}
 
     initDragging = ->
       storyElement = pageElement.find('.story')
@@ -292,7 +314,7 @@ $ ->
             {type: 'add', item: item, after: before?.id}
 
           action.id = item.id
-          action.date = Date.parse(new Date())
+          action.date = msSinceEpoch()
           putAction pageElement, action
 
         connectWith: '.page .story'
@@ -333,6 +355,14 @@ $ ->
                   .attr('src', '/favicon.png')
                   .attr('height', '32px')
               ), " #{page.title}"))
+
+      if data.journal?
+        len = data.journal.length
+        lastJournalDate = data.journal[len-1].date
+        if lastJournalDate
+         dateStr = formatDate(lastJournalDate)
+         $(pageElement).append(
+           $('<div />').addClass('date').html(dateStr))
 
       [storyElement, journalElement, footerElement] = ['story', 'journal', 'footer'].map (className) ->
         $("<div />").addClass(className).appendTo(pageElement)
@@ -384,7 +414,7 @@ $ ->
       title = $("""a[href="/#{slug}.html"]""").html()
       title or= slug
       page = {title}
-      putAction $(pageElement), {type: 'create', id: randomBytes(8), date: Date.parse(new Date()), item: page}
+      putAction $(pageElement), {type: 'create', id: randomBytes(8), date: msSinceEpoch(), item: page}
       callback page
 
     if $(pageElement).attr('data-server-generated') == 'true'
