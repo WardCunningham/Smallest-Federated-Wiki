@@ -346,8 +346,8 @@ exports.extname = function(path) {
 
 require.define("/lib/legacy.coffee", function (require, module, exports, __dirname, __filename) {
 (function() {
-  var fetch, plugin, util;
-  var __slice = Array.prototype.slice, __hasProp = Object.prototype.hasOwnProperty, __indexOf = Array.prototype.indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (__hasProp.call(this, i) && this[i] === item) return i; } return -1; };
+  var fetch, plugin, state, util;
+  var __slice = Array.prototype.slice;
 
   window.wiki = {};
 
@@ -357,12 +357,14 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
 
   plugin = require('./plugin.coffee');
 
+  state = require('./state.coffee');
+
   Array.prototype.last = function() {
     return this[this.length - 1];
   };
 
   $(function() {
-    var LEFTARROW, RIGHTARROW, addToJournal, createPage, doInternalLink, findScrollContainer, firstUrlLocs, firstUrlPages, getItem, idx, locsInDom, pagesInDom, pushToLocal, pushToServer, putAction, refresh, resolveFrom, resolveLinks, scrollContainer, scrollTo, setActive, setUrl, showState, textEditor, urlLocs, urlPage, urlPages, useLocalStorage, _len;
+    var LEFTARROW, RIGHTARROW, addToJournal, createPage, doInternalLink, findScrollContainer, getItem, pushToLocal, pushToServer, putAction, refresh, resolveFrom, resolveLinks, scrollContainer, scrollTo, setActive, textEditor, useLocalStorage;
     window.dialog = $('<div></div>').html('This dialog will show every time!').dialog({
       autoOpen: false,
       title: 'Basic Dialog',
@@ -416,7 +418,7 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
         pageElement.find('h1 img').attr('src', '/favicon.png');
         pageElement.find('h1 a').attr('href', '/');
         pageElement.data('site', null);
-        setUrl();
+        state.setUrl();
         addToJournal(pageElement.find('.journal'), {
           type: 'fork',
           site: site
@@ -560,7 +562,12 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
         });
       }
     };
-    refresh = function() {
+    setActive = wiki.setActive = function(page) {
+      wiki.log('set active', page);
+      $(".active").removeClass("active");
+      return scrollTo($("#" + page).addClass("active"));
+    };
+    refresh = wiki.refresh = function() {
       var buildPage, initDragging, pageElement, site, slug;
       pageElement = $(this);
       slug = $(pageElement).attr('id');
@@ -675,7 +682,7 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
             return addToJournal(journalElement, action);
           });
           footerElement.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ').append("<a class=\"show-page-source\" href=\"/" + slug + ".json?random=" + (util.randomBytes(4)) + "\" title=\"source\">JSON</a> . ").append("<a href=\"#\" class=\"add-factory\" title=\"add paragraph\">[+]</a>");
-          setUrl();
+          state.setUrl();
         }
         return initDragging();
       };
@@ -683,55 +690,6 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
         pageElement: pageElement,
         buildPage: buildPage
       });
-    };
-    setUrl = function() {
-      var idx, locs, page, pages, url;
-      if (history && history.pushState) {
-        locs = locsInDom();
-        pages = pagesInDom();
-        url = ((function() {
-          var _len, _results;
-          _results = [];
-          for (idx = 0, _len = pages.length; idx < _len; idx++) {
-            page = pages[idx];
-            _results.push("/" + ((locs != null ? locs[idx] : void 0) || 'view') + "/" + page);
-          }
-          return _results;
-        })()).join('');
-        if (url !== $(location).attr('pathname')) {
-          wiki.log('set state', locs, pages);
-          return history.pushState(null, null, url);
-        }
-      }
-    };
-    setActive = function(page) {
-      wiki.log('set active', page);
-      $(".active").removeClass("active");
-      return scrollTo($("#" + page).addClass("active"));
-    };
-    showState = function() {
-      var idx, name, newLocs, newPages, oldLocs, oldPages, previousPage, _i, _len, _len2, _ref;
-      oldPages = pagesInDom();
-      newPages = urlPages();
-      oldLocs = locsInDom();
-      newLocs = urlLocs();
-      wiki.log('showState', oldPages, newPages, oldLocs, newLocs);
-      previousPage = newPages;
-      if ((newPages === oldPages) && (newLocs === oldLocs)) return;
-      for (idx = 0, _len = newPages.length; idx < _len; idx++) {
-        name = newPages[idx];
-        if (__indexOf.call(oldPages, name) >= 0) {
-          delete oldPages[oldPages.indexOf(name)];
-        } else {
-          createPage(name, newLocs[idx]).insertAfter(previousPage).each(refresh);
-        }
-        previousPage = $('#' + name);
-      }
-      for (_i = 0, _len2 = oldPages.length; _i < _len2; _i++) {
-        name = oldPages[_i];
-        if ((_ref = $('#' + name)) != null) _ref.remove();
-      }
-      return setActive($('.page').last().attr('id'));
     };
     LEFTARROW = 37;
     RIGHTARROW = 39;
@@ -746,57 +704,21 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
         }
       })();
       if (direction && !(event.target.tagName === "TEXTAREA")) {
-        pages = pagesInDom();
+        pages = state.pagesInDom();
         newIndex = pages.indexOf($('.active').attr('id')) + direction;
         if ((0 <= newIndex && newIndex < pages.length)) {
           return setActive(pages[newIndex]);
         }
       }
     });
-    pagesInDom = function() {
-      return $.makeArray($(".page").map(function(_, el) {
-        return el.id;
-      }));
-    };
-    urlPages = function() {
-      var i;
-      return ((function() {
-        var _i, _len, _ref, _results, _step;
-        _ref = $(location).attr('pathname').split('/');
-        _results = [];
-        for (_i = 0, _len = _ref.length, _step = 2; _i < _len; _i += _step) {
-          i = _ref[_i];
-          _results.push(i);
-        }
-        return _results;
-      })()).slice(1);
-    };
-    locsInDom = function() {
-      return $.makeArray($(".page").map(function(_, el) {
-        return $(el).data('site') || 'view';
-      }));
-    };
-    urlLocs = function() {
-      var j, _i, _len, _ref, _results, _step;
-      _ref = $(location).attr('pathname').split('/').slice(1);
-      _results = [];
-      for (_i = 0, _len = _ref.length, _step = 2; _i < _len; _i += _step) {
-        j = _ref[_i];
-        _results.push(j);
-      }
-      return _results;
-    };
-    createPage = function(name, loc) {
+    createPage = wiki.createPage = function(name, loc) {
       if (loc && (loc !== ('view' || 'my'))) {
         return $("<div/>").attr('id', name).attr('data-site', loc).addClass("page");
       } else {
         return $("<div/>").attr('id', name).addClass("page");
       }
     };
-    $(window).on('popstate', function(event) {
-      wiki.log('popstate', event);
-      return showState();
-    });
+    $(window).on('popstate', state.show);
     $(document).ajaxError(function(event, request, settings) {
       var msg;
       wiki.log('ajax error', event, request, settings);
@@ -840,16 +762,7 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       $("footer input:first").val($(this).attr('data-provider'));
       return $("footer form").submit();
     });
-    setUrl();
-    firstUrlPages = urlPages();
-    firstUrlLocs = urlLocs();
-    wiki.log('amost createPage', firstUrlPages, firstUrlLocs, pagesInDom());
-    for (idx = 0, _len = firstUrlPages.length; idx < _len; idx++) {
-      urlPage = firstUrlPages[idx];
-      if (!(__indexOf.call(pagesInDom(), urlPage) < 0)) continue;
-      wiki.log('createPage', urlPage, idx);
-      if (urlPage !== '') createPage(urlPage, firstUrlLocs[idx]).appendTo('.main');
-    }
+    state.first();
     $('.page').each(refresh);
     return setActive($('.page').last().attr('id'));
   });
@@ -1113,6 +1026,119 @@ require.define("/lib/plugin.coffee", function (require, module, exports, __dirna
         });
       }
     }
+  };
+
+}).call(this);
+
+});
+
+require.define("/lib/state.coffee", function (require, module, exports, __dirname, __filename) {
+(function() {
+  var state;
+  var __hasProp = Object.prototype.hasOwnProperty, __indexOf = Array.prototype.indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (__hasProp.call(this, i) && this[i] === item) return i; } return -1; };
+
+  module.exports = state = {};
+
+  state.pagesInDom = function() {
+    return $.makeArray($(".page").map(function(_, el) {
+      return el.id;
+    }));
+  };
+
+  state.urlPages = function() {
+    var i;
+    return ((function() {
+      var _i, _len, _ref, _results, _step;
+      _ref = $(location).attr('pathname').split('/');
+      _results = [];
+      for (_i = 0, _len = _ref.length, _step = 2; _i < _len; _i += _step) {
+        i = _ref[_i];
+        _results.push(i);
+      }
+      return _results;
+    })()).slice(1);
+  };
+
+  state.locsInDom = function() {
+    return $.makeArray($(".page").map(function(_, el) {
+      return $(el).data('site') || 'view';
+    }));
+  };
+
+  state.urlLocs = function() {
+    var j, _i, _len, _ref, _results, _step;
+    _ref = $(location).attr('pathname').split('/').slice(1);
+    _results = [];
+    for (_i = 0, _len = _ref.length, _step = 2; _i < _len; _i += _step) {
+      j = _ref[_i];
+      _results.push(j);
+    }
+    return _results;
+  };
+
+  state.setUrl = function() {
+    var idx, locs, page, pages, url;
+    if (history && history.pushState) {
+      locs = state.locsInDom();
+      pages = state.pagesInDom();
+      url = ((function() {
+        var _len, _results;
+        _results = [];
+        for (idx = 0, _len = pages.length; idx < _len; idx++) {
+          page = pages[idx];
+          _results.push("/" + ((locs != null ? locs[idx] : void 0) || 'view') + "/" + page);
+        }
+        return _results;
+      })()).join('');
+      if (url !== $(location).attr('pathname')) {
+        wiki.log('set state', locs, pages);
+        return history.pushState(null, null, url);
+      }
+    }
+  };
+
+  state.show = function(e) {
+    var idx, name, newLocs, newPages, old, oldLocs, oldPages, previous, _len;
+    wiki.log('popstate', e);
+    oldPages = state.pagesInDom();
+    newPages = state.urlPages();
+    oldLocs = state.locsInDom();
+    newLocs = state.urlLocs();
+    if (!location.pathname || location.pathname === '/') return;
+    wiki.log('showState', oldPages, newPages, oldLocs, newLocs);
+    previous = $('.page').eq(0);
+    for (idx = 0, _len = newPages.length; idx < _len; idx++) {
+      name = newPages[idx];
+      if (name !== oldPages[idx]) {
+        old = $('.page').eq(idx);
+        if (old) old.remove();
+        wiki.createPage(name, newLocs[idx]).insertAfter(previous).each(wiki.refresh);
+      }
+      previous = $('.page').eq(idx);
+    }
+    previous.nextAll().remove();
+    return wiki.setActive($('.page').last().attr('id'));
+  };
+
+  state.first = function() {
+    var firstUrlLocs, firstUrlPages, idx, oldPages, urlPage, _len, _results;
+    state.setUrl();
+    firstUrlPages = state.urlPages();
+    firstUrlLocs = state.urlLocs();
+    oldPages = state.pagesInDom();
+    wiki.log('amost createPage', firstUrlPages, firstUrlLocs, oldPages);
+    _results = [];
+    for (idx = 0, _len = firstUrlPages.length; idx < _len; idx++) {
+      urlPage = firstUrlPages[idx];
+      if (!(__indexOf.call(oldPages, urlPage) < 0)) continue;
+      wiki.log('createPage', urlPage, idx);
+      if (urlPage !== '') {
+        _results.push(wiki.createPage(urlPage, firstUrlLocs[idx]).appendTo('.main'));
+      } else {
+        _results.push(void 0);
+      }
+    }
+    return _results;
   };
 
 }).call(this);

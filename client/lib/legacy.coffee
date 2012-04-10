@@ -2,6 +2,7 @@ window.wiki = {}
 util = require('./util.coffee')
 fetch = require('./fetch.coffee')
 plugin = require('./plugin.coffee')
+state = require('./state.coffee')
 
 Array::last = ->
   this[@length - 1]
@@ -60,7 +61,7 @@ $ ->
       pageElement.find('h1 img').attr('src', '/favicon.png')
       pageElement.find('h1 a').attr('href', '/')
       pageElement.data('site', null)
-      setUrl()
+      state.setUrl()
       addToJournal pageElement.find('.journal'),
         type: 'fork'
         site: site
@@ -161,9 +162,15 @@ $ ->
     else if maxX > $(".pages").outerWidth()
       scrollContainer.animate scrollLeft: Math.min(target, contentWidth - bodyWidth)
 
+  setActive = wiki.setActive = (page) ->
+    wiki.log 'set active', page
+    $(".active").removeClass("active")
+    scrollTo $("#"+page).addClass("active")
+
+
 # RENDERING for a page when found or retrieved
 
-  refresh = ->
+  refresh = wiki.refresh = ->
     pageElement = $(this)
     slug = $(pageElement).attr('id')
     site = $(pageElement).data('site')
@@ -271,7 +278,7 @@ $ ->
           .append("<a class=\"show-page-source\" href=\"/#{slug}.json?random=#{util.randomBytes(4)}\" title=\"source\">JSON</a> . ")
           .append("<a href=\"#\" class=\"add-factory\" title=\"add paragraph\">[+]</a>")
 
-        setUrl()
+        state.setUrl()
 
       initDragging()
 
@@ -279,45 +286,6 @@ $ ->
       pageElement
       buildPage
     })
-
-# FUNCTIONS and HANDLERS to manage location bar and back button
-
-  setUrl = ->
-    if history and history.pushState
-      locs = locsInDom()
-      pages = pagesInDom()
-      url = ("/#{locs?[idx] or 'view'}/#{page}" for page, idx in pages).join('')
-      unless url is $(location).attr('pathname')
-        wiki.log 'set state', locs, pages
-        history.pushState(null, null, url)
-
-  setActive = (page) ->
-    wiki.log 'set active', page
-    $(".active").removeClass("active")
-    scrollTo $("#"+page).addClass("active")
-
-  showState = ->
-    # show and refresh correct pages
-    oldPages = pagesInDom()
-    newPages = urlPages()
-    oldLocs = locsInDom()
-    newLocs = urlLocs()
-
-    wiki.log 'showState', oldPages, newPages, oldLocs, newLocs
-
-    previousPage = newPages
-
-    return if (newPages is oldPages) and (newLocs is oldLocs)
-    for name, idx in newPages
-      if name in oldPages
-        delete oldPages[oldPages.indexOf(name)]
-      else
-        createPage(name, newLocs[idx]).insertAfter(previousPage).each refresh
-      previousPage = $('#'+name)
-
-    $('#'+name)?.remove() for name in oldPages
-
-    setActive($('.page').last().attr('id'))
 
 
   LEFTARROW = 37
@@ -328,7 +296,7 @@ $ ->
       when LEFTARROW then -1
       when RIGHTARROW then +1
     if direction && not (event.target.tagName is "TEXTAREA")
-      pages = pagesInDom()
+      pages = state.pagesInDom()
       newIndex = pages.indexOf($('.active').attr('id')) + direction
       if 0 <= newIndex < pages.length
         setActive(pages[newIndex])
@@ -336,20 +304,8 @@ $ ->
 # FUNCTIONS for finding the current state of pages and locations in the
 # URL or DOM
 
-  pagesInDom = ->
-    $.makeArray $(".page").map (_, el) -> el.id
 
-  urlPages = ->
-    (i for i in $(location).attr('pathname').split('/') by 2)[1..]
-
-  locsInDom = ->
-    $.makeArray $(".page").map (_, el) ->
-      $(el).data('site') or 'view'
-
-  urlLocs = ->
-    (j for j in $(location).attr('pathname').split('/')[1..] by 2)
-
-  createPage = (name, loc) ->
+  createPage = wiki.createPage = (name, loc) ->
     if loc and (loc isnt ('view' or 'my'))
       $("<div/>").attr('id', name).attr('data-site', loc).addClass("page")
     else
@@ -357,9 +313,7 @@ $ ->
 
 # HANDLERS for jQuery events
 
-  $(window).on 'popstate', (event) ->
-    wiki.log 'popstate', event
-    showState()
+  $(window).on 'popstate', state.show
 
   $(document)
     .ajaxError (event, request, settings) ->
@@ -408,14 +362,8 @@ $ ->
     $("footer input:first").val $(this).attr('data-provider')
     $("footer form").submit()
 
-  setUrl()
-
-  firstUrlPages = urlPages()
-  firstUrlLocs = urlLocs()
-  wiki.log 'amost createPage', firstUrlPages, firstUrlLocs, pagesInDom()
-  for urlPage, idx in firstUrlPages when urlPage not in pagesInDom()
-    wiki.log 'createPage', urlPage, idx
-    createPage(urlPage, firstUrlLocs[idx]).appendTo('.main') unless urlPage is ''
+  state.first()
 
   $('.page').each refresh
   setActive($('.page').last().attr('id'))
+
