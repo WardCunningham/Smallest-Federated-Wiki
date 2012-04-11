@@ -9436,6 +9436,10 @@ require.define("/testclient.coffee", function (require, module, exports, __dirna
 
   util = require('./lib/util.coffee');
 
+  window.jQuery = {
+    active: 0
+  };
+
   $ = require('jquery-browserify');
 
   mocha.setup('bdd');
