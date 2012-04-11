@@ -291,7 +291,7 @@ $ ->
           wiki.getPlugin item.type, (plugin) ->
             plugin.bind $(each), item
       else
-        page = $.extend(util.emptyPage, data)
+        page = $.extend(util.emptyPage(), data)
         $(pageElement).data("data", page)
         slug = $(pageElement).attr('id')
         site = $(pageElement).data('site')
