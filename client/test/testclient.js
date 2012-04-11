@@ -376,6 +376,14 @@ require.define("/lib/util.coffee", function (require, module, exports, __dirname
     return "" + h + ":" + mi + " " + am + "<br>" + (d.getDate()) + " " + mo + " " + (d.getFullYear());
   };
 
+  util.emptyPage = function() {
+    return {
+      title: 'empty',
+      story: [],
+      journal: []
+    };
+  };
+
 }).call(this);
 
 });
@@ -9394,11 +9402,27 @@ require.define("/test/util.coffee", function (require, module, exports, __dirnam
       expect(s).to.be.a('string');
       return expect(s).to.be('5:02 PM<br>7 Apr 2012');
     });
-    return it('should format javascript time', function() {
+    it('should format javascript time', function() {
       var s;
       s = util.formatTime(1333843344000);
       expect(s).to.be.a('string');
       return expect(s).to.be('5:02 PM<br>7 Apr 2012');
+    });
+    it('should make emptyPage page with title, story and journal', function() {
+      var page;
+      page = util.emptyPage();
+      expect(page.title).to.be('empty');
+      expect(page.story).to.eql([]);
+      return expect(page.journal).to.eql([]);
+    });
+    return it('should make fresh empty page each call', function() {
+      var page;
+      page = util.emptyPage();
+      page.story.push({
+        type: 'junk'
+      });
+      page = util.emptyPage();
+      return expect(page.story).to.eql([]);
     });
   });
 

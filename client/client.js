@@ -722,11 +722,12 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
             });
           });
         } else {
-          page = $.extend(util.emptyPage, data);
+          page = $.extend(util.emptyPage(), data);
           $(pageElement).data("data", page);
           slug = $(pageElement).attr('id');
           site = $(pageElement).data('site');
-          context = ['origin', site];
+          context = ['origin'];
+          if (site != null) context.push(site);
           addContext = function(site) {
             if ((site != null) && !_.include(context, site)) {
               return context.push(site);
@@ -751,7 +752,6 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
             return doPlugin(div, item);
           });
           $.each(page.journal, function(i, action) {
-            console.log(action.type);
             return addToJournal(journalElement, action);
           });
           footerElement.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ').append("<a class=\"show-page-source\" href=\"/" + slug + ".json?random=" + (util.randomBytes(4)) + "\" title=\"source\">JSON</a> . ").append("<a href=\"#\" class=\"add-factory\" title=\"add paragraph\">[+]</a>");
@@ -1007,10 +1007,12 @@ require.define("/lib/util.coffee", function (require, module, exports, __dirname
     return "" + h + ":" + mi + " " + am + "<br>" + (d.getDate()) + " " + mo + " " + (d.getFullYear());
   };
 
-  util.emptyPage = {
-    title: 'empty',
-    story: [],
-    journal: []
+  util.emptyPage = function() {
+    return {
+      title: 'empty',
+      story: [],
+      journal: []
+    };
   };
 
 }).call(this);
