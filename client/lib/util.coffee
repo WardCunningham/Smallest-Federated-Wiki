@@ -18,7 +18,7 @@ util.formatTime = (time) ->
 
 # DEFAULTS for required fields
 
-util.emptyPage =
+util.emptyPage = () ->
   title: 'empty'
   story: []
   journal: []
