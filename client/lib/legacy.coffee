@@ -296,7 +296,8 @@ $ ->
         slug = $(pageElement).attr('id')
         site = $(pageElement).data('site')
 
-        context = ['origin', site]
+        context = ['origin']
+        context.push site if site?
         addContext = (site) -> context.push site if site? and not _.include context, site
         addContext action.site for action in page.journal.slice(0).reverse()
         wiki.resolutionContext = context
