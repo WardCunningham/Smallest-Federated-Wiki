@@ -245,7 +245,7 @@ module.exports = exports = (argv) ->
       if urlLocs[idx] is 'view'
         pageDiv = {page}
       else
-        pageDiv = {page, origin: """data-site="#{urlLocs[idx]}" """}
+        pageDiv = {page, origin: """data-site=#{urlLocs[idx]}"""}
       info.pages.push(pageDiv)
     res.render('static.html', info)
   )
