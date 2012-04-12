@@ -18,3 +18,10 @@ util.formatTime = (time) ->
 util.asSlug = (name) ->
   name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase()
 
+# DEFAULTS for required fields
+
+util.emptyPage = () ->
+  title: 'empty'
+  story: []
+  journal: []
+

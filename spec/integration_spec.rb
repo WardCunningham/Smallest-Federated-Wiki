@@ -295,3 +295,12 @@ describe "viewing journal" do
     second_paragraph.should be_highlighted
   end
 end
+
+describe "testing javascript with mocha" do
+
+  it "should run with no failures" do
+    visit "/runtests.html"
+    failures = page.all(".failures em").first.text
+    failures.should == '0'
+  end
+end

@@ -373,10 +373,26 @@ require.define("/test/util.coffee", function (require, module, exports, __dirnam
       s = util.formatTime(1333843344000);
       return expect(s).to.be('5:02 PM<br>7 Apr 2012');
     });
-    return it('should slug a name', function() {
+    it('should slug a name', function() {
       var s;
       s = util.asSlug('Welcome Visitors');
       return expect(s).to.be('welcome-visitors');
+    });
+    it('should make emptyPage page with title, story and journal', function() {
+      var page;
+      page = util.emptyPage();
+      expect(page.title).to.be('empty');
+      expect(page.story).to.eql([]);
+      return expect(page.journal).to.eql([]);
+    });
+    return it('should make fresh empty page each call', function() {
+      var page;
+      page = util.emptyPage();
+      page.story.push({
+        type: 'junk'
+      });
+      page = util.emptyPage();
+      return expect(page.story).to.eql([]);
     });
   });
 
@@ -418,6 +434,14 @@ require.define("/lib/util.coffee", function (require, module, exports, __dirname
 
   util.asSlug = function(name) {
     return name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase();
+  };
+
+  util.emptyPage = function() {
+    return {
+      title: 'empty',
+      story: [],
+      journal: []
+    };
   };
 
 }).call(this);
