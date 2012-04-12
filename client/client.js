@@ -1030,7 +1030,6 @@ require.define("/lib/fetch.coffee", function (require, module, exports, __dirnam
       }
       site = localContext.shift();
       resource = site === 'origin' ? (site = null, slug) : "remote/" + site + "/" + slug;
-      wiki.log('fetch', resource);
       return $.ajax({
         type: 'GET',
         dataType: 'json',
