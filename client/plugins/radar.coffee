@@ -139,9 +139,8 @@ window.plugins.radar =
           .style("stroke", ruleColor)
           .style("cursor", 'pointer')
           .attr("transform", "rotate(180)")
-          .on("click", (d) ->
-            $(div).parents('.page').nextAll().remove()
-            wiki.doInternalLink(keys[d])
+          .on("click", (d,i) ->
+            wiki.doInternalLink keys[i], $(div).parents('.page')
           )
 
         fill = d3.scale.category10()
