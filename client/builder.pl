@@ -12,7 +12,7 @@ while (sleep 1) {
   $new = `ls -lt *.coffee lib/*.coffee test/*.coffee`;
   next if $old eq $new;
   $old = $new;
-  run 'say client; browserify client.coffee -o client.js';
-  run 'say test; browserify testclient.coffee -o test/testclient.js';
-  `say done.`;
+  run 'say client& browserify client.coffee -o client.js';
+  run 'say test& browserify testclient.coffee -o test/testclient.js';
+  `say done.&`;
 }
