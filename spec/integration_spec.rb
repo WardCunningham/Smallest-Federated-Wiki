@@ -301,6 +301,7 @@ describe "testing javascript with mocha" do
   it "should run with no failures" do
     visit "/runtests.html"
     failures = page.all(".failures em").first.text
-    failures.should == '0'
+    trouble = page.all(".fail h2").collect{|e|e.text}.inspect
+    failures.should be('0'), trouble
   end
 end
