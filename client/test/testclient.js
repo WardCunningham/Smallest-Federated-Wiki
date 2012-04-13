@@ -448,6 +448,94 @@ require.define("/lib/util.coffee", function (require, module, exports, __dirname
 
 });
 
+require.define("/test/active.coffee", function (require, module, exports, __dirname, __filename) {
+(function() {
+  var active;
+
+  active = require('../lib/active.coffee');
+
+  describe('active', function() {
+    before(function() {
+      $('<div id="active1" />').appendTo('body');
+      $('<div id="active2" />').appendTo('body');
+      return active.set($('#active1'));
+    });
+    it('should detect the scroll container', function() {
+      return expect(active.scrollContainer).to.be.a($);
+    });
+    it('should set the active div', function() {
+      active.set($('#active2'));
+      return expect($('#active2').hasClass('active')).to.be["true"];
+    });
+    return it('should remove previous active class', function() {
+      return expect($('#active1').hasClass('active')).to.be["false"];
+    });
+  });
+
+}).call(this);
+
+});
+
+require.define("/lib/active.coffee", function (require, module, exports, __dirname, __filename) {
+(function() {
+  var active, findScrollContainer, scrollTo;
+
+  module.exports = active = {};
+
+  active.scrollContainer = void 0;
+
+  findScrollContainer = function() {
+    var scrolled;
+    scrolled = $("body, html").filter(function() {
+      return $(this).scrollLeft() > 0;
+    });
+    if (scrolled.length > 0) {
+      return scrolled;
+    } else {
+      return $("body, html").scrollLeft(4).filter(function() {
+        return $(this).scrollLeft() > 0;
+      }).scrollTop(0);
+    }
+  };
+
+  scrollTo = function(el) {
+    var bodyWidth, contentWidth, maxX, minX, target, width, _ref;
+    if ((_ref = active.scrollContainer) == null) {
+      active.scrollContainer = findScrollContainer();
+    }
+    bodyWidth = $("body").width();
+    minX = active.scrollContainer.scrollLeft();
+    maxX = minX + bodyWidth;
+    wiki.log('scrollTo', el, el.position());
+    target = el.position().left;
+    width = el.outerWidth(true);
+    contentWidth = $(".page").outerWidth(true) * $(".page").size();
+    if (target < minX) {
+      return active.scrollContainer.animate({
+        scrollLeft: target
+      });
+    } else if (target + width > maxX) {
+      return active.scrollContainer.animate({
+        scrollLeft: target - (bodyWidth - width)
+      });
+    } else if (maxX > $(".pages").outerWidth()) {
+      return active.scrollContainer.animate({
+        scrollLeft: Math.min(target, contentWidth - bodyWidth)
+      });
+    }
+  };
+
+  active.set = function(el) {
+    el = $(el);
+    wiki.log('set active', el);
+    $(".active").removeClass("active");
+    return scrollTo(el.addClass("active"));
+  };
+
+}).call(this);
+
+});
+
 require.define("/test/plugin.coffee", function (require, module, exports, __dirname, __filename) {
 (function() {
   var plugin;
@@ -610,16 +698,29 @@ require.define("/lib/plugin.coffee", function (require, module, exports, __dirna
 });
 
 require.define("/testclient.coffee", function (require, module, exports, __dirname, __filename) {
-    
+    (function() {
+  var __slice = Array.prototype.slice;
+
   mocha.setup('bdd');
 
   window.wiki = {};
 
+  wiki.log = function() {
+    var things;
+    things = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+    if ((typeof console !== "undefined" && console !== null ? console.log : void 0) != null) {
+      return console.log(things);
+    }
+  };
+
   $(function() {
     require('./test/util.coffee');
+    require('./test/active.coffee');
     require('./test/plugin.coffee');
     return mocha.run();
   });
+
+}).call(this);
 
 });
 require("/testclient.coffee");

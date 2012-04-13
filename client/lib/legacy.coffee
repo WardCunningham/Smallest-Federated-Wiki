@@ -3,6 +3,7 @@ util = require('./util.coffee')
 fetch = require('./fetch.coffee')
 plugin = require('./plugin.coffee')
 state = require('./state.coffee')
+active = require('./active.coffee')
 
 Array::last = ->
   this[@length - 1]
@@ -138,7 +139,7 @@ $ ->
     createPage(name)
       .appendTo($('.main'))
       .each refresh
-    setActive(name)
+    active.set($('.page').last())
 
   handleDragging = (evt, ui) ->
     itemElement = ui.item
@@ -257,39 +258,6 @@ $ ->
       pageElement
     })
 
-# FUNCTIONS and HANDLERS to manage location bar and back button
-
-  scrollContainer = undefined
-  findScrollContainer = ->
-    scrolled = $("body, html").filter -> $(this).scrollLeft() > 0
-    if scrolled.length > 0
-      scrolled
-    else
-      $("body, html").scrollLeft(4).filter(-> $(this).scrollLeft() > 0).scrollTop(0)
-
-  scrollTo = (el) ->
-    scrollContainer ?= findScrollContainer()
-    bodyWidth = $("body").width()
-    minX = scrollContainer.scrollLeft()
-    maxX = minX + bodyWidth
-    wiki.log 'scrollTo', el, el.position()
-    target = el.position().left
-    width = el.outerWidth(true)
-    contentWidth = $(".page").outerWidth(true) * $(".page").size()
-
-    if target < minX
-      scrollContainer.animate scrollLeft: target
-    else if target + width > maxX
-      scrollContainer.animate scrollLeft: target - (bodyWidth - width)
-    else if maxX > $(".pages").outerWidth()
-      scrollContainer.animate scrollLeft: Math.min(target, contentWidth - bodyWidth)
-
-  setActive = wiki.setActive = (page) ->
-    wiki.log 'set active', page
-    $(".active").removeClass("active")
-    scrollTo $("#"+page).addClass("active")
-
-
   LEFTARROW = 37
   RIGHTARROW = 39
 
@@ -298,10 +266,10 @@ $ ->
       when LEFTARROW then -1
       when RIGHTARROW then +1
     if direction && not (event.target.tagName is "TEXTAREA")
-      pages = state.pagesInDom()
-      newIndex = pages.indexOf($('.active').attr('id')) + direction
+      pages = $('.page')
+      newIndex = pages.index($('.active')) + direction
       if 0 <= newIndex < pages.length
-        setActive(pages[newIndex])
+        active.set(pages.eq(newIndex))
 
 # FUNCTIONS sensing extant and desired page configurations
 
@@ -330,7 +298,7 @@ $ ->
       wiki.dialog "JSON for #{json.title}",  $('<pre/>').text(JSON.stringify(json, null, 2))
 
     .delegate '.page', 'click', (e) ->
-      setActive this.id unless $(e.target).is("a")
+      active.set this unless $(e.target).is("a")
 
     .delegate '.internal', 'click', (e) ->
       e.preventDefault()
@@ -339,7 +307,7 @@ $ ->
       wiki.log 'click', name, 'context', wiki.fetchContext
       $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
       createPage(name).appendTo('.main').each refresh
-      setActive(name)
+      active.set($('.page').last())
       # FIXME: can open page multiple times with shift key
 
     .delegate '.action', 'hover', ->
@@ -355,7 +323,7 @@ $ ->
         .data('site',$(e.target).data('site'))
         .appendTo($('.main'))
         .each refresh
-      setActive(name)
+      active.set($('.page').last())
 
   $(".provider input").click ->
     $("footer input:first").val $(this).attr('data-provider')
@@ -365,5 +333,5 @@ $ ->
   state.first()
 
   $('.page').each refresh
-  setActive($('.page').last().attr('id'))
+  active.set($('.page').last())
 
