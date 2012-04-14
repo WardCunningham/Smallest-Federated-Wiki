@@ -8,14 +8,20 @@ describe 'fetch', ->
   before ->
     $('<div id="fetch" data-site="foo" />').appendTo('body')
 
+  it 'should have an empty context', ->
+    expect(fetch.context).to.eql([])
+
   describe 'ajax fails', ->
-    it 'should have an empty context', ->
-      expect(fetch.context).to.eql([])
+    before ->
+      sinon.stub(jQuery, "ajax").yieldsTo('error')
 
     it 'should create a page when it can not find it', (done) ->
       fetch $('#fetch'), (page) ->
         expect(page).to.eql({title: 'fetch'})
         done()
+
+    after ->
+      jQuery.ajax.restore()
 
   describe 'ajax, success', ->
     before ->
