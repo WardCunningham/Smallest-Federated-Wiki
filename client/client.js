@@ -419,11 +419,19 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       return string.replace(/\[\[([^\]]+)\]\]/gi, renderInternalLink).replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" target=\"_blank\" href=\"$1\">$2</a>");
     };
     addToJournal = function(journalElement, action) {
-      var actionElement, pageElement;
+      var actionElement, pageElement, prev;
       pageElement = journalElement.parents('.page:first');
-      actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(action.type[0]).attr('title', action.type).data('itemId', action.id || "0").appendTo(journalElement);
+      actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(action.type[0]).attr('title', action.type).attr('data-id', action.id || "0").appendTo(journalElement);
       if (action.type === 'fork') {
-        return actionElement.css("background-image", "url(//" + action.site + "/favicon.png)").attr("href", "//" + action.site + "/" + (pageElement.attr('id')) + ".html").data("site", action.site).data("slug", pageElement.attr('id'));
+        actionElement.css("background-image", "url(//" + action.site + "/favicon.png)").attr("href", "//" + action.site + "/" + (pageElement.attr('id')) + ".html").data("site", action.site).data("slug", pageElement.attr('id'));
+      } else {
+        actionElement.on('click', function() {
+          return wiki.dialog("" + action.type + " action", $('<pre/>').text(JSON.stringify(action, null, 2)));
+        });
+      }
+      if (action.type === 'edit') {
+        prev = journalElement.find(".edit[data-id=" + (action.id || 0) + "]");
+        return actionElement.attr('title', "edit " + prev.length);
       }
     };
     useLocalStorage = wiki.useLocalStorage = function() {
@@ -710,7 +718,7 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       return active.set($('.page').last());
     }).delegate('.action', 'hover', function() {
       var id;
-      id = $(this).data('itemId');
+      id = $(this).attr('data-id');
       return $("[data-id=" + id + "]").toggleClass('target');
     }).delegate('.action.fork, .remote', 'click', function(e) {
       var name;
