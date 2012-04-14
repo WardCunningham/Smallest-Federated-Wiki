@@ -1,3 +1,5 @@
+active = require('./active')
+
 module.exports = state = {}
 
 # FUNCTIONS and HANDLERS to manage location bar and back button
@@ -46,7 +48,7 @@ state.show = (e) ->
 
   previous.nextAll().remove()
 
-  wiki.setActive($('.page').last().attr('id'))
+  active.set($('.page').last())
 
 state.first = ->
   state.setUrl()
