@@ -400,7 +400,6 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       return null;
     };
     wiki.resolutionContext = [];
-    wiki.fetchContext = [];
     resolveFrom = wiki.resolveFrom = function(addition, callback) {
       wiki.resolutionContext.push(addition);
       try {
@@ -656,11 +655,7 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
         initDragging(pageElement);
         return initAddButton(pageElement);
       };
-      return fetch({
-        buildPage: buildPage,
-        putAction: putAction,
-        pageElement: pageElement
-      });
+      return fetch(pageElement, buildPage);
     };
     LEFTARROW = 37;
     RIGHTARROW = 39;
@@ -708,8 +703,8 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       var name;
       e.preventDefault();
       name = $(e.target).data('pageName');
-      wiki.fetchContext = $(e.target).attr('title').split(' => ');
-      wiki.log('click', name, 'context', wiki.fetchContext);
+      fetch.context = $(e.target).attr('title').split(' => ');
+      wiki.log('click', name, 'context', fetch.context);
       if (!e.shiftKey) $(e.target).parents('.page').nextAll().remove();
       createPage(name).appendTo('.main').each(refresh);
       return active.set($('.page').last());
@@ -789,90 +784,69 @@ require.define("/lib/util.coffee", function (require, module, exports, __dirname
 
 require.define("/lib/fetch.coffee", function (require, module, exports, __dirname, __filename) {
 (function() {
-  var util;
+  var probe, util;
 
   util = require('./util');
 
-  module.exports = function(params) {
-    var buildPage, create, json, pageElement, probe, putAction, site, slug;
-    buildPage = params.buildPage, putAction = params.putAction, pageElement = params.pageElement;
-    slug = $(pageElement).attr('id');
-    site = $(pageElement).data('site');
-    probe = function(slug, callback, localContext) {
-      var i, resource;
-      if (!(wiki.fetchContext.length > 0)) wiki.fetchContext = ['origin'];
-      if (localContext == null) {
-        localContext = (function() {
-          var _i, _len, _ref, _results;
-          _ref = wiki.fetchContext;
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            i = _ref[_i];
-            _results.push(i);
-          }
-          return _results;
-        })();
-      }
-      site = localContext.shift();
-      resource = site === 'origin' ? (site = null, slug) : "remote/" + site + "/" + slug;
-      return $.ajax({
-        type: 'GET',
-        dataType: 'json',
-        url: "/" + resource + ".json?random=" + (util.randomBytes(4)),
-        success: function(page) {
-          wiki.log('fetch success', page, site || 'origin');
-          $(pageElement).data('site', site);
-          return callback(page);
-        },
-        error: function(xhr, type, msg) {
-          if (localContext.length > 0) {
-            return probe(slug, callback, localContext);
-          } else {
-            site = null;
-            return callback(null);
-          }
-        }
-      });
-    };
-    create = function(slug, callback) {
-      var page, title;
-      title = $("a[href=\"/" + slug + ".html\"]").html();
-      title || (title = slug);
-      page = {
-        title: title
-      };
-      putAction($(pageElement), {
-        type: 'create',
-        id: util.randomBytes(8),
-        item: page
-      });
-      return callback(page);
-    };
-    if ($(pageElement).attr('data-server-generated') === 'true') {
-      return buildPage(null);
-    } else {
-      if (wiki.useLocalStorage() && (json = localStorage[pageElement.attr("id")])) {
-        pageElement.addClass("local");
-        return buildPage(JSON.parse(json));
-      } else {
-        if (site != null) {
-          return $.get("/remote/" + site + "/" + slug + ".json?random=" + (util.randomBytes(4)), "", function(page) {
-            return buildPage(page);
-          });
-        } else {
-          return probe(slug, function(page) {
-            if (page != null) {
-              return buildPage(page);
-            } else {
-              return create(slug, function(page) {
-                return buildPage(page);
-              });
-            }
-          });
-        }
-      }
+  probe = function(pageElement, callback, localContext) {
+    var i, json, resource, site, slug;
+    slug = pageElement.attr('id');
+    site = pageElement.data('site');
+    if (pageElement.attr('data-server-generated') === 'true') callback(null);
+    if (wiki.useLocalStorage() && (json = localStorage[slug])) {
+      pageElement.addClass("local");
+      callback(JSON.parse(json));
     }
+    if (!(probe.context.length > 0)) probe.context = ['origin'];
+    if (localContext == null) {
+      localContext = (function() {
+        var _i, _len, _ref, _results;
+        _ref = probe.context;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          i = _ref[_i];
+          _results.push(i);
+        }
+        return _results;
+      })();
+    }
+    if (typeof site === 'string') localContext = [site];
+    site = localContext.shift();
+    resource = site === 'origin' ? (site = null, slug) : "remote/" + site + "/" + slug;
+    return $.ajax({
+      type: 'GET',
+      dataType: 'json',
+      url: "/" + resource + ".json?random=" + (util.randomBytes(4)),
+      success: function(page) {
+        wiki.log('fetch success', page, site || 'origin');
+        $(pageElement).data('site', site);
+        return callback(page);
+      },
+      error: function(xhr, type, msg) {
+        var page, title;
+        if (localContext.length > 0) {
+          return probe(pageElement, callback, localContext);
+        } else {
+          site = null;
+          title = $("a[href=\"/" + slug + ".html\"]").html();
+          title || (title = slug);
+          page = {
+            title: title
+          };
+          wiki.putAction($(pageElement), {
+            type: 'create',
+            id: util.randomBytes(8),
+            item: page
+          });
+          return callback(page);
+        }
+      }
+    });
   };
+
+  probe.context = [];
+
+  module.exports = probe;
 
 }).call(this);
 

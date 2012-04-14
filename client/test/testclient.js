@@ -536,6 +536,146 @@ require.define("/lib/active.coffee", function (require, module, exports, __dirna
 
 });
 
+require.define("/test/fetch.coffee", function (require, module, exports, __dirname, __filename) {
+(function() {
+  var fetch;
+
+  fetch = require('../lib/fetch.coffee');
+
+  wiki.useLocalStorage = function() {
+    return false;
+  };
+
+  wiki.putAction = function() {};
+
+  describe('fetch', function() {
+    before(function() {
+      return $('<div id="fetch" data-site="foo" />').appendTo('body');
+    });
+    describe('ajax fails', function() {
+      it('should have an empty context', function() {
+        return expect(fetch.context).to.eql([]);
+      });
+      return it('should create a page when it can not find it', function(done) {
+        return fetch($('#fetch'), function(page) {
+          expect(page).to.eql({
+            title: 'fetch'
+          });
+          return done();
+        });
+      });
+    });
+    describe('ajax, success', function() {
+      before(function() {
+        return sinon.stub(jQuery, "ajax").yieldsTo('success', 'test');
+      });
+      it('should fetch a page from specific site', function(done) {
+        return fetch($('#fetch'), function(page) {
+          expect(jQuery.ajax.calledOnce).to.be["true"];
+          expect(jQuery.ajax.args[0][0]).to.have.property('type', 'GET');
+          expect(jQuery.ajax.args[0][0].url).to.match(/^\/remote\/foo\/fetch\.json\?random=[a-z0-9]{8}$/);
+          return done();
+        });
+      });
+      return after(function() {
+        return jQuery.ajax.restore();
+      });
+    });
+    return describe('ajax, search', function() {
+      before(function() {
+        $('<div id="fetch2" />').appendTo('body');
+        sinon.stub(jQuery, "ajax").yieldsTo('error');
+        return fetch.context = ['origin', 'example.com', 'asdf.test', 'foo.bar'];
+      });
+      it('should search through the context for a page', function(done) {
+        return fetch($('#fetch2'), function(page) {
+          expect(jQuery.ajax.args[0][0].url).to.match(/^\/fetch2\.json\?random=[a-z0-9]{8}$/);
+          expect(jQuery.ajax.args[1][0].url).to.match(/^\/remote\/example.com\/fetch2\.json\?random=[a-z0-9]{8}$/);
+          expect(jQuery.ajax.args[2][0].url).to.match(/^\/remote\/asdf.test\/fetch2\.json\?random=[a-z0-9]{8}$/);
+          expect(jQuery.ajax.args[3][0].url).to.match(/^\/remote\/foo.bar\/fetch2\.json\?random=[a-z0-9]{8}$/);
+          return done();
+        });
+      });
+      return after(function() {
+        return jQuery.ajax.restore();
+      });
+    });
+  });
+
+}).call(this);
+
+});
+
+require.define("/lib/fetch.coffee", function (require, module, exports, __dirname, __filename) {
+(function() {
+  var probe, util;
+
+  util = require('./util');
+
+  probe = function(pageElement, callback, localContext) {
+    var i, json, resource, site, slug;
+    slug = pageElement.attr('id');
+    site = pageElement.data('site');
+    if (pageElement.attr('data-server-generated') === 'true') callback(null);
+    if (wiki.useLocalStorage() && (json = localStorage[slug])) {
+      pageElement.addClass("local");
+      callback(JSON.parse(json));
+    }
+    if (!(probe.context.length > 0)) probe.context = ['origin'];
+    if (localContext == null) {
+      localContext = (function() {
+        var _i, _len, _ref, _results;
+        _ref = probe.context;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          i = _ref[_i];
+          _results.push(i);
+        }
+        return _results;
+      })();
+    }
+    if (typeof site === 'string') localContext = [site];
+    site = localContext.shift();
+    resource = site === 'origin' ? (site = null, slug) : "remote/" + site + "/" + slug;
+    return $.ajax({
+      type: 'GET',
+      dataType: 'json',
+      url: "/" + resource + ".json?random=" + (util.randomBytes(4)),
+      success: function(page) {
+        wiki.log('fetch success', page, site || 'origin');
+        $(pageElement).data('site', site);
+        return callback(page);
+      },
+      error: function(xhr, type, msg) {
+        var page, title;
+        if (localContext.length > 0) {
+          return probe(pageElement, callback, localContext);
+        } else {
+          site = null;
+          title = $("a[href=\"/" + slug + ".html\"]").html();
+          title || (title = slug);
+          page = {
+            title: title
+          };
+          wiki.putAction($(pageElement), {
+            type: 'create',
+            id: util.randomBytes(8),
+            item: page
+          });
+          return callback(page);
+        }
+      }
+    });
+  };
+
+  probe.context = [];
+
+  module.exports = probe;
+
+}).call(this);
+
+});
+
 require.define("/test/plugin.coffee", function (require, module, exports, __dirname, __filename) {
 (function() {
   var plugin;
@@ -567,7 +707,7 @@ require.define("/test/plugin.coffee", function (require, module, exports, __dirn
       return expect($('#plugin').html()).to.be('<p>blah <a class="internal" href="/link.html" data-page-name="link" title="origin">Link</a> asdf</p>');
     });
     return after(function() {
-      return jQuery.ajax.restore();
+      return jQuery.getScript.restore();
     });
   });
 
@@ -716,6 +856,7 @@ require.define("/testclient.coffee", function (require, module, exports, __dirna
   $(function() {
     require('./test/util.coffee');
     require('./test/active.coffee');
+    require('./test/fetch.coffee');
     require('./test/plugin.coffee');
     return mocha.run();
   });

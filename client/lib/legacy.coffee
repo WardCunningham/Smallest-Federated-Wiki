@@ -31,7 +31,6 @@ $ ->
     null
 
   wiki.resolutionContext = []
-  wiki.fetchContext = []
   resolveFrom = wiki.resolveFrom = (addition, callback) ->
     wiki.resolutionContext.push addition
     try
@@ -252,11 +251,8 @@ $ ->
       initDragging pageElement
       initAddButton pageElement
 
-    fetch({
-      buildPage
-      putAction
-      pageElement
-    })
+    fetch pageElement, buildPage
+
 
   LEFTARROW = 37
   RIGHTARROW = 39
@@ -303,8 +299,8 @@ $ ->
     .delegate '.internal', 'click', (e) ->
       e.preventDefault()
       name = $(e.target).data 'pageName'
-      wiki.fetchContext = $(e.target).attr('title').split(' => ')
-      wiki.log 'click', name, 'context', wiki.fetchContext
+      fetch.context = $(e.target).attr('title').split(' => ')
+      wiki.log 'click', name, 'context', fetch.context
       $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
       createPage(name).appendTo('.main').each refresh
       active.set($('.page').last())
