@@ -292,6 +292,14 @@ $ ->
       msg = "<li class='error'>Error on #{settings.url}: #{request.responseText}</li>"
       $('.main').prepend msg unless request.status == 404
 
+  finishClick = (e, name) ->
+    e.preventDefault()
+    $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
+    createPage(name)
+      .appendTo('.main')
+      .each refresh
+    active.set($('.page').last())
+
   $('.main')
     .delegate '.show-page-source', 'click', (e) ->
       e.preventDefault()
@@ -303,29 +311,18 @@ $ ->
       active.set this unless $(e.target).is("a")
 
     .delegate '.internal', 'click', (e) ->
-      e.preventDefault()
       name = $(e.target).data 'pageName'
       fetch.context = $(e.target).attr('title').split(' => ')
-      wiki.log 'click', name, 'context', fetch.context
-      $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
-      createPage(name).appendTo('.main').each refresh
-      active.set($('.page').last())
-      # FIXME: can open page multiple times with shift key
+      finishClick e, name
 
     .delegate '.action', 'hover', ->
       id = $(this).attr('data-id')
       $("[data-id=#{id}]").toggleClass('target')
 
     .delegate '.action.fork, .remote', 'click', (e) ->
-      e.preventDefault()
       name = $(e.target).data('slug')
-      wiki.log 'click', name, 'site', $(e.target).data('site')
-      $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
-      createPage(name)
-        .data('site',$(e.target).data('site'))
-        .appendTo($('.main'))
-        .each refresh
-      active.set($('.page').last())
+      fetch.context = [$(e.target).data('site')]
+      finishClick e, name
 
   $(".provider input").click ->
     $("footer input:first").val $(this).attr('data-provider')

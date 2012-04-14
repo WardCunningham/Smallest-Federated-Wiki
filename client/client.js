@@ -366,7 +366,7 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
   };
 
   $(function() {
-    var LEFTARROW, RIGHTARROW, addToJournal, createPage, doInternalLink, emitHeader, getItem, handleDragging, initAddButton, initDragging, pushToLocal, pushToServer, putAction, refresh, resolveFrom, resolveLinks, textEditor, useLocalStorage;
+    var LEFTARROW, RIGHTARROW, addToJournal, createPage, doInternalLink, emitHeader, finishClick, getItem, handleDragging, initAddButton, initDragging, pushToLocal, pushToServer, putAction, refresh, resolveFrom, resolveLinks, textEditor, useLocalStorage;
     window.dialog = $('<div></div>').html('This dialog will show every time!').dialog({
       autoOpen: false,
       title: 'Basic Dialog',
@@ -699,6 +699,12 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       msg = "<li class='error'>Error on " + settings.url + ": " + request.responseText + "</li>";
       if (request.status !== 404) return $('.main').prepend(msg);
     });
+    finishClick = function(e, name) {
+      e.preventDefault();
+      if (!e.shiftKey) $(e.target).parents('.page').nextAll().remove();
+      createPage(name).appendTo('.main').each(refresh);
+      return active.set($('.page').last());
+    };
     $('.main').delegate('.show-page-source', 'click', function(e) {
       var json, pageElement;
       e.preventDefault();
@@ -709,25 +715,18 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       if (!$(e.target).is("a")) return active.set(this);
     }).delegate('.internal', 'click', function(e) {
       var name;
-      e.preventDefault();
       name = $(e.target).data('pageName');
       fetch.context = $(e.target).attr('title').split(' => ');
-      wiki.log('click', name, 'context', fetch.context);
-      if (!e.shiftKey) $(e.target).parents('.page').nextAll().remove();
-      createPage(name).appendTo('.main').each(refresh);
-      return active.set($('.page').last());
+      return finishClick(e, name);
     }).delegate('.action', 'hover', function() {
       var id;
       id = $(this).attr('data-id');
       return $("[data-id=" + id + "]").toggleClass('target');
     }).delegate('.action.fork, .remote', 'click', function(e) {
       var name;
-      e.preventDefault();
       name = $(e.target).data('slug');
-      wiki.log('click', name, 'site', $(e.target).data('site'));
-      if (!e.shiftKey) $(e.target).parents('.page').nextAll().remove();
-      createPage(name).data('site', $(e.target).data('site')).appendTo($('.main')).each(refresh);
-      return active.set($('.page').last());
+      fetch.context = [$(e.target).data('site')];
+      return finishClick(e, name);
     });
     $(".provider input").click(function() {
       $("footer input:first").val($(this).attr('data-provider'));
