@@ -448,6 +448,234 @@ require.define("/lib/util.coffee", function (require, module, exports, __dirname
 
 });
 
+require.define("/test/active.coffee", function (require, module, exports, __dirname, __filename) {
+(function() {
+  var active;
+
+  active = require('../lib/active.coffee');
+
+  describe('active', function() {
+    before(function() {
+      $('<div id="active1" />').appendTo('body');
+      $('<div id="active2" />').appendTo('body');
+      return active.set($('#active1'));
+    });
+    it('should detect the scroll container', function() {
+      return expect(active.scrollContainer).to.be.a($);
+    });
+    it('should set the active div', function() {
+      active.set($('#active2'));
+      return expect($('#active2').hasClass('active')).to.be["true"];
+    });
+    return it('should remove previous active class', function() {
+      return expect($('#active1').hasClass('active')).to.be["false"];
+    });
+  });
+
+}).call(this);
+
+});
+
+require.define("/lib/active.coffee", function (require, module, exports, __dirname, __filename) {
+(function() {
+  var active, findScrollContainer, scrollTo;
+
+  module.exports = active = {};
+
+  active.scrollContainer = void 0;
+
+  findScrollContainer = function() {
+    var scrolled;
+    scrolled = $("body, html").filter(function() {
+      return $(this).scrollLeft() > 0;
+    });
+    if (scrolled.length > 0) {
+      return scrolled;
+    } else {
+      return $("body, html").scrollLeft(4).filter(function() {
+        return $(this).scrollLeft() > 0;
+      }).scrollTop(0);
+    }
+  };
+
+  scrollTo = function(el) {
+    var bodyWidth, contentWidth, maxX, minX, target, width, _ref;
+    if ((_ref = active.scrollContainer) == null) {
+      active.scrollContainer = findScrollContainer();
+    }
+    bodyWidth = $("body").width();
+    minX = active.scrollContainer.scrollLeft();
+    maxX = minX + bodyWidth;
+    wiki.log('scrollTo', el, el.position());
+    target = el.position().left;
+    width = el.outerWidth(true);
+    contentWidth = $(".page").outerWidth(true) * $(".page").size();
+    if (target < minX) {
+      return active.scrollContainer.animate({
+        scrollLeft: target
+      });
+    } else if (target + width > maxX) {
+      return active.scrollContainer.animate({
+        scrollLeft: target - (bodyWidth - width)
+      });
+    } else if (maxX > $(".pages").outerWidth()) {
+      return active.scrollContainer.animate({
+        scrollLeft: Math.min(target, contentWidth - bodyWidth)
+      });
+    }
+  };
+
+  active.set = function(el) {
+    el = $(el);
+    wiki.log('set active', el);
+    $(".active").removeClass("active");
+    return scrollTo(el.addClass("active"));
+  };
+
+}).call(this);
+
+});
+
+require.define("/test/fetch.coffee", function (require, module, exports, __dirname, __filename) {
+(function() {
+  var fetch;
+
+  fetch = require('../lib/fetch.coffee');
+
+  wiki.useLocalStorage = function() {
+    return false;
+  };
+
+  wiki.putAction = function() {};
+
+  describe('fetch', function() {
+    before(function() {
+      return $('<div id="fetch" data-site="foo" />').appendTo('body');
+    });
+    describe('ajax fails', function() {
+      it('should have an empty context', function() {
+        return expect(fetch.context).to.eql([]);
+      });
+      return it('should create a page when it can not find it', function(done) {
+        return fetch($('#fetch'), function(page) {
+          expect(page).to.eql({
+            title: 'fetch'
+          });
+          return done();
+        });
+      });
+    });
+    describe('ajax, success', function() {
+      before(function() {
+        return sinon.stub(jQuery, "ajax").yieldsTo('success', 'test');
+      });
+      it('should fetch a page from specific site', function(done) {
+        return fetch($('#fetch'), function(page) {
+          expect(jQuery.ajax.calledOnce).to.be["true"];
+          expect(jQuery.ajax.args[0][0]).to.have.property('type', 'GET');
+          expect(jQuery.ajax.args[0][0].url).to.match(/^\/remote\/foo\/fetch\.json\?random=[a-z0-9]{8}$/);
+          return done();
+        });
+      });
+      return after(function() {
+        return jQuery.ajax.restore();
+      });
+    });
+    return describe('ajax, search', function() {
+      before(function() {
+        $('<div id="fetch2" />').appendTo('body');
+        sinon.stub(jQuery, "ajax").yieldsTo('error');
+        return fetch.context = ['origin', 'example.com', 'asdf.test', 'foo.bar'];
+      });
+      it('should search through the context for a page', function(done) {
+        return fetch($('#fetch2'), function(page) {
+          expect(jQuery.ajax.args[0][0].url).to.match(/^\/fetch2\.json\?random=[a-z0-9]{8}$/);
+          expect(jQuery.ajax.args[1][0].url).to.match(/^\/remote\/example.com\/fetch2\.json\?random=[a-z0-9]{8}$/);
+          expect(jQuery.ajax.args[2][0].url).to.match(/^\/remote\/asdf.test\/fetch2\.json\?random=[a-z0-9]{8}$/);
+          expect(jQuery.ajax.args[3][0].url).to.match(/^\/remote\/foo.bar\/fetch2\.json\?random=[a-z0-9]{8}$/);
+          return done();
+        });
+      });
+      return after(function() {
+        return jQuery.ajax.restore();
+      });
+    });
+  });
+
+}).call(this);
+
+});
+
+require.define("/lib/fetch.coffee", function (require, module, exports, __dirname, __filename) {
+(function() {
+  var probe, util;
+
+  util = require('./util');
+
+  probe = function(pageElement, callback, localContext) {
+    var i, json, resource, site, slug;
+    slug = pageElement.attr('id');
+    site = pageElement.data('site');
+    if (pageElement.attr('data-server-generated') === 'true') callback(null);
+    if (wiki.useLocalStorage() && (json = localStorage[slug])) {
+      pageElement.addClass("local");
+      callback(JSON.parse(json));
+    }
+    if (!(probe.context.length > 0)) probe.context = ['origin'];
+    if (localContext == null) {
+      localContext = (function() {
+        var _i, _len, _ref, _results;
+        _ref = probe.context;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          i = _ref[_i];
+          _results.push(i);
+        }
+        return _results;
+      })();
+    }
+    if (typeof site === 'string') localContext = [site];
+    site = localContext.shift();
+    resource = site === 'origin' ? (site = null, slug) : "remote/" + site + "/" + slug;
+    return $.ajax({
+      type: 'GET',
+      dataType: 'json',
+      url: "/" + resource + ".json?random=" + (util.randomBytes(4)),
+      success: function(page) {
+        wiki.log('fetch success', page, site || 'origin');
+        $(pageElement).data('site', site);
+        return callback(page);
+      },
+      error: function(xhr, type, msg) {
+        var page, title;
+        if (localContext.length > 0) {
+          return probe(pageElement, callback, localContext);
+        } else {
+          site = null;
+          title = $("a[href=\"/" + slug + ".html\"]").html();
+          title || (title = slug);
+          page = {
+            title: title
+          };
+          wiki.putAction($(pageElement), {
+            type: 'create',
+            id: util.randomBytes(8),
+            item: page
+          });
+          return callback(page);
+        }
+      }
+    });
+  };
+
+  probe.context = [];
+
+  module.exports = probe;
+
+}).call(this);
+
+});
+
 require.define("/test/plugin.coffee", function (require, module, exports, __dirname, __filename) {
 (function() {
   var plugin;
@@ -479,7 +707,7 @@ require.define("/test/plugin.coffee", function (require, module, exports, __dirn
       return expect($('#plugin').html()).to.be('<p>blah <a class="internal" href="/link.html" data-page-name="link" title="origin">Link</a> asdf</p>');
     });
     return after(function() {
-      return jQuery.ajax.restore();
+      return jQuery.getScript.restore();
     });
   });
 
@@ -610,16 +838,30 @@ require.define("/lib/plugin.coffee", function (require, module, exports, __dirna
 });
 
 require.define("/testclient.coffee", function (require, module, exports, __dirname, __filename) {
-    
+    (function() {
+  var __slice = Array.prototype.slice;
+
   mocha.setup('bdd');
 
   window.wiki = {};
 
+  wiki.log = function() {
+    var things;
+    things = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+    if ((typeof console !== "undefined" && console !== null ? console.log : void 0) != null) {
+      return console.log(things);
+    }
+  };
+
   $(function() {
     require('./test/util.coffee');
+    require('./test/active.coffee');
+    require('./test/fetch.coffee');
     require('./test/plugin.coffee');
     return mocha.run();
   });
+
+}).call(this);
 
 });
 require("/testclient.coffee");

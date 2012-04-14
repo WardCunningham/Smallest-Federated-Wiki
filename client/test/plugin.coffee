@@ -23,5 +23,5 @@ describe 'plugin', ->
       .be('<p>blah <a class="internal" href="/link.html" data-page-name="link" title="origin">Link</a> asdf</p>')
 
   after ->
-    jQuery.ajax.restore()
+    jQuery.getScript.restore()
 
