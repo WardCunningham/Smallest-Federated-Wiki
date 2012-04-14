@@ -53,7 +53,7 @@ $ ->
     actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type)
       .text(action.type[0])
       .attr('title',action.type)
-      .data('itemId', action.id || "0")
+      .attr('data-id', action.id || "0")
       .appendTo(journalElement)
     if action.type == 'fork'
       actionElement
@@ -61,6 +61,12 @@ $ ->
         .attr("href", "//#{action.site}/#{pageElement.attr('id')}.html")
         .data("site", action.site)
         .data("slug", pageElement.attr('id'))
+    else
+      actionElement.on 'click', ->
+        wiki.dialog "#{action.type} action", $('<pre/>').text(JSON.stringify(action, null, 2))
+    if action.type == 'edit'
+      prev = journalElement.find(".edit[data-id=#{action.id || 0}]")
+      actionElement.attr 'title', "edit #{prev.length}"
 
   useLocalStorage = wiki.useLocalStorage = ->
     wiki.log 'useLocalStorage', $(".login").length > 0
@@ -286,6 +292,11 @@ $ ->
       msg = "<li class='error'>Error on #{settings.url}: #{request.responseText}</li>"
       $('.main').prepend msg unless request.status == 404
 
+  finishClick = (e, name) ->
+    e.preventDefault()
+    page = $(e.target).parents('.page') unless e.shiftKey
+    doInternalLink name, page
+
   $('.main')
     .delegate '.show-page-source', 'click', (e) ->
       e.preventDefault()
@@ -297,29 +308,22 @@ $ ->
       active.set this unless $(e.target).is("a")
 
     .delegate '.internal', 'click', (e) ->
-      e.preventDefault()
       name = $(e.target).data 'pageName'
       fetch.context = $(e.target).attr('title').split(' => ')
-      wiki.log 'click', name, 'context', fetch.context
-      $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
-      createPage(name).appendTo('.main').each refresh
-      active.set($('.page').last())
-      # FIXME: can open page multiple times with shift key
-
-    .delegate '.action', 'hover', ->
-      id = $(this).data('itemId')
-      $("[data-id=#{id}]").toggleClass('target')
+      finishClick e, name
 
     .delegate '.action.fork, .remote', 'click', (e) ->
-      e.preventDefault()
       name = $(e.target).data('slug')
-      wiki.log 'click', name, 'site', $(e.target).data('site')
-      $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
-      createPage(name)
-        .data('site',$(e.target).data('site'))
-        .appendTo($('.main'))
-        .each refresh
-      active.set($('.page').last())
+      fetch.context = [$(e.target).data('site')]
+      finishClick e, name
+
+    .delegate '.action', 'hover', ->
+      id = $(this).attr('data-id')
+      $("[data-id=#{id}]").toggleClass('target')
+
+    .delegate '.item', 'hover', ->
+      id = $(this).attr('data-id')
+      $(".action[data-id=#{id}]").toggleClass('target')
 
   $(".provider input").click ->
     $("footer input:first").val $(this).attr('data-provider')
