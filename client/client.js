@@ -700,10 +700,10 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       if (request.status !== 404) return $('.main').prepend(msg);
     });
     finishClick = function(e, name) {
+      var page;
       e.preventDefault();
-      if (!e.shiftKey) $(e.target).parents('.page').nextAll().remove();
-      createPage(name).appendTo('.main').each(refresh);
-      return active.set($('.page').last());
+      if (!e.shiftKey) page = $(e.target).parents('.page');
+      return doInternalLink(name, page);
     };
     $('.main').delegate('.show-page-source', 'click', function(e) {
       var json, pageElement;

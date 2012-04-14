@@ -294,11 +294,8 @@ $ ->
 
   finishClick = (e, name) ->
     e.preventDefault()
-    $(e.target).parents('.page').nextAll().remove() unless e.shiftKey
-    createPage(name)
-      .appendTo('.main')
-      .each refresh
-    active.set($('.page').last())
+    page = $(e.target).parents('.page') unless e.shiftKey
+    doInternalLink name, page
 
   $('.main')
     .delegate '.show-page-source', 'click', (e) ->
