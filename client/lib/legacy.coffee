@@ -324,6 +324,10 @@ $ ->
       fetch.context = [$(e.target).data('site')]
       finishClick e, name
 
+    .delegate '.item', 'hover', ->
+      id = $(this).attr('data-id')
+      $(".action[data-id=#{id}]").toggleClass('target')
+
   $(".provider input").click ->
     $("footer input:first").val $(this).attr('data-provider')
     $("footer form").submit()

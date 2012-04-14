@@ -727,6 +727,10 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       name = $(e.target).data('slug');
       fetch.context = [$(e.target).data('site')];
       return finishClick(e, name);
+    }).delegate('.item', 'hover', function() {
+      var id;
+      id = $(this).attr('data-id');
+      return $(".action[data-id=" + id + "]").toggleClass('target');
     });
     $(".provider input").click(function() {
       $("footer input:first").val($(this).attr('data-provider'));
