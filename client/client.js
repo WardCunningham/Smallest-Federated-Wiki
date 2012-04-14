@@ -718,15 +718,15 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       name = $(e.target).data('pageName');
       fetch.context = $(e.target).attr('title').split(' => ');
       return finishClick(e, name);
-    }).delegate('.action', 'hover', function() {
-      var id;
-      id = $(this).attr('data-id');
-      return $("[data-id=" + id + "]").toggleClass('target');
     }).delegate('.action.fork, .remote', 'click', function(e) {
       var name;
       name = $(e.target).data('slug');
       fetch.context = [$(e.target).data('site')];
       return finishClick(e, name);
+    }).delegate('.action', 'hover', function() {
+      var id;
+      id = $(this).attr('data-id');
+      return $("[data-id=" + id + "]").toggleClass('target');
     }).delegate('.item', 'hover', function() {
       var id;
       id = $(this).attr('data-id');

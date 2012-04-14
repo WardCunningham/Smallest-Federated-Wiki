@@ -315,14 +315,14 @@ $ ->
       fetch.context = $(e.target).attr('title').split(' => ')
       finishClick e, name
 
-    .delegate '.action', 'hover', ->
-      id = $(this).attr('data-id')
-      $("[data-id=#{id}]").toggleClass('target')
-
     .delegate '.action.fork, .remote', 'click', (e) ->
       name = $(e.target).data('slug')
       fetch.context = [$(e.target).data('site')]
       finishClick e, name
+
+    .delegate '.action', 'hover', ->
+      id = $(this).attr('data-id')
+      $("[data-id=#{id}]").toggleClass('target')
 
     .delegate '.item', 'hover', ->
       id = $(this).attr('data-id')
