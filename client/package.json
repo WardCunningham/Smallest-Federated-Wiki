@@ -5,7 +5,6 @@
   "private": true,
   "dependencies": {
     "coffee-script": "*",
-    "jquery-browserify": "*",
     "browserify": "*"
   },
   "scripts": {
@@ -25,3 +24,4 @@
     "url": "https://github.com/WardCunningham/Smallest-Federated-Wiki"
   }
 }
+
