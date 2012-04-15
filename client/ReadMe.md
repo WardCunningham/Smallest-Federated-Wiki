@@ -20,6 +20,7 @@ If you are not checking in changes you need not concern yourself with this.
 We've checked in the generated Javascript for the client application.
 
 If you do want to check in changes, install node v0.6.x
+
 * On Linux download the source from [GitHub](https://github.com/joyent/node)
 * On Windows get the installer from the [main node.js site](http://nodejs.org).
 * On Mac you should be able to choose either.
