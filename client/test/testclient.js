@@ -552,17 +552,23 @@ require.define("/test/fetch.coffee", function (require, module, exports, __dirna
     before(function() {
       return $('<div id="fetch" data-site="foo" />').appendTo('body');
     });
+    it('should have an empty context', function() {
+      return expect(fetch.context).to.eql([]);
+    });
     describe('ajax fails', function() {
-      it('should have an empty context', function() {
-        return expect(fetch.context).to.eql([]);
+      before(function() {
+        return sinon.stub(jQuery, "ajax").yieldsTo('error');
       });
-      return it('should create a page when it can not find it', function(done) {
+      it('should create a page when it can not find it', function(done) {
         return fetch($('#fetch'), function(page) {
           expect(page).to.eql({
             title: 'fetch'
           });
           return done();
         });
+      });
+      return after(function() {
+        return jQuery.ajax.restore();
       });
     });
     describe('ajax, success', function() {
@@ -853,11 +859,16 @@ require.define("/testclient.coffee", function (require, module, exports, __dirna
     }
   };
 
+  require('./test/util.coffee');
+
+  require('./test/active.coffee');
+
+  require('./test/fetch.coffee');
+
+  require('./test/plugin.coffee');
+
   $(function() {
-    require('./test/util.coffee');
-    require('./test/active.coffee');
-    require('./test/fetch.coffee');
-    require('./test/plugin.coffee');
+    $('<hr><h2> Testing artifacts:</h2>').appendTo('body');
     return mocha.run();
   });
 
