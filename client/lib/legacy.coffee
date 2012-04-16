@@ -11,6 +11,23 @@ Array::last = ->
 $ ->
 # ELEMENTS used for details popup
 
+  # # extension from http://www.droptoframe.com/?p=35
+  #   # .ui-dialog .ui-dialog-titlebar-transfer{ position: absolute; right: 23px; top: 50%; width: 19px; margin: -10px 0 0 0; padding: 1px; height: 18px; }
+  #   # .ui-dialog .ui-dialog-titlebar-transfer span { display: block; margin: 1px; }
+  #   # .ui-dialog .ui-dialog-titlebar-transfer:hover, .ui-dialog .ui-dialog-titlebar-min:focus { padding: 0; }
+  # _init = $.ui.dialog.prototype._init
+  # _uiDialogTitlebar = null
+  # $.ui.dialog.prototype._init = ->
+  #   self = this
+  #   _init.apply this, arguments
+  #   uiDialogTitlebar = this.uiDialogTitlebar
+  #   uiDialogTitlebar.append '<a href="#" id="dialog-transfer" class="dialog-transfer ui-dialog-titlebar-transfer"><span class="ui-icon ui-icon-transferthick-e-w"></span></a>'
+  # $.extend $.ui.dialog.prototype, ->
+  #   $('.dialog-transfer', this.uiDialogTitlebar)
+  #     .hover -> $(this).toggleClass('ui-state-hover')
+  #     .click() ->
+  #       self.transfer()
+  #       return false
   window.dialog = $('<div></div>')
 	  .html('This dialog will show every time!')
 	  .dialog { autoOpen: false, title: 'Basic Dialog', height: 600, width: 800 }
