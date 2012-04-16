@@ -346,7 +346,7 @@ exports.extname = function(path) {
 
 require.define("/lib/legacy.coffee", function (require, module, exports, __dirname, __filename) {
 (function() {
-  var active, fetch, plugin, state, util;
+  var active, fetch, plugin, refresh, state, util;
   var __slice = Array.prototype.slice;
 
   window.wiki = {};
@@ -361,12 +361,14 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
 
   active = require('./active.coffee');
 
+  refresh = require('./refresh.coffee');
+
   Array.prototype.last = function() {
     return this[this.length - 1];
   };
 
   $(function() {
-    var LEFTARROW, RIGHTARROW, addToJournal, createPage, doInternalLink, emitHeader, finishClick, getItem, handleDragging, initAddButton, initDragging, pushToLocal, pushToServer, putAction, refresh, resolveFrom, resolveLinks, textEditor, useLocalStorage;
+    var LEFTARROW, RIGHTARROW, addToJournal, createPage, doInternalLink, finishClick, getItem, pushToLocal, pushToServer, putAction, resolveFrom, resolveLinks, textEditor, useLocalStorage;
     window.dialog = $('<div></div>').html('This dialog will show every time!').dialog({
       autoOpen: false,
       title: 'Basic Dialog',
@@ -418,7 +420,7 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       };
       return string.replace(/\[\[([^\]]+)\]\]/gi, renderInternalLink).replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" target=\"_blank\" href=\"$1\">$2</a>");
     };
-    addToJournal = function(journalElement, action) {
+    addToJournal = wiki.addToJournal = function(journalElement, action) {
       var actionElement, pageElement, prev;
       pageElement = journalElement.parents('.page:first');
       actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(action.type[0]).attr('title', action.type).attr('data-id', action.id || "0").appendTo(journalElement);
@@ -517,7 +519,7 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       div.html(textarea);
       return textarea.focus();
     };
-    getItem = function(element) {
+    getItem = wiki.getItem = function(element) {
       if ($(element).length > 0) {
         return $(element).data("item") || JSON.parse($(element).data('staticItem'));
       }
@@ -536,134 +538,6 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       if (page != null) $(page).nextAll().remove();
       createPage(name).appendTo($('.main')).each(refresh);
       return active.set($('.page').last());
-    };
-    handleDragging = function(evt, ui) {
-      var action, before, beforeElement, destinationPageElement, equals, item, itemElement, journalElement, moveFromPage, moveToPage, moveWithinPage, order, sourcePageElement, thisPageElement;
-      itemElement = ui.item;
-      item = getItem(itemElement);
-      thisPageElement = $(this).parents('.page:first');
-      sourcePageElement = itemElement.data('pageElement');
-      destinationPageElement = itemElement.parents('.page:first');
-      journalElement = thisPageElement.find('.journal');
-      equals = function(a, b) {
-        return a && b && a.get(0) === b.get(0);
-      };
-      moveWithinPage = !sourcePageElement || equals(sourcePageElement, destinationPageElement);
-      moveFromPage = !moveWithinPage && equals(thisPageElement, sourcePageElement);
-      moveToPage = !moveWithinPage && equals(thisPageElement, destinationPageElement);
-      action = moveWithinPage ? (order = $(this).children().map(function(_, value) {
-        return $(value).attr('data-id');
-      }).get(), {
-        type: 'move',
-        order: order
-      }) : moveFromPage ? {
-        type: 'remove'
-      } : moveToPage ? (itemElement.data('pageElement', thisPageElement), beforeElement = itemElement.prev('.item'), before = getItem(beforeElement), {
-        type: 'add',
-        item: item,
-        after: before != null ? before.id : void 0
-      }) : void 0;
-      action.id = item.id;
-      return putAction(thisPageElement, action);
-    };
-    initDragging = function(pageElement) {
-      var storyElement;
-      storyElement = pageElement.find('.story');
-      return storyElement.sortable({
-        update: handleDragging,
-        connectWith: '.page .story'
-      });
-    };
-    initAddButton = function(pageElement) {
-      return pageElement.find(".add-factory").live("click", function(evt) {
-        var before, beforeElement, item, itemElement;
-        evt.preventDefault();
-        item = {
-          type: "factory",
-          id: util.randomBytes(8)
-        };
-        itemElement = $("<div />", {
-          "class": "item factory"
-        }).data('item', item).attr('data-id', item.id);
-        itemElement.data('pageElement', pageElement);
-        pageElement.find(".story").append(itemElement);
-        plugin["do"](itemElement, item);
-        beforeElement = itemElement.prev('.item');
-        before = getItem(beforeElement);
-        return putAction(pageElement, {
-          item: item,
-          id: item.id,
-          type: "add",
-          after: before != null ? before.id : void 0
-        });
-      });
-    };
-    emitHeader = function(pageElement, page) {
-      var site;
-      site = $(pageElement).data('site');
-      if (site != null) {
-        return $(pageElement).append("<h1><a href=\"//" + site + "\"><img src = \"/remote/" + site + "/favicon.png\" height = \"32px\"></a> " + page.title + "</h1>");
-      } else {
-        return $(pageElement).append($("<h1 />").append($("<a />").attr('href', '/').append($("<img>").error(function(e) {
-          return plugin.get('favicon', function(favicon) {
-            return favicon.create();
-          });
-        }).attr('class', 'favicon').attr('src', '/favicon.png').attr('height', '32px')), " " + page.title));
-      }
-    };
-    refresh = wiki.refresh = function() {
-      var buildPage, pageElement;
-      pageElement = $(this);
-      buildPage = function(data) {
-        var action, addContext, context, footerElement, journalElement, page, site, slug, storyElement, _i, _len, _ref, _ref2;
-        if (!(data != null)) {
-          pageElement.find('.item').each(function(i, each) {
-            var item;
-            item = getItem($(each));
-            return plugin.get(item.type, function(plugin) {
-              return plugin.bind($(each), item);
-            });
-          });
-        } else {
-          page = $.extend(util.emptyPage(), data);
-          $(pageElement).data("data", page);
-          slug = $(pageElement).attr('id');
-          site = $(pageElement).data('site');
-          context = ['origin'];
-          if (site != null) context.push(site);
-          addContext = function(site) {
-            if ((site != null) && !_.include(context, site)) {
-              return context.push(site);
-            }
-          };
-          _ref = page.journal.slice(0).reverse();
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            action = _ref[_i];
-            addContext(action.site);
-          }
-          wiki.resolutionContext = context;
-          wiki.log('build', slug, 'site', site, 'context', context.join(' => '));
-          emitHeader(pageElement, page);
-          _ref2 = ['story', 'journal', 'footer'].map(function(className) {
-            return $("<div />").addClass(className).appendTo(pageElement);
-          }), storyElement = _ref2[0], journalElement = _ref2[1], footerElement = _ref2[2];
-          $.each(page.story, function(i, item) {
-            var div;
-            if ($.isArray(item)) item = item[0];
-            div = $("<div />").addClass("item").addClass(item.type).attr("data-id", item.id);
-            storyElement.append(div);
-            return plugin["do"](div, item);
-          });
-          $.each(page.journal, function(i, action) {
-            return addToJournal(journalElement, action);
-          });
-          footerElement.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ').append("<a class=\"show-page-source\" href=\"/" + slug + ".json?random=" + (util.randomBytes(4)) + "\" title=\"source\">JSON</a> . ").append("<a href=\"#\" class=\"add-factory\" title=\"add paragraph\">[+]</a>");
-          state.setUrl();
-        }
-        initDragging(pageElement);
-        return initAddButton(pageElement);
-      };
-      return fetch(pageElement, buildPage);
     };
     LEFTARROW = 37;
     RIGHTARROW = 39;
@@ -1154,6 +1028,155 @@ require.define("/lib/active.coffee", function (require, module, exports, __dirna
     wiki.log('set active', el);
     $(".active").removeClass("active");
     return scrollTo(el.addClass("active"));
+  };
+
+}).call(this);
+
+});
+
+require.define("/lib/refresh.coffee", function (require, module, exports, __dirname, __filename) {
+(function() {
+  var emitHeader, fetch, handleDragging, initAddButton, initDragging, plugin, refresh, state, util;
+
+  util = require('./util.coffee');
+
+  fetch = require('./fetch.coffee');
+
+  plugin = require('./plugin.coffee');
+
+  state = require('./state.coffee');
+
+  handleDragging = function(evt, ui) {
+    var action, before, beforeElement, destinationPageElement, equals, item, itemElement, journalElement, moveFromPage, moveToPage, moveWithinPage, order, sourcePageElement, thisPageElement;
+    itemElement = ui.item;
+    item = wiki.getItem(itemElement);
+    thisPageElement = $(this).parents('.page:first');
+    sourcePageElement = itemElement.data('pageElement');
+    destinationPageElement = itemElement.parents('.page:first');
+    journalElement = thisPageElement.find('.journal');
+    equals = function(a, b) {
+      return a && b && a.get(0) === b.get(0);
+    };
+    moveWithinPage = !sourcePageElement || equals(sourcePageElement, destinationPageElement);
+    moveFromPage = !moveWithinPage && equals(thisPageElement, sourcePageElement);
+    moveToPage = !moveWithinPage && equals(thisPageElement, destinationPageElement);
+    action = moveWithinPage ? (order = $(this).children().map(function(_, value) {
+      return $(value).attr('data-id');
+    }).get(), {
+      type: 'move',
+      order: order
+    }) : moveFromPage ? {
+      type: 'remove'
+    } : moveToPage ? (itemElement.data('pageElement', thisPageElement), beforeElement = itemElement.prev('.item'), before = wiki.getItem(beforeElement), {
+      type: 'add',
+      item: item,
+      after: before != null ? before.id : void 0
+    }) : void 0;
+    action.id = item.id;
+    return wiki.putAction(thisPageElement, action);
+  };
+
+  initDragging = function(pageElement) {
+    var storyElement;
+    storyElement = pageElement.find('.story');
+    return storyElement.sortable({
+      update: handleDragging,
+      connectWith: '.page .story'
+    });
+  };
+
+  initAddButton = function(pageElement) {
+    return pageElement.find(".add-factory").live("click", function(evt) {
+      var before, beforeElement, item, itemElement;
+      evt.preventDefault();
+      item = {
+        type: "factory",
+        id: util.randomBytes(8)
+      };
+      itemElement = $("<div />", {
+        "class": "item factory"
+      }).data('item', item).attr('data-id', item.id);
+      itemElement.data('pageElement', pageElement);
+      pageElement.find(".story").append(itemElement);
+      plugin["do"](itemElement, item);
+      beforeElement = itemElement.prev('.item');
+      before = wiki.getItem(beforeElement);
+      return wiki.putAction(pageElement, {
+        item: item,
+        id: item.id,
+        type: "add",
+        after: before != null ? before.id : void 0
+      });
+    });
+  };
+
+  emitHeader = function(pageElement, page) {
+    var site;
+    site = $(pageElement).data('site');
+    if (site != null) {
+      return $(pageElement).append("<h1><a href=\"//" + site + "\"><img src = \"/remote/" + site + "/favicon.png\" height = \"32px\"></a> " + page.title + "</h1>");
+    } else {
+      return $(pageElement).append($("<h1 />").append($("<a />").attr('href', '/').append($("<img>").error(function(e) {
+        return plugin.get('favicon', function(favicon) {
+          return favicon.create();
+        });
+      }).attr('class', 'favicon').attr('src', '/favicon.png').attr('height', '32px')), " " + page.title));
+    }
+  };
+
+  module.exports = refresh = wiki.refresh = function() {
+    var buildPage, pageElement;
+    pageElement = $(this);
+    buildPage = function(data) {
+      var action, addContext, context, footerElement, journalElement, page, site, slug, storyElement, _i, _len, _ref, _ref2;
+      if (!(data != null)) {
+        pageElement.find('.item').each(function(i, each) {
+          var item;
+          item = wiki.getItem($(each));
+          return plugin.get(item.type, function(plugin) {
+            return plugin.bind($(each), item);
+          });
+        });
+      } else {
+        page = $.extend(util.emptyPage(), data);
+        $(pageElement).data("data", page);
+        slug = $(pageElement).attr('id');
+        site = $(pageElement).data('site');
+        context = ['origin'];
+        if (site != null) context.push(site);
+        addContext = function(site) {
+          if ((site != null) && !_.include(context, site)) {
+            return context.push(site);
+          }
+        };
+        _ref = page.journal.slice(0).reverse();
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          action = _ref[_i];
+          addContext(action.site);
+        }
+        wiki.resolutionContext = context;
+        wiki.log('build', slug, 'site', site, 'context', context.join(' => '));
+        emitHeader(pageElement, page);
+        _ref2 = ['story', 'journal', 'footer'].map(function(className) {
+          return $("<div />").addClass(className).appendTo(pageElement);
+        }), storyElement = _ref2[0], journalElement = _ref2[1], footerElement = _ref2[2];
+        $.each(page.story, function(i, item) {
+          var div;
+          if ($.isArray(item)) item = item[0];
+          div = $("<div />").addClass("item").addClass(item.type).attr("data-id", item.id);
+          storyElement.append(div);
+          return plugin["do"](div, item);
+        });
+        $.each(page.journal, function(i, action) {
+          return wiki.addToJournal(journalElement, action);
+        });
+        footerElement.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ').append("<a class=\"show-page-source\" href=\"/" + slug + ".json?random=" + (util.randomBytes(4)) + "\" title=\"source\">JSON</a> . ").append("<a href=\"#\" class=\"add-factory\" title=\"add paragraph\">[+]</a>");
+        state.setUrl();
+      }
+      initDragging(pageElement);
+      return initAddButton(pageElement);
+    };
+    return fetch(pageElement, buildPage);
   };
 
 }).call(this);
