@@ -4,6 +4,7 @@ fetch = require('./fetch.coffee')
 plugin = require('./plugin.coffee')
 state = require('./state.coffee')
 active = require('./active.coffee')
+refresh = require('./refresh.coffee')
 
 Array::last = ->
   this[@length - 1]
@@ -65,7 +66,7 @@ $ ->
       .replace(/\[\[([^\]]+)\]\]/gi, renderInternalLink)
       .replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" target=\"_blank\" href=\"$1\">$2</a>")
 
-  addToJournal = (journalElement, action) ->
+  addToJournal = wiki.addToJournal = (journalElement, action) ->
     pageElement = journalElement.parents('.page:first')
     actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type)
       .text(action.type[0])
@@ -148,7 +149,7 @@ $ ->
     div.html textarea
     textarea.focus()
 
-  getItem = (element) ->
+  getItem = wiki.getItem = (element) ->
     $(element).data("item") or JSON.parse($(element).data('staticItem')) if $(element).length > 0
 
   wiki.getData = ->
@@ -162,120 +163,6 @@ $ ->
       .appendTo($('.main'))
       .each refresh
     active.set($('.page').last())
-
-  handleDragging = (evt, ui) ->
-    itemElement = ui.item
-    item = getItem(itemElement)
-    thisPageElement = $(this).parents('.page:first')
-    sourcePageElement = itemElement.data('pageElement')
-    destinationPageElement = itemElement.parents('.page:first')
-    journalElement = thisPageElement.find('.journal')
-    equals = (a, b) -> a and b and a.get(0) == b.get(0)
-
-    moveWithinPage = not sourcePageElement or equals(sourcePageElement, destinationPageElement)
-    moveFromPage = not moveWithinPage and equals(thisPageElement, sourcePageElement)
-    moveToPage = not moveWithinPage and equals(thisPageElement, destinationPageElement)
-
-    action = if moveWithinPage
-      order = $(this).children().map((_, value) -> $(value).attr('data-id')).get()
-      {type: 'move', order: order}
-    else if moveFromPage
-      {type: 'remove'}
-    else if moveToPage
-      itemElement.data 'pageElement', thisPageElement
-      beforeElement = itemElement.prev('.item')
-      before = getItem(beforeElement)
-      {type: 'add', item: item, after: before?.id}
-    action.id = item.id
-    putAction thisPageElement, action
-
-  initDragging = (pageElement) ->
-    storyElement = pageElement.find('.story')
-    storyElement.sortable
-      update: handleDragging
-      connectWith: '.page .story'
-
-  initAddButton = (pageElement) ->
-    pageElement.find(".add-factory").live "click", (evt) ->
-      evt.preventDefault()
-      item =
-        type: "factory"
-        id: util.randomBytes(8)
-      itemElement = $("<div />", class: "item factory").data('item',item).attr('data-id', item.id)
-      itemElement.data 'pageElement', pageElement
-      pageElement.find(".story").append(itemElement)
-      plugin.do itemElement, item
-      beforeElement = itemElement.prev('.item')
-      before = getItem(beforeElement)
-      putAction pageElement, {item: item, id: item.id, type: "add", after: before?.id}
-
-  emitHeader = (pageElement, page) ->
-    site = $(pageElement).data('site')
-    if site?
-      $(pageElement)
-        .append "<h1><a href=\"//#{site}\"><img src = \"/remote/#{site}/favicon.png\" height = \"32px\"></a> #{page.title}</h1>"
-    else
-      $(pageElement)
-        .append(
-          $("<h1 />").append(
-            $("<a />").attr('href', '/').append(
-              $("<img>")
-                .error((e) ->
-                  plugin.get('favicon', (favicon) ->
-                    favicon.create()))
-                .attr('class', 'favicon')
-                .attr('src', '/favicon.png')
-                .attr('height', '32px')
-            ), " #{page.title}"))
-
-  refresh = wiki.refresh = ->
-    pageElement = $(this)
-
-    buildPage = (data) ->
-      if not data?
-        pageElement.find('.item').each (i, each) ->
-          item = getItem($(each))
-          plugin.get item.type, (plugin) ->
-            plugin.bind $(each), item
-      else
-        page = $.extend(util.emptyPage(), data)
-        $(pageElement).data("data", page)
-        slug = $(pageElement).attr('id')
-        site = $(pageElement).data('site')
-
-        context = ['origin']
-        context.push site if site?
-        addContext = (site) -> context.push site if site? and not _.include context, site
-        addContext action.site for action in page.journal.slice(0).reverse()
-        wiki.resolutionContext = context
-
-        wiki.log 'build', slug, 'site', site, 'context', context.join ' => '
-        emitHeader pageElement, page
-
-        [storyElement, journalElement, footerElement] = ['story', 'journal', 'footer'].map (className) ->
-          $("<div />").addClass(className).appendTo(pageElement)
-
-        $.each page.story, (i, item) ->
-          item = item[0] if $.isArray item # unwrap accidentally wrapped items
-          div = $("<div />").addClass("item").addClass(item.type).attr("data-id", item.id)
-          storyElement.append div
-          plugin.do div, item
-
-        $.each page.journal, (i, action) ->
-          addToJournal journalElement, action
-
-        footerElement
-          .append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ')
-          .append("<a class=\"show-page-source\" href=\"/#{slug}.json?random=#{util.randomBytes(4)}\" title=\"source\">JSON</a> . ")
-          .append("<a href=\"#\" class=\"add-factory\" title=\"add paragraph\">[+]</a>")
-
-        state.setUrl()
-
-      initDragging pageElement
-      initAddButton pageElement
-
-    fetch pageElement, buildPage
-
 
   LEFTARROW = 37
   RIGHTARROW = 39

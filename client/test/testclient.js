@@ -682,40 +682,179 @@ require.define("/lib/fetch.coffee", function (require, module, exports, __dirnam
 
 });
 
-require.define("/test/plugin.coffee", function (require, module, exports, __dirname, __filename) {
+require.define("/test/refresh.coffee", function (require, module, exports, __dirname, __filename) {
 (function() {
-  var plugin;
+  var refresh;
 
-  plugin = require('../lib/plugin.coffee');
+  refresh = require('../lib/refresh.coffee');
 
-  describe('plugin', function() {
+  describe('refresh', function() {
     before(function() {
-      sinon.stub(jQuery, "getScript").yieldsTo();
-      return $('<div id="plugin" />').appendTo('body');
-    });
-    it('should have default image type', function() {
-      return expect(window.plugins).to.have.property('image');
-    });
-    it('should get a plugin', function(done) {
-      return plugin.get('test', function() {
-        expect(jQuery.getScript.calledOnce).to.be(true);
-        expect(jQuery.getScript.args[0][0]).to.be('/plugins/test.js');
-        return done();
+      sinon.stub(jQuery, "ajax").yieldsTo('success', {
+        title: 'asdf'
       });
+      return $('<div id="refresh" />').appendTo('body');
     });
-    it('should render a plugin', function() {
-      var item;
-      item = {
-        type: 'paragraph',
-        text: 'blah [[Link]] asdf'
-      };
-      plugin["do"]($('#plugin'), item);
-      return expect($('#plugin').html()).to.be('<p>blah <a class="internal" href="/link.html" data-page-name="link" title="origin">Link</a> asdf</p>');
+    it('should refresh a page', function(done) {
+      $('#refresh').each(refresh);
+      return setTimeout(function() {
+        expect($('#refresh h1').text()).to.be(' asdf');
+        return done();
+      }, 1000);
     });
     return after(function() {
-      return jQuery.getScript.restore();
+      return jQuery.ajax.restore();
     });
   });
+
+}).call(this);
+
+});
+
+require.define("/lib/refresh.coffee", function (require, module, exports, __dirname, __filename) {
+(function() {
+  var emitHeader, fetch, handleDragging, initAddButton, initDragging, plugin, refresh, state, util;
+
+  util = require('./util.coffee');
+
+  fetch = require('./fetch.coffee');
+
+  plugin = require('./plugin.coffee');
+
+  state = require('./state.coffee');
+
+  handleDragging = function(evt, ui) {
+    var action, before, beforeElement, destinationPageElement, equals, item, itemElement, journalElement, moveFromPage, moveToPage, moveWithinPage, order, sourcePageElement, thisPageElement;
+    itemElement = ui.item;
+    item = wiki.getItem(itemElement);
+    thisPageElement = $(this).parents('.page:first');
+    sourcePageElement = itemElement.data('pageElement');
+    destinationPageElement = itemElement.parents('.page:first');
+    journalElement = thisPageElement.find('.journal');
+    equals = function(a, b) {
+      return a && b && a.get(0) === b.get(0);
+    };
+    moveWithinPage = !sourcePageElement || equals(sourcePageElement, destinationPageElement);
+    moveFromPage = !moveWithinPage && equals(thisPageElement, sourcePageElement);
+    moveToPage = !moveWithinPage && equals(thisPageElement, destinationPageElement);
+    action = moveWithinPage ? (order = $(this).children().map(function(_, value) {
+      return $(value).attr('data-id');
+    }).get(), {
+      type: 'move',
+      order: order
+    }) : moveFromPage ? {
+      type: 'remove'
+    } : moveToPage ? (itemElement.data('pageElement', thisPageElement), beforeElement = itemElement.prev('.item'), before = wiki.getItem(beforeElement), {
+      type: 'add',
+      item: item,
+      after: before != null ? before.id : void 0
+    }) : void 0;
+    action.id = item.id;
+    return wiki.putAction(thisPageElement, action);
+  };
+
+  initDragging = function(pageElement) {
+    var storyElement;
+    storyElement = pageElement.find('.story');
+    return storyElement.sortable({
+      update: handleDragging,
+      connectWith: '.page .story'
+    });
+  };
+
+  initAddButton = function(pageElement) {
+    return pageElement.find(".add-factory").live("click", function(evt) {
+      var before, beforeElement, item, itemElement;
+      evt.preventDefault();
+      item = {
+        type: "factory",
+        id: util.randomBytes(8)
+      };
+      itemElement = $("<div />", {
+        "class": "item factory"
+      }).data('item', item).attr('data-id', item.id);
+      itemElement.data('pageElement', pageElement);
+      pageElement.find(".story").append(itemElement);
+      plugin["do"](itemElement, item);
+      beforeElement = itemElement.prev('.item');
+      before = wiki.getItem(beforeElement);
+      return wiki.putAction(pageElement, {
+        item: item,
+        id: item.id,
+        type: "add",
+        after: before != null ? before.id : void 0
+      });
+    });
+  };
+
+  emitHeader = function(pageElement, page) {
+    var site;
+    site = $(pageElement).data('site');
+    if (site != null) {
+      return $(pageElement).append("<h1><a href=\"//" + site + "\"><img src = \"/remote/" + site + "/favicon.png\" height = \"32px\"></a> " + page.title + "</h1>");
+    } else {
+      return $(pageElement).append($("<h1 />").append($("<a />").attr('href', '/').append($("<img>").error(function(e) {
+        return plugin.get('favicon', function(favicon) {
+          return favicon.create();
+        });
+      }).attr('class', 'favicon').attr('src', '/favicon.png').attr('height', '32px')), " " + page.title));
+    }
+  };
+
+  module.exports = refresh = wiki.refresh = function() {
+    var buildPage, pageElement;
+    pageElement = $(this);
+    buildPage = function(data) {
+      var action, addContext, context, footerElement, journalElement, page, site, slug, storyElement, _i, _len, _ref, _ref2;
+      if (!(data != null)) {
+        pageElement.find('.item').each(function(i, each) {
+          var item;
+          item = wiki.getItem($(each));
+          return plugin.get(item.type, function(plugin) {
+            return plugin.bind($(each), item);
+          });
+        });
+      } else {
+        page = $.extend(util.emptyPage(), data);
+        $(pageElement).data("data", page);
+        slug = $(pageElement).attr('id');
+        site = $(pageElement).data('site');
+        context = ['origin'];
+        if (site != null) context.push(site);
+        addContext = function(site) {
+          if ((site != null) && !_.include(context, site)) {
+            return context.push(site);
+          }
+        };
+        _ref = page.journal.slice(0).reverse();
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          action = _ref[_i];
+          addContext(action.site);
+        }
+        wiki.resolutionContext = context;
+        wiki.log('build', slug, 'site', site, 'context', context.join(' => '));
+        emitHeader(pageElement, page);
+        _ref2 = ['story', 'journal', 'footer'].map(function(className) {
+          return $("<div />").addClass(className).appendTo(pageElement);
+        }), storyElement = _ref2[0], journalElement = _ref2[1], footerElement = _ref2[2];
+        $.each(page.story, function(i, item) {
+          var div;
+          if ($.isArray(item)) item = item[0];
+          div = $("<div />").addClass("item").addClass(item.type).attr("data-id", item.id);
+          storyElement.append(div);
+          return plugin["do"](div, item);
+        });
+        $.each(page.journal, function(i, action) {
+          return wiki.addToJournal(journalElement, action);
+        });
+        footerElement.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ').append("<a class=\"show-page-source\" href=\"/" + slug + ".json?random=" + (util.randomBytes(4)) + "\" title=\"source\">JSON</a> . ").append("<a href=\"#\" class=\"add-factory\" title=\"add paragraph\">[+]</a>");
+        state.setUrl();
+      }
+      initDragging(pageElement);
+      return initAddButton(pageElement);
+    };
+    return fetch(pageElement, buildPage);
+  };
 
 }).call(this);
 
@@ -843,6 +982,160 @@ require.define("/lib/plugin.coffee", function (require, module, exports, __dirna
 
 });
 
+require.define("/lib/state.coffee", function (require, module, exports, __dirname, __filename) {
+(function() {
+  var active, state;
+  var __hasProp = Object.prototype.hasOwnProperty, __indexOf = Array.prototype.indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (__hasProp.call(this, i) && this[i] === item) return i; } return -1; };
+
+  active = require('./active');
+
+  module.exports = state = {};
+
+  state.pagesInDom = function() {
+    return $.makeArray($(".page").map(function(_, el) {
+      return el.id;
+    }));
+  };
+
+  state.urlPages = function() {
+    var i;
+    return ((function() {
+      var _i, _len, _ref, _results, _step;
+      _ref = $(location).attr('pathname').split('/');
+      _results = [];
+      for (_i = 0, _len = _ref.length, _step = 2; _i < _len; _i += _step) {
+        i = _ref[_i];
+        _results.push(i);
+      }
+      return _results;
+    })()).slice(1);
+  };
+
+  state.locsInDom = function() {
+    return $.makeArray($(".page").map(function(_, el) {
+      return $(el).data('site') || 'view';
+    }));
+  };
+
+  state.urlLocs = function() {
+    var j, _i, _len, _ref, _results, _step;
+    _ref = $(location).attr('pathname').split('/').slice(1);
+    _results = [];
+    for (_i = 0, _len = _ref.length, _step = 2; _i < _len; _i += _step) {
+      j = _ref[_i];
+      _results.push(j);
+    }
+    return _results;
+  };
+
+  state.setUrl = function() {
+    var idx, locs, page, pages, url;
+    if (history && history.pushState) {
+      locs = state.locsInDom();
+      pages = state.pagesInDom();
+      url = ((function() {
+        var _len, _results;
+        _results = [];
+        for (idx = 0, _len = pages.length; idx < _len; idx++) {
+          page = pages[idx];
+          _results.push("/" + ((locs != null ? locs[idx] : void 0) || 'view') + "/" + page);
+        }
+        return _results;
+      })()).join('');
+      if (url !== $(location).attr('pathname')) {
+        wiki.log('set state', locs, pages);
+        return history.pushState(null, null, url);
+      }
+    }
+  };
+
+  state.show = function(e) {
+    var idx, name, newLocs, newPages, old, oldLocs, oldPages, previous, _len;
+    wiki.log('popstate', e);
+    oldPages = state.pagesInDom();
+    newPages = state.urlPages();
+    oldLocs = state.locsInDom();
+    newLocs = state.urlLocs();
+    if (!location.pathname || location.pathname === '/') return;
+    wiki.log('showState', oldPages, newPages, oldLocs, newLocs);
+    previous = $('.page').eq(0);
+    for (idx = 0, _len = newPages.length; idx < _len; idx++) {
+      name = newPages[idx];
+      if (name !== oldPages[idx]) {
+        old = $('.page').eq(idx);
+        if (old) old.remove();
+        wiki.createPage(name, newLocs[idx]).insertAfter(previous).each(wiki.refresh);
+      }
+      previous = $('.page').eq(idx);
+    }
+    previous.nextAll().remove();
+    return active.set($('.page').last());
+  };
+
+  state.first = function() {
+    var firstUrlLocs, firstUrlPages, idx, oldPages, urlPage, _len, _results;
+    state.setUrl();
+    firstUrlPages = state.urlPages();
+    firstUrlLocs = state.urlLocs();
+    oldPages = state.pagesInDom();
+    wiki.log('amost createPage', firstUrlPages, firstUrlLocs, oldPages);
+    _results = [];
+    for (idx = 0, _len = firstUrlPages.length; idx < _len; idx++) {
+      urlPage = firstUrlPages[idx];
+      if (!(__indexOf.call(oldPages, urlPage) < 0)) continue;
+      wiki.log('createPage', urlPage, idx);
+      if (urlPage !== '') {
+        _results.push(wiki.createPage(urlPage, firstUrlLocs[idx]).appendTo('.main'));
+      } else {
+        _results.push(void 0);
+      }
+    }
+    return _results;
+  };
+
+}).call(this);
+
+});
+
+require.define("/test/plugin.coffee", function (require, module, exports, __dirname, __filename) {
+(function() {
+  var plugin;
+
+  plugin = require('../lib/plugin.coffee');
+
+  describe('plugin', function() {
+    before(function() {
+      sinon.stub(jQuery, "getScript").yieldsTo();
+      return $('<div id="plugin" />').appendTo('body');
+    });
+    it('should have default image type', function() {
+      return expect(window.plugins).to.have.property('image');
+    });
+    it('should get a plugin', function(done) {
+      return plugin.get('test', function() {
+        expect(jQuery.getScript.calledOnce).to.be(true);
+        expect(jQuery.getScript.args[0][0]).to.be('/plugins/test.js');
+        return done();
+      });
+    });
+    it('should render a plugin', function() {
+      var item;
+      item = {
+        type: 'paragraph',
+        text: 'blah [[Link]] asdf'
+      };
+      plugin["do"]($('#plugin'), item);
+      return expect($('#plugin').html()).to.be('<p>blah <a class="internal" href="/link.html" data-page-name="link" title="origin">Link</a> asdf</p>');
+    });
+    return after(function() {
+      return jQuery.getScript.restore();
+    });
+  });
+
+}).call(this);
+
+});
+
 require.define("/testclient.coffee", function (require, module, exports, __dirname, __filename) {
     (function() {
   var __slice = Array.prototype.slice;
@@ -864,6 +1157,8 @@ require.define("/testclient.coffee", function (require, module, exports, __dirna
   require('./test/active.coffee');
 
   require('./test/fetch.coffee');
+
+  require('./test/refresh.coffee');
 
   require('./test/plugin.coffee');
 
