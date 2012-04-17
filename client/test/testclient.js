@@ -862,7 +862,9 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
 
 require.define("/lib/plugin.coffee", function (require, module, exports, __dirname, __filename) {
 (function() {
-  var getScript, plugin, scripts;
+  var getScript, plugin, scripts, util;
+
+  util = require('./util.coffee');
 
   module.exports = plugin = {};
 

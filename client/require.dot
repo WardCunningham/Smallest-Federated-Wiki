@@ -17,6 +17,8 @@ digraph require {
 	legacy -> active [label = set];
 	legacy -> refresh;
 
+	plugin -> util;
+
 	refresh -> util;
 	refresh -> fetch;
 	refresh -> plugin;
