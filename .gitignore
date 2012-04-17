@@ -5,4 +5,5 @@
 /data
 /spec/data
 /client/js
+/client/node_modules
 /server/express/node_modules
