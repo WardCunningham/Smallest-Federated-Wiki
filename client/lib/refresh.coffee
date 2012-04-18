@@ -18,14 +18,14 @@ handleDragging = (evt, ui) ->
 
   action = if moveWithinPage
     order = $(this).children().map((_, value) -> $(value).attr('data-id')).get()
-    {type: 'move', order: order, date: (new Date()).getTime()}
+    {type: 'move', order: order}
   else if moveFromPage
-    {type: 'remove', date: (new Date()).getTime()}
+    {type: 'remove'}
   else if moveToPage
     itemElement.data 'pageElement', thisPageElement
     beforeElement = itemElement.prev('.item')
     before = wiki.getItem(beforeElement)
-    {type: 'add', item: item, after: before?.id, date: (new Date()).getTime()}
+    {type: 'add', item: item, after: before?.id}
   action.id = item.id
   wiki.putAction thisPageElement, action
 
@@ -47,7 +47,7 @@ initAddButton = (pageElement) ->
     plugin.do itemElement, item
     beforeElement = itemElement.prev('.item')
     before = wiki.getItem(beforeElement)
-    wiki.putAction pageElement, {item: item, id: item.id, type: "add", after: before?.id, date: (new Date()).getTime()}
+    wiki.putAction pageElement, {item: item, id: item.id, type: "add", after: before?.id}
 
 emitHeader = (pageElement, page) ->
   site = $(pageElement).data('site')

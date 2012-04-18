@@ -92,6 +92,7 @@ $ ->
     $(".login").length > 0
 
   putAction = wiki.putAction = (pageElement, action) ->
+    action.date = (new Date()).getTime()
     if (site = pageElement.data('site'))?
       action.fork = site
       pageElement.find('h1 img').attr('src', '/favicon.png')
@@ -136,9 +137,9 @@ $ ->
         if item.text = textarea.val()
           plugin.do div.empty(), item
           return if item.text == original
-          putAction div.parents('.page:first'), {type: 'edit', id: item.id, item: item, date: (new Date()).getTime()}
+          putAction div.parents('.page:first'), {type: 'edit', id: item.id, item: item}
         else
-          putAction div.parents('.page:first'), {type: 'remove', id: item.id, date: (new Date()).getTime()}
+          putAction div.parents('.page:first'), {type: 'remove', id: item.id}
           div.remove()
         null
       .bind 'keydown', (e) ->
