@@ -68,9 +68,13 @@ $ ->
 
   addToJournal = wiki.addToJournal = (journalElement, action) ->
     pageElement = journalElement.parents('.page:first')
+    prev = journalElement.find(".edit[data-id=#{action.id || 0}]") if action.type == 'edit'
+    actionTitle = action.type
+    actionTitle += "(#{prev.length})" if action.type == 'edit'
+    actionTitle += ": #{util.formatDate(action.date)}" if action.date?
     actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type)
       .text(action.type[0])
-      .attr('title',action.type)
+      .attr('title',actionTitle)
       .attr('data-id', action.id || "0")
       .appendTo(journalElement)
     if action.type == 'fork'
@@ -82,15 +86,13 @@ $ ->
     else
       actionElement.on 'click', ->
         wiki.dialog "#{action.type} action", $('<pre/>').text(JSON.stringify(action, null, 2))
-    if action.type == 'edit'
-      prev = journalElement.find(".edit[data-id=#{action.id || 0}]")
-      actionElement.attr 'title', "edit #{prev.length}"
 
   useLocalStorage = wiki.useLocalStorage = ->
     wiki.log 'useLocalStorage', $(".login").length > 0
     $(".login").length > 0
 
   putAction = wiki.putAction = (pageElement, action) ->
+    action.date = (new Date()).getTime()
     if (site = pageElement.data('site'))?
       action.fork = site
       pageElement.find('h1 img').attr('src', '/favicon.png')
@@ -100,6 +102,7 @@ $ ->
       addToJournal pageElement.find('.journal'),
         type: 'fork'
         site: site
+        date: (new Date()).getTime()
     if useLocalStorage()
       pushToLocal(pageElement, action)
       pageElement.addClass("local")
