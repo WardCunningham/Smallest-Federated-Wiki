@@ -421,19 +421,23 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       return string.replace(/\[\[([^\]]+)\]\]/gi, renderInternalLink).replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" target=\"_blank\" href=\"$1\">$2</a>");
     };
     addToJournal = wiki.addToJournal = function(journalElement, action) {
-      var actionElement, pageElement, prev;
+      var actionElement, actionTitle, pageElement, prev;
       pageElement = journalElement.parents('.page:first');
-      actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(action.type[0]).attr('title', action.type).attr('data-id', action.id || "0").appendTo(journalElement);
-      if (action.type === 'fork') {
-        actionElement.css("background-image", "url(//" + action.site + "/favicon.png)").attr("href", "//" + action.site + "/" + (pageElement.attr('id')) + ".html").data("site", action.site).data("slug", pageElement.attr('id'));
-      } else {
-        actionElement.on('click', function() {
-          return wiki.dialog("" + action.type + " action", $('<pre/>').text(JSON.stringify(action, null, 2)));
-        });
-      }
       if (action.type === 'edit') {
         prev = journalElement.find(".edit[data-id=" + (action.id || 0) + "]");
-        return actionElement.attr('title', "edit " + prev.length);
+      }
+      actionTitle = action.type;
+      if (action.type === 'edit') actionTitle += "(" + prev.length + ")";
+      if (action.date != null) {
+        actionTitle += ": " + (util.formatDate(action.date));
+      }
+      actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(action.type[0]).attr('title', actionTitle).attr('data-id', action.id || "0").appendTo(journalElement);
+      if (action.type === 'fork') {
+        return actionElement.css("background-image", "url(//" + action.site + "/favicon.png)").attr("href", "//" + action.site + "/" + (pageElement.attr('id')) + ".html").data("site", action.site).data("slug", pageElement.attr('id'));
+      } else {
+        return actionElement.on('click', function() {
+          return wiki.dialog("" + action.type + " action", $('<pre/>').text(JSON.stringify(action, null, 2)));
+        });
       }
     };
     useLocalStorage = wiki.useLocalStorage = function() {
@@ -442,6 +446,7 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
     };
     putAction = wiki.putAction = function(pageElement, action) {
       var site;
+      action.date = (new Date()).getTime();
       if ((site = pageElement.data('site')) != null) {
         action.fork = site;
         pageElement.find('h1 img').attr('src', '/favicon.png');
@@ -450,7 +455,8 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
         state.setUrl();
         addToJournal(pageElement.find('.journal'), {
           type: 'fork',
-          site: site
+          site: site,
+          date: (new Date()).getTime()
         });
       }
       if (useLocalStorage()) {
@@ -649,6 +655,21 @@ require.define("/lib/util.coffee", function (require, module, exports, __dirname
     h = h === 0 ? 12 : h > 12 ? h - 12 : h;
     mi = (d.getMinutes() < 10 ? "0" : "") + d.getMinutes();
     return "" + h + ":" + mi + " " + am + "<br>" + (d.getDate()) + " " + mo + " " + (d.getFullYear());
+  };
+
+  util.formatDate = function(msSinceEpoch) {
+    var am, d, day, h, mi, mo, sec, wk, yr;
+    d = new Date(msSinceEpoch);
+    wk = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d.getDay()];
+    mo = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()];
+    day = d.getDate();
+    yr = d.getFullYear();
+    h = d.getHours();
+    am = h < 12 ? 'AM' : 'PM';
+    h = h === 0 ? 12 : h > 12 ? h - 12 : h;
+    mi = (d.getMinutes() < 10 ? "0" : "") + d.getMinutes();
+    sec = (d.getSeconds() < 10 ? "0" : "") + d.getSeconds();
+    return "" + wk + " " + mo + " " + day + " " + yr + " " + h + ":" + mi + ":" + sec + " " + am;
   };
 
   util.asSlug = function(name) {

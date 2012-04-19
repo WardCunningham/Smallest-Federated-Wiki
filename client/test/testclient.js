@@ -432,6 +432,21 @@ require.define("/lib/util.coffee", function (require, module, exports, __dirname
     return "" + h + ":" + mi + " " + am + "<br>" + (d.getDate()) + " " + mo + " " + (d.getFullYear());
   };
 
+  util.formatDate = function(msSinceEpoch) {
+    var am, d, day, h, mi, mo, sec, wk, yr;
+    d = new Date(msSinceEpoch);
+    wk = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d.getDay()];
+    mo = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()];
+    day = d.getDate();
+    yr = d.getFullYear();
+    h = d.getHours();
+    am = h < 12 ? 'AM' : 'PM';
+    h = h === 0 ? 12 : h > 12 ? h - 12 : h;
+    mi = (d.getMinutes() < 10 ? "0" : "") + d.getMinutes();
+    sec = (d.getSeconds() < 10 ? "0" : "") + d.getSeconds();
+    return "" + wk + " " + mo + " " + day + " " + yr + " " + h + ":" + mi + ":" + sec + " " + am;
+  };
+
   util.asSlug = function(name) {
     return name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase();
   };
