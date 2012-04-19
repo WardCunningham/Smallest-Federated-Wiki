@@ -551,11 +551,11 @@ require.define("/lib/active.coffee", function (require, module, exports, __dirna
 
 });
 
-require.define("/test/fetch.coffee", function (require, module, exports, __dirname, __filename) {
+require.define("/test/pageHandler.coffee", function (require, module, exports, __dirname, __filename) {
 (function() {
-  var fetch;
+  var pageHandler;
 
-  fetch = require('../lib/fetch.coffee');
+  pageHandler = require('../lib/pageHandler.coffee');
 
   wiki.useLocalStorage = function() {
     return false;
@@ -563,21 +563,21 @@ require.define("/test/fetch.coffee", function (require, module, exports, __dirna
 
   wiki.putAction = function() {};
 
-  describe('fetch', function() {
+  describe('pageHandler.get', function() {
     before(function() {
-      return $('<div id="fetch" data-site="foo" />').appendTo('body');
+      return $('<div id="pageHandler" data-site="foo" />').appendTo('body');
     });
     it('should have an empty context', function() {
-      return expect(fetch.context).to.eql([]);
+      return expect(pageHandler.context).to.eql([]);
     });
     describe('ajax fails', function() {
       before(function() {
         return sinon.stub(jQuery, "ajax").yieldsTo('error');
       });
       it('should create a page when it can not find it', function(done) {
-        return fetch($('#fetch'), function(page) {
+        return pageHandler.get($('#pageHandler'), function(page) {
           expect(page).to.eql({
-            title: 'fetch'
+            title: 'pageHandler'
           });
           return done();
         });
@@ -590,11 +590,11 @@ require.define("/test/fetch.coffee", function (require, module, exports, __dirna
       before(function() {
         return sinon.stub(jQuery, "ajax").yieldsTo('success', 'test');
       });
-      it('should fetch a page from specific site', function(done) {
-        return fetch($('#fetch'), function(page) {
+      it('should get a page from specific site', function(done) {
+        return pageHandler.get($('#pageHandler'), function(page) {
           expect(jQuery.ajax.calledOnce).to.be["true"];
           expect(jQuery.ajax.args[0][0]).to.have.property('type', 'GET');
-          expect(jQuery.ajax.args[0][0].url).to.match(/^\/remote\/foo\/fetch\.json\?random=[a-z0-9]{8}$/);
+          expect(jQuery.ajax.args[0][0].url).to.match(/^\/remote\/foo\/pageHandler\.json\?random=[a-z0-9]{8}$/);
           return done();
         });
       });
@@ -604,16 +604,16 @@ require.define("/test/fetch.coffee", function (require, module, exports, __dirna
     });
     return describe('ajax, search', function() {
       before(function() {
-        $('<div id="fetch2" />').appendTo('body');
+        $('<div id="pageHandler2" />').appendTo('body');
         sinon.stub(jQuery, "ajax").yieldsTo('error');
-        return fetch.context = ['origin', 'example.com', 'asdf.test', 'foo.bar'];
+        return pageHandler.context = ['origin', 'example.com', 'asdf.test', 'foo.bar'];
       });
       it('should search through the context for a page', function(done) {
-        return fetch($('#fetch2'), function(page) {
-          expect(jQuery.ajax.args[0][0].url).to.match(/^\/fetch2\.json\?random=[a-z0-9]{8}$/);
-          expect(jQuery.ajax.args[1][0].url).to.match(/^\/remote\/example.com\/fetch2\.json\?random=[a-z0-9]{8}$/);
-          expect(jQuery.ajax.args[2][0].url).to.match(/^\/remote\/asdf.test\/fetch2\.json\?random=[a-z0-9]{8}$/);
-          expect(jQuery.ajax.args[3][0].url).to.match(/^\/remote\/foo.bar\/fetch2\.json\?random=[a-z0-9]{8}$/);
+        return pageHandler.get($('#pageHandler2'), function(page) {
+          expect(jQuery.ajax.args[0][0].url).to.match(/^\/pageHandler2\.json\?random=[a-z0-9]{8}$/);
+          expect(jQuery.ajax.args[1][0].url).to.match(/^\/remote\/example.com\/pageHandler2\.json\?random=[a-z0-9]{8}$/);
+          expect(jQuery.ajax.args[2][0].url).to.match(/^\/remote\/asdf.test\/pageHandler2\.json\?random=[a-z0-9]{8}$/);
+          expect(jQuery.ajax.args[3][0].url).to.match(/^\/remote\/foo.bar\/pageHandler2\.json\?random=[a-z0-9]{8}$/);
           return done();
         });
       });
@@ -623,17 +623,46 @@ require.define("/test/fetch.coffee", function (require, module, exports, __dirna
     });
   });
 
+  describe('pageHandler.put', function() {
+    before(function() {
+      $('<div id="pageHandler3" />').appendTo('body');
+      return sinon.stub(jQuery, "ajax").yieldsTo('success');
+    });
+    it('should save an action', function(done) {
+      var action;
+      action = {
+        type: 'edit',
+        id: 1,
+        item: {
+          id: 1
+        }
+      };
+      wiki.addToJournal = function() {
+        expect(jQuery.ajax.args[0][0].data).to.eql({
+          action: JSON.stringify(action)
+        });
+        return done();
+      };
+      return pageHandler.put($('#pageHandler3'), action);
+    });
+    return after(function() {
+      return jQuery.ajax.restore();
+    });
+  });
+
 }).call(this);
 
 });
 
-require.define("/lib/fetch.coffee", function (require, module, exports, __dirname, __filename) {
+require.define("/lib/pageHandler.coffee", function (require, module, exports, __dirname, __filename) {
 (function() {
-  var probe, util;
+  var pageHandler, pushToLocal, pushToServer, util;
 
   util = require('./util');
 
-  probe = function(pageElement, callback, localContext) {
+  module.exports = pageHandler = {};
+
+  pageHandler.get = function(pageElement, callback, localContext) {
     var i, json, resource, site, slug;
     slug = pageElement.attr('id');
     site = pageElement.data('site');
@@ -642,11 +671,11 @@ require.define("/lib/fetch.coffee", function (require, module, exports, __dirnam
       pageElement.addClass("local");
       callback(JSON.parse(json));
     }
-    if (!(probe.context.length > 0)) probe.context = ['origin'];
+    if (!(pageHandler.context.length > 0)) pageHandler.context = ['origin'];
     if (localContext == null) {
       localContext = (function() {
         var _i, _len, _ref, _results;
-        _ref = probe.context;
+        _ref = pageHandler.context;
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           i = _ref[_i];
@@ -670,7 +699,7 @@ require.define("/lib/fetch.coffee", function (require, module, exports, __dirnam
       error: function(xhr, type, msg) {
         var page, title;
         if (localContext.length > 0) {
-          return probe(pageElement, callback, localContext);
+          return pageHandler.get(pageElement, callback, localContext);
         } else {
           site = null;
           title = $("a[href=\"/" + slug + ".html\"]").html();
@@ -689,9 +718,61 @@ require.define("/lib/fetch.coffee", function (require, module, exports, __dirnam
     });
   };
 
-  probe.context = [];
+  pageHandler.context = [];
 
-  module.exports = probe;
+  pushToLocal = function(pageElement, action) {
+    var page;
+    page = localStorage[pageElement.attr("id")];
+    if (page) page = JSON.parse(page);
+    if (action.type === 'create') page = action.item;
+    page || (page = pageElement.data("data"));
+    if (page.journal == null) page.journal = [];
+    page.journal.concat(action);
+    page.story = $(pageElement).find(".item").map(function() {
+      return $(this).data("item");
+    }).get();
+    localStorage[pageElement.attr("id")] = JSON.stringify(page);
+    return wiki.addToJournal(pageElement.find('.journal'), action);
+  };
+
+  pushToServer = function(pageElement, action) {
+    return $.ajax({
+      type: 'PUT',
+      url: "/page/" + (pageElement.attr('id')) + "/action",
+      data: {
+        'action': JSON.stringify(action)
+      },
+      success: function() {
+        return wiki.addToJournal(pageElement.find('.journal'), action);
+      },
+      error: function(xhr, type, msg) {
+        return wiki.log("ajax error callback", type, msg);
+      }
+    });
+  };
+
+  pageHandler.put = function(pageElement, action) {
+    var site;
+    action.date = (new Date()).getTime();
+    if ((site = pageElement.data('site')) != null) {
+      action.fork = site;
+      pageElement.find('h1 img').attr('src', '/favicon.png');
+      pageElement.find('h1 a').attr('href', '/');
+      pageElement.data('site', null);
+      state.setUrl();
+      wiki.addToJournal(pageElement.find('.journal'), {
+        type: 'fork',
+        site: site,
+        date: (new Date()).getTime()
+      });
+    }
+    if (wiki.useLocalStorage()) {
+      pushToLocal(pageElement, action);
+      return pageElement.addClass("local");
+    } else {
+      return pushToServer(pageElement, action);
+    }
+  };
 
 }).call(this);
 
@@ -728,11 +809,11 @@ require.define("/test/refresh.coffee", function (require, module, exports, __dir
 
 require.define("/lib/refresh.coffee", function (require, module, exports, __dirname, __filename) {
 (function() {
-  var emitHeader, fetch, handleDragging, initAddButton, initDragging, plugin, refresh, state, util;
+  var emitHeader, handleDragging, initAddButton, initDragging, pageHandler, plugin, refresh, state, util;
 
   util = require('./util.coffee');
 
-  fetch = require('./fetch.coffee');
+  pageHandler = require('./pageHandler.coffee');
 
   plugin = require('./plugin.coffee');
 
@@ -765,7 +846,7 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
       after: before != null ? before.id : void 0
     }) : void 0;
     action.id = item.id;
-    return wiki.putAction(thisPageElement, action);
+    return pageHandler.put(thisPageElement, action);
   };
 
   initDragging = function(pageElement) {
@@ -793,7 +874,7 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
       plugin["do"](itemElement, item);
       beforeElement = itemElement.prev('.item');
       before = wiki.getItem(beforeElement);
-      return wiki.putAction(pageElement, {
+      return pageHandler.put(pageElement, {
         item: item,
         id: item.id,
         type: "add",
@@ -868,7 +949,7 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
       initDragging(pageElement);
       return initAddButton(pageElement);
     };
-    return fetch(pageElement, buildPage);
+    return pageHandler.get(pageElement, buildPage);
   };
 
 }).call(this);
@@ -1173,7 +1254,7 @@ require.define("/testclient.coffee", function (require, module, exports, __dirna
 
   require('./test/active.coffee');
 
-  require('./test/fetch.coffee');
+  require('./test/pageHandler.coffee');
 
   require('./test/refresh.coffee');
 

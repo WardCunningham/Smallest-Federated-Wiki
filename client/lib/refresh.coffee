@@ -1,5 +1,5 @@
 util = require('./util.coffee')
-fetch = require('./fetch.coffee')
+pageHandler = require('./pageHandler.coffee')
 plugin = require('./plugin.coffee')
 state = require('./state.coffee')
 
@@ -27,7 +27,7 @@ handleDragging = (evt, ui) ->
     before = wiki.getItem(beforeElement)
     {type: 'add', item: item, after: before?.id}
   action.id = item.id
-  wiki.putAction thisPageElement, action
+  pageHandler.put thisPageElement, action
 
 initDragging = (pageElement) ->
   storyElement = pageElement.find('.story')
@@ -47,7 +47,7 @@ initAddButton = (pageElement) ->
     plugin.do itemElement, item
     beforeElement = itemElement.prev('.item')
     before = wiki.getItem(beforeElement)
-    wiki.putAction pageElement, {item: item, id: item.id, type: "add", after: before?.id}
+    pageHandler.put pageElement, {item: item, id: item.id, type: "add", after: before?.id}
 
 emitHeader = (pageElement, page) ->
   site = $(pageElement).data('site')
@@ -114,5 +114,5 @@ module.exports = refresh = wiki.refresh = ->
     initDragging pageElement
     initAddButton pageElement
 
-  fetch pageElement, buildPage
+  pageHandler.get pageElement, buildPage
 

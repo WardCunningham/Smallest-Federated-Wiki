@@ -7,7 +7,7 @@ wiki.log = (things...) ->
 
 require('./test/util.coffee')
 require('./test/active.coffee')
-require('./test/fetch.coffee')
+require('./test/pageHandler.coffee')
 require('./test/refresh.coffee')
 require('./test/plugin.coffee')
 
