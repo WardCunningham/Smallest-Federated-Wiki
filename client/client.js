@@ -456,7 +456,7 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
         addToJournal(pageElement.find('.journal'), {
           type: 'fork',
           site: site,
-          date: (new Date()).getTime()
+          date: action.date
         });
       }
       if (useLocalStorage()) {
