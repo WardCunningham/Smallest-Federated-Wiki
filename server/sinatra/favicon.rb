@@ -3,7 +3,7 @@ require 'png'
 
 class Favicon
   class << self
-    def create(path)
+    def create_blob
       canvas = PNG::Canvas.new 32, 32
       light = PNG::Color.from_hsv(256*rand,200,255).rgb()
       dark = PNG::Color.from_hsv(256*rand,200,125).rgb()
@@ -20,8 +20,7 @@ class Favicon
             light[2]*p + dark[2]*(1-p))
         end
       end
-      png = PNG.new canvas
-      png.save path
+      PNG.new(canvas).to_blob
     end
   end
 end

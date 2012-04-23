@@ -52,3 +52,16 @@ The server will create subdirectories with farm for each virtual host name and l
 The thin web server cannot handle recursive web requests that can happen with federated sites hosted in the same farm. Use webrick instead. Launch it with this command:
 
 	bundle exec rackup -s webrick -p 1111
+
+CouchDB
+=======
+
+By default, all pages, favicons, and server claims are stored in the server's local filesystem.
+If you'd prefer to use CouchDB for storage, you need to set two environment variables:
+
+	STORE_TYPE=CouchStore
+	COUCHDB_URL=https://username:password@some-couchdb-host.com
+
+If you want to run a farm with CouchDB, you should also set this environment variable:
+
+	FARM_MODE=true
