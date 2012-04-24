@@ -3,7 +3,7 @@
   window.plugins.method = {
     emit: function(div, item) {},
     bind: function(div, item) {
-      var avg, calculate, data, input, round, row, sum, table, text, title, _i, _len;
+      var annotate, avg, calculate, data, input, round, row, sum, table, text, title, _i, _len;
       title = div.parents('.page:first').find('h1').text().trim();
       data = wiki.getData();
       if (data == null) throw "can't find data";
@@ -28,8 +28,12 @@
           return n;
         }
       };
+      annotate = function(text) {
+        if (text == null) return '';
+        return " <span title=\"" + text + "\">*</span>";
+      };
       calculate = function(item) {
-        var annotate, color, comment, line, list, value, _j, _len2, _ref, _ref2, _ref3, _results;
+        var color, comment, line, list, value, _j, _len2, _ref, _ref2, _ref3, _results;
         list = [];
         _ref = item.text.split("\n");
         _results = [];
@@ -58,10 +62,6 @@
             comment = err.message;
           }
           if ((value != null) && !isNaN(+value)) list.push(+value);
-          annotate = function(text) {
-            if (text == null) return '';
-            return " <span title=\"" + text + "\">*</span>";
-          };
           _results.push("<tr style=\"background:" + color + ";\"><td style=\"width: 70%;\">" + line + (annotate(comment)) + "<td><b>" + (round(value)) + "</b>");
         }
         return _results;

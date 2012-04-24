@@ -21,6 +21,10 @@ window.plugins.method =
       else
         n
 
+    annotate = (text) ->
+      return '' unless text?
+      " <span title=\"#{text}\">*</span>"
+
     calculate = (item) ->
       list = []
       for line in item.text.split "\n"
@@ -46,10 +50,6 @@ window.plugins.method =
           comment = err.message
 
         list.push +value if value? and ! isNaN +value
-
-        annotate = (text) ->
-          return '' unless text?
-          " <span title=\"#{text}\">*</span>"
 
         "<tr style=\"background:#{color};\"><td style=\"width: 70%;\">#{line}#{annotate comment}<td><b>#{round value}</b>"
 
