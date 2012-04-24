@@ -36,8 +36,7 @@
         for (_j = 0, _len2 = _ref.length; _j < _len2; _j++) {
           line = _ref[_j];
           color = '#eee';
-          value = null;
-          comment = null;
+          value = comment = null;
           if (input[line] != null) {
             value = +input[line];
             comment = input["" + line + " Assumptions"] || null;
