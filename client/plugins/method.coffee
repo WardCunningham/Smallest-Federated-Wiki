@@ -28,7 +28,7 @@ window.plugins.method =
         value = comment = null
         try
           if input[line]?
-            value = +input[line]
+            value = input[line]
             comment = input["#{line} Assumptions"] || null
           else if line.match /^[0-9\.-]/
             value = +line
@@ -45,7 +45,7 @@ window.plugins.method =
           value = null
           comment = err.message
 
-        list.push value if value?
+        list.push +value if value? and ! isNaN +value
 
         annotate = (text) ->
           return '' unless text?

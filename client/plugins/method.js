@@ -39,7 +39,7 @@
           value = comment = null;
           try {
             if (input[line] != null) {
-              value = +input[line];
+              value = input[line];
               comment = input["" + line + " Assumptions"] || null;
             } else if (line.match(/^[0-9\.-]/)) {
               value = +line;
@@ -57,7 +57,7 @@
             value = null;
             comment = err.message;
           }
-          if (value != null) list.push(value);
+          if ((value != null) && !isNaN(+value)) list.push(+value);
           annotate = function(text) {
             if (text == null) return '';
             return " <span title=\"" + text + "\">*</span>";
