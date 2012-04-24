@@ -37,19 +37,25 @@
           line = _ref[_j];
           color = '#eee';
           value = comment = null;
-          if (input[line] != null) {
-            value = +input[line];
-            comment = input["" + line + " Assumptions"] || null;
-          } else if (line.match(/^[0-9\.-]/)) {
-            value = +line;
-          } else if (line === 'SUM') {
-            color = '#ddd';
-            _ref2 = [sum(list), []], value = _ref2[0], list = _ref2[1];
-          } else if (line === 'AVG') {
-            color = '#ddd';
-            _ref3 = [avg(list), []], value = _ref3[0], list = _ref3[1];
-          } else {
+          try {
+            if (input[line] != null) {
+              value = +input[line];
+              comment = input["" + line + " Assumptions"] || null;
+            } else if (line.match(/^[0-9\.-]/)) {
+              value = +line;
+            } else if (line === 'SUM') {
+              color = '#ddd';
+              _ref2 = [sum(list), []], value = _ref2[0], list = _ref2[1];
+            } else if (line === 'AVG') {
+              color = '#ddd';
+              _ref3 = [avg(list), []], value = _ref3[0], list = _ref3[1];
+            } else {
+              color = '#edd';
+            }
+          } catch (err) {
             color = '#edd';
+            value = null;
+            comment = err.message;
           }
           if (value != null) list.push(value);
           annotate = function(text) {

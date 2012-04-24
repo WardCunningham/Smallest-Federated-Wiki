@@ -26,19 +26,24 @@ window.plugins.method =
       for line in item.text.split "\n"
         color = '#eee'
         value = comment = null
-        if input[line]?
-          value = +input[line]
-          comment = input["#{line} Assumptions"] || null
-        else if line.match /^[0-9\.-]/
-          value = +line
-        else if line == 'SUM'
-          color = '#ddd'
-          [value, list] = [sum(list), []]
-        else if line == 'AVG'
-          color = '#ddd'
-          [value, list] = [avg(list), []]
-        else
+        try
+          if input[line]?
+            value = +input[line]
+            comment = input["#{line} Assumptions"] || null
+          else if line.match /^[0-9\.-]/
+            value = +line
+          else if line == 'SUM'
+            color = '#ddd'
+            [value, list] = [sum(list), []]
+          else if line == 'AVG'
+            color = '#ddd'
+            [value, list] = [avg(list), []]
+          else
+            color = '#edd'
+        catch err
           color = '#edd'
+          value = null
+          comment = err.message
 
         list.push value if value?
 
