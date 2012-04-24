@@ -561,11 +561,12 @@ require.define("/test/pageHandler.coffee", function (require, module, exports, _
     return false;
   };
 
-  wiki.putAction = function() {};
+  wiki.addToJournal = function() {};
 
   describe('pageHandler.get', function() {
     before(function() {
-      return $('<div id="pageHandler" data-site="foo" />').appendTo('body');
+      $('<div id="pageHandler" data-site="foo" />').appendTo('body');
+      return $('<div id="pageHandler4" />').appendTo('body');
     });
     it('should have an empty context', function() {
       return expect(pageHandler.context).to.eql([]);
@@ -574,10 +575,18 @@ require.define("/test/pageHandler.coffee", function (require, module, exports, _
       before(function() {
         return sinon.stub(jQuery, "ajax").yieldsTo('error');
       });
-      it('should create a page when it can not find it', function(done) {
+      it('should create a page when it can not find it (server specified)', function(done) {
         return pageHandler.get($('#pageHandler'), function(page) {
           expect(page).to.eql({
             title: 'pageHandler'
+          });
+          return done();
+        });
+      });
+      it('should create a page when it can not find it (server unspecified)', function(done) {
+        return pageHandler.get($('#pageHandler4'), function(page) {
+          expect(page).to.eql({
+            title: 'pageHandler4'
           });
           return done();
         });
@@ -588,13 +597,14 @@ require.define("/test/pageHandler.coffee", function (require, module, exports, _
     });
     describe('ajax, success', function() {
       before(function() {
-        return sinon.stub(jQuery, "ajax").yieldsTo('success', 'test');
+        sinon.stub(jQuery, "ajax").yieldsTo('success', 'test');
+        return $('<div id="pageHandler5" data-site="foo" />').appendTo('body');
       });
       it('should get a page from specific site', function(done) {
-        return pageHandler.get($('#pageHandler'), function(page) {
+        return pageHandler.get($('#pageHandler5'), function(page) {
           expect(jQuery.ajax.calledOnce).to.be["true"];
           expect(jQuery.ajax.args[0][0]).to.have.property('type', 'GET');
-          expect(jQuery.ajax.args[0][0].url).to.match(/^\/remote\/foo\/pageHandler\.json\?random=[a-z0-9]{8}$/);
+          expect(jQuery.ajax.args[0][0].url).to.match(/^\/remote\/foo\/pageHandler5\.json\?random=[a-z0-9]{8}$/);
           return done();
         });
       });
@@ -656,9 +666,11 @@ require.define("/test/pageHandler.coffee", function (require, module, exports, _
 
 require.define("/lib/pageHandler.coffee", function (require, module, exports, __dirname, __filename) {
 (function() {
-  var pageHandler, pushToLocal, pushToServer, util;
+  var pageHandler, pushToLocal, pushToServer, state, util;
 
   util = require('./util');
+
+  state = require('./state');
 
   module.exports = pageHandler = {};
 
@@ -672,20 +684,23 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
       callback(JSON.parse(json));
     }
     if (!(pageHandler.context.length > 0)) pageHandler.context = ['origin'];
-    if (localContext == null) {
-      localContext = (function() {
-        var _i, _len, _ref, _results;
-        _ref = pageHandler.context;
-        _results = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          i = _ref[_i];
-          _results.push(i);
-        }
-        return _results;
-      })();
+    if (site) {
+      localContext = [];
+    } else {
+      if (localContext == null) {
+        localContext = (function() {
+          var _i, _len, _ref, _results;
+          _ref = pageHandler.context;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            i = _ref[_i];
+            _results.push(i);
+          }
+          return _results;
+        })();
+      }
+      site = localContext.shift();
     }
-    if (typeof site === 'string') localContext = [site];
-    site = localContext.shift();
     resource = site === 'origin' ? (site = null, slug) : "remote/" + site + "/" + slug;
     return $.ajax({
       type: 'GET',
@@ -707,7 +722,7 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
           page = {
             title: title
           };
-          wiki.putAction($(pageElement), {
+          pageHandler.put($(pageElement), {
             type: 'create',
             id: util.randomBytes(8),
             item: page
@@ -772,6 +787,121 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
     } else {
       return pushToServer(pageElement, action);
     }
+  };
+
+}).call(this);
+
+});
+
+require.define("/lib/state.coffee", function (require, module, exports, __dirname, __filename) {
+(function() {
+  var active, state;
+  var __hasProp = Object.prototype.hasOwnProperty, __indexOf = Array.prototype.indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (__hasProp.call(this, i) && this[i] === item) return i; } return -1; };
+
+  active = require('./active');
+
+  module.exports = state = {};
+
+  state.pagesInDom = function() {
+    return $.makeArray($(".page").map(function(_, el) {
+      return el.id;
+    }));
+  };
+
+  state.urlPages = function() {
+    var i;
+    return ((function() {
+      var _i, _len, _ref, _results, _step;
+      _ref = $(location).attr('pathname').split('/');
+      _results = [];
+      for (_i = 0, _len = _ref.length, _step = 2; _i < _len; _i += _step) {
+        i = _ref[_i];
+        _results.push(i);
+      }
+      return _results;
+    })()).slice(1);
+  };
+
+  state.locsInDom = function() {
+    return $.makeArray($(".page").map(function(_, el) {
+      return $(el).data('site') || 'view';
+    }));
+  };
+
+  state.urlLocs = function() {
+    var j, _i, _len, _ref, _results, _step;
+    _ref = $(location).attr('pathname').split('/').slice(1);
+    _results = [];
+    for (_i = 0, _len = _ref.length, _step = 2; _i < _len; _i += _step) {
+      j = _ref[_i];
+      _results.push(j);
+    }
+    return _results;
+  };
+
+  state.setUrl = function() {
+    var idx, locs, page, pages, url;
+    if (history && history.pushState) {
+      locs = state.locsInDom();
+      pages = state.pagesInDom();
+      url = ((function() {
+        var _len, _results;
+        _results = [];
+        for (idx = 0, _len = pages.length; idx < _len; idx++) {
+          page = pages[idx];
+          _results.push("/" + ((locs != null ? locs[idx] : void 0) || 'view') + "/" + page);
+        }
+        return _results;
+      })()).join('');
+      if (url !== $(location).attr('pathname')) {
+        wiki.log('set state', locs, pages);
+        return history.pushState(null, null, url);
+      }
+    }
+  };
+
+  state.show = function(e) {
+    var idx, name, newLocs, newPages, old, oldLocs, oldPages, previous, _len;
+    wiki.log('popstate', e);
+    oldPages = state.pagesInDom();
+    newPages = state.urlPages();
+    oldLocs = state.locsInDom();
+    newLocs = state.urlLocs();
+    if (!location.pathname || location.pathname === '/') return;
+    wiki.log('showState', oldPages, newPages, oldLocs, newLocs);
+    previous = $('.page').eq(0);
+    for (idx = 0, _len = newPages.length; idx < _len; idx++) {
+      name = newPages[idx];
+      if (name !== oldPages[idx]) {
+        old = $('.page').eq(idx);
+        if (old) old.remove();
+        wiki.createPage(name, newLocs[idx]).insertAfter(previous).each(wiki.refresh);
+      }
+      previous = $('.page').eq(idx);
+    }
+    previous.nextAll().remove();
+    return active.set($('.page').last());
+  };
+
+  state.first = function() {
+    var firstUrlLocs, firstUrlPages, idx, oldPages, urlPage, _len, _results;
+    state.setUrl();
+    firstUrlPages = state.urlPages();
+    firstUrlLocs = state.urlLocs();
+    oldPages = state.pagesInDom();
+    wiki.log('amost createPage', firstUrlPages, firstUrlLocs, oldPages);
+    _results = [];
+    for (idx = 0, _len = firstUrlPages.length; idx < _len; idx++) {
+      urlPage = firstUrlPages[idx];
+      if (!(__indexOf.call(oldPages, urlPage) < 0)) continue;
+      wiki.log('createPage', urlPage, idx);
+      if (urlPage !== '') {
+        _results.push(wiki.createPage(urlPage, firstUrlLocs[idx]).appendTo('.main'));
+      } else {
+        _results.push(void 0);
+      }
+    }
+    return _results;
   };
 
 }).call(this);
@@ -1074,121 +1204,6 @@ require.define("/lib/plugin.coffee", function (require, module, exports, __dirna
         });
       }
     }
-  };
-
-}).call(this);
-
-});
-
-require.define("/lib/state.coffee", function (require, module, exports, __dirname, __filename) {
-(function() {
-  var active, state;
-  var __hasProp = Object.prototype.hasOwnProperty, __indexOf = Array.prototype.indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (__hasProp.call(this, i) && this[i] === item) return i; } return -1; };
-
-  active = require('./active');
-
-  module.exports = state = {};
-
-  state.pagesInDom = function() {
-    return $.makeArray($(".page").map(function(_, el) {
-      return el.id;
-    }));
-  };
-
-  state.urlPages = function() {
-    var i;
-    return ((function() {
-      var _i, _len, _ref, _results, _step;
-      _ref = $(location).attr('pathname').split('/');
-      _results = [];
-      for (_i = 0, _len = _ref.length, _step = 2; _i < _len; _i += _step) {
-        i = _ref[_i];
-        _results.push(i);
-      }
-      return _results;
-    })()).slice(1);
-  };
-
-  state.locsInDom = function() {
-    return $.makeArray($(".page").map(function(_, el) {
-      return $(el).data('site') || 'view';
-    }));
-  };
-
-  state.urlLocs = function() {
-    var j, _i, _len, _ref, _results, _step;
-    _ref = $(location).attr('pathname').split('/').slice(1);
-    _results = [];
-    for (_i = 0, _len = _ref.length, _step = 2; _i < _len; _i += _step) {
-      j = _ref[_i];
-      _results.push(j);
-    }
-    return _results;
-  };
-
-  state.setUrl = function() {
-    var idx, locs, page, pages, url;
-    if (history && history.pushState) {
-      locs = state.locsInDom();
-      pages = state.pagesInDom();
-      url = ((function() {
-        var _len, _results;
-        _results = [];
-        for (idx = 0, _len = pages.length; idx < _len; idx++) {
-          page = pages[idx];
-          _results.push("/" + ((locs != null ? locs[idx] : void 0) || 'view') + "/" + page);
-        }
-        return _results;
-      })()).join('');
-      if (url !== $(location).attr('pathname')) {
-        wiki.log('set state', locs, pages);
-        return history.pushState(null, null, url);
-      }
-    }
-  };
-
-  state.show = function(e) {
-    var idx, name, newLocs, newPages, old, oldLocs, oldPages, previous, _len;
-    wiki.log('popstate', e);
-    oldPages = state.pagesInDom();
-    newPages = state.urlPages();
-    oldLocs = state.locsInDom();
-    newLocs = state.urlLocs();
-    if (!location.pathname || location.pathname === '/') return;
-    wiki.log('showState', oldPages, newPages, oldLocs, newLocs);
-    previous = $('.page').eq(0);
-    for (idx = 0, _len = newPages.length; idx < _len; idx++) {
-      name = newPages[idx];
-      if (name !== oldPages[idx]) {
-        old = $('.page').eq(idx);
-        if (old) old.remove();
-        wiki.createPage(name, newLocs[idx]).insertAfter(previous).each(wiki.refresh);
-      }
-      previous = $('.page').eq(idx);
-    }
-    previous.nextAll().remove();
-    return active.set($('.page').last());
-  };
-
-  state.first = function() {
-    var firstUrlLocs, firstUrlPages, idx, oldPages, urlPage, _len, _results;
-    state.setUrl();
-    firstUrlPages = state.urlPages();
-    firstUrlLocs = state.urlLocs();
-    oldPages = state.pagesInDom();
-    wiki.log('amost createPage', firstUrlPages, firstUrlLocs, oldPages);
-    _results = [];
-    for (idx = 0, _len = firstUrlPages.length; idx < _len; idx++) {
-      urlPage = firstUrlPages[idx];
-      if (!(__indexOf.call(oldPages, urlPage) < 0)) continue;
-      wiki.log('createPage', urlPage, idx);
-      if (urlPage !== '') {
-        _results.push(wiki.createPage(urlPage, firstUrlLocs[idx]).appendTo('.main'));
-      } else {
-        _results.push(void 0);
-      }
-    }
-    return _results;
   };
 
 }).call(this);

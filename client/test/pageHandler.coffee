@@ -1,23 +1,31 @@
 pageHandler = require '../lib/pageHandler.coffee'
 
-#Fakes for things still stuck in legacy.coffee
+# Fakes for things still stuck in legacy.coffee
+# TODO: Remove these ASAP
 wiki.useLocalStorage = -> false
-wiki.putAction = ->
+wiki.addToJournal = ->
 
 describe 'pageHandler.get', ->
   before ->
     $('<div id="pageHandler" data-site="foo" />').appendTo('body')
+    $('<div id="pageHandler4" />').appendTo('body')
 
   it 'should have an empty context', ->
     expect(pageHandler.context).to.eql([])
 
   describe 'ajax fails', ->
+
     before ->
       sinon.stub(jQuery, "ajax").yieldsTo('error')
 
-    it 'should create a page when it can not find it', (done) ->
+    it 'should create a page when it can not find it (server specified)', (done) ->
       pageHandler.get $('#pageHandler'), (page) ->
         expect(page).to.eql({title: 'pageHandler'})
+        done()
+
+    it 'should create a page when it can not find it (server unspecified)', (done) ->
+      pageHandler.get $('#pageHandler4'), (page) ->
+        expect(page).to.eql({title: 'pageHandler4'})
         done()
 
     after ->
@@ -26,12 +34,13 @@ describe 'pageHandler.get', ->
   describe 'ajax, success', ->
     before ->
       sinon.stub(jQuery, "ajax").yieldsTo('success', 'test')
+      $('<div id="pageHandler5" data-site="foo" />').appendTo('body')
 
     it 'should get a page from specific site', (done) ->
-      pageHandler.get $('#pageHandler'), (page) ->
+      pageHandler.get $('#pageHandler5'), (page) ->
         expect(jQuery.ajax.calledOnce).to.be.true
         expect(jQuery.ajax.args[0][0]).to.have.property('type', 'GET')
-        expect(jQuery.ajax.args[0][0].url).to.match(///^/remote/foo/pageHandler\.json\?random=[a-z0-9]{8}$///)
+        expect(jQuery.ajax.args[0][0].url).to.match(///^/remote/foo/pageHandler5\.json\?random=[a-z0-9]{8}$///)
         done()
 
     after ->

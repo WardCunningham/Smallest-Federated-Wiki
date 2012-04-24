@@ -1,4 +1,5 @@
 util = require('./util')
+state = require('./state')
 
 module.exports = pageHandler = {}
 
@@ -11,15 +12,17 @@ pageHandler.get = (pageElement, callback, localContext) ->
     pageElement.addClass("local")
     callback JSON.parse(json)
   pageHandler.context = ['origin'] unless pageHandler.context.length > 0
-  localContext ?= (i for own i in pageHandler.context)
-  if typeof site is 'string'
-    localContext = [site]
-  site = localContext.shift()
+  if site
+    localContext = []
+  else
+    localContext ?= (i for own i in pageHandler.context)
+    site = localContext.shift()
   resource = if site=='origin'
     site = null
     slug
   else
     "remote/#{site}/#{slug}"
+
   $.ajax
     type: 'GET'
     dataType: 'json'
@@ -36,7 +39,7 @@ pageHandler.get = (pageElement, callback, localContext) ->
         title = $("""a[href="/#{slug}.html"]""").html()
         title or= slug
         page = {title}
-        wiki.putAction $(pageElement), {type: 'create', id: util.randomBytes(8), item: page}
+        pageHandler.put $(pageElement), {type: 'create', id: util.randomBytes(8), item: page}
         callback page
 
 pageHandler.context = []
