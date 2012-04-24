@@ -26,8 +26,10 @@ window.plugins.method =
       for line in item.text.split "\n"
         color = '#eee'
         value = null
+        comment = null
         if input[line]?
           value = +input[line]
+          comment = input["#{line} Assumptions"] || null
         else if line.match /^[0-9\.-]/
           value = +line
         else if line == 'SUM'
@@ -39,7 +41,12 @@ window.plugins.method =
         else
           color = '#edd'
         list.push value if value?
-        "<tr style=\"background:#{color};\"><td style=\"width: 70%;\">#{line}<td><b>#{round value}</b>"
+
+        annotate = (text) ->
+          return '' unless text?
+          " <span title=\"#{text}\">*</span>"
+
+        "<tr style=\"background:#{color};\"><td style=\"width: 70%;\">#{line}#{annotate(comment)}<td><b>#{round value}</b>"
 
     text = calculate(item).join "\n"
     table = $(title+'<table style="width:100%; background:#eee; padding:.8em;"/>').html text

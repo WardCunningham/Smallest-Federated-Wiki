@@ -29,7 +29,7 @@
         }
       };
       calculate = function(item) {
-        var color, line, list, value, _j, _len2, _ref, _ref2, _ref3, _results;
+        var annotate, color, comment, line, list, value, _j, _len2, _ref, _ref2, _ref3, _results;
         list = [];
         _ref = item.text.split("\n");
         _results = [];
@@ -37,8 +37,10 @@
           line = _ref[_j];
           color = '#eee';
           value = null;
+          comment = null;
           if (input[line] != null) {
             value = +input[line];
+            comment = input["" + line + " Assumptions"] || null;
           } else if (line.match(/^[0-9\.-]/)) {
             value = +line;
           } else if (line === 'SUM') {
@@ -51,7 +53,11 @@
             color = '#edd';
           }
           if (value != null) list.push(value);
-          _results.push("<tr style=\"background:" + color + ";\"><td style=\"width: 70%;\">" + line + "<td><b>" + (round(value)) + "</b>");
+          annotate = function(text) {
+            if (text == null) return '';
+            return " <span title=\"" + text + "\">*</span>";
+          };
+          _results.push("<tr style=\"background:" + color + ";\"><td style=\"width: 70%;\">" + line + (annotate(comment)) + "<td><b>" + (round(value)) + "</b>");
         }
         return _results;
       };
