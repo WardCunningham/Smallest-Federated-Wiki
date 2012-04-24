@@ -751,7 +751,7 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
       wiki.addToJournal(pageElement.find('.journal'), {
         type: 'fork',
         site: site,
-        date: (new Date()).getTime()
+        date: action.date
       });
     }
     if (wiki.useLocalStorage()) {

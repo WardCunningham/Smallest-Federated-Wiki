@@ -77,7 +77,7 @@ pageHandler.put = (pageElement, action) ->
     wiki.addToJournal pageElement.find('.journal'),
       type: 'fork'
       site: site
-      date: (new Date()).getTime()
+      date: action.date
   if wiki.useLocalStorage()
     pushToLocal(pageElement, action)
     pageElement.addClass("local")
