@@ -115,9 +115,23 @@ $ ->
   getItem = wiki.getItem = (element) ->
     $(element).data("item") or JSON.parse($(element).data('staticItem')) if $(element).length > 0
 
-  wiki.getData = ->
-    who = $('.chart,.data,.calculator').last()
-    if who? then who.data('item').data else {}
+  wiki.getData = (vis) ->
+    if vis
+      idx = $('.item').index(vis)
+      who = $(".item:lt(#{idx})").filter('.chart,.data,.calculator').last()
+      if who? then who.data('item').data else {}
+    else
+      who = $('.chart,.data,.calculator').last()
+      if who? then who.data('item').data else {}
+
+  wiki.getDataNodes = (vis) ->
+    if vis
+      idx = $('.item').index(vis)
+      who = $(".item:lt(#{idx})").filter('.chart,.data,.calculator').toArray().reverse()
+      $(who)
+    else
+      who = $('.chart,.data,.calculator').toArray().reverse()
+      $(who)
 
   doInternalLink = wiki.doInternalLink = (name, page) ->
     name = util.asSlug(name)

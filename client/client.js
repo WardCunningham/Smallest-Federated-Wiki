@@ -479,13 +479,34 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
         return $(element).data("item") || JSON.parse($(element).data('staticItem'));
       }
     };
-    wiki.getData = function() {
-      var who;
-      who = $('.chart,.data,.calculator').last();
-      if (who != null) {
-        return who.data('item').data;
+    wiki.getData = function(vis) {
+      var idx, who;
+      if (vis) {
+        idx = $('.item').index(vis);
+        who = $(".item:lt(" + idx + ")").filter('.chart,.data,.calculator').last();
+        if (who != null) {
+          return who.data('item').data;
+        } else {
+          return {};
+        }
       } else {
-        return {};
+        who = $('.chart,.data,.calculator').last();
+        if (who != null) {
+          return who.data('item').data;
+        } else {
+          return {};
+        }
+      }
+    };
+    wiki.getDataNodes = function(vis) {
+      var idx, who;
+      if (vis) {
+        idx = $('.item').index(vis);
+        who = $(".item:lt(" + idx + ")").filter('.chart,.data,.calculator').toArray().reverse();
+        return $(who);
+      } else {
+        who = $('.chart,.data,.calculator').toArray().reverse();
+        return $(who);
       }
     };
     doInternalLink = wiki.doInternalLink = function(name, page) {
