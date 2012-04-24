@@ -21,6 +21,7 @@
         return sum(v) / v.length;
       };
       round = function(n) {
+        if (n == null) return '?';
         if (n.toString().match(/\.\d\d\d/)) {
           return n.toFixed(2);
         } else {
@@ -35,6 +36,7 @@
         for (_j = 0, _len2 = _ref.length; _j < _len2; _j++) {
           line = _ref[_j];
           color = '#eee';
+          value = null;
           if (input[line] != null) {
             value = +input[line];
           } else if (line.match(/^[0-9\.-]/)) {
@@ -45,8 +47,10 @@
           } else if (line === 'AVG') {
             color = '#ddd';
             _ref3 = [avg(list), []], value = _ref3[0], list = _ref3[1];
+          } else {
+            color = '#edd';
           }
-          list.push(value);
+          if (value != null) list.push(value);
           _results.push("<tr style=\"background:" + color + ";\"><td style=\"width: 70%;\">" + line + "<td><b>" + (round(value)) + "</b>");
         }
         return _results;

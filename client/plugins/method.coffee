@@ -15,6 +15,7 @@ window.plugins.method =
       sum(v)/v.length
 
     round = (n) ->
+      return '?' unless n?
       if n.toString().match /\.\d\d\d/
         n.toFixed 2
       else
@@ -24,6 +25,7 @@ window.plugins.method =
       list = []
       for line in item.text.split "\n"
         color = '#eee'
+        value = null
         if input[line]?
           value = +input[line]
         else if line.match /^[0-9\.-]/
@@ -34,7 +36,9 @@ window.plugins.method =
         else if line == 'AVG'
           color = '#ddd'
           [value, list] = [avg(list), []]
-        list.push value
+        else
+          color = '#edd'
+        list.push value if value?
         "<tr style=\"background:#{color};\"><td style=\"width: 70%;\">#{line}<td><b>#{round value}</b>"
 
     text = calculate(item).join "\n"
