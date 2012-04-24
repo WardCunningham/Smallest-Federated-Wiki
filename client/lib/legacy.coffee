@@ -102,7 +102,7 @@ $ ->
       addToJournal pageElement.find('.journal'),
         type: 'fork'
         site: site
-        date: (new Date()).getTime()
+        date: action.date
     if useLocalStorage()
       pushToLocal(pageElement, action)
       pageElement.addClass("local")
