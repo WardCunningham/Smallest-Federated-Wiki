@@ -43,7 +43,7 @@ Code contributions are always welcome. We're developing using the `fork and pull
 
 * http://help.github.com/send-pull-requests/
 
-You are welcome to join our developer hangout Wednesday mornings, 10:00 Pacific time.
+You are welcome to join our developer IRC channel, #fedwiki on freenode, or drop-in to our developer video hangout Wednesday mornings, 10:00 Pacific time.
 
 * https://plus.google.com/hangouts/_/extras/talk.google.com/fedwiki
 
@@ -51,7 +51,7 @@ If you'd like to know what we think of your programming idea before you program 
 
 * [Open Issues](https://github.com/WardCunningham/Smallest-Federated-Wiki/issues?sort=created&direction=desc&state=open&page=1)
 
-For that matter, there is lots of coding and project philosophy in the comment history of closed issues. Read through the issues with lots of comments. GitHub will sort closed issues by number of comments to make this easy:
+For that matter, there is lots of coding and project philosophy in the comment history of closed issues. Read through the issues with lots of comments. GitHub has good issue search and will sort closed issues by number of comments to make this easy:
 
 * [Closed Issues](https://github.com/WardCunningham/Smallest-Federated-Wiki/issues?sort=comments&direction=desc&state=closed&page=1)
 
