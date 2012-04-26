@@ -1,6 +1,6 @@
 window.wiki = {}
 util = require('./util.coffee')
-fetch = require('./fetch.coffee')
+pageHandler = require('./pageHandler.coffee')
 plugin = require('./plugin.coffee')
 state = require('./state.coffee')
 active = require('./active.coffee')
@@ -91,55 +91,15 @@ $ ->
     wiki.log 'useLocalStorage', $(".login").length > 0
     $(".login").length > 0
 
-  putAction = wiki.putAction = (pageElement, action) ->
-    action.date = (new Date()).getTime()
-    if (site = pageElement.data('site'))?
-      action.fork = site
-      pageElement.find('h1 img').attr('src', '/favicon.png')
-      pageElement.find('h1 a').attr('href', '/')
-      pageElement.data('site', null)
-      state.setUrl()
-      addToJournal pageElement.find('.journal'),
-        type: 'fork'
-        site: site
-        date: action.date
-    if useLocalStorage()
-      pushToLocal(pageElement, action)
-      pageElement.addClass("local")
-    else
-      pushToServer(pageElement, action)
-
-  pushToLocal = (pageElement, action) ->
-    page = localStorage[pageElement.attr("id")]
-    page = JSON.parse(page) if page
-    page = action.item if action.type == 'create'
-    page ||= pageElement.data("data")
-    page.journal = [] unless page.journal?
-    page.journal.concat(action)
-    page.story = $(pageElement).find(".item").map(-> $(@).data("item")).get()
-    localStorage[pageElement.attr("id")] = JSON.stringify(page)
-    addToJournal pageElement.find('.journal'), action
-
-  pushToServer = (pageElement, action) ->
-    $.ajax
-      type: 'PUT'
-      url: "/page/#{pageElement.attr('id')}/action"
-      data:
-        'action': JSON.stringify(action)
-      success: () ->
-        addToJournal pageElement.find('.journal'), action
-      error: (xhr, type, msg) ->
-        wiki.log "ajax error callback", type, msg
-
   textEditor = wiki.textEditor = (div, item) ->
     textarea = $("<textarea>#{original = item.text ? ''}</textarea>")
       .focusout ->
         if item.text = textarea.val()
           plugin.do div.empty(), item
           return if item.text == original
-          putAction div.parents('.page:first'), {type: 'edit', id: item.id, item: item}
+          pageHandler.put div.parents('.page:first'), {type: 'edit', id: item.id, item: item}
         else
-          putAction div.parents('.page:first'), {type: 'remove', id: item.id}
+          pageHandler.put div.parents('.page:first'), {type: 'remove', id: item.id}
           div.remove()
         null
       .bind 'keydown', (e) ->
@@ -155,9 +115,23 @@ $ ->
   getItem = wiki.getItem = (element) ->
     $(element).data("item") or JSON.parse($(element).data('staticItem')) if $(element).length > 0
 
-  wiki.getData = ->
-    who = $('.chart,.data,.calculator').last()
-    if who? then who.data('item').data else {}
+  wiki.getData = (vis) ->
+    if vis
+      idx = $('.item').index(vis)
+      who = $(".item:lt(#{idx})").filter('.chart,.data,.calculator').last()
+      if who? then who.data('item').data else {}
+    else
+      who = $('.chart,.data,.calculator').last()
+      if who? then who.data('item').data else {}
+
+  wiki.getDataNodes = (vis) ->
+    if vis
+      idx = $('.item').index(vis)
+      who = $(".item:lt(#{idx})").filter('.chart,.data,.calculator').toArray().reverse()
+      $(who)
+    else
+      who = $('.chart,.data,.calculator').toArray().reverse()
+      $(who)
 
   doInternalLink = wiki.doInternalLink = (name, page) ->
     name = util.asSlug(name)
@@ -216,12 +190,12 @@ $ ->
 
     .delegate '.internal', 'click', (e) ->
       name = $(e.target).data 'pageName'
-      fetch.context = $(e.target).attr('title').split(' => ')
+      pageHandler.context = $(e.target).attr('title').split(' => ')
       finishClick e, name
 
     .delegate '.action.fork, .remote', 'click', (e) ->
       name = $(e.target).data('slug')
-      fetch.context = [$(e.target).data('site')]
+      pageHandler.context = [$(e.target).data('site')]
       finishClick e, name
 
     .delegate '.action', 'hover', ->
