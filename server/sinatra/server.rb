@@ -23,7 +23,7 @@ class Controller < Sinatra::Base
   set :versions, `git log -10 --oneline` || "no git log"
   enable :sessions
 
-  Store.select ENV['STORE_TYPE'], APP_ROOT
+  Store.set ENV['STORE_TYPE'], APP_ROOT
 
   class << self # overridden in test
     def data_root

@@ -1,7 +1,7 @@
 class Store
   class << self
 
-    def select(store_classname, app_root)
+    def set(store_classname, app_root)
       @app_root = app_root
       @store_class = store_classname ? Kernel.const_get(store_classname) : FileStore
     end
