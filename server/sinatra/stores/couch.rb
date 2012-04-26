@@ -1,7 +1,10 @@
 require 'time'  # for Time#iso8601
 
-class CouchStore < BaseStore
+class CouchStore < Store
   class << self
+
+    attr_writer :db         # used by specs
+    attr_writer :app_root   # used by specs
 
     def db
       unless @db
@@ -15,8 +18,6 @@ class CouchStore < BaseStore
       end
       @db
     end
-
-    attr_writer :db   # used by specs
 
     ### GET
 

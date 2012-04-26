@@ -1,4 +1,4 @@
-class FileStore < BaseStore
+class FileStore < Store
   class << self
 
     ### GET
