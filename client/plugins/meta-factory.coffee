@@ -1,3 +1,5 @@
+pageHandler = require '../lib/pageHandler.coffee'
+
 window.plugins.factory =
   emit: (div, item) ->
     div.append '<p>Double-Click to Edit<br>Drop Text or Image to Insert</p>'
