@@ -3,12 +3,6 @@ class BaseStore
 
     attr_writer :app_root
 
-    def select(store_classname, app_root)
-      klass = store_classname ? Kernel.const_get(store_classname) : FileStore
-      klass.app_root = app_root
-      klass
-    end
-
     ### GET
 
     def get_hash(path)

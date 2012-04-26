@@ -8,12 +8,6 @@ class PageError < StandardError; end;
 # Handles writing and reading JSON data to and from files.
 class Page
 
-    class << self
-      def store=(store)
-        @@store = store
-      end
-    end
-
     # Directory where pages are to be stored.
     attr_accessor :directory
     # Directory where default (pre-existing) pages are stored.
@@ -27,7 +21,7 @@ class Page
       assert_attributes_set
       path = File.join(directory, name)
       default_path = File.join(default_directory, name)
-      page = @@store.get_page(path)
+      page = Store.get_page(path)
       if page
         page
       elsif File.exist?(default_path)
@@ -38,7 +32,7 @@ class Page
     end
 
     def exists?(name)
-      @@store.get_page(File.join(directory, name)) or File.exist?(File.join(default_directory, name))
+      Store.get_page(File.join(directory, name)) or File.exist?(File.join(default_directory, name))
     end
 
     # Create or update a page
@@ -49,7 +43,7 @@ class Page
     def put(name, page)
       assert_attributes_set
       path = File.join directory, name
-      @@store.put_page(path, page, :name => name, :directory => directory)
+      Store.put_page(path, page, :name => name, :directory => directory)
     end
 
     private
@@ -57,6 +51,5 @@ class Page
     def assert_attributes_set
       raise PageError.new('Page.directory must be set') unless directory
       raise PageError.new('Page.default_directory must be set') unless default_directory
-      raise PageError.new('Page.store must be set') unless defined?( @@store )
     end
 end

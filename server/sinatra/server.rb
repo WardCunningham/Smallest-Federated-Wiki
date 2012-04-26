@@ -23,7 +23,7 @@ class Controller < Sinatra::Base
   set :versions, `git log -10 --oneline` || "no git log"
   enable :sessions
 
-  @@store = Page.store = BaseStore.select(ENV['STORE_TYPE'], APP_ROOT)
+  Store.select ENV['STORE_TYPE'], APP_ROOT
 
   class << self # overridden in test
     def data_root
@@ -35,25 +35,25 @@ class Controller < Sinatra::Base
     page = Page.new
     page.directory = File.join data_dir, "pages"
     page.default_directory = File.join APP_ROOT, "default-data", "pages"
-    @@store.mkdir page.directory
+    Store.mkdir page.directory
     page
   end
 
   def farm_status
     status = File.join data_dir, "status"
-    @@store.mkdir status
+    Store.mkdir status
     status
   end
 
   def data_dir
-    @@store.farm?(self.class.data_root) ? File.join(self.class.data_root, "farm", request.host) : self.class.data_root
+    Store.farm?(self.class.data_root) ? File.join(self.class.data_root, "farm", request.host) : self.class.data_root
   end
 
   def identity
     default_path = File.join APP_ROOT, "default-data", "status", "local-identity"
     real_path = File.join farm_status, "local-identity"
-    id_data = @@store.get_hash real_path
-    id_data ||= @@store.put_hash(real_path, FileStore.get_hash(default_path))
+    id_data = Store.get_hash real_path
+    id_data ||= Store.put_hash(real_path, FileStore.get_hash(default_path))
   end
 
   helpers do
@@ -83,7 +83,7 @@ class Controller < Sinatra::Base
     end
 
     def claimed?
-      @@store.exists? "#{farm_status}/open_id.identity"
+      Store.exists? "#{farm_status}/open_id.identity"
     end
 
     def authenticate!
@@ -122,7 +122,7 @@ class Controller < Sinatra::Base
       when OpenID::Consumer::SUCCESS
         id = params['openid.identity']
         id_file = File.join farm_status, "open_id.identity"
-        stored_id = @@store.get_text(id_file)
+        stored_id = Store.get_text(id_file)
         if stored_id
           if stored_id == id
             # login successful
@@ -131,7 +131,7 @@ class Controller < Sinatra::Base
             oops 403, "This is not your wiki"
           end
         else
-          @@store.put_text id_file, id
+          Store.put_text id_file, id
           # claim successful
           authenticate!
         end
@@ -153,7 +153,7 @@ class Controller < Sinatra::Base
     content_type 'image/png'
     cross_origin
     local = File.join farm_status, 'favicon.png'
-    @@store.get_blob(local) || @@store.put_blob(local, Favicon.create_blob)
+    Store.get_blob(local) || Store.put_blob(local, Favicon.create_blob)
   end
 
   get '/random.png' do
@@ -164,7 +164,7 @@ class Controller < Sinatra::Base
 
     content_type 'image/png'
     path = File.join farm_status, 'favicon.png'
-    @@store.put_blob path, Favicon.create_blob
+    Store.put_blob path, Favicon.create_blob
   end
 
   get '/' do
@@ -204,7 +204,7 @@ class Controller < Sinatra::Base
     cross_origin
     bins = Hash.new {|hash, key| hash[key] = Array.new}
 
-    pages = @@store.recently_changed_pages farm_page.directory
+    pages = Store.recently_changed_pages farm_page.directory
     pages.each do |page|
       dt = Time.now - page['updated_at']
       bins[(dt/=60)<1?'Minute':(dt/=60)<1?'Hour':(dt/=24)<1?'Day':(dt/=7)<1?'Week':(dt/=4)<1?'Month':(dt/=3)<1?'Season':(dt/=4)<1?'Year':'Forever']<<page
