@@ -1,6 +1,6 @@
 window.wiki = {}
 util = require('./util.coffee')
-pageHandler = require('./pageHandler.coffee')
+pageHandler = wiki.pageHandler = require('./pageHandler.coffee')
 plugin = require('./plugin.coffee')
 state = require('./state.coffee')
 active = require('./active.coffee')
