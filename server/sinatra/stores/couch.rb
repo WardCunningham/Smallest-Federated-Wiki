@@ -3,8 +3,13 @@ require 'time'  # for Time#iso8601
 class CouchStore < Store
   class << self
 
-    attr_writer :db         # used by specs
-    attr_writer :app_root   # used by specs
+    # used by specs:
+    def app_root=(app_root)
+      @@app_root = app_root
+    end
+
+    # used by specs:
+    attr_writer :db
 
     def db
       unless @db
@@ -109,8 +114,8 @@ class CouchStore < Store
     end
 
     def relative_path(path)
-      raise "Please set @app_root" unless @app_root
-      path.match(%r[^#{Regexp.escape @app_root}/?(.+?)$]) ? $1 : path
+      raise "Please set @@app_root" unless defined?(@@app_root)
+      path.match(%r[^#{Regexp.escape @@app_root}/?(.+?)$]) ? $1 : path
     end
 
   end
