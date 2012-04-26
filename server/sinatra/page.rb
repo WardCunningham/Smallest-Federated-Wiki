@@ -32,7 +32,7 @@ class Page
     end
 
     def exists?(name)
-      Store.get_page(File.join(directory, name)) or File.exist?(File.join(default_directory, name))
+      Store.exists?(File.join(directory, name)) or File.exist?(File.join(default_directory, name))
     end
 
     # Create or update a page
