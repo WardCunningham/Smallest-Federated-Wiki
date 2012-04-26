@@ -1,8 +1,6 @@
 (function() {
-  var arrayToJson, csvToArray, pageHandler,
+  var arrayToJson, csvToArray,
     __indexOf = Array.prototype.indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
-
-  pageHandler = require('../lib/pageHandler.coffee');
 
   window.plugins.factory = {
     emit: function(div, item) {
