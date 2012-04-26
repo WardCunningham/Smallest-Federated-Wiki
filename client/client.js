@@ -353,7 +353,7 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
 
   util = require('./util.coffee');
 
-  pageHandler = require('./pageHandler.coffee');
+  pageHandler = wiki.pageHandler = require('./pageHandler.coffee');
 
   plugin = require('./plugin.coffee');
 
