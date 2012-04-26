@@ -62,6 +62,7 @@ class CouchStore < Store
     ### COLLECTIONS
 
     def recently_changed_pages(pages_dir)
+      pages_dir = relative_path pages_dir
       pages_dir_safe = CGI.escape pages_dir
       changes = begin
         db.view("recent-changes/#{pages_dir_safe}")['rows']
