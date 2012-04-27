@@ -11,8 +11,8 @@ class FileStore < Store
 
     ### PUT
 
-    def put_text(path, text, _)
-      # Note: the third argument, metadata, is ignored for filesystem storage
+    def put_text(path, text, metadata=nil)
+      # Note: metadata is ignored for filesystem storage
       File.open(path, 'w'){ |file| file.write text }
       text
     end
