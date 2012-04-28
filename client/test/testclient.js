@@ -666,17 +666,22 @@ require.define("/test/pageHandler.coffee", function (require, module, exports, _
 
 require.define("/lib/pageHandler.coffee", function (require, module, exports, __dirname, __filename) {
 (function() {
-  var pageHandler, pushToLocal, pushToServer, state, util;
+  var pageHandler, pushToLocal, pushToServer, revision, state, util;
 
   util = require('./util');
 
   state = require('./state');
 
+  revision = require('./revision');
+
   module.exports = pageHandler = {};
 
   pageHandler.get = function(pageElement, callback, localContext) {
-    var i, json, resource, site, slug;
-    slug = pageElement.attr('id');
+    var i, json, pageAndRevision, pageAndRevisionStr, resource, rev, site, slug;
+    pageAndRevisionStr = pageElement.attr('id');
+    pageAndRevision = pageAndRevisionStr.split('_rev');
+    slug = pageAndRevision[0];
+    rev = pageAndRevision[1];
     site = pageElement.data('site');
     if (pageElement.attr('data-server-generated') === 'true') callback(null);
     if (wiki.useLocalStorage() && (json = localStorage[slug])) {
@@ -709,6 +714,7 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
       success: function(page) {
         wiki.log('fetch success', page, site || 'origin');
         $(pageElement).data('site', site);
+        if (rev) page = revision.create(rev, page);
         return callback(page);
       },
       error: function(xhr, type, msg) {
@@ -903,6 +909,88 @@ require.define("/lib/state.coffee", function (require, module, exports, __dirnam
     }
     return _results;
   };
+
+}).call(this);
+
+});
+
+require.define("/lib/revision.coffee", function (require, module, exports, __dirname, __filename) {
+(function() {
+  var create;
+
+  create = function(revIndex, data) {
+    var i, idx, itemEdited, itemId, itemSplicedIn, items, journal, journalEntry, removeId, revJournal, revStory, revTitle, storyItem, _i, _j, _len, _len2, _len3, _len4, _len5, _len6, _ref, _ref2;
+    revIndex = parseInt(revIndex);
+    journal = data.journal;
+    revTitle = data.title;
+    revStory = [];
+    revJournal = [];
+    _ref = journal.slice(0, revIndex + 1);
+    for (idx = 0, _len = _ref.length; idx < _len; idx++) {
+      journalEntry = _ref[idx];
+      itemSplicedIn = false;
+      itemEdited = false;
+      revJournal.push(journalEntry);
+      switch (journalEntry.type) {
+        case 'create':
+          if (journalEntry.item.title != null) revTitle = journalEntry.item.title;
+          break;
+        case 'add':
+          if (journalEntry.after != null) {
+            for (i = 0, _len2 = revStory.length; i < _len2; i++) {
+              storyItem = revStory[i];
+              if (storyItem.id === journalEntry.after) {
+                itemSplicedIn = true;
+                revStory.splice(i + 1, 0, journalEntry.item);
+              }
+            }
+            if (!itemSplicedIn) revStory.push(journalEntry.item);
+          } else {
+            revStory.push(journalEntry.item);
+          }
+          break;
+        case 'edit':
+          for (i = 0, _len3 = revStory.length; i < _len3; i++) {
+            storyItem = revStory[i];
+            if (storyItem.id === journalEntry.id) {
+              revStory[i] = journalEntry.item;
+              itemEdited = true;
+            }
+          }
+          if (!itemEdited) revStory.push(journalEntry.item);
+          break;
+        case 'move':
+          items = [];
+          for (_i = 0, _len4 = revStory.length; _i < _len4; _i++) {
+            storyItem = revStory[_i];
+            items[storyItem.id] = storyItem;
+          }
+          revStory = [];
+          _ref2 = journalEntry.order;
+          for (_j = 0, _len5 = _ref2.length; _j < _len5; _j++) {
+            itemId = _ref2[_j];
+            revStory.push(items[itemId]);
+          }
+          break;
+        case 'remove':
+          removeId = journalEntry.id;
+          for (i = 0, _len6 = revStory.length; i < _len6; i++) {
+            storyItem = revStory[i];
+            if (storyItem.id === removeId) {
+              revStory.splice(i, 1);
+              break;
+            }
+          }
+      }
+    }
+    return {
+      story: revStory,
+      journal: revJournal,
+      title: revTitle
+    };
+  };
+
+  exports.create = create;
 
 }).call(this);
 
@@ -1249,6 +1337,56 @@ require.define("/test/plugin.coffee", function (require, module, exports, __dirn
 
 });
 
+require.define("/test/revision.coffee", function (require, module, exports, __dirname, __filename) {
+(function() {
+  var revision;
+
+  revision = require('../lib/revision.coffee');
+
+  describe('revision', function() {
+    var data;
+    data = {
+      "title": "foo",
+      "story": [],
+      "journal": [
+        {
+          "type": "create",
+          "id": "ec76ba61a6e35dec",
+          "item": {
+            "title": "foo"
+          },
+          "date": 1335650095871
+        }, {
+          "item": {
+            "type": "factory",
+            "id": "6d8aca1c97d06674"
+          },
+          "id": "6d8aca1c97d06674",
+          "type": "add",
+          "date": 1335650110092
+        }, {
+          "type": "remove",
+          "id": "6d8aca1c97d06674",
+          "date": 1335650117996
+        }
+      ]
+    };
+    it('it should shorten the journal', function() {
+      var version;
+      version = revision.create(1, data);
+      return expect(version.journal.length).to.be(2);
+    });
+    return it('it should recover the factory', function() {
+      var version;
+      version = revision.create(1, data);
+      return expect(version.story[0].type).to.be('factory');
+    });
+  });
+
+}).call(this);
+
+});
+
 require.define("/testclient.coffee", function (require, module, exports, __dirname, __filename) {
     (function() {
   var __slice = Array.prototype.slice;
@@ -1274,6 +1412,8 @@ require.define("/testclient.coffee", function (require, module, exports, __dirna
   require('./test/refresh.coffee');
 
   require('./test/plugin.coffee');
+
+  require('./test/revision.coffee');
 
   $(function() {
     $('<hr><h2> Testing artifacts:</h2>').appendTo('body');

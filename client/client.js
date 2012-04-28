@@ -434,10 +434,6 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(action.type[0]).attr('title', actionTitle).attr('data-id', action.id || "0").appendTo(journalElement);
       if (action.type === 'fork') {
         return actionElement.css("background-image", "url(//" + action.site + "/favicon.png)").attr("href", "//" + action.site + "/" + (pageElement.attr('id')) + ".html").data("site", action.site).data("slug", pageElement.attr('id'));
-      } else {
-        return actionElement.on('click', function() {
-          return wiki.dialog("" + action.type + " action", $('<pre/>').text(JSON.stringify(action, null, 2)));
-        });
       }
     };
     useLocalStorage = wiki.useLocalStorage = function() {
@@ -568,11 +564,29 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       name = $(e.target).data('pageName');
       pageHandler.context = $(e.target).attr('title').split(' => ');
       return finishClick(e, name);
-    }).delegate('.action.fork, .remote', 'click', function(e) {
+    }).delegate('.remote', 'click', function(e) {
       var name;
       name = $(e.target).data('slug');
       pageHandler.context = [$(e.target).data('site')];
       return finishClick(e, name);
+    }).delegate('.action', 'click', function(e) {
+      var data, element, journalEntryIndex, name, page, revUrl, titleUrl;
+      element = $(e.target);
+      if (element.is('.fork')) {
+        name = $(e.target).data('slug');
+        fetch.context = [$(e.target).data('site')];
+        return finishClick(e, name);
+      } else {
+        journalEntryIndex = $(this).parent().children().index(element);
+        data = $(this).parent().parent().data('data');
+        titleUrl = util.asSlug(data.title);
+        revUrl = "" + titleUrl + "_rev" + journalEntryIndex;
+        e.preventDefault();
+        if (!e.shiftKey) page = $(e.target).parents('.page');
+        if (page != null) $(page).nextAll().remove();
+        createPage(revUrl).appendTo($('.main')).each(refresh);
+        return active.set($('.page').last());
+      }
     }).delegate('.action', 'hover', function() {
       var id;
       id = $(this).attr('data-id');
@@ -660,17 +674,22 @@ require.define("/lib/util.coffee", function (require, module, exports, __dirname
 
 require.define("/lib/pageHandler.coffee", function (require, module, exports, __dirname, __filename) {
 (function() {
-  var pageHandler, pushToLocal, pushToServer, state, util;
+  var pageHandler, pushToLocal, pushToServer, revision, state, util;
 
   util = require('./util');
 
   state = require('./state');
 
+  revision = require('./revision');
+
   module.exports = pageHandler = {};
 
   pageHandler.get = function(pageElement, callback, localContext) {
-    var i, json, resource, site, slug;
-    slug = pageElement.attr('id');
+    var i, json, pageAndRevision, pageAndRevisionStr, resource, rev, site, slug;
+    pageAndRevisionStr = pageElement.attr('id');
+    pageAndRevision = pageAndRevisionStr.split('_rev');
+    slug = pageAndRevision[0];
+    rev = pageAndRevision[1];
     site = pageElement.data('site');
     if (pageElement.attr('data-server-generated') === 'true') callback(null);
     if (wiki.useLocalStorage() && (json = localStorage[slug])) {
@@ -703,6 +722,7 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
       success: function(page) {
         wiki.log('fetch success', page, site || 'origin');
         $(pageElement).data('site', site);
+        if (rev) page = revision.create(rev, page);
         return callback(page);
       },
       error: function(xhr, type, msg) {
@@ -957,6 +977,88 @@ require.define("/lib/active.coffee", function (require, module, exports, __dirna
     $(".active").removeClass("active");
     return scrollTo(el.addClass("active"));
   };
+
+}).call(this);
+
+});
+
+require.define("/lib/revision.coffee", function (require, module, exports, __dirname, __filename) {
+(function() {
+  var create;
+
+  create = function(revIndex, data) {
+    var i, idx, itemEdited, itemId, itemSplicedIn, items, journal, journalEntry, removeId, revJournal, revStory, revTitle, storyItem, _i, _j, _len, _len2, _len3, _len4, _len5, _len6, _ref, _ref2;
+    revIndex = parseInt(revIndex);
+    journal = data.journal;
+    revTitle = data.title;
+    revStory = [];
+    revJournal = [];
+    _ref = journal.slice(0, revIndex + 1);
+    for (idx = 0, _len = _ref.length; idx < _len; idx++) {
+      journalEntry = _ref[idx];
+      itemSplicedIn = false;
+      itemEdited = false;
+      revJournal.push(journalEntry);
+      switch (journalEntry.type) {
+        case 'create':
+          if (journalEntry.item.title != null) revTitle = journalEntry.item.title;
+          break;
+        case 'add':
+          if (journalEntry.after != null) {
+            for (i = 0, _len2 = revStory.length; i < _len2; i++) {
+              storyItem = revStory[i];
+              if (storyItem.id === journalEntry.after) {
+                itemSplicedIn = true;
+                revStory.splice(i + 1, 0, journalEntry.item);
+              }
+            }
+            if (!itemSplicedIn) revStory.push(journalEntry.item);
+          } else {
+            revStory.push(journalEntry.item);
+          }
+          break;
+        case 'edit':
+          for (i = 0, _len3 = revStory.length; i < _len3; i++) {
+            storyItem = revStory[i];
+            if (storyItem.id === journalEntry.id) {
+              revStory[i] = journalEntry.item;
+              itemEdited = true;
+            }
+          }
+          if (!itemEdited) revStory.push(journalEntry.item);
+          break;
+        case 'move':
+          items = [];
+          for (_i = 0, _len4 = revStory.length; _i < _len4; _i++) {
+            storyItem = revStory[_i];
+            items[storyItem.id] = storyItem;
+          }
+          revStory = [];
+          _ref2 = journalEntry.order;
+          for (_j = 0, _len5 = _ref2.length; _j < _len5; _j++) {
+            itemId = _ref2[_j];
+            revStory.push(items[itemId]);
+          }
+          break;
+        case 'remove':
+          removeId = journalEntry.id;
+          for (i = 0, _len6 = revStory.length; i < _len6; i++) {
+            storyItem = revStory[i];
+            if (storyItem.id === removeId) {
+              revStory.splice(i, 1);
+              break;
+            }
+          }
+      }
+    }
+    return {
+      story: revStory,
+      journal: revJournal,
+      title: revTitle
+    };
+  };
+
+  exports.create = create;
 
 }).call(this);
 

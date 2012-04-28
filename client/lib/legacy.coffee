@@ -83,9 +83,6 @@ $ ->
         .attr("href", "//#{action.site}/#{pageElement.attr('id')}.html")
         .data("site", action.site)
         .data("slug", pageElement.attr('id'))
-    else
-      actionElement.on 'click', ->
-        wiki.dialog "#{action.type} action", $('<pre/>').text(JSON.stringify(action, null, 2))
 
   useLocalStorage = wiki.useLocalStorage = ->
     wiki.log 'useLocalStorage', $(".login").length > 0
@@ -193,10 +190,30 @@ $ ->
       pageHandler.context = $(e.target).attr('title').split(' => ')
       finishClick e, name
 
-    .delegate '.action.fork, .remote', 'click', (e) ->
+    .delegate '.remote', 'click', (e) ->
       name = $(e.target).data('slug')
       pageHandler.context = [$(e.target).data('site')]
       finishClick e, name
+
+    .delegate '.action', 'click', (e) ->
+      element = $(e.target)
+      if element.is('.fork')
+        name = $(e.target).data('slug')
+        fetch.context = [$(e.target).data('site')]
+        finishClick e, name
+      else
+        journalEntryIndex = $(this).parent().children().index(element)
+        data = $(this).parent().parent().data('data')
+        titleUrl = util.asSlug(data.title)
+        revUrl = "#{titleUrl}_rev#{journalEntryIndex}"
+        e.preventDefault()
+        page = $(e.target).parents('.page') unless e.shiftKey
+        $(page).nextAll().remove() if page?
+        createPage(revUrl)
+          .appendTo($('.main'))
+          .each refresh
+        active.set($('.page').last())
+
 
     .delegate '.action', 'hover', ->
       id = $(this).attr('data-id')

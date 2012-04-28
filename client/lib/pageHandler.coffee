@@ -1,10 +1,16 @@
 util = require('./util')
 state = require('./state')
+revision = require('./revision')
 
 module.exports = pageHandler = {}
 
 pageHandler.get = (pageElement, callback, localContext) ->
-  slug = pageElement.attr('id')
+  # slug = pageElement.attr('id')
+  pageAndRevisionStr = pageElement.attr('id')
+  pageAndRevision = pageAndRevisionStr.split('_rev')
+  slug = pageAndRevision[0]
+  rev = pageAndRevision[1]
+
   site = pageElement.data('site')
   if pageElement.attr('data-server-generated') == 'true'
     callback null
@@ -30,6 +36,7 @@ pageHandler.get = (pageElement, callback, localContext) ->
     success: (page) ->
       wiki.log 'fetch success', page, site || 'origin'
       $(pageElement).data('site', site)
+      page = revision.create rev, page if rev
       callback(page)
     error: (xhr, type, msg) ->
       if localContext.length > 0
