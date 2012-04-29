@@ -987,15 +987,14 @@ require.define("/lib/revision.coffee", function (require, module, exports, __dir
   var create;
 
   create = function(revIndex, data) {
-    var i, idx, itemEdited, itemId, itemSplicedIn, items, journal, journalEntry, removeId, revJournal, revStory, revTitle, storyItem, _i, _j, _len, _len2, _len3, _len4, _len5, _len6, _ref, _ref2;
-    revIndex = parseInt(revIndex);
+    var i, itemEdited, itemId, itemSplicedIn, items, journal, journalEntry, removeId, revJournal, revStory, revTitle, storyItem, _i, _j, _k, _len, _len2, _len3, _len4, _len5, _len6, _ref, _ref2;
     journal = data.journal;
     revTitle = data.title;
     revStory = [];
     revJournal = [];
     _ref = journal.slice(0, revIndex + 1);
-    for (idx = 0, _len = _ref.length; idx < _len; idx++) {
-      journalEntry = _ref[idx];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      journalEntry = _ref[_i];
       itemSplicedIn = false;
       itemEdited = false;
       revJournal.push(journalEntry);
@@ -1010,6 +1009,7 @@ require.define("/lib/revision.coffee", function (require, module, exports, __dir
               if (storyItem.id === journalEntry.after) {
                 itemSplicedIn = true;
                 revStory.splice(i + 1, 0, journalEntry.item);
+                break;
               }
             }
             if (!itemSplicedIn) revStory.push(journalEntry.item);
@@ -1023,20 +1023,21 @@ require.define("/lib/revision.coffee", function (require, module, exports, __dir
             if (storyItem.id === journalEntry.id) {
               revStory[i] = journalEntry.item;
               itemEdited = true;
+              break;
             }
           }
           if (!itemEdited) revStory.push(journalEntry.item);
           break;
         case 'move':
           items = [];
-          for (_i = 0, _len4 = revStory.length; _i < _len4; _i++) {
-            storyItem = revStory[_i];
+          for (_j = 0, _len4 = revStory.length; _j < _len4; _j++) {
+            storyItem = revStory[_j];
             items[storyItem.id] = storyItem;
           }
           revStory = [];
           _ref2 = journalEntry.order;
-          for (_j = 0, _len5 = _ref2.length; _j < _len5; _j++) {
-            itemId = _ref2[_j];
+          for (_k = 0, _len5 = _ref2.length; _k < _len5; _k++) {
+            itemId = _ref2[_k];
             revStory.push(items[itemId]);
           }
           break;

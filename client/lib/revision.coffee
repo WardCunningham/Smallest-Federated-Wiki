@@ -5,12 +5,11 @@
 # that the revision represents.
 
 create = (revIndex, data) ->
-  revIndex = parseInt(revIndex)
   journal = data.journal
   revTitle = data.title
   revStory = []
   revJournal = []
-  for journalEntry, idx in journal.slice 0, revIndex+1
+  for journalEntry in journal.slice 0, revIndex+1
     itemSplicedIn = false
     itemEdited = false
     revJournal.push(journalEntry)
@@ -24,6 +23,7 @@ create = (revIndex, data) ->
             if storyItem.id == journalEntry.after
               itemSplicedIn = true
               revStory.splice(i+1,0,journalEntry.item)
+              break
           if !itemSplicedIn #defensive coding for if we don't have a story item to put this after
             revStory.push journalEntry.item
         else
@@ -33,6 +33,7 @@ create = (revIndex, data) ->
           if storyItem.id == journalEntry.id
             revStory[i] = journalEntry.item
             itemEdited = true
+            break
         if !itemEdited  #the first journal entry for welcome visitors is an edit
           revStory.push(journalEntry.item)
       when 'move'
