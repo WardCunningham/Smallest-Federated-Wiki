@@ -28,7 +28,6 @@ body {
   margin: 0;
   width: 10000%; }
 
-header,
 footer {
   position: fixed;
   left: 0;
@@ -38,9 +37,6 @@ footer {
   font-size: 80%;
   z-index: 1000;
   color: #555566; }
-
-header {
-  top: 0; }
 
 footer {
   bottom: 0; }

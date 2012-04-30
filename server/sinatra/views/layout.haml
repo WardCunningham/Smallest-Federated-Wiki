@@ -14,7 +14,6 @@
 		%script(type="text/javascript" src="/js/underscore-min.js")
 		%script(type="text/javascript" src="/client.js")
 	%body
-		%header
 		%section.main
 			=yield
 		%footer{:class => authenticated? ? "logout" : claimed? ? "login" : "claim"}
