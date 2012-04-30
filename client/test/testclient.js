@@ -889,6 +889,19 @@ require.define("/lib/state.coffee", function (require, module, exports, __dirnam
     return active.set($('.page').last());
   };
 
+  state.remove = function(pageElement) {
+    var gotoElement;
+    gotoElement = pageElement.next();
+    if (gotoElement[0] == null) gotoElement = pageElement.prev();
+    wiki.log("goto element", gotoElement);
+    if (gotoElement[0] != null) {
+      wiki.log('remove', pageElement);
+      active.set(gotoElement);
+      pageElement.remove();
+      return state.setUrl();
+    }
+  };
+
   state.first = function() {
     var firstUrlLocs, firstUrlPages, idx, oldPages, urlPage, _len, _results;
     state.setUrl();
@@ -1028,7 +1041,7 @@ require.define("/test/refresh.coffee", function (require, module, exports, __dir
 
 require.define("/lib/refresh.coffee", function (require, module, exports, __dirname, __filename) {
 (function() {
-  var emitHeader, handleDragging, initAddButton, initDragging, pageHandler, plugin, refresh, state, util;
+  var emitHeader, handleDragging, initAddButton, initCloseButton, initDragging, pageHandler, plugin, refresh, state, util;
 
   util = require('./util.coffee');
 
@@ -1102,6 +1115,14 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
     });
   };
 
+  initCloseButton = function(pageElement) {
+    $(pageElement).prepend("<a href=\"#\" style=\"float:right\" class=\"closePage\">close [x]</a>");
+    return pageElement.find(".closePage").live("click", function(evt) {
+      evt.preventDefault();
+      return state.remove(pageElement);
+    });
+  };
+
   emitHeader = function(pageElement, page) {
     var site;
     site = $(pageElement).data('site');
@@ -1166,7 +1187,8 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
         state.setUrl();
       }
       initDragging(pageElement);
-      return initAddButton(pageElement);
+      initAddButton(pageElement);
+      return initCloseButton(pageElement);
     };
     return pageHandler.get(pageElement, buildPage);
   };
