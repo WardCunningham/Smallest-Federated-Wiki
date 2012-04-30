@@ -1116,7 +1116,7 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
   };
 
   initCloseButton = function(pageElement) {
-    $(pageElement).prepend("<a href=\"#\" style=\"float:right\" class=\"closePage\">close [x]</a>");
+    $(pageElement).prepend("<a href=\"#\" style=\"float:right\" class=\"closePage ui-icon ui-icon-closethick\" title=\"close\">close [x]</a>");
     return pageElement.find(".closePage").live("click", function(evt) {
       evt.preventDefault();
       return state.remove(pageElement);

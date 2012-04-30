@@ -53,7 +53,7 @@ initAddButton = (pageElement) ->
     
 initCloseButton = (pageElement) ->
   $(pageElement)
-  .prepend("<a href=\"#\" style=\"float:right\" class=\"closePage\">close [x]</a>")
+  .prepend("<a href=\"#\" style=\"float:right\" class=\"closePage ui-icon ui-icon-closethick\" title=\"close\">close [x]</a>")
   pageElement.find(".closePage").live "click", (evt) ->
     evt.preventDefault()
     state.remove(pageElement)
