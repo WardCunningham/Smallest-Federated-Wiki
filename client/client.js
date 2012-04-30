@@ -971,13 +971,15 @@ require.define("/lib/active.coffee", function (require, module, exports, __dirna
     contentWidth = $(".page").outerWidth(true) * $(".page").size();
     if (target < minX) {
       return active.scrollContainer.animate({
-        scrollLeft: target
+        scrollLeft: target - 60
       });
     } else if (target + width > maxX) {
+      wiki.log("scrollLeft 2 ", target - (bodyWidth - width));
       return active.scrollContainer.animate({
         scrollLeft: target - (bodyWidth - width)
       });
     } else if (maxX > $(".pages").outerWidth()) {
+      wiki.log("scrollLeft 3 ", Math.min(target, contentWidth - bodyWidth));
       return active.scrollContainer.animate({
         scrollLeft: Math.min(target, contentWidth - bodyWidth)
       });

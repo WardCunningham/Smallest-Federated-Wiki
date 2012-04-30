@@ -20,10 +20,14 @@ scrollTo = (el) ->
   contentWidth = $(".page").outerWidth(true) * $(".page").size()
 
   if target < minX
-    active.scrollContainer.animate scrollLeft: target
+    #subtract 60 to make it easier for users to scroll back to first page
+    #this should be replaced by a visible scrollbar along the bottom so we have a UI reference
+    active.scrollContainer.animate scrollLeft: target-60
   else if target + width > maxX
+    wiki.log "scrollLeft 2 ", target - (bodyWidth - width)
     active.scrollContainer.animate scrollLeft: target - (bodyWidth - width)
   else if maxX > $(".pages").outerWidth()
+    wiki.log "scrollLeft 3 ", Math.min(target, contentWidth - bodyWidth)
     active.scrollContainer.animate scrollLeft: Math.min(target, contentWidth - bodyWidth)
 
 active.set = (el) ->
