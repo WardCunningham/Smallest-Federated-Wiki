@@ -265,7 +265,7 @@ class Controller < Sinatra::Base
   get %r{^/([a-z0-9-]+)\.json$} do |name|
     content_type 'application/json'
     cross_origin
-    halt 404 unless File.exists? "#{farm_page.directory}/#{name}" or File.exists? "#{farm_page.default_directory}/#{name}"
+    halt 404 unless Store.exists?("#{farm_page.directory}/#{name}") || Store.exists?("#{farm_page.default_directory}/#{name}")
     JSON.pretty_generate(farm_page.get(name))
   end
 
