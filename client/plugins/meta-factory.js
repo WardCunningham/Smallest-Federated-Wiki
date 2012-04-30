@@ -35,7 +35,7 @@
         } catch (err) {
           div.append("<p class='error'>" + err + "</p>");
         }
-        return wiki.putAction(pageElement, {
+        return wiki.pageHandler.put(pageElement, {
           type: 'edit',
           id: item.id,
           item: item

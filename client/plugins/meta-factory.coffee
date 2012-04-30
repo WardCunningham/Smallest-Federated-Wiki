@@ -20,7 +20,7 @@ window.plugins.factory =
           plugin.bind div, item
       catch err
         div.append "<p class='error'>#{err}</p>"
-      wiki.putAction pageElement, {type: 'edit', id: item.id, item: item}
+      wiki.pageHandler.put pageElement, {type: 'edit', id: item.id, item: item}
 
     div.dblclick ->
       div.removeClass('factory').addClass(item.type='paragraph')

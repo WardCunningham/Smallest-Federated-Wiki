@@ -7,6 +7,8 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 SINATRA_ROOT = File.expand_path(File.dirname(__FILE__))
 APP_ROOT = File.expand_path(File.join(SINATRA_ROOT, "..", ".."))
 
+Encoding.default_external = Encoding::UTF_8
+
 require 'stores/all'
 require 'random_id'
 require 'page'
@@ -185,7 +187,7 @@ class Controller < Sinatra::Base
     haml :page, :locals => { :page => farm_page.get(name), :page_name => name }
   end
 
-  get %r{^((/[a-zA-Z0-9:.-]+/[a-z0-9-]+)+)$} do
+  get %r{^((/[a-zA-Z0-9:.-]+/[a-z0-9-]+(_rev\d+)?)+)$} do
     elements = params[:captures].first.split('/')
     pages = []
     elements.shift
