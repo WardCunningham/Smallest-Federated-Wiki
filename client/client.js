@@ -574,7 +574,7 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       element = $(e.target);
       if (element.is('.fork')) {
         name = $(e.target).data('slug');
-        fetch.context = [$(e.target).data('site')];
+        pageHandler.context = [$(e.target).data('site')];
         return finishClick(e, name);
       } else {
         journalEntryIndex = $(this).parent().children().index(element);
