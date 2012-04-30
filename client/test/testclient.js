@@ -683,10 +683,12 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
     slug = pageAndRevision[0];
     rev = pageAndRevision[1];
     site = pageElement.data('site');
-    if (pageElement.attr('data-server-generated') === 'true') callback(null);
+    if (pageElement.attr('data-server-generated') === 'true') {
+      return callback(null);
+    }
     if (wiki.useLocalStorage() && (json = localStorage[slug])) {
       pageElement.addClass("local");
-      callback(JSON.parse(json));
+      return callback(JSON.parse(json));
     }
     if (!(pageHandler.context.length > 0)) pageHandler.context = ['origin'];
     if (site) {

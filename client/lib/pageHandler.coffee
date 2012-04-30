@@ -13,10 +13,10 @@ pageHandler.get = (pageElement, callback, localContext) ->
 
   site = pageElement.data('site')
   if pageElement.attr('data-server-generated') == 'true'
-    callback null
+    return callback null
   if wiki.useLocalStorage() and json = localStorage[slug]
     pageElement.addClass("local")
-    callback JSON.parse(json)
+    return callback JSON.parse(json)
   pageHandler.context = ['origin'] unless pageHandler.context.length > 0
   if site
     localContext = []
@@ -37,7 +37,7 @@ pageHandler.get = (pageElement, callback, localContext) ->
       wiki.log 'fetch success', page, site || 'origin'
       $(pageElement).data('site', site)
       page = revision.create rev, page if rev
-      callback(page)
+      return callback(page)
     error: (xhr, type, msg) ->
       if localContext.length > 0
         pageHandler.get pageElement, callback, localContext
