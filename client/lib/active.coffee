@@ -1,5 +1,5 @@
 module.exports = active = {}
-# FUNCTIONS and HANDLERS to manage location bar and back button
+# FUNCTIONS and HANDLERS to manage the active page, and scroll viewport to show it
 
 active.scrollContainer = undefined
 findScrollContainer = ->
