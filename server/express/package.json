@@ -17,7 +17,8 @@
     "bouncy": "~1.1"
   },
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha"
+    "test": "./node_modules/mocha/bin/mocha",
+    "start": "./bin/server.js"
   },
   "devDependencies": {
     "docco": "~0.3",

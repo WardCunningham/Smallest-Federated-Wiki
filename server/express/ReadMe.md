@@ -33,7 +33,7 @@ To get started with the second pattern checkout lib/farm.coffee as an example.
 ## Launching the Node/Express Server ##
 To run in the default development mode at localhost:3000 just execute:
 
-	./bin/server.js
+	npm start
 
 To run in production mode:
 
