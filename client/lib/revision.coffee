@@ -9,7 +9,7 @@ create = (revIndex, data) ->
   revTitle = data.title
   revStory = []
   revJournal = []
-  for journalEntry in journal.slice 0, revIndex+1
+  for journalEntry in journal.slice 0, (+revIndex)+1
     itemSplicedIn = false
     itemEdited = false
     revJournal.push(journalEntry)

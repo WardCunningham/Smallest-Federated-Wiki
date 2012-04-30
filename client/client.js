@@ -994,7 +994,7 @@ require.define("/lib/revision.coffee", function (require, module, exports, __dir
     revTitle = data.title;
     revStory = [];
     revJournal = [];
-    _ref = journal.slice(0, revIndex + 1);
+    _ref = journal.slice(0, (+revIndex) + 1);
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       journalEntry = _ref[_i];
       itemSplicedIn = false;
