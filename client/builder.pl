@@ -8,7 +8,7 @@ my $OSXsay = ($^O eq 'darwin');
 sub say {
     my $msg = shift;
     if ($OSXsay) {
-        `say $msg`;
+        `say $msg&`;
     } else {
         print $msg."\n";
     }

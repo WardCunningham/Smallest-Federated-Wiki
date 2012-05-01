@@ -71,15 +71,9 @@ describe "GET /view/welcome-visitors/view/indie-web-camp" do
   end
 end
 
-describe "GET /welcome-visitors.json" do
-  before(:all) do
-    get "/welcome-visitors.json"
-    @response = last_response
-    @body = last_response.body
-  end
-
+shared_examples_for "GET to JSON resource" do
   it "returns 200" do
-    last_response.status.should == 200
+    @response.status.should == 200
   end
 
   it "returns Content-Type application/json" do
@@ -91,6 +85,16 @@ describe "GET /welcome-visitors.json" do
       JSON.parse(@body)
     }.should_not raise_error
   end
+end
+
+describe "GET /welcome-visitors.json" do
+  before(:all) do
+    get "/welcome-visitors.json"
+    @response = last_response
+    @body = last_response.body
+  end
+
+  it_behaves_like "GET to JSON resource"
 
   context "JSON from GET /welcome-visitors.json" do
     before(:all) do
@@ -101,7 +105,7 @@ describe "GET /welcome-visitors.json" do
       @json['title'].class.should == String
     end
 
-    it "has a story arry" do
+    it "has a story array" do
       @json['story'].class.should == Array
     end
 
@@ -111,6 +115,48 @@ describe "GET /welcome-visitors.json" do
 
     it "has paragraph with text string" do
       @json['story'].first['text'].class.should == String
+    end
+  end
+end
+
+describe "GET /recent-changes.json" do
+  def create_sample_page
+    page = { "title" => "A Page", "story" => [ { "type" => "paragraph", "text" => "Hello test" } ] }
+    pages_path = File.join TestDirs::TEST_DATA_DIR, 'pages'
+    FileUtils.rm_f    pages_path
+    FileUtils.mkdir_p pages_path
+    page_path = File.join pages_path, 'a-page'
+    File.open(page_path, 'w'){|file| file.write(page.to_json)}
+  end
+
+  before(:all) do
+    create_sample_page
+    get "/recent-changes.json"
+    @response = last_response
+    @body = last_response.body
+    @json = JSON.parse(@body)
+  end
+
+  it_behaves_like "GET to JSON resource"
+
+  context "the JSON" do
+    it "has a title string" do
+      @json['title'].class.should == String
+    end
+
+    it "has a story array" do
+      @json['story'].class.should == Array
+    end
+
+    it "has the heading 'Within a Minute'" do
+      @json['story'].first['text'].should == "<h3>Within a Minute</h3>"
+      @json['story'].first['type'].should == 'paragraph'
+    end
+
+    it "has a listing of the single recent change" do
+      @json['story'][1]['slug'].should == "a-page"
+      @json['story'][1]['title'].should == "A Page"
+      @json['story'][1]['type'].should == 'federatedWiki'
     end
   end
 end

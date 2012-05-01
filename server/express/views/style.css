@@ -28,7 +28,6 @@ body {
   margin: 0;
   width: 10000%; }
 
-header,
 footer {
   position: fixed;
   left: 0;
@@ -39,9 +38,6 @@ footer {
   z-index: 1000;
   background: #eeeeee url("/favicon.png") 4px 4px no-repeat;
   color: #555566; }
-
-header {
-  top: 0; }
 
 footer {
   bottom: 0; }

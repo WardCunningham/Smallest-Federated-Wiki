@@ -9,15 +9,19 @@ getScript = wiki.getScript = (url, callback = () ->) ->
   if scripts[url]?
     callback()
   else
-    $.getScript(url, ->
-      scripts[url] = true
-      callback()
-    )
+    $.getScript(url)
+      .done ->
+        scripts[url] = true
+        callback()
+      .fail ->
+        callback()
 
 plugin.get = wiki.getPlugin = (name, callback) ->
   return callback(window.plugins[name]) if window.plugins[name]
-  getScript "/plugins/#{name}.js", () ->
-    callback(window.plugins[name])
+  getScript "/plugins/#{name}/#{name}.js", () ->
+    return callback(window.plugins[name]) if window.plugins[name]
+    getScript "/plugins/#{name}.js", () ->
+      callback(window.plugins[name])
 
 plugin.do = wiki.doPlugin = (div, item) ->
   error = (ex) ->
@@ -53,17 +57,6 @@ window.plugins =
     bind: (div, item) ->
       div.dblclick -> wiki.textEditor div, item
       div.find('img').dblclick -> wiki.dialog item.text, this
-  chart:
-    emit: (div, item) ->
-      chartElement = $('<p />').addClass('readout').appendTo(div).text(item.data.last().last())
-      captionElement = $('<p />').html(wiki.resolveLinks(item.caption)).appendTo(div)
-    bind: (div, item) ->
-      div.find('p:first').mousemove (e) ->
-        [time, sample] = item.data[Math.floor(item.data.length * e.offsetX / e.target.offsetWidth)]
-        $(e.target).text sample.toFixed(1)
-        $(e.target).siblings("p").last().html util.formatTime(time)
-      .dblclick ->
-        wiki.dialog "JSON for #{item.caption}", $('<pre/>').text(JSON.stringify(item.data, null, 2))
   changes:
     emit: (div, item) ->
       div.append ul = $('<ul />').append if localStorage.length then $('<input type="button" value="discard all" />').css('margin-top','10px') else $('<p>empty</p>')

@@ -199,7 +199,7 @@ $ ->
       element = $(e.target)
       if element.is('.fork')
         name = $(e.target).data('slug')
-        fetch.context = [$(e.target).data('site')]
+        pageHandler.context = [$(e.target).data('site')]
         finishClick e, name
       else
         journalEntryIndex = $(this).parent().children().index(element)

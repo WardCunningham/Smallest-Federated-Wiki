@@ -16,6 +16,10 @@ GEM
       ffi (~> 1.0.6)
     columnize (0.3.4)
     configuration (1.2.0)
+    couchrest (1.1.2)
+      mime-types (~> 1.15)
+      multi_json (~> 1.0.0)
+      rest-client (~> 1.6.1)
     daemons (1.1.4)
     diff-lcs (1.1.2)
     eventmachine (0.12.10)
@@ -93,6 +97,7 @@ PLATFORMS
 DEPENDENCIES
   RubyInline
   capybara
+  couchrest
   haml
   json
   launchy

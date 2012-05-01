@@ -685,10 +685,12 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
     slug = pageAndRevision[0];
     rev = pageAndRevision[1];
     site = pageElement.data('site');
-    if (pageElement.attr('data-server-generated') === 'true') callback(null);
+    if (pageElement.attr('data-server-generated') === 'true') {
+      return callback(null);
+    }
     if (wiki.useLocalStorage() && (json = localStorage[slug])) {
       pageElement.addClass("local");
-      callback(JSON.parse(json));
+      return callback(JSON.parse(json));
     }
     if (!(pageHandler.context.length > 0)) pageHandler.context = ['origin'];
     if (site) {
@@ -939,7 +941,7 @@ require.define("/lib/revision.coffee", function (require, module, exports, __dir
     revTitle = data.title;
     revStory = [];
     revJournal = [];
-    _ref = journal.slice(0, revIndex + 1);
+    _ref = journal.slice(0, (+revIndex) + 1);
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       journalEntry = _ref[_i];
       itemSplicedIn = false;
@@ -1214,8 +1216,10 @@ require.define("/lib/plugin.coffee", function (require, module, exports, __dirna
     if (scripts[url] != null) {
       return callback();
     } else {
-      return $.getScript(url, function() {
+      return $.getScript(url).done(function() {
         scripts[url] = true;
+        return callback();
+      }).fail(function() {
         return callback();
       });
     }
@@ -1223,8 +1227,11 @@ require.define("/lib/plugin.coffee", function (require, module, exports, __dirna
 
   plugin.get = wiki.getPlugin = function(name, callback) {
     if (window.plugins[name]) return callback(window.plugins[name]);
-    return getScript("/plugins/" + name + ".js", function() {
-      return callback(window.plugins[name]);
+    return getScript("/plugins/" + name + "/" + name + ".js", function() {
+      if (window.plugins[name]) return callback(window.plugins[name]);
+      return getScript("/plugins/" + name + ".js", function() {
+        return callback(window.plugins[name]);
+      });
     });
   };
 
@@ -1278,23 +1285,6 @@ require.define("/lib/plugin.coffee", function (require, module, exports, __dirna
         });
         return div.find('img').dblclick(function() {
           return wiki.dialog(item.text, this);
-        });
-      }
-    },
-    chart: {
-      emit: function(div, item) {
-        var captionElement, chartElement;
-        chartElement = $('<p />').addClass('readout').appendTo(div).text(item.data.last().last());
-        return captionElement = $('<p />').html(wiki.resolveLinks(item.caption)).appendTo(div);
-      },
-      bind: function(div, item) {
-        return div.find('p:first').mousemove(function(e) {
-          var sample, time, _ref;
-          _ref = item.data[Math.floor(item.data.length * e.offsetX / e.target.offsetWidth)], time = _ref[0], sample = _ref[1];
-          $(e.target).text(sample.toFixed(1));
-          return $(e.target).siblings("p").last().html(util.formatTime(time));
-        }).dblclick(function() {
-          return wiki.dialog("JSON for " + item.caption, $('<pre/>').text(JSON.stringify(item.data, null, 2)));
         });
       }
     },

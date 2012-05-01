@@ -15,9 +15,9 @@ describe "Favicon" do
 
 	describe "create" do
 		it "creates a favicon.png image" do
+			favicon = Favicon.create_blob
 			favicon_path = File.join(@test_data_dir, 'favicon-test.png')
-			Favicon.create favicon_path
-			File.exist?(favicon_path).should be_true
+			File.open(favicon_path, 'wb') { |file| file.write(favicon) }
 			file = PNG.load_file(favicon_path)
 			file.should be_a(PNG::Canvas)
 			file.width.should == 32
