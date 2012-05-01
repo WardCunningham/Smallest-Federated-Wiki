@@ -3,6 +3,8 @@ pageHandler = require('./pageHandler.coffee')
 plugin = require('./plugin.coffee')
 state = require('./state.coffee')
 
+# this is some mishmash of UI chrome and page rendering.
+
 handleDragging = (evt, ui) ->
   itemElement = ui.item
   item = wiki.getItem(itemElement)
@@ -48,9 +50,18 @@ initAddButton = (pageElement) ->
     beforeElement = itemElement.prev('.item')
     before = wiki.getItem(beforeElement)
     pageHandler.put pageElement, {item: item, id: item.id, type: "add", after: before?.id}
+    
+initCloseButton = (pageElement) ->
+  $(pageElement)
+  .prepend("<a href=\"#\" style=\"float:right\" class=\"closePage ui-icon ui-icon-closethick\" title=\"close\">close [x]</a>")
+  pageElement.find(".closePage").live "click", (evt) ->
+    evt.preventDefault()
+    state.remove(pageElement)
+
 
 emitHeader = (pageElement, page) ->
   site = $(pageElement).data('site')
+# TODO: its not obvious enough that you're looking at an old rev (can we add rev7 of 12 to page header)
   if site?
     $(pageElement)
       .append "<h1><a href=\"//#{site}\"><img src = \"/remote/#{site}/favicon.png\" height = \"32px\"></a> #{page.title}</h1>"
@@ -113,6 +124,7 @@ module.exports = refresh = wiki.refresh = ->
 
     initDragging pageElement
     initAddButton pageElement
+    initCloseButton pageElement
 
   pageHandler.get pageElement, buildPage
 

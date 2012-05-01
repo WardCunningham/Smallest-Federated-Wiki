@@ -19,7 +19,7 @@ body {
   color: #333333; }
 
 .main {
-  top: 0;
+  top: 40px;
   left: 0;
   right: 0;
   bottom: 0;
@@ -33,9 +33,10 @@ footer {
   left: 0;
   right: 0;
   height: 20px;
-  padding: 10px;
+  padding: 10px 10px 10px 50px;
   font-size: 80%;
   z-index: 1000;
+  background: #eeeeee url("/favicon.png") 4px 4px no-repeat;
   color: #555566; }
 
 footer {

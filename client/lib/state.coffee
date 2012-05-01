@@ -50,6 +50,19 @@ state.show = (e) ->
 
   active.set($('.page').last())
 
+state.remove = (pageElement) ->
+  gotoElement = pageElement.next()
+  unless gotoElement[0]?
+    gotoElement = pageElement.prev() 
+  wiki.log "goto element", gotoElement
+  if gotoElement[0]?
+    wiki.log 'remove', pageElement
+    active.set(gotoElement)
+    pageElement.remove()
+    state.setUrl()
+
+
+
 state.first = ->
   state.setUrl()
   firstUrlPages = state.urlPages()

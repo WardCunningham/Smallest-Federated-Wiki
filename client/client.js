@@ -899,6 +899,19 @@ require.define("/lib/state.coffee", function (require, module, exports, __dirnam
     return active.set($('.page').last());
   };
 
+  state.remove = function(pageElement) {
+    var gotoElement;
+    gotoElement = pageElement.next();
+    if (gotoElement[0] == null) gotoElement = pageElement.prev();
+    wiki.log("goto element", gotoElement);
+    if (gotoElement[0] != null) {
+      wiki.log('remove', pageElement);
+      active.set(gotoElement);
+      pageElement.remove();
+      return state.setUrl();
+    }
+  };
+
   state.first = function() {
     var firstUrlLocs, firstUrlPages, idx, oldPages, urlPage, _len, _results;
     state.setUrl();
@@ -960,13 +973,15 @@ require.define("/lib/active.coffee", function (require, module, exports, __dirna
     contentWidth = $(".page").outerWidth(true) * $(".page").size();
     if (target < minX) {
       return active.scrollContainer.animate({
-        scrollLeft: target
+        scrollLeft: target - 60
       });
     } else if (target + width > maxX) {
+      wiki.log("scrollLeft 2 ", target - (bodyWidth - width));
       return active.scrollContainer.animate({
         scrollLeft: target - (bodyWidth - width)
       });
     } else if (maxX > $(".pages").outerWidth()) {
+      wiki.log("scrollLeft 3 ", Math.min(target, contentWidth - bodyWidth));
       return active.scrollContainer.animate({
         scrollLeft: Math.min(target, contentWidth - bodyWidth)
       });
@@ -1181,7 +1196,7 @@ require.define("/lib/plugin.coffee", function (require, module, exports, __dirna
 
 require.define("/lib/refresh.coffee", function (require, module, exports, __dirname, __filename) {
 (function() {
-  var emitHeader, handleDragging, initAddButton, initDragging, pageHandler, plugin, refresh, state, util;
+  var emitHeader, handleDragging, initAddButton, initCloseButton, initDragging, pageHandler, plugin, refresh, state, util;
 
   util = require('./util.coffee');
 
@@ -1255,6 +1270,14 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
     });
   };
 
+  initCloseButton = function(pageElement) {
+    $(pageElement).prepend("<a href=\"#\" style=\"float:right\" class=\"closePage ui-icon ui-icon-closethick\" title=\"close\">close [x]</a>");
+    return pageElement.find(".closePage").live("click", function(evt) {
+      evt.preventDefault();
+      return state.remove(pageElement);
+    });
+  };
+
   emitHeader = function(pageElement, page) {
     var site;
     site = $(pageElement).data('site');
@@ -1319,7 +1342,8 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
         state.setUrl();
       }
       initDragging(pageElement);
-      return initAddButton(pageElement);
+      initAddButton(pageElement);
+      return initCloseButton(pageElement);
     };
     return pageHandler.get(pageElement, buildPage);
   };
