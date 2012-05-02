@@ -7,7 +7,7 @@ window.plugins.lists =
   emit: (div, item) ->
     wiki.log 'lists', item
     for line in item.text.split "\n"
-        div.append $('<li/>').text line
+        div.append $('<li/>').append(wiki.resolveLinks(line))
   bind: (div, item) ->
     div.dblclick -> wiki.textEditor div, item
 

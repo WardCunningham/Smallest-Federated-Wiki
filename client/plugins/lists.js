@@ -10,7 +10,7 @@
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         line = _ref[_i];
-        _results.push(div.append($('<li/>').text(line)));
+        _results.push(div.append($('<li/>').append(wiki.resolveLinks(line))));
       }
       return _results;
     },
