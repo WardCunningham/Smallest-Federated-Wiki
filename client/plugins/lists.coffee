@@ -4,10 +4,11 @@
 
 window.plugins.lists =
   description: "Simple Bullet list editor"
+  help: "creates a new bullet point per line"
   emit: (div, item) ->
     wiki.log 'lists', item
     for line in item.text.split "\n"
         div.append $('<li/>').append(wiki.resolveLinks(line))
   bind: (div, item) ->
-    div.dblclick -> wiki.textEditor div, item
+    div.dblclick -> wiki.textEditor div, item, window.plugins.lists.help
 

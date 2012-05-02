@@ -3,6 +3,7 @@
 
   window.plugins.lists = {
     description: "Simple Bullet list editor",
+    help: "creates a new bullet point per line",
     emit: function(div, item) {
       var line, _i, _len, _ref, _results;
       wiki.log('lists', item);
@@ -16,7 +17,7 @@
     },
     bind: function(div, item) {
       return div.dblclick(function() {
-        return wiki.textEditor(div, item);
+        return wiki.textEditor(div, item, window.plugins.lists.help);
       });
     }
   };

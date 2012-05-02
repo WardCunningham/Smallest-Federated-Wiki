@@ -88,8 +88,9 @@ $ ->
     wiki.log 'useLocalStorage', $(".login").length > 0
     $(".login").length > 0
 
-  textEditor = wiki.textEditor = (div, item) ->
+  textEditor = wiki.textEditor = (div, item, help) ->
     textarea = $("<textarea>#{original = item.text ? ''}</textarea>")
+      .attr('title', help || 'edit paragraph')
       .focusout ->
         if item.text = textarea.val()
           plugin.do div.empty(), item

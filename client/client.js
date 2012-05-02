@@ -440,9 +440,9 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       wiki.log('useLocalStorage', $(".login").length > 0);
       return $(".login").length > 0;
     };
-    textEditor = wiki.textEditor = function(div, item) {
+    textEditor = wiki.textEditor = function(div, item, help) {
       var original, textarea, _ref;
-      textarea = $("<textarea>" + (original = (_ref = item.text) != null ? _ref : '') + "</textarea>").focusout(function() {
+      textarea = $("<textarea>" + (original = (_ref = item.text) != null ? _ref : '') + "</textarea>").attr('title', help || 'help').focusout(function() {
         if (item.text = textarea.val()) {
           plugin["do"](div.empty(), item);
           if (item.text === original) return;
