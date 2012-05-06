@@ -34,7 +34,7 @@ window.plugins.method =
           if input[line]?
             value = input[line]
             comment = input["#{line} Assumptions"] || null
-          else if line.match /^[0-9\.-]/
+          else if line.match /^[0-9\.-]+$/
             value = +line
           else if line == 'SUM'
             color = '#ddd'
