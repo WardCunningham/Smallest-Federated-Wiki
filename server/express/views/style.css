@@ -28,6 +28,7 @@ body {
   margin: 0;
   width: 10000%; }
 
+header,
 footer {
   position: fixed;
   left: 0;
@@ -37,6 +38,9 @@ footer {
   font-size: 80%;
   z-index: 1000;
   color: #555566; }
+
+header {
+  top: 0; }
 
 footer {
   bottom: 0; }
@@ -181,9 +185,7 @@ h4 {
   position: relative;
   margin-top: -23px;
   margin-bottom: -9px;
-  text-align: right; 
+  text-align: right;
   font-size: 13px;
-  color: #999;
-  font-weight: 500;
-}
-
+  color: #999999;
+  font-weight: 500; }
