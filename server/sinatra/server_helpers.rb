@@ -1,0 +1,42 @@
+module ServerHelpers
+
+  def cross_origin
+    headers 'Access-Control-Allow-Origin' => "*" if request.env['HTTP_ORIGIN']
+  end
+
+  def resolve_links string
+    string.
+      gsub(/\[\[([^\]]+)\]\]/i) {
+                  |name|
+                  name.gsub!(/^\[\[(.*)\]\]/, '\1')
+
+                  slug = name.gsub(/\s/, '-')
+                  slug = slug.gsub(/[^A-Za-z0-9-]/, '').downcase
+                  '<a class="internal" href="/'+slug+'.html" data-page-name="'+slug+'">'+name+'</a>'
+              }.
+      gsub(/\[(http.*?) (.*?)\]/i, '<a class="external" href="\1">\2</a>')
+  end
+
+  def openid_consumer
+    @openid_consumer ||= OpenID::Consumer.new(session, OpenID::Store::Filesystem.new("#{farm_status}/tmp/openid"))
+  end
+
+  def authenticated?
+    session[:authenticated] == true
+  end
+
+  def claimed?
+    Store.exists? "#{farm_status}/open_id.identity"
+  end
+
+  def authenticate!
+    session[:authenticated] = true
+    redirect "/"
+  end
+
+  def oops status, message
+    haml :oops, :layout => false, :locals => {:status => status, :message => message}
+  end
+
+end
+
