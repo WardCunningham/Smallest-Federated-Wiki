@@ -22,5 +22,10 @@ class Favicon
       end
       PNG.new(canvas).to_blob
     end
+
+    def get_or_create(path)
+      Store.get_blob(path) || Store.put_blob(path, Favicon.create_blob)
+    end
+
   end
 end

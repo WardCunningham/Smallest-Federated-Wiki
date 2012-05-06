@@ -47,9 +47,29 @@ The server can host separate pages and status directories for a number of virtua
 
 	data/farm
 
+or by setting the environment variable
+
+	FARM_MODE=true
+
 The server will create subdirectories with farm for each virtual host name and locate pages and status directories within that.
 
-The thin web server cannot handle recursive web requests that can happen with federated sites hosted in the same farm. Use webrick instead. Launch it with this command:
+Recursive Server Calls
+======================
+
+Federated sites hosted in the same farm can cause recursive web requests.
+This is an issue for certain rack servers, notably thin, which is widely used in production rack setups.
+If you have a standard server configuration, in which all traffic coming to *.my-sfw-farm.org will be served by
+a single server, you can set the environment variable
+
+	FARM_DOMAINS=my-sfw-farm.org
+
+or handle multiple domains by comma-separating them:
+
+	FARM_DOMAINS=my-sfw-farm.org,fedwiki.jacksmith.com
+
+With this setup, pages and favicons will be served more efficiently, in the context of the current request, instead of generating an additional HTTP request.
+
+Alternately, you can use webrick, which handles recursive calls out of the box. Launch it with this command:
 
 	bundle exec rackup -s webrick -p 1111
 
@@ -57,11 +77,11 @@ CouchDB
 =======
 
 By default, all pages, favicons, and server claims are stored in the server's local filesystem.
-If you'd prefer to use CouchDB for storage, you need to set two environment variables:
+If you prefer to use CouchDB for storage, set two environment variables:
 
 	STORE_TYPE=CouchStore
 	COUCHDB_URL=https://username:password@some-couchdb-host.com
 
-If you want to run a farm with CouchDB, you should also set this environment variable:
+If you want to run a farm with CouchDB, be sure to set the environment variable
 
 	FARM_MODE=true
