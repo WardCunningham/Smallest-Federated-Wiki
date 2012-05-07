@@ -47,7 +47,3 @@ describe 'Server helpers' do
     end
   end
 end
-
-#def serve_resources_locally?(site)
-#  ENV['FARM_DOMAINS'] && ENV['FARM_DOMAINS'].split(',').any?{|domain| site.end_with?(domain)}
-#end
