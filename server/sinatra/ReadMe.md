@@ -58,16 +58,18 @@ Recursive Server Calls
 
 Federated sites hosted in the same farm can cause recursive web requests.
 This is an issue for certain rack servers, notably thin, which is widely used in production rack setups.
-If you have a standard server configuration, in which all traffic coming to *.my-sfw-farm.org will be served by
-a single server, you can set the environment variable
+If you have a standard server configuration, in which all traffic coming to *.my-sfw-farm.org will be handled by
+a single server, you can serve page json and favicons in the context of the current request
+(instead of generating an additional HTTP request)
+by setting set the environment variable:
 
 	FARM_DOMAINS=my-sfw-farm.org
 
-or handle multiple domains by comma-separating them:
+Your server can handle multiple domains by comma-separating them:
 
 	FARM_DOMAINS=my-sfw-farm.org,fedwiki.jacksmith.com
 
-With this setup, pages and favicons will be served more efficiently, in the context of the current request, instead of generating an additional HTTP request.
+With this setup, pages and favicons will be served more efficiently, as well as being friendly to single-threaded servers like thin.
 
 Alternately, you can use webrick, which handles recursive calls out of the box. Launch it with this command:
 
