@@ -26,8 +26,6 @@ GEM
     eventmachine (0.12.10-java)
     ffi (1.0.11)
     ffi (1.0.11-java)
-    foreman (0.45.0)
-      thor (>= 0.13.6)
     haml (3.1.2)
     heroku (2.25.0)
       launchy (>= 0.3.2)
@@ -94,7 +92,6 @@ GEM
       daemons (>= 1.0.9)
       eventmachine (>= 0.12.6)
       rack (>= 1.0.0)
-    thor (0.15.0)
     tilt (1.3.2)
     xpath (0.1.4)
       nokogiri (~> 1.3)
@@ -108,7 +105,6 @@ DEPENDENCIES
   ZenTest (<= 4.6.0)
   capybara
   couchrest
-  foreman
   haml
   heroku
   json
