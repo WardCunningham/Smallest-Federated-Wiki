@@ -276,7 +276,7 @@ class Controller < Sinatra::Base
     content_type 'application/json'
     host = site.split(':').first
     if serve_resources_locally?(host)
-      serve_page(host, name)
+      serve_page(name, host)
     else
       RestClient.get "#{site}/#{name}.json" do |response, request, result, &block|
         case response.code
