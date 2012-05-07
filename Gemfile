@@ -6,6 +6,7 @@ gem "sass"
 gem "json"
 gem "thin"
 gem "RubyInline"
+gem "ZenTest", '<= 4.6.0'   # dependency of RubyInline, newer versions break Heroku deploy
 gem "png"
 gem "rest-client"
 gem "ruby-openid"
@@ -14,6 +15,7 @@ gem "couchrest"
 group :development do
   gem 'ruby-debug', :require => 'ruby-debug', :platform => :mri_18
   gem 'ruby-debug19', :require => 'ruby-debug19', :platform => :mri_19
+  gem "heroku"
 end
 
 group :test do

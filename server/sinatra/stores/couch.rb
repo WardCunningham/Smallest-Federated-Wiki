@@ -61,27 +61,28 @@ class CouchStore < Store
 
     ### COLLECTIONS
 
-    def recently_changed_pages(pages_dir)
-      pages_dir = relative_path pages_dir
-      pages_dir_safe = CGI.escape pages_dir
-      changes = begin
-        db.view("recent-changes/#{pages_dir_safe}")['rows']
-      rescue RestClient::ResourceNotFound
-        create_view 'recent-changes', pages_dir
-        db.view("recent-changes/#{pages_dir_safe}")['rows']
-      end
-
-      pages = changes.map do |change|
+    def annotated_pages(pages_dir)
+      changes = pages pages_dir
+      changes.map do |change|
         page = JSON.parse change['value']['data']
         page.merge! 'updated_at' => Time.parse(change['value']['updated_at'])
         page.merge! 'name' => change['value']['name']
         page
       end
-
-      pages
     end
 
     ### UTILITY
+
+    def pages(pages_dir)
+      pages_dir = relative_path pages_dir
+      pages_dir_safe = CGI.escape pages_dir
+      begin
+        db.view("recent-changes/#{pages_dir_safe}")['rows']
+      rescue RestClient::ResourceNotFound
+        create_view 'recent-changes', pages_dir
+        db.view("recent-changes/#{pages_dir_safe}")['rows']
+      end
+    end
 
     def create_view(design_name, view_name)
       design = db.get "_design/#{design_name}"
@@ -97,7 +98,7 @@ class CouchStore < Store
     end
 
     def farm?(_)
-      ENV['FARM_MODE'] && !ENV['FARM_MODE'].empty?
+      !!ENV['FARM_MODE']
     end
 
     def mkdir(_)

@@ -24,7 +24,7 @@ class FileStore < Store
 
     ### COLLECTIONS
 
-    def recently_changed_pages(pages_dir)
+    def annotated_pages(pages_dir)
       Dir.chdir(pages_dir) do
         Dir.glob("*").collect do |name|
           page = get_page(File.join pages_dir, name)
@@ -39,7 +39,7 @@ class FileStore < Store
     ### UTILITY
 
     def farm?(data_root)
-      File.exists?(File.join data_root, "farm")
+      ENV['FARM_MODE'] || File.exists?(File.join data_root, "farm")
     end
 
     def mkdir(directory)
