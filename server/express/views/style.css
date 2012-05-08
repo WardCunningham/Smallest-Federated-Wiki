@@ -189,3 +189,7 @@ textarea {
   font-size: 13px;
   color: #999999;
   font-weight: 500; }
+
+.ghost {
+  opacity: 0.75;
+}
