@@ -67,17 +67,11 @@ emitHeader = (pageElement, page) ->
               .attr('src', '/favicon.png')
               .attr('height', '32px')
           ), " #{page.title}"))
-  idStr = pageElement.attr('id')
-  rev = idStr.split('_rev')[1]
-  if rev?
-    lastJournalEntry = page.journal[page.journal.length-1]
-    date = lastJournalEntry.date
-    if date?
-      dateStr = util.formatDate(date) 
-    else
-      dateStr = 'Unknown Date'
-    dateHeader = $('<h4/>').html(dateStr)
-    $(pageElement).append(dateHeader)
+  if (rev = pageElement.attr('id').split('_rev')[1])?
+    date = page.journal[page.journal.length-1].date
+    $(pageElement)
+      .append $('<h4 class="revision"/>')
+        .html if date? then util.formatDate(date) else "Revision #{rev}"
 
 module.exports = refresh = wiki.refresh = ->
   pageElement = $(this)

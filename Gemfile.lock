@@ -3,7 +3,7 @@ GEM
   specs:
     RubyInline (3.11.0)
       ZenTest (~> 4.3)
-    ZenTest (4.6.2)
+    ZenTest (4.6.0)
     archive-tar-minitar (0.5.2)
     capybara (1.1.1)
       mime-types (>= 1.16)
@@ -27,6 +27,11 @@ GEM
     ffi (1.0.11)
     ffi (1.0.11-java)
     haml (3.1.2)
+    heroku (2.25.0)
+      launchy (>= 0.3.2)
+      netrc (~> 0.7.1)
+      rest-client (~> 1.6.1)
+      rubyzip
     json (1.5.3)
     json (1.5.3-java)
     launchy (0.4.0)
@@ -38,6 +43,7 @@ GEM
       ruby_core_source (>= 0.1.4)
     mime-types (1.17.2)
     multi_json (1.0.4)
+    netrc (0.7.1)
     nokogiri (1.5.0)
     nokogiri (1.5.0-java)
     png (1.2.0)
@@ -96,9 +102,11 @@ PLATFORMS
 
 DEPENDENCIES
   RubyInline
+  ZenTest (<= 4.6.0)
   capybara
   couchrest
   haml
+  heroku
   json
   launchy
   png
