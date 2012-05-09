@@ -9,6 +9,7 @@ describe 'plugin', ->
     expect(window.plugins).to.have.property('image')
 
   it 'should get a plugin', (done) ->
+    # TODO: Fails, because sinon.stub doesn't handle jQuery deferred. See https://gist.github.com/2024197
     plugin.get 'test', ->
       expect(jQuery.getScript.calledOnce).to.be(true)
       expect(jQuery.getScript.args[0][0]).to.be('/plugins/test.js')
