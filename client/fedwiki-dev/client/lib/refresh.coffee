@@ -72,7 +72,6 @@ emitHeader = (pageElement, page) ->
     $(pageElement)
       .append $('<h4 class="revision"/>')
         .html if date? then util.formatDate(date) else "Revision #{rev}"
-    $(pageElement).addClass 'ghost'
 
 module.exports = refresh = wiki.refresh = ->
   pageElement = $(this)
@@ -106,9 +105,6 @@ module.exports = refresh = wiki.refresh = ->
         div = $("<div />").addClass("item").addClass(item.type).attr("data-id", item.id)
         storyElement.append div
         plugin.do div, item
-        
-      addButton = "<a href=\"#\" class=\"addButton add-factory\" title=\"add paragraph\">✚</a>"  
-      $('.story').last().after(addButton)
 
       $.each page.journal, (i, action) ->
         wiki.addToJournal journalElement, action

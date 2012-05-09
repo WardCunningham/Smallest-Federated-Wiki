@@ -1,0 +1,28 @@
+{
+  "title": "duplicate-paragraphs",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "a03218244dc51a2b",
+      "text": "paragraph 1"
+    },
+    {
+      "type": "paragraph",
+      "id": "a03218244dc51a2b",
+      "text": "copy of paragraph 1"
+    }
+
+  ],
+  "journal": [
+    {
+      "type": "edit",
+      "id": "a03218244dc51a2b",
+      "item": {
+        "type": "paragraph",
+        "id": "a03218244dc51a2b",
+        "text": "paragraph 1"
+      }
+    }
+  ]
+}
+

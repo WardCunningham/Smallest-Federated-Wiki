@@ -1,0 +1,137 @@
+{
+  "title": "Local Editing",
+  "story": [
+    {
+      "text": "Modern browsers can save changes in local storage. Engage this feature by selecting the <b>Local editing</b> option at the bottom of this web page.",
+      "id": "ed7bf3c8b951a090",
+      "type": "paragraph"
+    },
+    {
+      "text": "<i>Notice: this is an under developed experimental feature. It takes some ingenuity to even see what it is doing. However, you will know you are seeing a locally stored page because it will have a tinted background.",
+      "id": "730888a4d784bc57",
+      "type": "paragraph"
+    },
+    {
+      "text": "<h2>Local Edits",
+      "id": "20d07f5b9d9a59c7",
+      "type": "paragraph"
+    },
+    {
+      "text": "Here we list pages known to have locally stored copies. These copies aren't accessed unless local editing is selected.",
+      "id": "5549bb4f8d557954",
+      "type": "paragraph"
+    },
+    {
+      "id": "ca824b55462eff23",
+      "type": "changes"
+    }
+  ],
+  "journal": [
+    {
+      "id": "ed7bf3c8b951a090",
+      "type": "edit",
+      "item": {
+        "text": "Modern browsers can save changes in local storage. Engage this feature by selecting the <b>Local editing</b> option at the bottom of this web page.",
+        "id": "ed7bf3c8b951a090",
+        "type": "paragraph"
+      }
+    },
+    {
+      "after": "ed7bf3c8b951a090",
+      "id": "20d07f5b9d9a59c7",
+      "type": "add",
+      "item": {
+        "id": "20d07f5b9d9a59c7",
+        "type": "factory"
+      }
+    },
+    {
+      "id": "20d07f5b9d9a59c7",
+      "type": "edit",
+      "item": {
+        "text": "<h2>Local Edits",
+        "id": "20d07f5b9d9a59c7",
+        "type": "paragraph"
+      }
+    },
+    {
+      "after": "20d07f5b9d9a59c7",
+      "id": "ca824b55462eff23",
+      "type": "add",
+      "item": {
+        "id": "ca824b55462eff23",
+        "type": "changes"
+      }
+    },
+    {
+      "after": "ca824b55462eff23",
+      "id": "730888a4d784bc57",
+      "type": "add",
+      "item": {
+        "id": "730888a4d784bc57",
+        "type": "factory"
+      }
+    },
+    {
+      "id": "730888a4d784bc57",
+      "type": "edit",
+      "item": {
+        "text": "<i>Notice: this is an under developed experimental feature. It takes some ingenuity to even see what it is doing. However, you will know you are seeing a locally stored page because it will have a tinted background.",
+        "id": "730888a4d784bc57",
+        "type": "paragraph"
+      }
+    },
+    {
+      "order": [
+        "ed7bf3c8b951a090",
+        "730888a4d784bc57",
+        "20d07f5b9d9a59c7",
+        "ca824b55462eff23"
+      ],
+      "id": "730888a4d784bc57",
+      "type": "move"
+    },
+    {
+      "after": "ca824b55462eff23",
+      "id": "5549bb4f8d557954",
+      "type": "add",
+      "item": {
+        "id": "5549bb4f8d557954",
+        "type": "factory"
+      }
+    },
+    {
+      "id": "5549bb4f8d557954",
+      "type": "edit",
+      "item": {
+        "text": "Here we list pages known to have locally stored copies. These copies aren't accessed unless local editing is selected.",
+        "id": "5549bb4f8d557954",
+        "type": "paragraph"
+      }
+    },
+    {
+      "id": "5549bb4f8d557954",
+      "order": [
+        "ed7bf3c8b951a090",
+        "730888a4d784bc57",
+        "20d07f5b9d9a59c7",
+        "5549bb4f8d557954",
+        "ca824b55462eff23"
+      ],
+      "type": "move"
+    },
+    {
+      "after": "ca824b55462eff23",
+      "id": "bd9ef6843f41f87f",
+      "type": "add",
+      "item": {
+        "id": "bd9ef6843f41f87f",
+        "type": "factory"
+      }
+    },
+    {
+      "id": "bd9ef6843f41f87f",
+      "type": "remove"
+    }
+  ]
+}

@@ -2,21 +2,7 @@
   color: #bb0000; }
 
 a {
-  color: #c14615;
   text-decoration: none; }
-
-a:hover {
-  color: #ffba00;
-  text-shadow: 0px 0px 1px #d9a513;
-}
-
-h1 {
-  color: #566a6c;
-  position: relative;
-  font-family: 'Oxygen', sans-serif;
-  font-weight: 400;
-
-}
 
 body {
   top: 0;
@@ -24,14 +10,13 @@ body {
   right: 0;
   bottom: 0;
   position: absolute;
-  background: #eeeeee url("/stoneSeamless.jpg");
+  background: #eeeeee url("/crosses.png");
   overflow: hidden;
   padding: 0;
   margin: 0;
-  font-family: 'Oxygen', sans-serif;
-  /*font-family: "Helvetica Neue", helvetica, Verdana, Arial, Sans;*/
+  font-family: "Helvetica Neue", helvetica, Verdana, Arial, Sans;
   line-height: 1.3;
-  color: #10211b; }
+  color: #333333; }
 
 .main {
   top: 0;
@@ -45,9 +30,6 @@ body {
 
 header,
 footer {
-  border-top: 1px solid #3d3c43;
-  box-shadow: inset 0px 0px 7px rgba(0, 0, 0, 0.8);
-  background: #eeeeee url("/noise.png");
   position: fixed;
   left: 0;
   right: 0;
@@ -55,7 +37,7 @@ footer {
   padding: 10px;
   font-size: 80%;
   z-index: 1000;
-  color: #ccdcd2; }
+  color: #555566; }
 
 header {
   top: 0; }
@@ -80,7 +62,6 @@ footer {
   width: 100%; }
 
 .journal {
-  border-radius: 5px;
   margin-top: 2px;
   clear: both;
   background-color: #eeeeee;
@@ -91,24 +72,17 @@ footer {
   color: black; }
 
 .action {
-  font-size: 1.3em;
-  border-radius: 5px;
   background-color: #cccccc;
   color: #666666;
   text-align: center;
   text-decoration: none;
-  padding: 0.1em;
-  margin: 4px;
+  padding: 0.2em;
+  margin: 3px;
   float: left;
-  width: 1.3em; }
-
-.action:hover {
-  color: #2c3f39;
-  text-shadow: 0px 0px 1px #2c3f39;
-}
+  width: 1em; }
 
 .target {
-  background-color: #e9fff3 !important; }
+  background-color: #ffffcc !important; }
 
 .factory p,
 .data p,
@@ -137,22 +111,16 @@ p.readout {
   margin-bottom: 1em; }
 
 .page {
-  border-radius: 5px;
-  border-style:solid;
-  border-width:1px;
-  border-color: #878984;
-  box-shadow: inset 0px 0px 7px rgba(0, 0, 0, 0.5);
   float: left;
   margin: 0.5em;
   padding: 0 2em;
   width: 26em;
   background-color: white;
   height: 100%;
-  overflow: auto;}
+  overflow: auto;
+  box-shadow: 2px 1px 4px rgba(0, 0, 0, 0.2); }
   .page.active {
     box-shadow: 2px 1px 24px rgba(0, 0, 0, 0.4);
-    
-    border-color: #515d75;
     z-index: 10; }
 
 .page.local {
@@ -219,44 +187,5 @@ textarea {
   margin-bottom: -9px;
   text-align: right;
   font-size: 13px;
-  color: #7b2106;
+  color: #999999;
   font-weight: 500; }
-
-.ghost {
-  opacity: 0.8;
-  border-color: #eef2fe;
-}
-
-.addButton {
-  border: 1px solid #3d3c43;
-  
-  font-size: 1.3em;
-  border-radius: 5px;
-  background-color: #cccccc;
-  color: #2c3f39;
-  text-align: center;
-  text-decoration: none;
-  padding-left: 0.3em;
-  padding-right: 0.3em;
-  padding-top: 0.2em;
-  padding-bottom: 0.2em;
-  margin: 4px;
-  margin-bottom: 25px;
-  float: right;
-  width: 1.2em;
- }
-
- .addButton:hover {
-  color: #d9a513;
-  text-shadow: 0 0 1px #2c3f39;
-  box-shadow: 0 0 7px #3d3c43;
-}
-
-.addButton:active {
-  box-shadow: inset 0 0 7px #3d3c43;
-}
-
-.favicon {
-  position: relative;
-  margin-bottom: -6px;
-}

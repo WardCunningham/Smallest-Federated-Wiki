@@ -421,7 +421,7 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       return string.replace(/\[\[([^\]]+)\]\]/gi, renderInternalLink).replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" target=\"_blank\" href=\"$1\">$2</a>");
     };
     addToJournal = wiki.addToJournal = function(journalElement, action) {
-      var actionElement, actionTitle, pageElement, prev, txt;
+      var actionElement, actionTitle, pageElement, prev;
       pageElement = journalElement.parents('.page:first');
       if (action.type === 'edit') {
         prev = journalElement.find(".edit[data-id=" + (action.id || 0) + "]");
@@ -431,26 +431,7 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       if (action.date != null) {
         actionTitle += ": " + (util.formatDate(action.date));
       }
-      switch (action.type) {
-        case 'create':
-          txt = '⌚';
-          break;
-        case 'add':
-          txt = '✚';
-          break;
-        case 'edit':
-          txt = '✎';
-          break;
-        case 'fork':
-          txt = '⚐';
-          break;
-        case 'move':
-          txt = '➜';
-          break;
-        case 'remove':
-          txt = '✕';
-      }
-      actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(txt).attr('title', actionTitle).attr('data-id', action.id || "0").appendTo(journalElement);
+      actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(action.type[0]).attr('title', actionTitle).attr('data-id', action.id || "0").appendTo(journalElement);
       if (action.type === 'fork') {
         return actionElement.css("background-image", "url(//" + action.site + "/favicon.png)").attr("href", "//" + action.site + "/" + (pageElement.attr('id')) + ".html").data("site", action.site).data("slug", pageElement.attr('id'));
       }
@@ -1288,8 +1269,7 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
     }
     if ((rev = pageElement.attr('id').split('_rev')[1]) != null) {
       date = page.journal[page.journal.length - 1].date;
-      $(pageElement).append($('<h4 class="revision"/>').html(date != null ? util.formatDate(date) : "Revision " + rev));
-      return $(pageElement).addClass('ghost');
+      return $(pageElement).append($('<h4 class="revision"/>').html(date != null ? util.formatDate(date) : "Revision " + rev));
     }
   };
 
@@ -1297,7 +1277,7 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
     var buildPage, pageElement;
     pageElement = $(this);
     buildPage = function(data) {
-      var action, addButton, addContext, context, footerElement, journalElement, page, site, slug, storyElement, _i, _len, _ref, _ref2;
+      var action, addContext, context, footerElement, journalElement, page, site, slug, storyElement, _i, _len, _ref, _ref2;
       if (!(data != null)) {
         pageElement.find('.item').each(function(i, each) {
           var item;
@@ -1336,12 +1316,10 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
           storyElement.append(div);
           return plugin["do"](div, item);
         });
-        addButton = "<a href=\"#\" class=\"addButton add-factory\" title=\"add paragraph\">✚</a>";
-        $('.story').last().after(addButton);
         $.each(page.journal, function(i, action) {
           return wiki.addToJournal(journalElement, action);
         });
-        footerElement.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ').append("<a class=\"show-page-source\" href=\"/" + slug + ".json?random=" + (util.randomBytes(4)) + "\" title=\"source\">JSON</a> . ").append("<a href=\"#\" class=\"add-factory\" title=\"add paragraph\">[+]</a><br/>");
+        footerElement.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ').append("<a class=\"show-page-source\" href=\"/" + slug + ".json?random=" + (util.randomBytes(4)) + "\" title=\"source\">JSON</a> . ").append("<a href=\"#\" class=\"add-factory\" title=\"add paragraph\">[+]</a>");
         state.setUrl();
       }
       initDragging(pageElement);

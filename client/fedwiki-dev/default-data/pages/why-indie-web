@@ -1,0 +1,82 @@
+{
+    "title": "Why Indie Web",
+    "synopsys": "We should all own our own content and keep it some place we control.",
+    "story": [
+        {
+	        "id": "877a4d4ccfd96440",
+	        "type": "paragraph",
+            "text": "\"You're here because you know something. What you know you can't explain, but you feel it. You've felt it your entire life, that there's something wrong with the world.\" -- [https://secure.wikimedia.org/wikiquote/en/wiki/The_Matrix Morpheus, The Matrix]"
+        },
+        {
+            "id": "54627c4ee1b8b2b2",
+            "type": "paragraph",
+            "text": "<h2>Why Indie Web Camp?</h2>"
+        },
+        {
+            "id": "2a859b0ebcdb5496",
+            "type": "paragraph",
+            "text": "Rather than posting content on many third-party silos of data, we should all begin owning our own data that we're creating when we create it. Publish short status updates first on your own domain, and then syndicate to Twitter. Publish photos on your own domain, then syndicate to Flickr, etc, etc. This is the basis of the \"Indie Web\" movement."
+        },
+        {
+            "id": "2aa227120e07619c",
+            "type": "paragraph",
+            "text": "We've seen our data die on 3rd party sites, and we've stored our content in places that we have no control over. This content is becoming more important, and sometimes even critical to our lives. It is not secure in the hands of random startups, organizations and web companies. We should be the holders of our own data."
+        },
+        {
+            "id": "602e14bbe46e5ede",
+            "type": "paragraph",
+            "text": "<h2>Why Indie Web?</h2>"
+        },
+        {
+            "id": "b802a1588e886d90",
+            "type": "paragraph",
+            "text": "<li>You've bought your own domain for vanity reasons but now want to put it to good use."
+        },
+		{
+		"id": "c03f9845c0983450",
+		"type": "image",
+		"caption": "Twitter Maintenance",
+		"url": "/twitter-maintainance.jpg"
+		},
+        {
+            "id": "7a13e2d703146773",
+            "type": "paragraph",
+            "text": "<li>You're frustrated by the [http://www.flickr.com/photos/tantek/420426227/ downtime], [http://www.flickr.com/photos/tantek/5322875194/ maintenance], [http://www.flickr.com/photos/tantek/5331910087/ database failures], and [http://www.flickr.com/photos/factoryjoe/3927590515/ unscalability] of web content hosting services."
+        },
+        {
+            "id": "7ed7677b769eb3cc",
+            "type": "paragraph",
+            "text": "<li>You've lost content due to [http://etherpad.com/transition.html acquisitions], or [http://news.cnet.com/8301-13577_3-10110443-36.html post-acquisition migrations] to services which were subsequently [http://closing.vox.com/ shut down]. Or had an entire [https://github.com/blog/744-today-s-outage production database blown away]."
+        },
+        {
+            "id": "5c621602e39c0b8d",
+            "type": "paragraph",
+            "text": "<li>You've been disappeared from a hosting service, or suffered from [http://www.zephoria.org/thoughts/archives/2011/04/27/tumblr-disappeared-me.html involuntary identity re-assignment] (perhaps due to trademark claims or other intimidation)."
+        },
+        {
+            "id": "509a02c732779872",
+            "type": "paragraph",
+            "text": "<li>Whatever the reason, you're done with sharecropping your content, your identity, your self."
+        },
+        {
+            "id": "3ce79e5914c1339e",
+            "type": "paragraph",
+            "text": "<li>You're here because you know this and you want to design and build a web presence where you're in control."
+        },
+        {
+            "id": "2494088730da5093",
+            "type": "paragraph",
+            "text": "We, the organizers of IndieWebCamp want that as well, and have started building it for ourselves."
+        },
+        {
+            "id": "da4d40e48d576c5d",
+            "type": "paragraph",
+            "text": "Join us and together we can grow the IndieWeb."
+        },
+        {
+            "id": "406415d40248d6d7",
+            "type": "paragraph",
+            "text": "(More motivational examples/citations linked from: [http://www.w3.org/2005/Incubator/federatedsocialweb/wiki/2010-199-tantek-fsws-talk#sharecropping_and_site_death \"Itches&Scratches: sharecropping and site death\" - 2010-199 Federated Social Web Summit talk by Tantek])"
+        }
+    ]
+}

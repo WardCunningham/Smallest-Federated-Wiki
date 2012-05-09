@@ -1,0 +1,27 @@
+.page{:id => page_name, "data-server-generated" => "true"}
+	%h1
+		%a{:href => '/', :style => "text-decoration: none"}
+			%img{:src => '/favicon.png', :height => '32px'}
+		= page['title']
+	.story
+		- page['story'].each do |item|
+			%div{:class => ['item', type=item['type']], :id => item['id'], "data-static-item" => item.to_json}
+				- case type
+				- when 'paragraph'
+					%p= resolve_links(item['text'])
+				- when 'image'
+					%img{:src => item['url']}
+					%p= resolve_links(item['caption'])
+				- when 'chart'
+					%p.readout= item['data'].last.last || "0.0"
+					%p= resolve_links(item['caption'])
+				- else
+					%p.error= type
+	.journal
+		- ( page['journal'] || [] ).each do |item|
+			%span{:class => ['action', item['type']], "data-item-id" => item['id'] }
+				= item['type'][0..0]
+	.footer
+		%a{:id => "license", :href => "http://creativecommons.org/licenses/by-sa/3.0/"} CC BY-SA 3.0
+		='.'
+		%a{:class => "show-page-source", :href => "/#{page_name}.json"} JSON
