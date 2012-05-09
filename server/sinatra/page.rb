@@ -12,6 +12,17 @@ class Page
     attr_accessor :directory
     # Directory where default (pre-existing) pages are stored.
     attr_accessor :default_directory
+    # Directory where plugins that may have pages are stored.
+    attr_accessor :plugins_directory
+
+    def plugin_page_path name
+      Dir.glob(File.join(plugins_directory, '*/pages')) do |dir|
+        probe = "#{dir}/#{name}"
+        return probe if File.exists? probe
+      end
+      return nil
+    end
+
 
     # Get a page
     #
@@ -26,13 +37,17 @@ class Page
         page
       elsif File.exist?(default_path)
         put name, FileStore.get_page(default_path)
+      elsif (path = plugin_page_path name)
+        FileStore.get_page(path)
       else
         put name, {'title'=>name,'story'=>[{'type'=>'factory', 'id'=>RandomId.generate}]}
       end
     end
 
     def exists?(name)
-      Store.exists?(File.join(directory, name)) or File.exist?(File.join(default_directory, name))
+      Store.exists?(File.join(directory, name)) or
+      File.exist?(File.join(default_directory, name)) or
+      !plugin_page_path(name).nil?
     end
 
     # Create or update a page
@@ -51,5 +66,6 @@ class Page
     def assert_attributes_set
       raise PageError.new('Page.directory must be set') unless directory
       raise PageError.new('Page.default_directory must be set') unless default_directory
+      raise PageError.new('Page.plugins_directory must be set') unless plugins_directory
     end
 end

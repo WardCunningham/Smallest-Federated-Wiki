@@ -39,6 +39,7 @@ class Controller < Sinatra::Base
     page = Page.new
     page.directory = File.join data_dir(site), "pages"
     page.default_directory = File.join APP_ROOT, "default-data", "pages"
+    page.plugins_directory = File.join APP_ROOT, "client", "plugins"
     Store.mkdir page.directory
     page
   end

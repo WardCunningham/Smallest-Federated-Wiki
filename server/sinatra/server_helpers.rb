@@ -44,7 +44,7 @@ module ServerHelpers
 
   def serve_page(name, site=request.host)
     cross_origin
-    halt 404 unless Store.exists?("#{farm_page(site).directory}/#{name}") || File.exists?("#{farm_page.default_directory}/#{name}")
+    halt 404 unless farm_page(site).exists?(name)
     JSON.pretty_generate farm_page(site).get(name)
   end
 

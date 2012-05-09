@@ -32,6 +32,11 @@ describe "loading a page" do
     body.should include("You are welcome to copy this page to any server you own and revise its welcoming message as you see fit.")
   end
 
+  it "should load a page from plugins" do
+    visit("/view/air-temperature")
+    body.should include("Air Temperature")
+  end
+
 end
 
 class Capybara::Node::Element
