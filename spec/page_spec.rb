@@ -31,6 +31,7 @@ describe "Page" do
       @test_data_dir = File.join(@root, 'spec/data')
       @page.directory = @test_data_dir
       @page.default_directory = File.join(@test_data_dir, 'defaults')
+      @page.plugins_directory = File.join(@root, 'client', 'plugins')
     end
 
     before(:each) do
