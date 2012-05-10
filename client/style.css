@@ -74,6 +74,7 @@ footer {
   color: black; }
 
 .action {
+  font-size: 0.9em;
   background-color: #cccccc;
   color: #666666;
   text-align: center;

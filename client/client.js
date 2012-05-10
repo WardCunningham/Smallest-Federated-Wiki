@@ -420,6 +420,14 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       };
       return string.replace(/\[\[([^\]]+)\]\]/gi, renderInternalLink).replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" target=\"_blank\" href=\"$1\">$2</a>");
     };
+    wiki.symbols = {
+      create: '⌚',
+      add: '✚',
+      edit: '✎',
+      fork: '⚐',
+      move: '➜',
+      remove: '✕'
+    };
     addToJournal = wiki.addToJournal = function(journalElement, action) {
       var actionElement, actionTitle, pageElement, prev;
       pageElement = journalElement.parents('.page:first');
@@ -431,7 +439,7 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       if (action.date != null) {
         actionTitle += ": " + (util.formatDate(action.date));
       }
-      actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(action.type[0]).attr('title', actionTitle).attr('data-id', action.id || "0").appendTo(journalElement);
+      actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(wiki.symbols[action.type]).attr('title', actionTitle).attr('data-id', action.id || "0").appendTo(journalElement);
       if (action.type === 'fork') {
         return actionElement.css("background-image", "url(//" + action.site + "/favicon.png)").attr("href", "//" + action.site + "/" + (pageElement.attr('id')) + ".html").data("site", action.site).data("slug", pageElement.attr('id'));
       }
