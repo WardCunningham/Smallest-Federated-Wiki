@@ -1,0 +1,146 @@
+{
+  "title": "List of Pioneers",
+  "story": [
+    {
+      "text": "These are (or were) the Smallest Federated Wiki sites that explore one or more features of the emerging federation protocol. We'll stop calling sites pioneers when the federation matures to the point that serious content is trusted to the federation. We're not there yet, intentionally. Come explore with us.",
+      "id": "a143f0937b1ec8ed",
+      "type": "paragraph"
+    },
+    {
+      "site": "home.c2.com:1111",
+			"title": "Welcome Visitors",
+      "text": "A demo installation with writes to the db disabled. Edit away. Runs the Sinatra version on a MacBook Pro on a household LAN in Garden Home. Maintained by [http://github.com/WardCunningham Ward Cunningham].",
+      "id": "9463f327cbb333eb",
+      "type": "federatedWiki"
+    },
+    {
+      "site": "www.personaltelco.net:1111",
+			"title": "Garden Report",
+			"slug": "garden-report",
+      "text": "A battery powered installation that is only online for five minutes at the top of every hour. The Wikiduino server runs on an aging Arduino located in Nike's Community Garden. Maintained by [http://github.com/RussellSenior Russell Senior].",
+      "id": "5bfd2429d60708c0",
+      "type": "federatedWiki"
+    },
+    {
+      "site": "sensors.c2.com",
+			"title": "Welcome Visitors",
+      "text": "A flat-file clone of [http://github.com/WardCunningham/SensorServer SensorServer] refreshed every five minutes with a perl script. This site demonstrates \"data publishing\" into the federation without running a full-service site. Apache serves this content from a CentOS box co-located in Goose Hollow. Maintained by [http://github.com/WardCunningham Ward Cunningham].",
+      "id": "ecac044e7a395fce",
+      "type": "federatedWiki"
+    },
+    {
+      "site": "uwiki.me",
+			"title": "Welcome Visitors",
+      "text": "A static apache file server version - no server side script at all, and so properly read-only. Maintained by [http://github.com/SvenDowideit Sven Dowideit].",
+      "id": "73accb9f2cf86180",
+      "type": "federatedWiki"
+    }
+  ],
+  "journal": [
+    {
+      "after": "9463f327cbb333eb",
+      "id": "5bfd2429d60708c0",
+      "type": "add",
+      "item": {
+        "id": "5bfd2429d60708c0",
+        "type": "factory"
+      }
+    },
+    {
+      "after": "5bfd2429d60708c0",
+      "id": "ecac044e7a395fce",
+      "type": "add",
+      "item": {
+        "id": "ecac044e7a395fce",
+        "type": "factory"
+      }
+    },
+    {
+      "after": "ecac044e7a395fce",
+      "id": "08dc85d1c11b7a6b",
+      "type": "add",
+      "item": {
+        "id": "08dc85d1c11b7a6b",
+        "type": "factory"
+      }
+    },
+    {
+      "id": "9463f327cbb333eb",
+      "type": "edit",
+      "item": {
+        "site": "http://home.c2.com:1111",
+        "text": "A demo installation with writes to the db disabled. Edit away. Runs the Sinatra version on a MacBook Pro on a household LAN in Garden Home. Maintained by [http://github.com/WardCunningham Ward Cunningham].",
+        "id": "9463f327cbb333eb",
+        "type": "federatedWiki"
+      }
+    },
+    {
+      "site": "http://www.personaltelco.net:1111",
+      "text": "A battery powered installation that is only online for five minutes at the top of every hour. The Wikiduino server runs on an aging Arduino located in Nike's Community Garden. Maintained by [http://github.com/WardCunningham Ward Cunningham] and [http://github.com/RussellSenior Russell Senior].",
+      "id": "5bfd2429d60708c0",
+      "type": "federatedWiki"
+    },
+    {
+      "id": "ecac044e7a395fce",
+      "type": "edit",
+      "item": {
+        "site": "http://sensors.c2.com",
+        "text": "A flat-file clone of [http://github.com/WardCunningham/SensorServer SensorServer] refreshed every five minutes with a perl script. This site demonstrates \"data publishing\" into the federation without running a full-service site. Apache serves this content from a CentOS box co-located in Goose Hollow. Maintained by [http://github.com/WardCunningham Ward Cunningham].",
+        "id": "ecac044e7a395fce",
+        "type": "federatedWiki"
+      }
+    },
+    {
+      "id": "08dc85d1c11b7a6b",
+      "type": "remove"
+    },
+    {
+      "after": "ecac044e7a395fce",
+      "id": "73accb9f2cf86180",
+      "type": "add",
+      "item": {
+        "id": "73accb9f2cf86180",
+        "type": "factory"
+      }
+    },
+    {
+      "id": "73accb9f2cf86180",
+      "type": "edit",
+      "item": {
+        "site": "http: //home.c2.com: 1111e",
+        "text": "A static apache file server version - no server side script at all, and so properly read-only. Maintained by [http://github.com/SvenDowideit Sven Dowideit].",
+        "id": "73accb9f2cf86180",
+        "type": "federatedWiki"
+      }
+    },
+    {
+      "after": "73accb9f2cf86180",
+      "id": "a143f0937b1ec8ed",
+      "type": "add",
+      "item": {
+        "id": "a143f0937b1ec8ed",
+        "type": "factory"
+      }
+    },
+    {
+      "id": "a143f0937b1ec8ed",
+      "type": "edit",
+      "item": {
+        "text": "These are (or were) the Smallest Federated Wiki sites that explore one or more features of the emerging federation protocol. We'll stop calling sites pioneers when the federation matures to the point that serious content is trusted to the federation. We're not there yet, intentionally. Come explore with us.",
+        "id": "a143f0937b1ec8ed",
+        "type": "paragraph"
+      }
+    },
+    {
+      "id": "a143f0937b1ec8ed",
+      "order": [
+        "a143f0937b1ec8ed",
+        "9463f327cbb333eb",
+        "5bfd2429d60708c0",
+        "ecac044e7a395fce",
+        "73accb9f2cf86180"
+      ],
+      "type": "move"
+    }
+  ]
+}

@@ -72,23 +72,8 @@ $ ->
     actionTitle = action.type
     actionTitle += "(#{prev.length})" if action.type == 'edit'
     actionTitle += ": #{util.formatDate(action.date)}" if action.date?
-
-    switch action.type
-      when 'create'
-        txt = '⌚'
-      when 'add'
-        txt = '✚'
-      when 'edit'
-        txt = '✎'
-      when 'fork'
-        txt = '⚐'
-      when 'move'
-        txt = '➜'
-      when 'remove'
-        txt = '✕'
-
     actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type)
-      .text(txt)
+      .text(action.type[0])
       .attr('title',actionTitle)
       .attr('data-id', action.id || "0")
       .appendTo(journalElement)

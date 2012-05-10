@@ -1,0 +1,181 @@
+{
+  "title": "D3 Bars",
+  "story": [
+    {
+      "id": "40aca0157e6f8cf0",
+      "type": "bars"
+    },
+    {
+      "text": "This is the <i>bar</i> example from the [http://mbostock.github.com/d3/ d3]  distribution.  If you see an error above, don't panic, keep reading. See also [[D3 Line]] example.",
+      "id": "85f2901bdbdced60",
+      "type": "paragraph"
+    },
+    {
+      "text": "We've modified the example to retrieve data from the page that contains it. We start by searching the page. Failing that, we search any other visible pages (soon). We'll be developing heuristics for best-fit of data when multiple sources are present.",
+      "id": "81d27d9b73b81dfb",
+      "type": "paragraph"
+    }
+  ],
+  "journal": [
+    {
+      "id": "812165481c58d700",
+      "type": "remove"
+    },
+    {
+      "id": "40aca0157e6f8cf0",
+      "type": "add",
+      "item": {
+        "id": "40aca0157e6f8cf0",
+        "type": "bars"
+      }
+    },
+    {
+      "id": "85f2901bdbdced60",
+      "type": "add",
+      "item": {
+        "text": "This is the <i>bars</i> example from the [[d3]] distribution. ",
+        "id": "85f2901bdbdced60",
+        "type": "paragraph"
+      }
+    },
+    {
+      "id": "85f2901bdbdced60",
+      "type": "edit",
+      "item": {
+        "text": "This is the <i>bars</i> example from the [[d3]] distribution.  See other [[examples]].",
+        "id": "85f2901bdbdced60",
+        "type": "paragraph"
+      }
+    },
+    {
+      "id": "85f2901bdbdced60",
+      "type": "edit",
+      "item": {
+        "text": "This is the <i>bars</i> example from the [[d3]] distribution.  See other [[experiments]].",
+        "id": "85f2901bdbdced60",
+        "type": "paragraph"
+      }
+    },
+    {
+      "id": "0948ffff60983085",
+      "order": [
+        "85f2901bdbdced60",
+        "40aca0157e6f8cf0",
+        "0948ffff60983085"
+      ],
+      "type": "move"
+    },
+    {
+      "after": "40aca0157e6f8cf0",
+      "id": "81d27d9b73b81dfb",
+      "type": "add",
+      "item": {
+        "id": "81d27d9b73b81dfb",
+        "type": "factory"
+      }
+    },
+    {
+      "id": "81d27d9b73b81dfb",
+      "type": "edit",
+      "item": {
+        "text": "We've modified the example to retrieve data from the page that contains it. We start by searching the page. Failing that, we search any other visible pages (soon).",
+        "id": "81d27d9b73b81dfb",
+        "type": "paragraph"
+      }
+    },
+    {
+      "id": "81d27d9b73b81dfb",
+      "type": "edit",
+      "item": {
+        "text": "We've modified the example to retrieve data from the page that contains it. We start by searching the page. Failing that, we search any other visible pages (soon). We'll be developing heuristics for best-fit of data when multiple sources are present.",
+        "id": "81d27d9b73b81dfb",
+        "type": "paragraph"
+      }
+    },
+    {
+      "id": "0948ffff60983085",
+      "type": "remove"
+    },
+    {
+      "id": "85f2901bdbdced60",
+      "type": "edit",
+      "item": {
+        "text": "This is the <i>bars</i> example from the [[d3]] distribution.  See their [/js/d3/examples/bar/bar.html bar example]. See other [[experiments]].",
+        "id": "85f2901bdbdced60",
+        "type": "paragraph"
+      }
+    },
+    {
+      "id": "85f2901bdbdced60",
+      "type": "edit",
+      "item": {
+        "text": "This is the <i>bars</i> example from the [[d3]] distribution.  See their [http:/js/d3/examples/bar/bar.html bar example]. See other [[experiments]].",
+        "id": "85f2901bdbdced60",
+        "type": "paragraph"
+      }
+    },
+    {
+      "id": "85f2901bdbdced60",
+      "type": "edit",
+      "item": {
+        "text": "This is the <i>bar</i> example from the [[d3]] distribution.  See their [http:/js/d3/examples/bar/bar.html bar example]. See other [[experiments]].",
+        "id": "85f2901bdbdced60",
+        "type": "paragraph"
+      }
+    },
+    {
+      "id": "85f2901bdbdced60",
+      "type": "edit",
+      "item": {
+        "text": "This is the <i>bar</i> example from the [[d3]] distribution.  See their [http:/js/d3/examples/bar/bar.html version]. See other [[experiments]].",
+        "id": "85f2901bdbdced60",
+        "type": "paragraph"
+      }
+    },
+    {
+      "id": "85f2901bdbdced60",
+      "type": "edit",
+      "item": {
+        "text": "This is the <i>bar</i> example from the [[d3]] distribution.  See their [http:/js/d3/examples/bar/bar.html version]. See also other [[experiments]].",
+        "id": "85f2901bdbdced60",
+        "type": "paragraph"
+      }
+    },
+    {
+      "order": [
+        "40aca0157e6f8cf0",
+        "85f2901bdbdced60",
+        "81d27d9b73b81dfb"
+      ],
+      "id": "40aca0157e6f8cf0",
+      "type": "move"
+    },
+    {
+      "id": "85f2901bdbdced60",
+      "type": "edit",
+      "item": {
+        "text": "This is the <i>bar</i> example from the [[d3]] distribution.  See their [http:/js/d3/examples/bar/bar.html version].",
+        "id": "85f2901bdbdced60",
+        "type": "paragraph"
+      }
+    },
+    {
+      "id": "85f2901bdbdced60",
+      "type": "edit",
+      "item": {
+        "text": "This is the <i>bar</i> example from the [http://mbostock.github.com/d3/ d3]  distribution.  If you see an error above, don't panic, keep reading.",
+        "id": "85f2901bdbdced60",
+        "type": "paragraph"
+      }
+    },
+    {
+      "id": "85f2901bdbdced60",
+      "type": "edit",
+      "item": {
+        "text": "This is the <i>bar</i> example from the [http://mbostock.github.com/d3/ d3]  distribution.  If you see an error above, don't panic, keep reading. See also [[D3 Line]] example.",
+        "id": "85f2901bdbdced60",
+        "type": "paragraph"
+      }
+    }
+  ]
+}

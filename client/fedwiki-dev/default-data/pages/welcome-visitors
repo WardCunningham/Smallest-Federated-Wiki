@@ -1,0 +1,271 @@
+{
+  "title": "Welcome Visitors",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "57b206a5457d1b73",
+      "text": "Welcome to the [[Smallest Federated Wiki]]. You may be seeing this page because you have just entered a wiki of your own. If so, you have three things to do before you go on."
+    },
+    {
+      "type": "paragraph",
+      "id": "821827c99b90cfd1",
+      "text": "<b>One:</b> Create a page about yourself. Start by making a link to that page right here. Double-click the gray box below. That opens an editor. Type your name enclosed in double square brackets. Then press Command/CTRL-S to save."
+    },
+    {
+      "type": "factory",
+      "id": "63ad2e58eecdd9e5"
+    },
+    {
+      "type": "paragraph",
+      "id": "2bbd646ff3f44b51",
+      "text": "<b>Two:</b> Create a page about things you do on this wiki. Double-click the gray box below. Type a descriptive name of something you will be writing about. Enclose it in square brackets. Then press Command/CTRL-S to save."
+    },
+    {
+      "type": "factory",
+      "id": "05e2fa92643677ca"
+    },
+    {
+      "type": "paragraph",
+      "id": "0cbb4ef5f5d7e472",
+      "text": "<b>Three:</b> Look for the <i>claim</i> button below this page. If you have your own OpenID you can use it to claim these pages so that only you can edit them. If you have a Google account you can use that too. Press the (G) button. Press the (Y) button to use your Yahoo account. You get the idea."
+    },
+    {
+      "type": "paragraph",
+      "id": "ee416d431ebf4fb4",
+      "text": "Start writing. Click either link. Press [+] to add more writing spaces. Read [[How to Wiki]] for more ideas."
+    },
+    {
+      "text": "This page was first drafted Sunday, June 26th, 2011, at [[Indie Web Camp]]. You are welcome to copy this page to any server you own and revise its welcoming message as you see fit. You can assume this has happened many times already.",
+      "id": "7b56f22a4b9ee974",
+      "type": "paragraph"
+    }
+  ],
+  "journal": [
+    {
+      "id": "7b56f22a4b9ee974",
+      "type": "edit",
+      "item": {
+        "text": "Welcome to the [[Smallest Federated Wiki]]. This page was first drafted Sunday, June 26th, 2011, at [[Indie Web Camp]]. You are welcome to copy this page to any server you own and revise its welcoming message as you see fit. You can assume this has happened many times already. See also [[",
+        "id": "7b56f22a4b9ee974",
+        "type": "paragraph"
+      }
+    },
+    {
+      "id": "7b56f22a4b9ee974",
+      "type": "edit",
+      "item": {
+        "text": "Welcome to the [[Smallest Federated Wiki]]. This page was first drafted Sunday, June 26th, 2011, at [[Indie Web Camp]]. You are welcome to copy this page to any server you own and revise its welcoming message as you see fit. You can assume this has happened many times already, most likely among the [[List of Pioneers]].",
+        "id": "7b56f22a4b9ee974",
+        "type": "paragraph"
+      }
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "57b206a5457d1b73"
+      },
+      "id": "57b206a5457d1b73",
+      "type": "add",
+      "after": "7b56f22a4b9ee974"
+    },
+    {
+      "type": "move",
+      "order": [
+        "57b206a5457d1b73",
+        "7b56f22a4b9ee974"
+      ],
+      "id": "57b206a5457d1b73"
+    },
+    {
+      "type": "edit",
+      "id": "7b56f22a4b9ee974",
+      "item": {
+        "text": "This page was first drafted Sunday, June 26th, 2011, at [[Indie Web Camp]]. You are welcome to copy this page to any server you own and revise its welcoming message as you see fit. You can assume this has happened many times already.",
+        "id": "7b56f22a4b9ee974",
+        "type": "paragraph"
+      }
+    },
+    {
+      "type": "edit",
+      "id": "57b206a5457d1b73",
+      "item": {
+        "type": "paragraph",
+        "id": "57b206a5457d1b73",
+        "text": "Welcome to the [[Smallest Federated Wiki]]. You may be seeing this page because you have just entered a wiki of your own. If so, you have three things to do before you go on."
+      }
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "821827c99b90cfd1"
+      },
+      "id": "821827c99b90cfd1",
+      "type": "add",
+      "after": "7b56f22a4b9ee974"
+    },
+    {
+      "type": "move",
+      "order": [
+        "57b206a5457d1b73",
+        "821827c99b90cfd1",
+        "7b56f22a4b9ee974"
+      ],
+      "id": "821827c99b90cfd1"
+    },
+    {
+      "type": "edit",
+      "id": "821827c99b90cfd1",
+      "item": {
+        "type": "paragraph",
+        "id": "821827c99b90cfd1",
+        "text": "<b>One:</b> Create a page about yourself. Start by making a link to that page right here. Double-click the gray box below. That opens an editor. Type your name enclosed in double square brackets. Then press Command/CTRL-S to save."
+      }
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "63ad2e58eecdd9e5"
+      },
+      "id": "63ad2e58eecdd9e5",
+      "type": "add",
+      "after": "7b56f22a4b9ee974"
+    },
+    {
+      "type": "move",
+      "order": [
+        "57b206a5457d1b73",
+        "821827c99b90cfd1",
+        "63ad2e58eecdd9e5",
+        "7b56f22a4b9ee974"
+      ],
+      "id": "63ad2e58eecdd9e5"
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "2bbd646ff3f44b51"
+      },
+      "id": "2bbd646ff3f44b51",
+      "type": "add",
+      "after": "7b56f22a4b9ee974"
+    },
+    {
+      "type": "move",
+      "order": [
+        "57b206a5457d1b73",
+        "821827c99b90cfd1",
+        "63ad2e58eecdd9e5",
+        "2bbd646ff3f44b51",
+        "7b56f22a4b9ee974"
+      ],
+      "id": "2bbd646ff3f44b51"
+    },
+    {
+      "type": "edit",
+      "id": "2bbd646ff3f44b51",
+      "item": {
+        "type": "paragraph",
+        "id": "2bbd646ff3f44b51",
+        "text": "<b>Two:</b> Create a page about things you do on this wiki. Double-click the gray box below. Type a descriptive name of something you will be writing aout. Enclose it in square brackets. Then press Command/CTRL-S to save."
+      }
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "05e2fa92643677ca"
+      },
+      "id": "05e2fa92643677ca",
+      "type": "add",
+      "after": "7b56f22a4b9ee974"
+    },
+    {
+      "type": "move",
+      "order": [
+        "57b206a5457d1b73",
+        "821827c99b90cfd1",
+        "63ad2e58eecdd9e5",
+        "2bbd646ff3f44b51",
+        "05e2fa92643677ca",
+        "7b56f22a4b9ee974"
+      ],
+      "id": "05e2fa92643677ca"
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "0cbb4ef5f5d7e472"
+      },
+      "id": "0cbb4ef5f5d7e472",
+      "type": "add",
+      "after": "7b56f22a4b9ee974"
+    },
+    {
+      "type": "move",
+      "order": [
+        "57b206a5457d1b73",
+        "821827c99b90cfd1",
+        "63ad2e58eecdd9e5",
+        "2bbd646ff3f44b51",
+        "05e2fa92643677ca",
+        "0cbb4ef5f5d7e472",
+        "7b56f22a4b9ee974"
+      ],
+      "id": "0cbb4ef5f5d7e472"
+    },
+    {
+      "type": "edit",
+      "id": "0cbb4ef5f5d7e472",
+      "item": {
+        "type": "paragraph",
+        "id": "0cbb4ef5f5d7e472",
+        "text": "<b>Three:</b> Look for the <i>claim</i> button below this page. If you have your own OpenID you can use it to claim these pages so that only you can edit them. If you have a Google account you can use that too. Press the (G) button. Press the (Y) button to use your Yahoo account. You get the idea."
+      }
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "ee416d431ebf4fb4"
+      },
+      "id": "ee416d431ebf4fb4",
+      "type": "add",
+      "after": "7b56f22a4b9ee974"
+    },
+    {
+      "type": "move",
+      "order": [
+        "57b206a5457d1b73",
+        "821827c99b90cfd1",
+        "63ad2e58eecdd9e5",
+        "2bbd646ff3f44b51",
+        "05e2fa92643677ca",
+        "0cbb4ef5f5d7e472",
+        "ee416d431ebf4fb4",
+        "7b56f22a4b9ee974"
+      ],
+      "id": "ee416d431ebf4fb4"
+    },
+    {
+      "type": "edit",
+      "id": "ee416d431ebf4fb4",
+      "item": {
+        "type": "paragraph",
+        "id": "ee416d431ebf4fb4",
+        "text": "Start writing. Click either link. Press [+] to add more writing spaces. "
+      }
+    },
+    {
+      "type": "fork",
+      "site": "new.fed.wiki.org"
+    },
+    {
+      "type": "edit",
+      "id": "ee416d431ebf4fb4",
+      "item": {
+        "type": "paragraph",
+        "id": "ee416d431ebf4fb4",
+        "text": "Start writing. Click either link. Press [+] to add more writing spaces. Read [[How to Wiki]] for more ideas."
+      }
+    }
+  ],
+  "synopsys": "The first federated wiki page written and often first page viewed."
+}

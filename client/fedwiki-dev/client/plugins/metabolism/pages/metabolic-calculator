@@ -1,0 +1,829 @@
+{
+  "title": "Metabolic Calculator",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "670af95d041dcc2e",
+      "text": "You lead an active life. How active? Here we compute your daily average activity as a multiple of an idle-hour."
+    },
+    {
+      "type": "paragraph",
+      "id": "e257119666b5025f",
+      "text": "A sedentary person could expect an average of a little less than 24 idle-hours of activity per day. (Sleeping takes less energy than idle waking.)"
+    },
+    {
+      "type": "paragraph",
+      "id": "c9d166cf63089fcd",
+      "text": "A vigorously active person might average 48 idle-hours a day. That's two days of [http://en.wikipedia.org/wiki/Basal_metabolic_rate basal metabolic calories] every day. Enjoy seconds every meal."
+    },
+    {
+      "type": "metabolism",
+      "id": "59d569972b7bce9c",
+      "text": "USE Compendium of Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eating\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling 20 mph\nREMAINDER\nSUM"
+    },
+    {
+      "type": "paragraph",
+      "id": "27fd769cd75beb3f",
+      "text": "The metabolic calculator tallies idle-equivalent rates from the [[Metabolic Equivalent of Task]] database and scales them by the average hours/day you specify."
+    },
+    {
+      "type": "paragraph",
+      "id": "27e495c217038df7",
+      "text": "REMAINDER fills out the hours in a day."
+    },
+    {
+      "type": "paragraph",
+      "id": "75d94f22755d1436",
+      "text": "SUM yield your daily average."
+    },
+    {
+      "type": "paragraph",
+      "id": "d0a61b8466dbcb56",
+      "text": "Tip: Guess activity names. The calculator adds footnotes to your names to help you make them specific. You can also double-click the source data and search it with your browser's find command."
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "id": "427c6f1a4cb34efc",
+      "item": {
+        "title": "Metabolic Calculator"
+      },
+      "date": 1336249944864
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "59d569972b7bce9c"
+      },
+      "id": "59d569972b7bce9c",
+      "type": "add",
+      "date": 1336249948206
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "paragraph",
+        "id": "59d569972b7bce9c",
+        "text": "sleeping 8\ntyping 10\ndriving .5"
+      },
+      "date": 1336250019578
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "8 sleeping\n10 typing\n.5 driving"
+      },
+      "date": 1336251387340
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "8 sleeping\n10 typing\n.5 driving\nSUM"
+      },
+      "date": 1336251880847
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "1 bicycling\n8 sleeping\n10 typing\n.5 driving\nSUM"
+      },
+      "date": 1336253644144
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "1 bicycling work\n.4 bicycling racing\n8 sleeping\n10 typing\n.5 driving\nSUM"
+      },
+      "date": 1336254244017
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "1 bicycling work\n.4 bicycling road\n8 sleeping\n10 typing\n.5 driving\nSUM"
+      },
+      "date": 1336254267963
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "1 bicycling work\n.4 bicycling racing road\n8 sleeping\n10 typing\n.5 driving\nSUM"
+      },
+      "date": 1336254279551
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "1 bicycling work\n.4 bicycling racing\n8 sleeping\n10 typing\n.5 driving\nSUM"
+      },
+      "date": 1336254344715
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "1 bicycling work\n.4 bicycling racing\n8 sleeping\n10 typing\n.5 driving\nSUM\nCode"
+      },
+      "date": 1336255564085
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "1 bicycling work\n.4 bicycling racing\n8 sleeping\n10 typing\n.5 driving\nSUM"
+      },
+      "date": 1336255597204
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "1 bicycling work\n.4 bicycling racing\n8 sleeping\n10 typing\n.5 driving\nSUM\n200\nAVG"
+      },
+      "date": 1336255629974
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "1 bicycling work\n.4 bicycling racing\n8 sleeping\n10 typing\n.5 driving\nDAY\nSUM"
+      },
+      "date": 1336256162940
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "1 bicycling work\n.4 bicycling racing\n8 sleeping\n10 typing\n.5 driving\nREMAINDER\nSUM"
+      },
+      "date": 1336256601413
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "1 bicycling work\n.4 bicycling racing\n8 sleeping\n10 typing\n.5 driving autombile\nREMAINDER\nSUM"
+      },
+      "date": 1336258711410
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "1 bicycling work\n.4 bicycling racing\n8 sleeping\n10 typing\n.5 driving auto\nREMAINDER\nSUM"
+      },
+      "date": 1336258717418
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "1 bicycling work\n.4 bicycling racing\n8 sleeping\n10 typing\n.5 driving automobile\nREMAINDER\nSUM"
+      },
+      "date": 1336258735177
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "1 bicycling work\n.4 bicycling racing 19 mph\n8 sleeping\n10 typing\n.5 driving automobile\nREMAINDER\nSUM"
+      },
+      "date": 1336258785607
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "1 bicycling work\n.4 bicycling racing 19 mph\n8 sleeping\n10 work typing\n.5 driving automobile\nREMAINDER\nSUM"
+      },
+      "date": 1336258868437
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "1 bicycling\n.4 bicycling racing 19 mph\n8 sleeping\n10 work typing\n.5 driving automobile\nREMAINDER\nSUM"
+      },
+      "date": 1336258922628
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "1 bicycling leasure\n.4 bicycling racing 19 mph\n8 sleeping\n10 work typing\n.5 driving automobile\nREMAINDER\nSUM"
+      },
+      "date": 1336258948194
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "1 bicycling 10 mph\n.4 bicycling racing 19 mph\n8 sleeping\n10 work typing\n.5 driving automobile\nREMAINDER\nSUM"
+      },
+      "date": 1336258974394
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "1 slow bicycling\n.4 bicycling racing 19 mph\n8 sleeping\n10 work typing\n.5 driving automobile\nREMAINDER\nSUM"
+      },
+      "date": 1336258999393
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "1 slow bicycling\n.4 bicycling racing 19 mph\n8 sleeping\n10 typing work\n.5 driving automobile\nREMAINDER\nSUM"
+      },
+      "date": 1336259020712
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "1 slow bicycling\n.4 bicycling racing\n8 sleeping\n10 typing work\n.5 driving automobile\nREMAINDER\nSUM"
+      },
+      "date": 1336261788126
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "1 slow bicycling\n.4 bicycling racing 20 mph\n8 sleeping\n10 typing work\n.5 driving automobile\nREMAINDER\nSUM"
+      },
+      "date": 1336261818717
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "1 slow bicycling\n1 bicycling racing 20 mph\n8 sleeping\n10 typing work\n.5 driving automobile\nREMAINDER\nSUM"
+      },
+      "date": 1336261833660
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "1 slow bicycling\n1 bicycling 20 mph\n8 sleeping\n10 typing work\n.5 driving automobile\nREMAINDER\nSUM"
+      },
+      "date": 1336261872891
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "8 sleeping\n8 typing work\n5 reading\n.5 driving automobile\n.75 slow bicycling\n.5 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336261984811
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "8 sleeping\n8 typing work\n5 quiet reading\n.5 driving automobile\n.75 slow bicycling\n.5 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336262082637
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "8 sleeping\n8 typing work\n5 reading\n.5 driving automobile\n.75 slow bicycling\n.5 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336262145732
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "8 sleeping\n8 typing work\n5 reading newspaper\n.5 driving automobile\n.75 slow bicycling\n.5 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336262166683
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "8 sleeping\n8 typing work\n1 reading newspaper\n.5 driving automobile\n.75 slow bicycling\n.5 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336262180883
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "8 sleeping\n8 work typing\n1 reading\n.5 driving automobile\n.75 slow bicycling\n.5 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336262210989
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "8 sleeping\n8 computer\n1 reading newspaper\n.5 driving automobile\n.75 slow bicycling\n.5 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336262292512
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "8 sleeping\n8 computer typing\n1 reading newspaper\n.5 driving automobile\n.75 slow bicycling\n.5 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336262340134
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "8 sleeping\n8 computer occupation\n1 reading newspaper\n.5 driving automobile\n.75 slow bicycling\n.5 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336262375893
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "8 sleeping\n8 computer office work\n1 reading newspaper\n.5 driving automobile\n.75 slow bicycling\n.5 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336262540921
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "8 sleeping\n8 computer office work\n1 reading newspaper\n2 eating\n.5 driving automobile\n.75 slow bicycling\n.5 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336262578312
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "8 sleeping\n8 computer office work\n1 reading newspaper\n2 eating self care\n.5 driving automobile\n.75 slow bicycling\n.5 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336262651046
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eating\n.5 driving automobile\n.75 slow bicycling\n.5 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336262671813
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "8 sleeping\n8 computer office work\n1 reading newspaper\n2 self sitting eating\n.5 driving automobile\n.75 slow bicycling\n.5 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336262690918
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eating\n.5 driving automobile\n.75 slow bicycling\n.5 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336262789282
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eating\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336262875079
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "670af95d041dcc2e"
+      },
+      "id": "670af95d041dcc2e",
+      "type": "add",
+      "after": "59d569972b7bce9c",
+      "date": 1336263173935
+    },
+    {
+      "type": "move",
+      "order": [
+        "670af95d041dcc2e",
+        "59d569972b7bce9c"
+      ],
+      "id": "670af95d041dcc2e",
+      "date": 1336263176900
+    },
+    {
+      "type": "edit",
+      "id": "670af95d041dcc2e",
+      "item": {
+        "type": "paragraph",
+        "id": "670af95d041dcc2e",
+        "text": "You lead an active life. How active? Here we compute your daily average activity as a multiple of an idle-hour."
+      },
+      "date": 1336263616006
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "e257119666b5025f"
+      },
+      "id": "e257119666b5025f",
+      "type": "add",
+      "after": "59d569972b7bce9c",
+      "date": 1336263627835
+    },
+    {
+      "type": "edit",
+      "id": "e257119666b5025f",
+      "item": {
+        "type": "paragraph",
+        "id": "e257119666b5025f",
+        "text": "A sedentary person could expect an average of a little less than 24 idle-hours of activity per day. (Sleeping takes less energy than idle waking.)"
+      },
+      "date": 1336263732802
+    },
+    {
+      "type": "move",
+      "order": [
+        "670af95d041dcc2e",
+        "e257119666b5025f",
+        "59d569972b7bce9c"
+      ],
+      "id": "e257119666b5025f",
+      "date": 1336263735778
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "c9d166cf63089fcd"
+      },
+      "id": "c9d166cf63089fcd",
+      "type": "add",
+      "after": "59d569972b7bce9c",
+      "date": 1336263752656
+    },
+    {
+      "type": "edit",
+      "id": "c9d166cf63089fcd",
+      "item": {
+        "type": "paragraph",
+        "id": "c9d166cf63089fcd",
+        "text": "A vigorously active person might average 48 idle-hours a day. That's two days of basel metabolic calories every day. Seconds every meal."
+      },
+      "date": 1336263958499
+    },
+    {
+      "type": "move",
+      "order": [
+        "670af95d041dcc2e",
+        "e257119666b5025f",
+        "c9d166cf63089fcd",
+        "59d569972b7bce9c"
+      ],
+      "id": "c9d166cf63089fcd",
+      "date": 1336263961751
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "27fd769cd75beb3f"
+      },
+      "id": "27fd769cd75beb3f",
+      "type": "add",
+      "after": "59d569972b7bce9c",
+      "date": 1336264035409
+    },
+    {
+      "type": "edit",
+      "id": "27fd769cd75beb3f",
+      "item": {
+        "type": "paragraph",
+        "id": "27fd769cd75beb3f",
+        "text": "This calculator tallies idle-equivalent rates from the [[Metabolic Equivalent of Task]] database and scales them by average hours/day you specify."
+      },
+      "date": 1336264221116
+    },
+    {
+      "type": "edit",
+      "id": "27fd769cd75beb3f",
+      "item": {
+        "type": "paragraph",
+        "id": "27fd769cd75beb3f",
+        "text": "This calculator tallies idle-equivalent rates from the [[Metabolic Equivalent of Task]] database and scales them by average hours/day you specify. (Double-click it to see how.)"
+      },
+      "date": 1336264263962
+    },
+    {
+      "type": "edit",
+      "id": "27fd769cd75beb3f",
+      "item": {
+        "type": "paragraph",
+        "id": "27fd769cd75beb3f",
+        "text": "The metabolic calculator tallies idle-equivalent rates from the [[Metabolic Equivalent of Task]] database and scales them by average hours/day you specify."
+      },
+      "date": 1336264345170
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "27e495c217038df7"
+      },
+      "id": "27e495c217038df7",
+      "type": "add",
+      "after": "27fd769cd75beb3f",
+      "date": 1336264349163
+    },
+    {
+      "type": "edit",
+      "id": "27e495c217038df7",
+      "item": {
+        "type": "paragraph",
+        "id": "27e495c217038df7",
+        "text": "The REMAINDER command fills out the total to account for all 24 hours."
+      },
+      "date": 1336264375983
+    },
+    {
+      "type": "edit",
+      "id": "27e495c217038df7",
+      "item": {
+        "type": "paragraph",
+        "id": "27e495c217038df7",
+        "text": "The REMAINDER command fills out the hours in a day."
+      },
+      "date": 1336264403262
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "75d94f22755d1436"
+      },
+      "id": "75d94f22755d1436",
+      "type": "add",
+      "after": "27e495c217038df7",
+      "date": 1336264407764
+    },
+    {
+      "type": "edit",
+      "id": "75d94f22755d1436",
+      "item": {
+        "type": "paragraph",
+        "id": "75d94f22755d1436",
+        "text": "The SUM command adds up each scaled activity to yield your daily average idle-hours."
+      },
+      "date": 1336264492867
+    },
+    {
+      "type": "edit",
+      "id": "c9d166cf63089fcd",
+      "item": {
+        "type": "paragraph",
+        "id": "c9d166cf63089fcd",
+        "text": "A vigorously active person might average 48 idle-hours a day. That's two days of basel metabolic calories every day. Enjoy seconds every meal."
+      },
+      "date": 1336264555785
+    },
+    {
+      "type": "edit",
+      "id": "c9d166cf63089fcd",
+      "item": {
+        "type": "paragraph",
+        "id": "c9d166cf63089fcd",
+        "text": "A vigorously active person might average 48 idle-hours a day. That's two days of basal metabolic calories every day. Enjoy seconds every meal."
+      },
+      "date": 1336264600409
+    },
+    {
+      "type": "edit",
+      "id": "c9d166cf63089fcd",
+      "item": {
+        "type": "paragraph",
+        "id": "c9d166cf63089fcd",
+        "text": "A vigorously active person might average 48 idle-hours a day. That's two days of [http://en.wikipedia.org/wiki/Basal_metabolic_rate basal metabolic calories] every day. Enjoy seconds every meal."
+      },
+      "date": 1336264724405
+    },
+    {
+      "type": "edit",
+      "id": "27e495c217038df7",
+      "item": {
+        "type": "paragraph",
+        "id": "27e495c217038df7",
+        "text": "REMAINDER fills out the hours in a day."
+      },
+      "date": 1336264966398
+    },
+    {
+      "type": "edit",
+      "id": "75d94f22755d1436",
+      "item": {
+        "type": "paragraph",
+        "id": "75d94f22755d1436",
+        "text": "SUM adds each scaled activity to yield your daily average."
+      },
+      "date": 1336264990805
+    },
+    {
+      "type": "edit",
+      "id": "75d94f22755d1436",
+      "item": {
+        "type": "paragraph",
+        "id": "75d94f22755d1436",
+        "text": "SUM yield your daily average."
+      },
+      "date": 1336265032996
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "2074a812f4c1fc8b"
+      },
+      "id": "2074a812f4c1fc8b",
+      "type": "add",
+      "after": "75d94f22755d1436",
+      "date": 1336265060865
+    },
+    {
+      "type": "remove",
+      "id": "2074a812f4c1fc8b",
+      "date": 1336265219309
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE \n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eating\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336266770722
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Compendium of Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eating\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336266780860
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Compendium of Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eating\nCategory\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336268803960
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Compendium of Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eating\nCategory\n.5 driving automobile\nCategory\n.75 slow bicycling\n.2 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336268901206
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Compendium of Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eating\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336268930212
+    },
+    {
+      "type": "edit",
+      "id": "27fd769cd75beb3f",
+      "item": {
+        "type": "paragraph",
+        "id": "27fd769cd75beb3f",
+        "text": "The metabolic calculator tallies idle-equivalent rates from the [[Metabolic Equivalent of Task]] database and scales them by the average hours/day you specify."
+      },
+      "date": 1336270877696
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "d0a61b8466dbcb56"
+      },
+      "id": "d0a61b8466dbcb56",
+      "type": "add",
+      "after": "75d94f22755d1436",
+      "date": 1336270970430
+    },
+    {
+      "type": "edit",
+      "id": "d0a61b8466dbcb56",
+      "item": {
+        "type": "paragraph",
+        "id": "d0a61b8466dbcb56",
+        "text": "Tip: Guess activity names. The calculator adds footnotes to your names to help you make them specific. You can also double-click the source data and search it with your browser's find command."
+      },
+      "date": 1336271176390
+    }
+  ]
+}
