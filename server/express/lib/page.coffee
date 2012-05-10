@@ -47,7 +47,26 @@ module.exports = exports = (argv) ->
             if exists
               load_parse_copy(defloc, file, cb)
             else
-              cb(null, 'Page not found', 404)
+              plugindir = path.join(argv.r, 'client', 'plugins')
+              fs.readdir(plugindir , (e, plugins) ->
+                if e then return cb(e)
+                giveUp = do ->
+                  count = plugins.length
+                  return ->
+                    count -= 1
+                    if count is 0
+                      cb(null, 'Page not found', 404)
+
+                for plugin in plugins
+                  do ->
+                    pluginloc = path.join(plugindir, plugin, 'pages', file)
+                    path.exists(pluginloc, (exists) ->
+                      if exists
+                        load_parse_copy(pluginloc, file, cb)
+                      else
+                        giveUp()
+                    )
+              )
           )
       )
     else
@@ -58,7 +77,7 @@ module.exports = exports = (argv) ->
             cb(err)
           )
         else
-          mkdirp(path.dirname(loc), 0777, (err) ->
+          mkdirp(path.dirname(loc), (err) ->
             if err then cb(err)
             fs.writeFile(loc, page, (err) ->
               cb(err)
