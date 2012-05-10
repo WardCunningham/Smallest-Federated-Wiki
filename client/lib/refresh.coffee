@@ -72,6 +72,7 @@ emitHeader = (pageElement, page) ->
     $(pageElement)
       .append $('<h4 class="revision"/>')
         .html if date? then util.formatDate(date) else "Revision #{rev}"
+    $(pageElement).addClass 'ghost'
 
 module.exports = refresh = wiki.refresh = ->
   pageElement = $(this)

@@ -28,8 +28,10 @@ body {
   margin: 0;
   width: 10000%; }
 
-header,
 footer {
+  border-top: 1px solid #3d3c43;
+  box-shadow: inset 0px 0px 7px rgba(0, 0, 0, 0.8);
+  background: #eeeeee url("/images/noise.png");
   position: fixed;
   left: 0;
   right: 0;
@@ -37,7 +39,7 @@ footer {
   padding: 10px;
   font-size: 80%;
   z-index: 1000;
-  color: #555566; }
+  color: #ccdcd2; }
 
 header {
   top: 0; }
@@ -187,5 +189,14 @@ textarea {
   margin-bottom: -9px;
   text-align: right;
   font-size: 13px;
-  color: #999999;
+  color: #7b2106;
   font-weight: 500; }
+
+.favicon {
+  position: relative;
+  margin-bottom: -6px; }
+
+.ghost {
+  opacity: 0.6;
+  border-color: #eef2fe;
+}

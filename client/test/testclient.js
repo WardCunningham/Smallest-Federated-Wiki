@@ -1118,7 +1118,8 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
     }
     if ((rev = pageElement.attr('id').split('_rev')[1]) != null) {
       date = page.journal[page.journal.length - 1].date;
-      return $(pageElement).append($('<h4 class="revision"/>').html(date != null ? util.formatDate(date) : "Revision " + rev));
+      $(pageElement).append($('<h4 class="revision"/>').html(date != null ? util.formatDate(date) : "Revision " + rev));
+      return $(pageElement).addClass('ghost');
     }
   };
 
