@@ -77,7 +77,7 @@ module.exports = exports = (argv) ->
             cb(err)
           )
         else
-          mkdirp(path.dirname(loc), 0777, (err) ->
+          mkdirp(path.dirname(loc), (err) ->
             if err then cb(err)
             fs.writeFile(loc, page, (err) ->
               cb(err)
