@@ -144,6 +144,20 @@ class Controller < Sinatra::Base
     catalog + File.read(File.join(APP_ROOT, "client/plugins/meta-factory.js"))
   end
 
+  get %r{^/data/([\w -]+)$} do |search|
+    content_type 'application/json'
+    cross_origin
+    pages = Store.annotated_pages farm_page.directory
+    candidates = pages.select do |page|
+      datasets = page['story'].select do |item|
+        item['type']=='data' && item['text'] && item['text'].index(search)
+      end
+      datasets.length > 0
+    end
+    halt 404 unless candidates.length > 0
+    JSON.pretty_generate(candidates.first)
+  end
+
   get %r{^/([a-z0-9-]+)\.html$} do |name|
     haml :page, :locals => { :page => farm_page.get(name), :page_name => name }
   end

@@ -7,10 +7,33 @@
       data = [];
       input = {};
       attach = function(s) {
-        data = _.select(wiki.getData(), function(row) {
-          return row.Activity != null;
+        var elem, source, _i, _len, _ref;
+        _ref = wiki.getDataNodes(div);
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          elem = _ref[_i];
+          if ((source = $(elem).data('item')).text.indexOf(s) >= 0) {
+            return data = _.select(source.data, function(row) {
+              return row.Activity != null;
+            });
+          }
+        }
+        return $.get("/data/" + s, function(page) {
+          var obj, _j, _len2, _ref2;
+          console.log(['page retrieved', page]);
+          if (!page) throw new Error("can't find dataset '" + s + "'");
+          _ref2 = page.story;
+          for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
+            obj = _ref2[_j];
+            if (obj.type === 'data' && (obj.text != null) && obj.text.indexOf(s) >= 0) {
+              data = _.select(obj.data, function(row) {
+                return row.Activity != null;
+              });
+              console.log(['data retrieved', data]);
+              return data;
+            }
+          }
+          throw new Error("can't find dataset '" + s + "' in '" + page.title + "'");
         });
-        if (data == null) throw "can't find data";
       };
       query = function(s) {
         var choices, k, keys, n, _i, _len;

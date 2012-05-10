@@ -6,8 +6,19 @@ window.plugins.metabolism =
     input = {}
 
     attach = (s) ->
-      data = _.select wiki.getData(), (row) -> row.Activity?
-      throw "can't find data" unless data?
+      for elem in wiki.getDataNodes div
+        if (source = $(elem).data('item')).text.indexOf(s) >= 0
+          return data = _.select source.data, (row) -> row.Activity?
+      $.get "/data/#{s}", (page) ->
+        console.log ['page retrieved', page]
+        throw new Error "can't find dataset '#{s}'" unless page
+        for obj in page.story
+          if obj.type == 'data' && obj.text? && obj.text.indexOf(s) >= 0
+            data = _.select obj.data, (row) -> row.Activity?
+            console.log ['data retrieved', data]
+            return data
+        throw new Error "can't find dataset '#{s}' in '#{page.title}'"
+
 
     query = (s) ->
       keys = $.trim(s).split ' '
