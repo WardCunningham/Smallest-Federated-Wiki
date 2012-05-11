@@ -26,7 +26,9 @@ body {
 
 .action {
   font-size: 1.3em;
-  border-radius: 5px;
+  -webkit-border-radius: 5px;
+     -moz-border-radius: 5px;
+          border-radius: 5px;
   background-color: #cccccc;
   color: #666666;
   text-align: center;
@@ -34,7 +36,14 @@ body {
   padding: 0.1em;
   margin: 4px;
   float: left;
-  width: 1.3em; }
+  width: 26px; }
+
+.button {
+  color: #c14615;
+  font-size: 21px;
+  padding: 0.1em;
+  margin: 3px;
+  width: 26px; }
 
 .action:hover {
   color: #2c3f39;

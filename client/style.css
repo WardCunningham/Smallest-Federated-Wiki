@@ -82,10 +82,14 @@ footer {
   padding: 0.2em;
   margin: 3px;
   float: left;
-  width: 17px; }
+  width: 18px; }
+
+.control-buttons {
+  white-space: nowrap;
+}
 
 .button {
-
+  /*from bootstrap*/
   background-color: #f5f5f5;
   *background-color: #e6e6e6;
   background-image: -ms-linear-gradient(top, #ffffff, #e6e6e6);
@@ -107,14 +111,20 @@ footer {
      -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
           box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
 
+  /*custom*/
+  display: inline-block;
+  white-space: normal;
+  position: relative;
+  bottom: 1px;
+  right: 1px;
   font-size: 0.9em;
   text-align: center;
   text-decoration: none;
   padding: 0.2em;
-  margin: 3px;
+  margin: 2px;
   color: #2c3f39;
   float: right;
-  width: 16px; }
+  width: 17px; }
 
 .button:hover {
   color: #d9a513;
@@ -156,8 +166,8 @@ p.readout {
 .page {
   float: left;
   margin: 8px;
-  padding: 0 32px;
-  width: 425px;
+  padding: 0 30px;
+  width: 436px;
   background-color: white;
   height: 100%;
   overflow: auto;
