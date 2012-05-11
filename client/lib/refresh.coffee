@@ -72,6 +72,7 @@ emitHeader = (pageElement, page) ->
     $(pageElement)
       .append $('<h4 class="revision"/>')
         .html if date? then util.formatDate(date) else "Revision #{rev}"
+    $(pageElement).addClass 'ghost'
 
 module.exports = refresh = wiki.refresh = ->
   pageElement = $(this)
@@ -109,10 +110,13 @@ module.exports = refresh = wiki.refresh = ->
       $.each page.journal, (i, action) ->
         wiki.addToJournal journalElement, action
 
+      journalElement
+        .append("<a href=\"#\" class=\"button add-factory\" title=\"add paragraph\">#{wiki.symbols['add']}</a>")
+        .append("<a href=\"#\" class=\"button fork-page\" title=\"fork this page\">#{wiki.symbols['fork']}</a>")  
+
       footerElement
         .append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ')
-        .append("<a class=\"show-page-source\" href=\"/#{slug}.json?random=#{util.randomBytes(4)}\" title=\"source\">JSON</a> . ")
-        .append("<a href=\"#\" class=\"add-factory\" title=\"add paragraph\">[+]</a>")
+        .append("<a class=\"show-page-source\" href=\"/#{slug}.json?random=#{util.randomBytes(4)}\" title=\"source\">JSON</a>")
 
       state.setUrl()
 

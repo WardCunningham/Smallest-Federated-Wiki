@@ -420,6 +420,14 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       };
       return string.replace(/\[\[([^\]]+)\]\]/gi, renderInternalLink).replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" target=\"_blank\" href=\"$1\">$2</a>");
     };
+    wiki.symbols = {
+      create: '⌚',
+      add: '✚',
+      edit: '✎',
+      fork: '⚐',
+      move: '➜',
+      remove: '✕'
+    };
     addToJournal = wiki.addToJournal = function(journalElement, action) {
       var actionElement, actionTitle, pageElement, prev;
       pageElement = journalElement.parents('.page:first');
@@ -431,7 +439,7 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       if (action.date != null) {
         actionTitle += ": " + (util.formatDate(action.date));
       }
-      actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(action.type[0]).attr('title', actionTitle).attr('data-id', action.id || "0").appendTo(journalElement);
+      actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(wiki.symbols[action.type]).attr('title', actionTitle).attr('data-id', action.id || "0").appendTo(journalElement);
       if (action.type === 'fork') {
         return actionElement.css("background-image", "url(//" + action.site + "/favicon.png)").attr("href", "//" + action.site + "/" + (pageElement.attr('id')) + ".html").data("site", action.site).data("slug", pageElement.attr('id'));
       }
@@ -1269,7 +1277,8 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
     }
     if ((rev = pageElement.attr('id').split('_rev')[1]) != null) {
       date = page.journal[page.journal.length - 1].date;
-      return $(pageElement).append($('<h4 class="revision"/>').html(date != null ? util.formatDate(date) : "Revision " + rev));
+      $(pageElement).append($('<h4 class="revision"/>').html(date != null ? util.formatDate(date) : "Revision " + rev));
+      return $(pageElement).addClass('ghost');
     }
   };
 
@@ -1319,7 +1328,8 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
         $.each(page.journal, function(i, action) {
           return wiki.addToJournal(journalElement, action);
         });
-        footerElement.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ').append("<a class=\"show-page-source\" href=\"/" + slug + ".json?random=" + (util.randomBytes(4)) + "\" title=\"source\">JSON</a> . ").append("<a href=\"#\" class=\"add-factory\" title=\"add paragraph\">[+]</a>");
+        journalElement.append("<a href=\"#\" class=\"button add-factory\" title=\"add paragraph\">" + wiki.symbols['add'] + "</a>").append("<a href=\"#\" class=\"button fork-page\" title=\"fork this page\">" + wiki.symbols['fork'] + "</a>");
+        footerElement.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ').append("<a class=\"show-page-source\" href=\"/" + slug + ".json?random=" + (util.randomBytes(4)) + "\" title=\"source\">JSON</a>");
         state.setUrl();
       }
       initDragging(pageElement);
