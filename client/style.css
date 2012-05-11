@@ -28,8 +28,10 @@ body {
   margin: 0;
   width: 10000%; }
 
-header,
 footer {
+  border-top: 1px solid #3d3c43;
+  box-shadow: inset 0px 0px 7px rgba(0, 0, 0, 0.8);
+  background: #eeeeee url("/images/noise.png");
   position: fixed;
   left: 0;
   right: 0;
@@ -37,7 +39,7 @@ footer {
   padding: 10px;
   font-size: 80%;
   z-index: 1000;
-  color: #555566; }
+  color: #ccdcd2; }
 
 header {
   top: 0; }
@@ -72,6 +74,7 @@ footer {
   color: black; }
 
 .action {
+  font-size: 0.9em;
   background-color: #cccccc;
   color: #666666;
   text-align: center;
@@ -79,7 +82,47 @@ footer {
   padding: 0.2em;
   margin: 3px;
   float: left;
-  width: 1em; }
+  width: 17px; }
+
+.button {
+
+  background-color: #f5f5f5;
+  *background-color: #e6e6e6;
+  background-image: -ms-linear-gradient(top, #ffffff, #e6e6e6);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#e6e6e6));
+  background-image: -webkit-linear-gradient(top, #ffffff, #e6e6e6);
+  background-image: -o-linear-gradient(top, #ffffff, #e6e6e6);
+  background-image: linear-gradient(top, #ffffff, #e6e6e6);
+  background-image: -moz-linear-gradient(top, #ffffff, #e6e6e6);
+  background-repeat: repeat-x;
+  border: 1px solid #cccccc;
+  *border: 0;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  border-color: #e6e6e6 #e6e6e6 #bfbfbf;
+  border-bottom-color: #b3b3b3;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+     -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+
+  font-size: 0.9em;
+  text-align: center;
+  text-decoration: none;
+  padding: 0.2em;
+  margin: 3px;
+  color: #2c3f39;
+  float: right;
+  width: 16px; }
+
+.button:hover {
+  color: #d9a513;
+  text-shadow: 0 0 1px #2c3f39;
+  box-shadow: 0 0 7px #3d3c43; }
+
+.button:active {
+  box-shadow: inset 0 0 7px #3d3c43; }
 
 .target {
   background-color: #ffffcc !important; }
@@ -112,9 +155,9 @@ p.readout {
 
 .page {
   float: left;
-  margin: 0.5em;
-  padding: 0 2em;
-  width: 26em;
+  margin: 8px;
+  padding: 0 32px;
+  width: 425px;
   background-color: white;
   height: 100%;
   overflow: auto;
@@ -187,5 +230,14 @@ textarea {
   margin-bottom: -9px;
   text-align: right;
   font-size: 13px;
-  color: #999999;
+  color: #7b2106;
   font-weight: 500; }
+
+.favicon {
+  position: relative;
+  margin-bottom: -6px; }
+
+.ghost {
+  opacity: 0.6;
+  border-color: #eef2fe;
+}
