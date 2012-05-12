@@ -1,68 +1,54 @@
 a {
-  color: #c14615;
-  text-decoration: none; }
+  color: #c14615; }
 
 a:hover {
   color: #ffba00;
-  text-shadow: 0px 0px 1px #d9a513;
-}
+  text-shadow: 0 0 1px #d9a513; }
 
 h1 {
   color: #566a6c;
-  position: relative;
-  font-family: 'Oxygen', sans-serif;
   font-weight: 400; }
 
 body {
-	background: #eeeeee url("/theme/stoneSeamless.jpg"); }
+	background: url("/theme/stoneSeamless.jpg"); }
 
 .journal {
-  border-radius: 5px;
-  margin-top: 2px;
-  clear: both;
-  background-color: #eeeeee;
-  overflow: auto;
-  padding: 3px; }
+  border-radius: 5px; }
 
 .action {
   font-size: 1.3em;
-  border-radius: 5px;
-  background-color: #cccccc;
-  color: #666666;
-  text-align: center;
-  text-decoration: none;
+  -webkit-border-radius: 5px;
+     -moz-border-radius: 5px;
+          border-radius: 5px;
   padding: 0.1em;
   margin: 4px;
   float: left;
-  width: 1.3em; }
+  width: 26px; }
+
+.button {
+  color: #c14615;
+  font-size: 21px;
+  padding: 0.1em;
+  margin: 1px;
+  width: 26px; }
 
 .action:hover {
   color: #2c3f39;
-  text-shadow: 0px 0px 1px #2c3f39;
-}
+  text-shadow: 0 0 1px #2c3f39; }
 
 .target {
-  background-color: #e9fff3 !important; }
+  background-color: #c9e1d4 !important; }
 
 .page {
+  padding: 0 16px;
   border-radius: 5px;
   border-style:solid;
   border-width:1px;
   border-color: #878984;
-  box-shadow: inset 0px 0px 7px rgba(0, 0, 0, 0.5);
-  float: left;
-  margin: 0.5em;
-  padding: 0 2em;
-  width: 26em;
-  background-color: white;
-  height: 100%;
-  overflow: auto;}
+  box-shadow: inset 0px 0px 7px rgba(0, 0, 0, 0.5); }
   .page.active {
-    box-shadow: 2px 1px 24px rgba(0, 0, 0, 0.4);
-    border-color: #515d75;
-    z-index: 10; }
+    border-color: #515d75; }
 
 .ghost {
   opacity: 0.8;
-  border-color: #eef2fe;
-}
+  border-color: #eef2fe; }
