@@ -429,7 +429,7 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       remove: '✕'
     };
     addToJournal = wiki.addToJournal = function(journalElement, action) {
-      var actionElement, actionTitle, pageElement, prev;
+      var actionElement, actionTitle, controls, pageElement, prev;
       pageElement = journalElement.parents('.page:first');
       if (action.type === 'edit') {
         prev = journalElement.find(".edit[data-id=" + (action.id || 0) + "]");
@@ -439,7 +439,13 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       if (action.date != null) {
         actionTitle += ": " + (util.formatDate(action.date));
       }
-      actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(wiki.symbols[action.type]).attr('title', actionTitle).attr('data-id', action.id || "0").appendTo(journalElement);
+      actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(wiki.symbols[action.type]).attr('title', actionTitle).attr('data-id', action.id || "0");
+      controls = journalElement.children('.control-buttons');
+      if (controls.length > 0) {
+        actionElement.insertBefore(controls);
+      } else {
+        actionElement.appendTo(journalElement);
+      }
       if (action.type === 'fork') {
         return actionElement.css("background-image", "url(//" + action.site + "/favicon.png)").attr("href", "//" + action.site + "/" + (pageElement.attr('id')) + ".html").data("site", action.site).data("slug", pageElement.attr('id'));
       }
@@ -1286,7 +1292,7 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
     var buildPage, pageElement;
     pageElement = $(this);
     buildPage = function(data) {
-      var action, addContext, context, controlButtons, footerElement, journalElement, page, site, slug, storyElement, _i, _len, _ref, _ref2;
+      var action, addContext, context, footerElement, journalElement, page, site, slug, storyElement, _i, _len, _ref, _ref2;
       if (!(data != null)) {
         pageElement.find('.item').each(function(i, each) {
           var item;
@@ -1328,8 +1334,7 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
         $.each(page.journal, function(i, action) {
           return wiki.addToJournal(journalElement, action);
         });
-        controlButtons = "<div class=\"control-buttons\">        <a href=\"#\" class=\"button add-factory\" title=\"add paragraph\">" + wiki.symbols['add'] + "</a>        <a href=\"#\" class=\"button fork-page\" title=\"fork this page\">" + wiki.symbols['fork'] + "</a>        </div>";
-        journalElement.append(controlButtons);
+        journalElement.append("<div class=\"control-buttons\">\n  <a href=\"#\" class=\"button fork-page\" title=\"fork this page\">" + wiki.symbols['fork'] + "</a>\n  <a href=\"#\" class=\"button add-factory\" title=\"add paragraph\">" + wiki.symbols['add'] + "</a>\n</div>");
         footerElement.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ').append("<a class=\"show-page-source\" href=\"/" + slug + ".json?random=" + (util.randomBytes(4)) + "\" title=\"source\">JSON</a>");
         state.setUrl();
       }

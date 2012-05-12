@@ -64,6 +64,8 @@ footer {
   width: 100%; }
 
 .journal {
+  width: 420px;
+  overflow-x: hidden;
   margin-top: 2px;
   clear: both;
   background-color: #eeeeee;
@@ -85,8 +87,11 @@ footer {
   width: 18px; }
 
 .control-buttons {
-  white-space: nowrap;
-}
+  float: right;
+  position: relative;
+  right: 5px;
+  overflow-x: visible;
+  white-space: nowrap; }
 
 .button {
   /*from bootstrap*/
@@ -115,16 +120,15 @@ footer {
   display: inline-block;
   white-space: normal;
   position: relative;
-  bottom: 1px;
-  right: 1px;
+  top: 2px;
+  left: 3px;
   font-size: 0.9em;
   text-align: center;
   text-decoration: none;
   padding: 0.2em;
-  margin: 2px;
+  margin-bottom: 2px;
   color: #2c3f39;
-  float: right;
-  width: 17px; }
+  width: 18px; }
 
 .button:hover {
   color: #d9a513;
@@ -166,8 +170,8 @@ p.readout {
 .page {
   float: left;
   margin: 8px;
-  padding: 0 30px;
-  width: 436px;
+  padding: 0 31px;
+  width: 430px;
   background-color: white;
   height: 100%;
   overflow: auto;
