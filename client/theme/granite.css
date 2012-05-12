@@ -25,7 +25,12 @@ body {
   float: left;
   width: 26px; }
 
+.control-buttons {
+  right: 3px;
+}
+
 .button {
+  left: 0;
   color: #c14615;
   font-size: 21px;
   padding: 0.1em;
