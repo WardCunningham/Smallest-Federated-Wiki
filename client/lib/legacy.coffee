@@ -84,7 +84,11 @@ $ ->
       .text(wiki.symbols[action.type])
       .attr('title',actionTitle)
       .attr('data-id', action.id || "0")
-      .appendTo(journalElement)
+    controls = journalElement.children('.control-buttons')
+    if controls.length > 0
+      actionElement.insertBefore(controls)
+    else
+      actionElement.appendTo(journalElement)
     if action.type == 'fork'
       actionElement
         .css("background-image", "url(//#{action.site}/favicon.png)")
