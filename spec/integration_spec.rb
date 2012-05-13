@@ -187,7 +187,7 @@ describe "moving paragraphs" do
   end
 
   def journal_items
-    page.all(".journal a")
+    page.all(".journal .action")
   end
 
   before do
