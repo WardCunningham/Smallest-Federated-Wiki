@@ -439,7 +439,7 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       if (action.date != null) {
         actionTitle += ": " + (util.formatDate(action.date));
       }
-      actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(wiki.symbols[action.type]).attr('title', actionTitle).attr('data-id', action.id || "0");
+      actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(wiki.symbols[action.type]).attr('title', actionTitle).attr('data-id', action.id || "0").data('action', action);
       controls = journalElement.children('.control-buttons');
       if (controls.length > 0) {
         actionElement.insertBefore(controls);
@@ -585,7 +585,11 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       return finishClick(e, name);
     }).delegate('.action', 'click', function(e) {
       var data, element, journalEntryIndex, name, page, revUrl, titleUrl;
+      e.preventDefault();
       element = $(e.target);
+      if (e.shiftKey) {
+        return wiki.dialog("" + (element.data('action').type) + " action", $('<pre/>').text(JSON.stringify(element.data('action'), null, 2)));
+      }
       if (element.is('.fork')) {
         name = $(e.target).data('slug');
         pageHandler.context = [$(e.target).data('site')];
@@ -601,6 +605,14 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
         createPage(revUrl).appendTo($('.main')).each(refresh);
         return active.set($('.page').last());
       }
+    }).delegate('.fork-page', 'click', function(e) {
+      var pageElement, remoteSite;
+      pageElement = $(e.target).parents('.page');
+      if ((remoteSite = pageElement.data('site')) == null) return;
+      return pageHandler.put(pageElement, {
+        type: 'fork',
+        site: remoteSite
+      });
     }).delegate('.action', 'hover', function() {
       var id;
       id = $(this).attr('data-id');
@@ -799,7 +811,7 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
   pageHandler.put = function(pageElement, action) {
     var site;
     action.date = (new Date()).getTime();
-    if ((site = pageElement.data('site')) != null) {
+    if (action.type !== 'fork' && ((site = pageElement.data('site')) != null)) {
       action.fork = site;
       pageElement.find('h1 img').attr('src', '/favicon.png');
       pageElement.find('h1 a').attr('href', '/');

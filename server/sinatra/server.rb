@@ -254,6 +254,7 @@ class Controller < Sinatra::Base
 
     action = JSON.parse params['action']
     if site = action['fork']
+      # this fork is bundled with some other action
       page = JSON.parse RestClient.get("#{site}/#{name}.json")
       ( page['journal'] ||= [] ) << { 'type' => 'fork', 'site' => site }
       farm_page.put name, page
@@ -261,6 +262,8 @@ class Controller < Sinatra::Base
     elsif action['type'] == 'create'
       return halt 409 if farm_page.exists?(name)
       page = action['item'].clone
+    elsif action['type'] == 'fork'
+      page = JSON.parse RestClient.get("#{action['site']}/#{name}.json")
     else
       page = farm_page.get(name)
     end
@@ -275,7 +278,7 @@ class Controller < Sinatra::Base
       page['story'].delete_at page['story'].index{ |item| item['id'] == action['id'] }
     when 'edit'
       page['story'][page['story'].index{ |item| item['id'] == action['id'] }] = action['item']
-    when 'create'
+    when 'create', 'fork'
       page['story'] ||= []
     else
       puts "unfamiliar action: #{action.inspect}"

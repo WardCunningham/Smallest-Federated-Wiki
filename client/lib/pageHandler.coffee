@@ -75,7 +75,8 @@ pushToServer = (pageElement, action) ->
 
 pageHandler.put = (pageElement, action) ->
   action.date = (new Date()).getTime()
-  if (site = pageElement.data('site'))?
+  if action.type != 'fork' and (site = pageElement.data('site'))?
+    # bundle implicit fork with next action
     action.fork = site
     pageElement.find('h1 img').attr('src', '/favicon.png')
     pageElement.find('h1 a').attr('href', '/')
