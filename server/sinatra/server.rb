@@ -24,7 +24,11 @@ class Controller < Sinatra::Base
   set :views , File.join(SINATRA_ROOT, "views")
   set :haml, :format => :html5
   set :versions, `git log -10 --oneline` || "no git log"
-  enable :sessions
+  if ENV.include?('SESSION_STORE')
+    use ENV['SESSION_STORE'].split('::').inject(Object) { |mod, const| mod.const_get(const) }
+  else
+    enable :sessions
+  end
   helpers ServerHelpers
 
   Store.set ENV['STORE_TYPE'], APP_ROOT
