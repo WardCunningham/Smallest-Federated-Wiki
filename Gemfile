@@ -11,6 +11,7 @@ gem "png"
 gem "rest-client"
 gem "ruby-openid"
 gem "couchrest"
+gem "memcache-client", :require => 'memcache'
 
 group :development do
   gem 'ruby-debug', :require => 'ruby-debug', :platform => :mri_18

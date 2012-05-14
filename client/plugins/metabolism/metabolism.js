@@ -3,14 +3,37 @@
   window.plugins.metabolism = {
     emit: function(div, item) {},
     bind: function(div, item) {
-      var annotate, attach, avg, calculate, data, input, query, round, sum, table, text;
+      var annotate, attach, avg, calculate, data, input, query, round, sum;
       data = [];
       input = {};
-      attach = function(s) {
-        data = _.select(wiki.getData(), function(row) {
-          return row.Activity != null;
+      attach = function(search, callback) {
+        var elem, new_data, source, _i, _len, _ref;
+        if (callback == null) callback = function() {};
+        _ref = wiki.getDataNodes(div);
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          elem = _ref[_i];
+          if ((source = $(elem).data('item')).text.indexOf(search) >= 0) {
+            new_data = _.select(source.data, function(row) {
+              return row.Activity != null;
+            });
+            return callback(new_data);
+          }
+        }
+        return $.get("/data/" + search, function(page) {
+          var obj, _j, _len2, _ref2;
+          if (!page) throw new Error("can't find dataset '" + s + "'");
+          _ref2 = page.story;
+          for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
+            obj = _ref2[_j];
+            if (obj.type === 'data' && (obj.text != null) && obj.text.indexOf(search) >= 0) {
+              new_data = _.select(obj.data, function(row) {
+                return row.Activity != null;
+              });
+              return callback(new_data);
+            }
+          }
+          throw new Error("can't find dataset '" + s + "' in '" + page.title + "'");
         });
-        if (data == null) throw "can't find data";
       };
       query = function(s) {
         var choices, k, keys, n, _i, _len;
@@ -50,34 +73,44 @@
         return " <span title=\"" + text + "\">*</span>";
       };
       calculate = function(item) {
-        var allocated, args, color, comment, hours, line, list, result, row, value, _i, _len, _ref, _ref2, _ref3, _results;
+        var allocated, dispatch, lines, list, report;
         list = [];
         allocated = 0;
-        _ref = item.text.split("\n");
-        _results = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          line = _ref[_i];
+        lines = item.text.split("\n");
+        report = [];
+        dispatch = function(list, allocated, lines, report, done) {
+          var args, color, comment, hours, line, next_dispatch, result, row, value, _ref, _ref2;
           color = '#eee';
           value = comment = null;
           hours = '';
+          line = lines.shift();
+          if (line == null) return done(report);
+          next_dispatch = function() {
+            if ((value != null) && !isNaN(+value)) list.push(+value);
+            report.push("<tr style=\"background:" + color + ";\"><td style=\"width: 70%;\">" + line + (annotate(comment)) + "<td>" + hours + "<td><b>" + (round(value)) + "</b>");
+            return dispatch(list, allocated, lines, report, done);
+          };
           try {
             if (args = line.match(/^USE ([\w ]+)$/)) {
               color = '#ddd';
               value = ' ';
-              attach(line = args[1]);
+              return attach((line = args[1]), function(new_data) {
+                data = new_data;
+                return next_dispatch();
+              });
             } else if (args = line.match(/^([0-9.]+) ([\w ]+)$/)) {
               allocated += hours = +args[1];
               result = query(line = args[2]);
               value = (input = result[0]).MET * hours;
               if (result.length > 1) {
                 comment = ((function() {
-                  var _j, _len2, _results2;
-                  _results2 = [];
-                  for (_j = 0, _len2 = result.length; _j < _len2; _j++) {
-                    row = result[_j];
-                    _results2.push("" + row.Category + " (" + row.MET + "): " + row.Activity);
+                  var _i, _len, _results;
+                  _results = [];
+                  for (_i = 0, _len = result.length; _i < _len; _i++) {
+                    row = result[_i];
+                    _results.push("" + row.Category + " (" + row.MET + "): " + row.Activity);
                   }
-                  return _results2;
+                  return _results;
                 })()).join("\n\n");
               }
             } else if (input[line] != null) {
@@ -90,10 +123,10 @@
               allocated += value;
             } else if (line === 'SUM') {
               color = '#ddd';
-              _ref2 = [sum(list), []], value = _ref2[0], list = _ref2[1];
+              _ref = [sum(list), []], value = _ref[0], list = _ref[1];
             } else if (line === 'AVG') {
               color = '#ddd';
-              _ref3 = [avg(list), []], value = _ref3[0], list = _ref3[1];
+              _ref2 = [avg(list), []], value = _ref2[0], list = _ref2[1];
             } else {
               color = '#edd';
             }
@@ -102,17 +135,19 @@
             value = null;
             comment = err.message;
           }
-          if ((value != null) && !isNaN(+value)) list.push(+value);
-          _results.push("<tr style=\"background:" + color + ";\"><td style=\"width: 70%;\">" + line + (annotate(comment)) + "<td>" + hours + "<td><b>" + (round(value)) + "</b>");
-        }
-        return _results;
+          return next_dispatch();
+        };
+        return dispatch(list, allocated, lines, report, function(report) {
+          var table, text;
+          text = report.join("\n");
+          table = $('<table style="width:100%; background:#eee; padding:.8em;"/>').html(text);
+          div.append(table);
+          return div.dblclick(function() {
+            return wiki.textEditor(div, item);
+          });
+        });
       };
-      text = calculate(item).join("\n");
-      table = $('<table style="width:100%; background:#eee; padding:.8em;"/>').html(text);
-      div.append(table);
-      return div.dblclick(function() {
-        return wiki.textEditor(div, item);
-      });
+      return calculate(item);
     }
   };
 

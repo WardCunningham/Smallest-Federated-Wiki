@@ -24,7 +24,11 @@ class Controller < Sinatra::Base
   set :views , File.join(SINATRA_ROOT, "views")
   set :haml, :format => :html5
   set :versions, `git log -10 --oneline` || "no git log"
-  enable :sessions
+  if ENV.include?('SESSION_STORE')
+    use ENV['SESSION_STORE'].split('::').inject(Object) { |mod, const| mod.const_get(const) }
+  else
+    enable :sessions
+  end
   helpers ServerHelpers
 
   Store.set ENV['STORE_TYPE'], APP_ROOT
@@ -144,6 +148,20 @@ class Controller < Sinatra::Base
     catalog + File.read(File.join(APP_ROOT, "client/plugins/meta-factory.js"))
   end
 
+  get %r{^/data/([\w -]+)$} do |search|
+    content_type 'application/json'
+    cross_origin
+    pages = Store.annotated_pages farm_page.directory
+    candidates = pages.select do |page|
+      datasets = page['story'].select do |item|
+        item['type']=='data' && item['text'] && item['text'].index(search)
+      end
+      datasets.length > 0
+    end
+    halt 404 unless candidates.length > 0
+    JSON.pretty_generate(candidates.first)
+  end
+
   get %r{^/([a-z0-9-]+)\.html$} do |name|
     haml :page, :locals => { :page => farm_page.get(name), :page_name => name }
   end
@@ -240,6 +258,7 @@ class Controller < Sinatra::Base
 
     action = JSON.parse params['action']
     if site = action['fork']
+      # this fork is bundled with some other action
       page = JSON.parse RestClient.get("#{site}/#{name}.json")
       ( page['journal'] ||= [] ) << { 'type' => 'fork', 'site' => site }
       farm_page.put name, page
@@ -247,6 +266,8 @@ class Controller < Sinatra::Base
     elsif action['type'] == 'create'
       return halt 409 if farm_page.exists?(name)
       page = action['item'].clone
+    elsif action['type'] == 'fork'
+      page = JSON.parse RestClient.get("#{action['site']}/#{name}.json")
     else
       page = farm_page.get(name)
     end
@@ -261,7 +282,7 @@ class Controller < Sinatra::Base
       page['story'].delete_at page['story'].index{ |item| item['id'] == action['id'] }
     when 'edit'
       page['story'][page['story'].index{ |item| item['id'] == action['id'] }] = action['item']
-    when 'create'
+    when 'create', 'fork'
       page['story'] ||= []
     else
       puts "unfamiliar action: #{action.inspect}"

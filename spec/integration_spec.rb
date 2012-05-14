@@ -168,7 +168,8 @@ describe "completely empty (but valid json) page" do
   end
 
   it "should have an empty journal" do
-    body.should include("<div class=\"journal\"></div>")
+    body.should include("<div class=\"journal\">")
+    page.all(".journal .action").length.should == 0
   end
 end
 
@@ -186,7 +187,7 @@ describe "moving paragraphs" do
   end
 
   def journal_items
-    page.all(".journal a")
+    page.all(".journal .action")
   end
 
   before do
@@ -202,7 +203,7 @@ describe "moving paragraphs" do
     original_journal_length = journal_items.length
     move_paragraph
     journal_items.length.should == original_journal_length + 1
-    journal_items.last.text.should == "m"
+    journal_items.last[:class].should == "action move"
   end
 
 

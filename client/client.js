@@ -421,11 +421,11 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       return string.replace(/\[\[([^\]]+)\]\]/gi, renderInternalLink).replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" target=\"_blank\" href=\"$1\">$2</a>");
     };
     wiki.symbols = {
-      create: '⌚',
-      add: '✚',
+      create: '☼',
+      add: '+',
       edit: '✎',
-      fork: '⚐',
-      move: '➜',
+      fork: '⚑',
+      move: '↕',
       remove: '✕'
     };
     addToJournal = wiki.addToJournal = function(journalElement, action) {
@@ -439,7 +439,7 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       if (action.date != null) {
         actionTitle += ": " + (util.formatDate(action.date));
       }
-      actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(wiki.symbols[action.type]).attr('title', actionTitle).attr('data-id', action.id || "0");
+      actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(wiki.symbols[action.type]).attr('title', actionTitle).attr('data-id', action.id || "0").data('action', action);
       controls = journalElement.children('.control-buttons');
       if (controls.length > 0) {
         actionElement.insertBefore(controls);
@@ -585,7 +585,11 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       return finishClick(e, name);
     }).delegate('.action', 'click', function(e) {
       var data, element, journalEntryIndex, name, page, revUrl, titleUrl;
+      e.preventDefault();
       element = $(e.target);
+      if (e.shiftKey) {
+        return wiki.dialog("" + (element.data('action').type) + " action", $('<pre/>').text(JSON.stringify(element.data('action'), null, 2)));
+      }
       if (element.is('.fork')) {
         name = $(e.target).data('slug');
         pageHandler.context = [$(e.target).data('site')];
@@ -601,6 +605,14 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
         createPage(revUrl).appendTo($('.main')).each(refresh);
         return active.set($('.page').last());
       }
+    }).delegate('.fork-page', 'click', function(e) {
+      var pageElement, remoteSite;
+      pageElement = $(e.target).parents('.page');
+      if ((remoteSite = pageElement.data('site')) == null) return;
+      return pageHandler.put(pageElement, {
+        type: 'fork',
+        site: remoteSite
+      });
     }).delegate('.action', 'hover', function() {
       var id;
       id = $(this).attr('data-id');
@@ -699,11 +711,8 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
   module.exports = pageHandler = {};
 
   pageHandler.get = function(pageElement, callback, localContext) {
-    var i, json, pageAndRevision, pageAndRevisionStr, resource, rev, site, slug;
-    pageAndRevisionStr = pageElement.attr('id');
-    pageAndRevision = pageAndRevisionStr.split('_rev');
-    slug = pageAndRevision[0];
-    rev = pageAndRevision[1];
+    var i, json, resource, rev, site, slug, _ref;
+    _ref = pageElement.attr('id').split('_rev'), slug = _ref[0], rev = _ref[1];
     site = pageElement.data('site');
     if (pageElement.attr('data-server-generated') === 'true') {
       return callback(null);
@@ -718,11 +727,11 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
     } else {
       if (localContext == null) {
         localContext = (function() {
-          var _i, _len, _ref, _results;
-          _ref = pageHandler.context;
+          var _i, _len, _ref2, _results;
+          _ref2 = pageHandler.context;
           _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            i = _ref[_i];
+          for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+            i = _ref2[_i];
             _results.push(i);
           }
           return _results;
@@ -772,7 +781,7 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
     if (action.type === 'create') page = action.item;
     page || (page = pageElement.data("data"));
     if (page.journal == null) page.journal = [];
-    page.journal.concat(action);
+    page.journal = page.journal.concat(action);
     page.story = $(pageElement).find(".item").map(function() {
       return $(this).data("item");
     }).get();
@@ -799,7 +808,7 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
   pageHandler.put = function(pageElement, action) {
     var site;
     action.date = (new Date()).getTime();
-    if ((site = pageElement.data('site')) != null) {
+    if (action.type !== 'fork' && ((site = pageElement.data('site')) != null)) {
       action.fork = site;
       pageElement.find('h1 img').attr('src', '/favicon.png');
       pageElement.find('h1 a').attr('href', '/');
