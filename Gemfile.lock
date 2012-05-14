@@ -44,6 +44,7 @@ GEM
       rbx-require-relative (> 0.0.4)
     linecache19 (0.5.12)
       ruby_core_source (>= 0.1.4)
+    memcache-client (1.8.5)
     mime-types (1.18)
     multi_json (1.0.4)
     netrc (0.7.1)
@@ -112,6 +113,7 @@ DEPENDENCIES
   heroku
   json
   launchy
+  memcache-client
   png
   rack-test (= 0.5.6)
   rest-client
