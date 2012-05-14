@@ -14,13 +14,13 @@ When the server is operated as a wiki site farm,
 data and status subdirectories are pushed several levels deeper
 in the file hierarchy under `data/farm/*` where * is replaced
 with the virtual host domain name.
-The existance of the farm subdirectory configures the server
+The existence of the farm subdirectory configures the server
 into farm mode.
 
 Couch Store
 ===========
 
 Pages are stored as Couch documents with fully qualified
-names following the conventions estabilished in the File Store.
+names following the conventions established in the File Store.
 An environment variable indicates that the server should
 be in farm mode.
