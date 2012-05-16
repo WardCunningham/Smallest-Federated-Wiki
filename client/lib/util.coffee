@@ -40,3 +40,15 @@ util.emptyPage = () ->
   story: []
   journal: []
 
+# gets position of caret in a text area
+util.getCaretPosition = (div) ->
+  caretPos = 0
+  # for IE
+  if document.selection
+    div.focus()
+    sel = document.selection.createRange()
+    sel.moveStart "character", -div.value.length
+    caretPos = sel.text.length
+  # for the rest of the world
+  else caretPos = div.selectionStart  if div.selectionStart or div.selectionStart is "0"
+  caretPos

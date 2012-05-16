@@ -454,11 +454,12 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       wiki.log('useLocalStorage', $(".login").length > 0);
       return $(".login").length > 0;
     };
-    createTextElement = function(pageElement, beforeElement) {
+    createTextElement = function(pageElement, beforeElement, initialText) {
       var item, itemBefore, itemElement, sleep;
       item = {
         type: 'paragraph',
-        id: util.randomBytes(8)
+        id: util.randomBytes(8),
+        text: initialText
       };
       itemElement = $("<div class=\"item paragraph\" data-id=" + item.id + "></div>");
       itemElement.data('item', item).data('pageElement', pageElement);
@@ -498,15 +499,21 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
         }
         return null;
       }).bind('keydown', function(e) {
-        var pageElement;
+        var caret, pageElement, prefix, suffix, text;
         if ((e.altKey || e.ctlKey || e.metaKey) && e.which === 83) {
           textarea.focusout();
           return false;
         }
         if (e.which === $.ui.keyCode.ENTER) {
+          caret = util.getCaretPosition(textarea.get(0));
+          if (!caret) return false;
+          text = textarea.val();
+          prefix = text.substring(0, caret);
+          suffix = text.substring(caret);
+          textarea.val(prefix);
           textarea.focusout();
           pageElement = div.parent().parent();
-          createTextElement(pageElement, div);
+          createTextElement(pageElement, div, suffix);
           return false;
         }
       }).bind('dblclick', function(e) {
@@ -723,6 +730,22 @@ require.define("/lib/util.coffee", function (require, module, exports, __dirname
       story: [],
       journal: []
     };
+  };
+
+  util.getCaretPosition = function(div) {
+    var caretPos, sel;
+    caretPos = 0;
+    if (document.selection) {
+      div.focus();
+      sel = document.selection.createRange();
+      sel.moveStart("character", -div.value.length);
+      caretPos = sel.text.length;
+    } else {
+      if (div.selectionStart || div.selectionStart === "0") {
+        caretPos = div.selectionStart;
+      }
+    }
+    return caretPos;
   };
 
 }).call(this);

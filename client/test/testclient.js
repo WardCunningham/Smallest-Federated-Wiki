@@ -459,6 +459,22 @@ require.define("/lib/util.coffee", function (require, module, exports, __dirname
     };
   };
 
+  util.getCaretPosition = function(div) {
+    var caretPos, sel;
+    caretPos = 0;
+    if (document.selection) {
+      div.focus();
+      sel = document.selection.createRange();
+      sel.moveStart("character", -div.value.length);
+      caretPos = sel.text.length;
+    } else {
+      if (div.selectionStart || div.selectionStart === "0") {
+        caretPos = div.selectionStart;
+      }
+    }
+    return caretPos;
+  };
+
 }).call(this);
 
 });

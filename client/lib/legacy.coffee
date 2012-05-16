@@ -101,10 +101,11 @@ $ ->
     wiki.log 'useLocalStorage', $(".login").length > 0
     $(".login").length > 0
 
-  createTextElement = (pageElement, beforeElement) ->
+  createTextElement = (pageElement, beforeElement, initialText) ->
     item =
       type: 'paragraph'
       id: util.randomBytes(8)
+      text: initialText
     itemElement = $ """
       <div class="item paragraph" data-id=#{item.id}></div>
                     """
@@ -135,9 +136,15 @@ $ ->
           return false
         #NH
         if e.which == $.ui.keyCode.ENTER
+          caret = util.getCaretPosition textarea.get(0)
+          return false unless caret
+          text = textarea.val()
+          prefix = text.substring(0,caret)
+          suffix = text.substring(caret)
+          textarea.val(prefix)
           textarea.focusout()
           pageElement = div.parent().parent()
-          createTextElement(pageElement, div)
+          createTextElement(pageElement, div, suffix)
           return false
       .bind 'dblclick', (e) ->
         return false; #don't pass dblclick on to the div, as it'll reload
