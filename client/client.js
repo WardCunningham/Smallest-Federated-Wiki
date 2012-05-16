@@ -380,27 +380,6 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       window.dialog.dialog("option", "title", resolveLinks(title));
       return window.dialog.dialog('open');
     };
-    createFactory = function(pageElement) {
-      var before, beforeElement, item, itemElement;
-      item = {
-        type: "factory",
-        id: util.randomBytes(8)
-      };
-      itemElement = $("<div />", {
-        "class": "item factory"
-      }).data('item', item).attr('data-id', item.id);
-      itemElement.data('pageElement', pageElement);
-      pageElement.find(".story").append(itemElement);
-      plugin["do"](itemElement, item);
-      beforeElement = itemElement.prev('.item');
-      before = wiki.getItem(beforeElement);
-      return pageHandler.put(pageElement, {
-        item: item,
-        id: item.id,
-        type: "add",
-        after: before != null ? before.id : void 0
-      });
-    };
     wiki.log = function() {
       var things;
       things = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
@@ -475,6 +454,26 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       wiki.log('useLocalStorage', $(".login").length > 0);
       return $(".login").length > 0;
     };
+    createFactory = function(pageElement, beforeElement) {
+      var before, item, itemElement;
+      item = {
+        type: "factory",
+        id: util.randomBytes(8)
+      };
+      itemElement = $("<div />", {
+        "class": "item factory"
+      }).data('item', item).attr('data-id', item.id);
+      itemElement.data('pageElement', pageElement);
+      beforeElement.after(itemElement);
+      plugin["do"](itemElement, item);
+      before = wiki.getItem(beforeElement);
+      return pageHandler.put(pageElement, {
+        item: item,
+        id: item.id,
+        type: "add",
+        after: before != null ? before.id : void 0
+      });
+    };
     textEditor = wiki.textEditor = function(div, item) {
       var original, textarea, _ref;
       textarea = $("<textarea>" + (original = (_ref = item.text) != null ? _ref : '') + "</textarea>").focusout(function() {
@@ -503,7 +502,7 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
         if (e.which === $.ui.keyCode.ENTER) {
           textarea.focusout();
           pageElement = div.parent().parent();
-          createFactory(pageElement);
+          createFactory(pageElement, div);
           return false;
         }
       }).bind('dblclick', function(e) {
