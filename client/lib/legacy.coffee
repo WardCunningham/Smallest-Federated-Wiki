@@ -101,14 +101,10 @@ $ ->
     wiki.log 'useLocalStorage', $(".login").length > 0
     $(".login").length > 0
 
-
-  #NH There should be some better module to put this where it can also be
-  #   harnassed by refresh.coffee
   createTextElement = (pageElement, beforeElement) ->
     item =
       type: 'paragraph'
       id: util.randomBytes(8)
-    item.text = '' if item.text == null
     itemElement = $ """
       <div class="item paragraph" data-id=#{item.id}></div>
                     """
@@ -118,8 +114,9 @@ $ ->
     beforeElement.after itemElement
     plugin.do itemElement, item
     itemBefore = wiki.getItem beforeElement
-    pageHandler.put pageElement, {item: item, id: item.id, type: 'add', after: itemBefore?.id} 
     wiki.textEditor itemElement, item
+    sleep = (time, code) -> setTimeout code, time
+    sleep 500, -> pageHandler.put pageElement, {item: item, id: item.id, type: 'add', after: itemBefore?.id}
 
   textEditor = wiki.textEditor = (div, item) ->
     textarea = $("<textarea>#{original = item.text ? ''}</textarea>")

@@ -455,24 +455,28 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       return $(".login").length > 0;
     };
     createTextElement = function(pageElement, beforeElement) {
-      var item, itemBefore, itemElement;
+      var item, itemBefore, itemElement, sleep;
       item = {
         type: 'paragraph',
         id: util.randomBytes(8)
       };
-      if (item.text === null) item.text = '';
       itemElement = $("<div class=\"item paragraph\" data-id=" + item.id + "></div>");
       itemElement.data('item', item).data('pageElement', pageElement);
       beforeElement.after(itemElement);
       plugin["do"](itemElement, item);
       itemBefore = wiki.getItem(beforeElement);
-      pageHandler.put(pageElement, {
-        item: item,
-        id: item.id,
-        type: 'add',
-        after: itemBefore != null ? itemBefore.id : void 0
+      wiki.textEditor(itemElement, item);
+      sleep = function(time, code) {
+        return setTimeout(code, time);
+      };
+      return sleep(500, function() {
+        return pageHandler.put(pageElement, {
+          item: item,
+          id: item.id,
+          type: 'add',
+          after: itemBefore != null ? itemBefore.id : void 0
+        });
       });
-      return wiki.textEditor(itemElement, item);
     };
     textEditor = wiki.textEditor = function(div, item) {
       var original, textarea, _ref;
