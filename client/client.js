@@ -368,7 +368,7 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
   };
 
   $(function() {
-    var LEFTARROW, RIGHTARROW, addToJournal, createPage, doInternalLink, finishClick, getItem, resolveFrom, resolveLinks, textEditor, useLocalStorage;
+    var LEFTARROW, RIGHTARROW, addToJournal, createPage, createTextElement, doInternalLink, finishClick, getItem, resolveFrom, resolveLinks, textEditor, useLocalStorage;
     window.dialog = $('<div></div>').html('This dialog will show every time!').dialog({
       autoOpen: false,
       title: 'Basic Dialog',
@@ -454,6 +454,30 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       wiki.log('useLocalStorage', $(".login").length > 0);
       return $(".login").length > 0;
     };
+    createTextElement = function(pageElement, beforeElement) {
+      var item, itemBefore, itemElement, sleep;
+      item = {
+        type: 'paragraph',
+        id: util.randomBytes(8)
+      };
+      itemElement = $("<div class=\"item paragraph\" data-id=" + item.id + "></div>");
+      itemElement.data('item', item).data('pageElement', pageElement);
+      beforeElement.after(itemElement);
+      plugin["do"](itemElement, item);
+      itemBefore = wiki.getItem(beforeElement);
+      wiki.textEditor(itemElement, item);
+      sleep = function(time, code) {
+        return setTimeout(code, time);
+      };
+      return sleep(500, function() {
+        return pageHandler.put(pageElement, {
+          item: item,
+          id: item.id,
+          type: 'add',
+          after: itemBefore != null ? itemBefore.id : void 0
+        });
+      });
+    };
     textEditor = wiki.textEditor = function(div, item) {
       var original, textarea, _ref;
       textarea = $("<textarea>" + (original = (_ref = item.text) != null ? _ref : '') + "</textarea>").focusout(function() {
@@ -474,8 +498,15 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
         }
         return null;
       }).bind('keydown', function(e) {
+        var pageElement;
         if ((e.altKey || e.ctlKey || e.metaKey) && e.which === 83) {
           textarea.focusout();
+          return false;
+        }
+        if (e.which === $.ui.keyCode.ENTER) {
+          textarea.focusout();
+          pageElement = div.parent().parent();
+          createTextElement(pageElement, div);
           return false;
         }
       }).bind('dblclick', function(e) {
@@ -1204,7 +1235,7 @@ require.define("/lib/plugin.coffee", function (require, module, exports, __dirna
 
 require.define("/lib/refresh.coffee", function (require, module, exports, __dirname, __filename) {
 (function() {
-  var emitHeader, handleDragging, initAddButton, initDragging, pageHandler, plugin, refresh, state, util;
+  var createFactory, emitHeader, handleDragging, initAddButton, initDragging, pageHandler, plugin, refresh, state, util;
 
   util = require('./util.coffee');
 
@@ -1255,26 +1286,30 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
 
   initAddButton = function(pageElement) {
     return pageElement.find(".add-factory").live("click", function(evt) {
-      var before, beforeElement, item, itemElement;
       evt.preventDefault();
-      item = {
-        type: "factory",
-        id: util.randomBytes(8)
-      };
-      itemElement = $("<div />", {
-        "class": "item factory"
-      }).data('item', item).attr('data-id', item.id);
-      itemElement.data('pageElement', pageElement);
-      pageElement.find(".story").append(itemElement);
-      plugin["do"](itemElement, item);
-      beforeElement = itemElement.prev('.item');
-      before = wiki.getItem(beforeElement);
-      return pageHandler.put(pageElement, {
-        item: item,
-        id: item.id,
-        type: "add",
-        after: before != null ? before.id : void 0
-      });
+      return createFactory(pageElement);
+    });
+  };
+
+  createFactory = function(pageElement) {
+    var before, beforeElement, item, itemElement;
+    item = {
+      type: "factory",
+      id: util.randomBytes(8)
+    };
+    itemElement = $("<div />", {
+      "class": "item factory"
+    }).data('item', item).attr('data-id', item.id);
+    itemElement.data('pageElement', pageElement);
+    pageElement.find(".story").append(itemElement);
+    plugin["do"](itemElement, item);
+    beforeElement = itemElement.prev('.item');
+    before = wiki.getItem(beforeElement);
+    return pageHandler.put(pageElement, {
+      item: item,
+      id: item.id,
+      type: "add",
+      after: before != null ? before.id : void 0
     });
   };
 

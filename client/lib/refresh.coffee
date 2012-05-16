@@ -38,16 +38,19 @@ initDragging = (pageElement) ->
 initAddButton = (pageElement) ->
   pageElement.find(".add-factory").live "click", (evt) ->
     evt.preventDefault()
-    item =
-      type: "factory"
-      id: util.randomBytes(8)
-    itemElement = $("<div />", class: "item factory").data('item',item).attr('data-id', item.id)
-    itemElement.data 'pageElement', pageElement
-    pageElement.find(".story").append(itemElement)
-    plugin.do itemElement, item
-    beforeElement = itemElement.prev('.item')
-    before = wiki.getItem(beforeElement)
-    pageHandler.put pageElement, {item: item, id: item.id, type: "add", after: before?.id}
+    createFactory(pageElement)
+
+createFactory = (pageElement) ->
+  item =
+    type: "factory"
+    id: util.randomBytes(8)
+  itemElement = $("<div />", class: "item factory").data('item',item).attr('data-id', item.id)
+  itemElement.data 'pageElement', pageElement
+  pageElement.find(".story").append(itemElement)
+  plugin.do itemElement, item
+  beforeElement = itemElement.prev('.item')
+  before = wiki.getItem(beforeElement)
+  pageHandler.put pageElement, {item: item, id: item.id, type: "add", after: before?.id} 
 
 emitHeader = (pageElement, page) ->
   site = $(pageElement).data('site')

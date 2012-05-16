@@ -1027,7 +1027,7 @@ require.define("/test/refresh.coffee", function (require, module, exports, __dir
 
 require.define("/lib/refresh.coffee", function (require, module, exports, __dirname, __filename) {
 (function() {
-  var emitHeader, handleDragging, initAddButton, initDragging, pageHandler, plugin, refresh, state, util;
+  var createFactory, emitHeader, handleDragging, initAddButton, initDragging, pageHandler, plugin, refresh, state, util;
 
   util = require('./util.coffee');
 
@@ -1078,26 +1078,30 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
 
   initAddButton = function(pageElement) {
     return pageElement.find(".add-factory").live("click", function(evt) {
-      var before, beforeElement, item, itemElement;
       evt.preventDefault();
-      item = {
-        type: "factory",
-        id: util.randomBytes(8)
-      };
-      itemElement = $("<div />", {
-        "class": "item factory"
-      }).data('item', item).attr('data-id', item.id);
-      itemElement.data('pageElement', pageElement);
-      pageElement.find(".story").append(itemElement);
-      plugin["do"](itemElement, item);
-      beforeElement = itemElement.prev('.item');
-      before = wiki.getItem(beforeElement);
-      return pageHandler.put(pageElement, {
-        item: item,
-        id: item.id,
-        type: "add",
-        after: before != null ? before.id : void 0
-      });
+      return createFactory(pageElement);
+    });
+  };
+
+  createFactory = function(pageElement) {
+    var before, beforeElement, item, itemElement;
+    item = {
+      type: "factory",
+      id: util.randomBytes(8)
+    };
+    itemElement = $("<div />", {
+      "class": "item factory"
+    }).data('item', item).attr('data-id', item.id);
+    itemElement.data('pageElement', pageElement);
+    pageElement.find(".story").append(itemElement);
+    plugin["do"](itemElement, item);
+    beforeElement = itemElement.prev('.item');
+    before = wiki.getItem(beforeElement);
+    return pageHandler.put(pageElement, {
+      item: item,
+      id: item.id,
+      type: "add",
+      after: before != null ? before.id : void 0
     });
   };
 

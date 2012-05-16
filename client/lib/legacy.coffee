@@ -101,6 +101,23 @@ $ ->
     wiki.log 'useLocalStorage', $(".login").length > 0
     $(".login").length > 0
 
+  createTextElement = (pageElement, beforeElement) ->
+    item =
+      type: 'paragraph'
+      id: util.randomBytes(8)
+    itemElement = $ """
+      <div class="item paragraph" data-id=#{item.id}></div>
+                    """
+    itemElement
+      .data('item', item)
+      .data('pageElement', pageElement)
+    beforeElement.after itemElement
+    plugin.do itemElement, item
+    itemBefore = wiki.getItem beforeElement
+    wiki.textEditor itemElement, item
+    sleep = (time, code) -> setTimeout code, time
+    sleep 500, -> pageHandler.put pageElement, {item: item, id: item.id, type: 'add', after: itemBefore?.id}
+
   textEditor = wiki.textEditor = (div, item) ->
     textarea = $("<textarea>#{original = item.text ? ''}</textarea>")
       .focusout ->
@@ -115,6 +132,12 @@ $ ->
       .bind 'keydown', (e) ->
         if (e.altKey || e.ctlKey || e.metaKey) and e.which == 83 #alt-s
           textarea.focusout()
+          return false
+        #NH
+        if e.which == $.ui.keyCode.ENTER
+          textarea.focusout()
+          pageElement = div.parent().parent()
+          createTextElement(pageElement, div)
           return false
       .bind 'dblclick', (e) ->
         return false; #don't pass dblclick on to the div, as it'll reload
