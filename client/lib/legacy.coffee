@@ -104,17 +104,22 @@ $ ->
 
   #NH There should be some better module to put this where it can also be
   #   harnassed by refresh.coffee
-  createFactory = (pageElement, beforeElement) ->
+  createTextElement = (pageElement, beforeElement) ->
     item =
-      type: "factory"
+      type: 'paragraph'
       id: util.randomBytes(8)
-    itemElement = $("<div />", class: "item factory").data('item',item).attr('data-id', item.id)
-    itemElement.data 'pageElement', pageElement
+    item.text = '' if item.text == null
+    itemElement = $ """
+      <div class="item paragraph" data-id=#{item.id}></div>
+                    """
+    itemElement
+      .data('item', item)
+      .data('pageElement', pageElement)
     beforeElement.after itemElement
     plugin.do itemElement, item
-    before = wiki.getItem(beforeElement)
-    pageHandler.put pageElement, {item: item, id: item.id, type: "add", after: before?.id} 
-
+    itemBefore = wiki.getItem beforeElement
+    pageHandler.put pageElement, {item: item, id: item.id, type: 'add', after: itemBefore?.id} 
+    wiki.textEditor itemElement, item
 
   textEditor = wiki.textEditor = (div, item) ->
     textarea = $("<textarea>#{original = item.text ? ''}</textarea>")
@@ -135,7 +140,7 @@ $ ->
         if e.which == $.ui.keyCode.ENTER
           textarea.focusout()
           pageElement = div.parent().parent()
-          createFactory(pageElement, div)
+          createTextElement(pageElement, div)
           return false
       .bind 'dblclick', (e) ->
         return false; #don't pass dblclick on to the div, as it'll reload

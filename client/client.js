@@ -368,7 +368,7 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
   };
 
   $(function() {
-    var LEFTARROW, RIGHTARROW, addToJournal, createFactory, createPage, doInternalLink, finishClick, getItem, resolveFrom, resolveLinks, textEditor, useLocalStorage;
+    var LEFTARROW, RIGHTARROW, addToJournal, createPage, createTextElement, doInternalLink, finishClick, getItem, resolveFrom, resolveLinks, textEditor, useLocalStorage;
     window.dialog = $('<div></div>').html('This dialog will show every time!').dialog({
       autoOpen: false,
       title: 'Basic Dialog',
@@ -454,25 +454,25 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       wiki.log('useLocalStorage', $(".login").length > 0);
       return $(".login").length > 0;
     };
-    createFactory = function(pageElement, beforeElement) {
-      var before, item, itemElement;
+    createTextElement = function(pageElement, beforeElement) {
+      var item, itemBefore, itemElement;
       item = {
-        type: "factory",
+        type: 'paragraph',
         id: util.randomBytes(8)
       };
-      itemElement = $("<div />", {
-        "class": "item factory"
-      }).data('item', item).attr('data-id', item.id);
-      itemElement.data('pageElement', pageElement);
+      if (item.text === null) item.text = '';
+      itemElement = $("<div class=\"item paragraph\" data-id=" + item.id + "></div>");
+      itemElement.data('item', item).data('pageElement', pageElement);
       beforeElement.after(itemElement);
       plugin["do"](itemElement, item);
-      before = wiki.getItem(beforeElement);
-      return pageHandler.put(pageElement, {
+      itemBefore = wiki.getItem(beforeElement);
+      pageHandler.put(pageElement, {
         item: item,
         id: item.id,
-        type: "add",
-        after: before != null ? before.id : void 0
+        type: 'add',
+        after: itemBefore != null ? itemBefore.id : void 0
       });
+      return wiki.textEditor(itemElement, item);
     };
     textEditor = wiki.textEditor = function(div, item) {
       var original, textarea, _ref;
@@ -502,7 +502,7 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
         if (e.which === $.ui.keyCode.ENTER) {
           textarea.focusout();
           pageElement = div.parent().parent();
-          createFactory(pageElement, div);
+          createTextElement(pageElement, div);
           return false;
         }
       }).bind('dblclick', function(e) {
