@@ -38,6 +38,20 @@ $ ->
     window.dialog.dialog 'open'
 
 # FUNCTIONS used by plugins and elsewhere
+  
+  #NH This is already defined in refresh.coffee, but that module is only a function,
+  #   not an object. There should be some better place to put this to be used by both.
+  createFactory = (pageElement) ->
+    item =
+      type: "factory"
+      id: util.randomBytes(8)
+    itemElement = $("<div />", class: "item factory").data('item',item).attr('data-id', item.id)
+    itemElement.data 'pageElement', pageElement
+    pageElement.find(".story").append(itemElement)
+    plugin.do itemElement, item
+    beforeElement = itemElement.prev('.item')
+    before = wiki.getItem(beforeElement)
+    pageHandler.put pageElement, {item: item, id: item.id, type: "add", after: before?.id} 
 
   wiki.log = (things...) ->
     console.log things if console?.log?
@@ -116,6 +130,14 @@ $ ->
         if (e.altKey || e.ctlKey || e.metaKey) and e.which == 83 #alt-s
           textarea.focusout()
           return false
+        if e.which == $.ui.keyCode.ENTER
+
+          #NH 
+          textarea.focusout()
+          pageElement = div.parent().parent()
+          createFactory(pageElement)
+          return false
+
       .bind 'dblclick', (e) ->
         return false; #don't pass dblclick on to the div, as it'll reload
 
