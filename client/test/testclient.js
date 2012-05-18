@@ -733,22 +733,23 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
         return callback(page);
       },
       error: function(xhr, type, msg) {
-        var page, title;
+        var title;
         if (localContext.length > 0) {
           return pageHandler.get(pageElement, callback, localContext);
         } else {
           site = null;
           title = $("a[href=\"/" + slug + ".html\"]").html();
           title || (title = slug);
-          page = {
-            title: title
-          };
           pageHandler.put($(pageElement), {
             type: 'create',
             id: util.randomBytes(8),
-            item: page
+            item: {
+              title: title
+            }
           });
-          return callback(page);
+          return callback({
+            title: title
+          });
         }
       }
     });
@@ -760,7 +761,11 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
     var page;
     page = localStorage[pageElement.attr("id")];
     if (page) page = JSON.parse(page);
-    if (action.type === 'create') page = action.item;
+    if (action.type === 'create') {
+      page = {
+        title: action.item.title
+      };
+    }
     page || (page = pageElement.data("data"));
     if (page.journal == null) page.journal = [];
     page.journal = page.journal.concat(action);

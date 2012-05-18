@@ -40,16 +40,15 @@ pageHandler.get = (pageElement, callback, localContext) ->
         site = null
         title = $("""a[href="/#{slug}.html"]""").html()
         title or= slug
-        page = {title}
-        pageHandler.put $(pageElement), {type: 'create', id: util.randomBytes(8), item: page}
-        callback page
+        pageHandler.put $(pageElement), {type: 'create', id: util.randomBytes(8), item: {title}}
+        callback {title}
 
 pageHandler.context = []
 
 pushToLocal = (pageElement, action) ->
   page = localStorage[pageElement.attr("id")]
   page = JSON.parse(page) if page
-  page = action.item if action.type == 'create'
+  page = {title: action.item.title} if action.type == 'create'
   page ||= pageElement.data("data")
   page.journal = [] unless page.journal?
   page.journal = page.journal.concat(action)
