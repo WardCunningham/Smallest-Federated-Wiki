@@ -524,7 +524,7 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
     };
     getItem = wiki.getItem = function(element) {
       if ($(element).length > 0) {
-        return $(element).data("item") || JSON.parse($(element).data('staticItem'));
+        return $(element).data("item") || $(element).data('staticItem');
       }
     };
     wiki.getData = function(vis) {
@@ -1195,10 +1195,10 @@ require.define("/lib/plugin.coffee", function (require, module, exports, __dirna
       div.data('pageElement', div.parents(".page"));
       div.data('item', item);
       return plugin.get(item.type, function(script) {
-        if (script == null) {
-          throw TypeError("Can't find plugin for '" + item.type + "'");
-        }
         try {
+          if (script == null) {
+            throw TypeError("Can't find plugin for '" + item.type + "'");
+          }
           script.emit(div, item);
           return script.bind(div, item);
         } catch (err) {

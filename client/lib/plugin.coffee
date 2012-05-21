@@ -33,8 +33,8 @@ plugin.do = wiki.doPlugin = (div, item) ->
     div.data 'pageElement', div.parents(".page")
     div.data 'item', item
     plugin.get item.type, (script) ->
-      throw TypeError("Can't find plugin for '#{item.type}'") unless script?
       try
+        throw TypeError("Can't find plugin for '#{item.type}'") unless script?
         script.emit div, item
         script.bind div, item
       catch err

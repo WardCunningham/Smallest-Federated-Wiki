@@ -1251,10 +1251,10 @@ require.define("/lib/plugin.coffee", function (require, module, exports, __dirna
       div.data('pageElement', div.parents(".page"));
       div.data('item', item);
       return plugin.get(item.type, function(script) {
-        if (script == null) {
-          throw TypeError("Can't find plugin for '" + item.type + "'");
-        }
         try {
+          if (script == null) {
+            throw TypeError("Can't find plugin for '" + item.type + "'");
+          }
           script.emit(div, item);
           return script.bind(div, item);
         } catch (err) {

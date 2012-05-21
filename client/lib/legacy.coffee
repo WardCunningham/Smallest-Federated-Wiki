@@ -153,7 +153,7 @@ $ ->
     textarea.focus()
 
   getItem = wiki.getItem = (element) ->
-    $(element).data("item") or JSON.parse($(element).data('staticItem')) if $(element).length > 0
+    $(element).data("item") or $(element).data('staticItem') if $(element).length > 0
 
   wiki.getData = (vis) ->
     if vis
