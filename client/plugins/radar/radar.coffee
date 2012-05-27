@@ -86,7 +86,8 @@ window.plugins.radar =
         comments = []
         for m in [0..data.length-1]
           for d in [0..dimension-1]
-             if (c = data[m][keys[d]].comment)?
+            if (o = data[m][keys[d]])?
+             if (o.comment)?
               comments.push
                 material: m, dimension: d, comment: c
 
@@ -171,7 +172,7 @@ window.plugins.radar =
           .style("fill-opacity", .1)
           .style("fill", colorSelector)
           .attr("d", d3.svg.line.radial()
-            .radius((d) -> radius d )
+            .radius((d) -> radius(if d? and !isNaN(d) then d else 0))
             .angle((d, i) -> angle i ))
           .append("svg:title").text((d,i) -> data[i]["Material name"])
 
