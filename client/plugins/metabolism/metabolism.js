@@ -11,6 +11,9 @@
       div.get(0).radarData = function() {
         return output;
       };
+      div.mousemove(function(e) {
+        return $(div).triggerHandler('thumb', $(e.target).text());
+      });
       attach = function(search, callback) {
         var elem, new_data, source, _i, _len, _ref;
         if (callback == null) callback = function() {};
