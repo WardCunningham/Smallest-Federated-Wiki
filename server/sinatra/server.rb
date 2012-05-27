@@ -139,13 +139,13 @@ class Controller < Sinatra::Base
   end
 
   get '/plugins/factory.js' do
-    # soon we'll construct this table from metadata
-    catalog = 'window.catalog = {
-      "ByteBeat": {"menu": "8-bit Music by Formula"},
-      "MathJax": {"menu": "TeX Formatted Equations"},
-      "Calculator": {"menu": "Running Sums for Expenses"}
-    };'
-    catalog + File.read(File.join(APP_ROOT, "client/plugins/meta-factory.js"))
+    catalog = Dir.glob(File.join(APP_ROOT, "client/plugins/*/factory.json")).collect do |info|
+      begin
+        JSON.parse(File.read(info))
+      rescue
+      end
+    end.reject {|info| info.nil?}
+    "window.catalog = #{JSON.generate(catalog)};" + File.read(File.join(APP_ROOT, "client/plugins/meta-factory.js"))
   end
 
   get %r{^/data/([\w -]+)$} do |search|

@@ -3,8 +3,12 @@ window.plugins.factory =
     div.append '<p>Double-Click to Edit<br>Drop Text or Image to Insert</p>'
     if window.catalog?
       menu = div.find('p').append "<br>Or Choose a Plugin"
-      for name, info of window.catalog
-        menu.append "<li><a href='#' title='#{info.menu}'>#{name}</a></li>"
+      if Array.isArray window.catalog
+        for info in window.catalog
+          menu.append "<li><a href='#' title='#{info.title}'>#{info.name}</a></li>"
+      else
+        for name, info of window.catalog # deprecated
+          menu.append "<li><a href='#' title='#{info.menu}'>#{name}</a></li>"
   bind: (div, item) ->
 
     syncEditAction = () ->

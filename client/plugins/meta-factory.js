@@ -4,17 +4,27 @@
 
   window.plugins.factory = {
     emit: function(div, item) {
-      var info, menu, name, _ref, _results;
+      var info, menu, name, _i, _len, _ref, _ref2, _results, _results2;
       div.append('<p>Double-Click to Edit<br>Drop Text or Image to Insert</p>');
       if (window.catalog != null) {
         menu = div.find('p').append("<br>Or Choose a Plugin");
-        _ref = window.catalog;
-        _results = [];
-        for (name in _ref) {
-          info = _ref[name];
-          _results.push(menu.append("<li><a href='#' title='" + info.menu + "'>" + name + "</a></li>"));
+        if (Array.isArray(window.catalog)) {
+          _ref = window.catalog;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            info = _ref[_i];
+            _results.push(menu.append("<li><a href='#' title='" + info.title + "'>" + info.name + "</a></li>"));
+          }
+          return _results;
+        } else {
+          _ref2 = window.catalog;
+          _results2 = [];
+          for (name in _ref2) {
+            info = _ref2[name];
+            _results2.push(menu.append("<li><a href='#' title='" + info.menu + "'>" + name + "</a></li>"));
+          }
+          return _results2;
         }
-        return _results;
       }
     },
     bind: function(div, item) {
