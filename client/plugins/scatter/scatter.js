@@ -50,7 +50,7 @@
           }).attr("cy", function(d) {
             return y(ydat(d));
           }).style("fill", function(d, i) {
-            return fill(d.Material.split(/\s+/).reverse()[0]);
+            return fill(d.Cluster || d.Material.split(/\s+/).reverse()[0]);
           }).style("cursor", 'pointer').attr("r", 10).on("click", function(d) {
             $(div).parents('.page').nextAll().remove();
             return wiki.doInternalLink(d.Material);
