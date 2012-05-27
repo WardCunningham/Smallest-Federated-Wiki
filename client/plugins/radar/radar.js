@@ -5,7 +5,7 @@
     emit: function(div, item) {
       return wiki.getScript('/js/d3/d3.js', function() {
         return wiki.getScript('/js/d3/d3.time.js', function() {
-          var angle, c, candidates, centerXPos, centerYPos, circleAxes, circleConstraint, colorSelector, comments, d, data, dimension, fill, h, heightCircleConstraint, hours, k, keys, lastThumb, limit, lineAxes, m, max, maxVal, minVal, percents, radialTicks, radius, radiusLength, rotate, ruleColor, series, translate, v, value, viz, vizBody, vizPadding, w, who, widthCircleConstraint, _i, _j, _len, _ref, _ref2, _ref3, _results;
+          var angle, candidates, centerXPos, centerYPos, circleAxes, circleConstraint, colorSelector, comments, d, data, dimension, fill, h, heightCircleConstraint, hours, k, keys, lastThumb, limit, lineAxes, m, max, maxVal, minVal, o, percents, radialTicks, radius, radiusLength, rotate, ruleColor, series, translate, v, value, viz, vizBody, vizPadding, w, who, widthCircleConstraint, _i, _j, _len, _ref, _ref2, _ref3, _results;
           div.append(' <style>\n svg { font: 10px sans-serif; }\n</style>');
           limit = {
             "Carcinogenicity": 7,
@@ -127,12 +127,14 @@
           comments = [];
           for (m = 0, _ref = data.length - 1; 0 <= _ref ? m <= _ref : m >= _ref; 0 <= _ref ? m++ : m--) {
             for (d = 0, _ref2 = dimension - 1; 0 <= _ref2 ? d <= _ref2 : d >= _ref2; 0 <= _ref2 ? d++ : d--) {
-              if ((c = data[m][keys[d]].comment) != null) {
-                comments.push({
-                  material: m,
-                  dimension: d,
-                  comment: c
-                });
+              if ((o = data[m][keys[d]]) != null) {
+                if (o.comment != null) {
+                  comments.push({
+                    material: m,
+                    dimension: d,
+                    comment: c
+                  });
+                }
               }
             }
           }
@@ -183,7 +185,7 @@
             return fill(i);
           };
           vizBody.selectAll(".series").data(series).enter().append("svg:g").attr("class", "series").append("svg:path").attr("class", "line").style("fill", colorSelector).style("stroke", colorSelector).style("stroke-width", 3).style("fill-opacity", .1).style("fill", colorSelector).attr("d", d3.svg.line.radial().radius(function(d) {
-            return radius(d);
+            return radius((d != null) && !isNaN(d) ? d : 0);
           }).angle(function(d, i) {
             return angle(i);
           })).append("svg:title").text(function(d, i) {
