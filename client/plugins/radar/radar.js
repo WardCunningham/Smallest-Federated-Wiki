@@ -5,7 +5,7 @@
     emit: function(div, item) {
       return wiki.getScript('/js/d3/d3.js', function() {
         return wiki.getScript('/js/d3/d3.time.js', function() {
-          var angle, c, centerXPos, centerYPos, circleAxes, circleConstraint, colorSelector, comments, d, data, dimension, fill, h, heightCircleConstraint, hours, idx, keys, lastThumb, limit, lineAxes, m, maxVal, minVal, percents, radialTicks, radius, radiusLength, rotate, ruleColor, series, translate, value, viz, vizBody, vizPadding, w, who, widthCircleConstraint, _i, _ref, _ref2, _ref3, _results;
+          var angle, c, candidates, centerXPos, centerYPos, circleAxes, circleConstraint, colorSelector, comments, d, data, dimension, fill, h, heightCircleConstraint, hours, k, keys, lastThumb, limit, lineAxes, m, max, maxVal, minVal, percents, radialTicks, radius, radiusLength, rotate, ruleColor, series, translate, v, value, viz, vizBody, vizPadding, w, who, widthCircleConstraint, _i, _j, _len, _ref, _ref2, _ref3, _results;
           div.append(' <style>\n svg { font: 10px sans-serif; }\n</style>');
           limit = {
             "Carcinogenicity": 7,
@@ -27,6 +27,47 @@
             "Physical Waste Total": 25,
             "Total score": 100
           };
+          candidates = $(".item:lt(" + ($('.item').index(div)) + ")");
+          if ((who = candidates.filter(".radar-source")).size()) {
+            data = (function() {
+              var _i, _len, _results;
+              _results = [];
+              for (_i = 0, _len = who.length; _i < _len; _i++) {
+                d = who[_i];
+                _results.push(d.radarData());
+              }
+              return _results;
+            })();
+            console.log(['got radar-source', who]);
+            console.log(['data', data]);
+            max = -Infinity;
+            keys = {};
+            for (_i = 0, _len = data.length; _i < _len; _i++) {
+              d = data[_i];
+              for (k in d) {
+                v = d[k];
+                keys[k] = 1;
+                max = v > max ? v : max;
+              }
+            }
+            limit = {};
+            for (k in keys) {
+              v = keys[k];
+              limit[k] = max;
+            }
+          } else if ((who = candidates.filter(".data")).size()) {
+            data = (function() {
+              var _j, _len2, _results;
+              _results = [];
+              for (_j = 0, _len2 = who.length; _j < _len2; _j++) {
+                d = who[_j];
+                _results.push($(d).data('item').data[0]);
+              }
+              return _results;
+            })();
+          } else {
+            throw "Can't find suitable data";
+          }
           keys = Object.keys(limit);
           value = function(obj) {
             if (obj == null) return NaN;
@@ -46,26 +87,15 @@
             }
           };
           percents = function(obj) {
-            var k, _i, _len, _ref, _results;
+            var k, _j, _len2, _ref, _results;
             _ref = keys.concat(keys[0]);
             _results = [];
-            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-              k = _ref[_i];
+            for (_j = 0, _len2 = _ref.length; _j < _len2; _j++) {
+              k = _ref[_j];
               _results.push(100.0 * value(obj[k]) / limit[k]);
             }
             return _results;
           };
-          idx = $('.item').index(div);
-          who = $(".item:lt(" + idx + ")").filter('.data');
-          data = (function() {
-            var _i, _len, _results;
-            _results = [];
-            for (_i = 0, _len = who.length; _i < _len; _i++) {
-              d = who[_i];
-              _results.push($(d).data('item').data[0]);
-            }
-            return _results;
-          })();
           w = 400;
           h = 400;
           vizPadding = {
@@ -86,10 +116,10 @@
             return "translate(" + (radius(maxVal * percent / 100)) + ")";
           };
           series = (function() {
-            var _i, _len, _results;
+            var _j, _len2, _results;
             _results = [];
-            for (_i = 0, _len = data.length; _i < _len; _i++) {
-              d = data[_i];
+            for (_j = 0, _len2 = data.length; _j < _len2; _j++) {
+              d = data[_j];
               _results.push(percents(d));
             }
             return _results;
@@ -108,7 +138,7 @@
           }
           hours = (function() {
             _results = [];
-            for (var _i = 0, _ref3 = dimension - 1; 0 <= _ref3 ? _i <= _ref3 : _i >= _ref3; 0 <= _ref3 ? _i++ : _i--){ _results.push(_i); }
+            for (var _j = 0, _ref3 = dimension - 1; 0 <= _ref3 ? _j <= _ref3 : _j >= _ref3; 0 <= _ref3 ? _j++ : _j--){ _results.push(_j); }
             return _results;
           }).apply(this);
           minVal = 0;

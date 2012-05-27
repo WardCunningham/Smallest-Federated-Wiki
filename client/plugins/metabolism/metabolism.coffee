@@ -4,6 +4,10 @@ window.plugins.metabolism =
 
     data = []
     input = {}
+    output = {}
+
+    div.addClass 'radar-source'
+    div.get(0).radarData = -> output
 
     # http://stella.laurenzo.org/2011/03/bulletproof-node-js-coding/
 
@@ -77,7 +81,7 @@ window.plugins.metabolism =
           else if args = line.match /^([0-9.]+) ([\w ]+)$/
             allocated += hours = +args[1]
             result = query line = args[2]
-            value = (input = result[0]).MET * hours
+            output[line] = value = (input = result[0]).MET * hours
             if result.length > 1
               comment = ("#{row.Category} (#{row.MET}): #{row.Activity}" for row in result).join "\n\n"
           else if input[line]?

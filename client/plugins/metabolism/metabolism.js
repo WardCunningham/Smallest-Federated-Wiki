@@ -3,9 +3,14 @@
   window.plugins.metabolism = {
     emit: function(div, item) {},
     bind: function(div, item) {
-      var annotate, attach, avg, calculate, data, input, query, round, sum;
+      var annotate, attach, avg, calculate, data, input, output, query, round, sum;
       data = [];
       input = {};
+      output = {};
+      div.addClass('radar-source');
+      div.get(0).radarData = function() {
+        return output;
+      };
       attach = function(search, callback) {
         var elem, new_data, source, _i, _len, _ref;
         if (callback == null) callback = function() {};
@@ -101,7 +106,7 @@
             } else if (args = line.match(/^([0-9.]+) ([\w ]+)$/)) {
               allocated += hours = +args[1];
               result = query(line = args[2]);
-              value = (input = result[0]).MET * hours;
+              output[line] = value = (input = result[0]).MET * hours;
               if (result.length > 1) {
                 comment = ((function() {
                   var _i, _len, _results;
