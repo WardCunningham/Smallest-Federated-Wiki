@@ -87,7 +87,7 @@ window.plugins.radar =
         for m in [0..data.length-1]
           for d in [0..dimension-1]
             if (o = data[m][keys[d]])?
-             if (o.comment)?
+             if (c = o.comment)?
               comments.push
                 material: m, dimension: d, comment: c
 

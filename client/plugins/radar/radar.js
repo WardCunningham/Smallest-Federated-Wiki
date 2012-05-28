@@ -5,7 +5,7 @@
     emit: function(div, item) {
       return wiki.getScript('/js/d3/d3.js', function() {
         return wiki.getScript('/js/d3/d3.time.js', function() {
-          var angle, candidates, centerXPos, centerYPos, circleAxes, circleConstraint, colorSelector, comments, d, data, dimension, fill, h, heightCircleConstraint, hours, k, keys, lastThumb, limit, lineAxes, m, max, maxVal, minVal, o, percents, radialTicks, radius, radiusLength, rotate, ruleColor, series, translate, v, value, viz, vizBody, vizPadding, w, who, widthCircleConstraint, _i, _j, _len, _ref, _ref2, _ref3, _results;
+          var angle, c, candidates, centerXPos, centerYPos, circleAxes, circleConstraint, colorSelector, comments, d, data, dimension, fill, h, heightCircleConstraint, hours, k, keys, lastThumb, limit, lineAxes, m, max, maxVal, minVal, o, percents, radialTicks, radius, radiusLength, rotate, ruleColor, series, translate, v, value, viz, vizBody, vizPadding, w, who, widthCircleConstraint, _i, _j, _len, _ref, _ref2, _ref3, _results;
           div.append(' <style>\n svg { font: 10px sans-serif; }\n</style>');
           limit = {
             "Carcinogenicity": 7,
@@ -128,7 +128,7 @@
           for (m = 0, _ref = data.length - 1; 0 <= _ref ? m <= _ref : m >= _ref; 0 <= _ref ? m++ : m--) {
             for (d = 0, _ref2 = dimension - 1; 0 <= _ref2 ? d <= _ref2 : d >= _ref2; 0 <= _ref2 ? d++ : d--) {
               if ((o = data[m][keys[d]]) != null) {
-                if (o.comment != null) {
+                if ((c = o.comment) != null) {
                   comments.push({
                     material: m,
                     dimension: d,
