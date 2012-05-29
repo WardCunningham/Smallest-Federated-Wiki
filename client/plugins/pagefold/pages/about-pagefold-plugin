@@ -40,6 +40,11 @@
       "type": "paragraph",
       "id": "ab25337f56944ab0",
       "text": "Consider offering template pages that are already configured with the expected folds."
+    },
+    {
+      "type": "paragraph",
+      "id": "c6a0860d0b328c2b",
+      "text": "See also [https://github.com/WardCunningham/Smallest-Federated-Wiki/tree/master/client/plugins/pagefold Reference Source]."
     }
   ],
   "journal": [
@@ -295,6 +300,81 @@
         "text": "Consider offering template pages that are already configured with the expected folds."
       },
       "date": 1338060432123
+    },
+    {
+      "type": "move",
+      "order": [
+        "b79877e711562b0c",
+        "3ea43cd689ef6ef4",
+        "fe73b11d4ee39fc6",
+        "70a92a0aaace16a3",
+        "db2e2488eef2455f",
+        "02e00a437e6f7923",
+        "017e94403375275d",
+        "ab25337f56944ab0"
+      ],
+      "id": "fe73b11d4ee39fc6",
+      "date": 1338142116315
+    },
+    {
+      "type": "move",
+      "order": [
+        "b79877e711562b0c",
+        "3ea43cd689ef6ef4",
+        "70a92a0aaace16a3",
+        "db2e2488eef2455f",
+        "02e00a437e6f7923",
+        "fe73b11d4ee39fc6",
+        "017e94403375275d",
+        "ab25337f56944ab0"
+      ],
+      "id": "fe73b11d4ee39fc6",
+      "date": 1338142122098
+    },
+    {
+      "type": "move",
+      "order": [
+        "b79877e711562b0c",
+        "3ea43cd689ef6ef4",
+        "70a92a0aaace16a3",
+        "db2e2488eef2455f",
+        "fe73b11d4ee39fc6",
+        "02e00a437e6f7923",
+        "017e94403375275d",
+        "ab25337f56944ab0"
+      ],
+      "id": "fe73b11d4ee39fc6",
+      "date": 1338142730542
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "c6a0860d0b328c2b"
+      },
+      "id": "c6a0860d0b328c2b",
+      "type": "add",
+      "after": "ab25337f56944ab0",
+      "date": 1338145633589
+    },
+    {
+      "type": "edit",
+      "id": "c6a0860d0b328c2b",
+      "item": {
+        "type": "paragraph",
+        "id": "c6a0860d0b328c2b",
+        "text": "See also [[https://github.com/WardCunningham/Smallest-Federated-Wiki/tree/master/client/plugins/pagefold Reference Source]]."
+      },
+      "date": 1338145682407
+    },
+    {
+      "type": "edit",
+      "id": "c6a0860d0b328c2b",
+      "item": {
+        "type": "paragraph",
+        "id": "c6a0860d0b328c2b",
+        "text": "See also [https://github.com/WardCunningham/Smallest-Federated-Wiki/tree/master/client/plugins/pagefold Reference Source]."
+      },
+      "date": 1338145696862
     }
   ]
 }
