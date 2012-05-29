@@ -150,7 +150,7 @@ $ ->
         return false; #don't pass dblclick on to the div, as it'll reload
 
     div.html textarea
-    textarea.focus()
+    util.setCaretPosition textarea.get(0), textarea.val().length
 
   getItem = wiki.getItem = (element) ->
     $(element).data("item") or $(element).data('staticItem') if $(element).length > 0

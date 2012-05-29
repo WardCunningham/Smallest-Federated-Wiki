@@ -52,3 +52,13 @@ util.getCaretPosition = (div) ->
   # for the rest of the world
   else caretPos = div.selectionStart  if div.selectionStart or div.selectionStart is "0"
   caretPos
+
+util.setCaretPosition = (elem, caretPos) ->
+  if elem?
+    if elem.createTextRange # IE
+      range = elem.createTextRange()
+      range.move "character", caretPos
+      range.select()
+    else # rest of the world
+      elem.setSelectionRange caretPos, caretPos
+    elem.focus()
