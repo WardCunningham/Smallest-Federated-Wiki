@@ -42,6 +42,7 @@ util.emptyPage = () ->
 
 # gets position of caret in a text area
 util.getCaretPosition = (div) ->
+  if !div? then return null
   caretPos = 0
   # for IE
   if document.selection
@@ -50,5 +51,15 @@ util.getCaretPosition = (div) ->
     sel.moveStart "character", -div.value.length
     caretPos = sel.text.length
   # for the rest of the world
-  else caretPos = div.selectionStart  if div.selectionStart or div.selectionStart is "0"
+  else caretPos = div.selectionStart  if div.selectionStart?
   caretPos
+
+util.setCaretPosition = (elem, caretPos) ->
+  if elem?
+    if elem.createTextRange # IE
+      range = elem.createTextRange()
+      range.move "character", caretPos
+      range.select()
+    else # rest of the world
+      elem.setSelectionRange caretPos, caretPos
+    elem.focus()

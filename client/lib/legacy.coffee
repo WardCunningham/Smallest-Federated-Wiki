@@ -119,7 +119,7 @@ $ ->
     sleep = (time, code) -> setTimeout code, time
     sleep 500, -> pageHandler.put pageElement, {item: item, id: item.id, type: 'add', after: itemBefore?.id}
 
-  textEditor = wiki.textEditor = (div, item) ->
+  textEditor = wiki.textEditor = (div, item, caretPos) ->
     textarea = $("<textarea>#{original = item.text ? ''}</textarea>")
       .focusout ->
         if item.text = textarea.val()
@@ -134,8 +134,14 @@ $ ->
         if (e.altKey || e.ctlKey || e.metaKey) and e.which == 83 #alt-s
           textarea.focusout()
           return false
-        #NH
-        if e.which == $.ui.keyCode.ENTER
+        if e.which == $.ui.keyCode.BACKSPACE and util.getCaretPosition(textarea.get(0)) == 0
+          prevItem = getItem(div.prev())
+          prevTextLen = prevItem.text.length
+          prevItem.text += textarea.val()
+          textarea.val('') # Need current text area to be empty. Item then gets deleted.
+          # caret needs to be between the old text and the new appended text
+          textEditor div.prev(), prevItem, prevTextLen
+        else if e.which == $.ui.keyCode.ENTER
           caret = util.getCaretPosition textarea.get(0)
           return false unless caret
           text = textarea.val()
@@ -150,7 +156,10 @@ $ ->
         return false; #don't pass dblclick on to the div, as it'll reload
 
     div.html textarea
-    textarea.focus()
+    if caretPos?
+      util.setCaretPosition textarea.get(0), caretPos
+    else
+      util.setCaretPosition textarea.get(0), textarea.val().length
 
   getItem = wiki.getItem = (element) ->
     $(element).data("item") or $(element).data('staticItem') if $(element).length > 0
