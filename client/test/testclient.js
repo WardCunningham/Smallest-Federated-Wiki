@@ -461,6 +461,9 @@ require.define("/lib/util.coffee", function (require, module, exports, __dirname
 
   util.getCaretPosition = function(div) {
     var caretPos, sel;
+    if (!(div != null)) {
+      return null;
+    }
     caretPos = 0;
     if (document.selection) {
       div.focus();
@@ -468,7 +471,7 @@ require.define("/lib/util.coffee", function (require, module, exports, __dirname
       sel.moveStart("character", -div.value.length);
       caretPos = sel.text.length;
     } else {
-      if (div.selectionStart || div.selectionStart === "0") {
+      if (div.selectionStart != null) {
         caretPos = div.selectionStart;
       }
     }

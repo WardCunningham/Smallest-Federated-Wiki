@@ -481,7 +481,7 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
         });
       });
     };
-    textEditor = wiki.textEditor = function(div, item) {
+    textEditor = wiki.textEditor = function(div, item, caretPos) {
       var original, textarea, _ref;
       textarea = $("<textarea>" + (original = (_ref = item.text) != null ? _ref : '') + "</textarea>").focusout(function() {
         if (item.text = textarea.val()) {
@@ -503,12 +503,18 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
         }
         return null;
       }).bind('keydown', function(e) {
-        var caret, pageElement, prefix, suffix, text;
+        var caret, pageElement, prefix, prevItem, prevTextLen, suffix, text;
         if ((e.altKey || e.ctlKey || e.metaKey) && e.which === 83) {
           textarea.focusout();
           return false;
         }
-        if (e.which === $.ui.keyCode.ENTER) {
+        if (e.which === $.ui.keyCode.BACKSPACE && util.getCaretPosition(textarea.get(0)) === 0) {
+          prevItem = getItem(div.prev());
+          prevTextLen = prevItem.text.length;
+          prevItem.text += textarea.val();
+          textarea.val('');
+          return textEditor(div.prev(), prevItem, prevTextLen);
+        } else if (e.which === $.ui.keyCode.ENTER) {
           caret = util.getCaretPosition(textarea.get(0));
           if (!caret) {
             return false;
@@ -526,7 +532,11 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
         return false;
       });
       div.html(textarea);
-      return util.setCaretPosition(textarea.get(0), textarea.val().length);
+      if (caretPos != null) {
+        return util.setCaretPosition(textarea.get(0), caretPos);
+      } else {
+        return util.setCaretPosition(textarea.get(0), textarea.val().length);
+      }
     };
     getItem = wiki.getItem = function(element) {
       if ($(element).length > 0) {
@@ -754,6 +764,9 @@ require.define("/lib/util.coffee", function (require, module, exports, __dirname
 
   util.getCaretPosition = function(div) {
     var caretPos, sel;
+    if (!(div != null)) {
+      return null;
+    }
     caretPos = 0;
     if (document.selection) {
       div.focus();
@@ -761,7 +774,7 @@ require.define("/lib/util.coffee", function (require, module, exports, __dirname
       sel.moveStart("character", -div.value.length);
       caretPos = sel.text.length;
     } else {
-      if (div.selectionStart || div.selectionStart === "0") {
+      if (div.selectionStart != null) {
         caretPos = div.selectionStart;
       }
     }
