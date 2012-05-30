@@ -72,7 +72,11 @@ class Controller < Sinatra::Base
 
   post '/login' do
     root_url = request.url.match(/(^.*\/{2}[^\/]*)/)[1]
-    identifier = params[:identifier]
+    identifier_file = File.join farm_status, "open_id.identifier"
+    identifier = Store.get_text(identifier_file)
+    unless identifier
+      identifier = params[:identifier]
+    end
     open_id_request = openid_consumer.begin(identifier)
 
     redirect open_id_request.redirect_url(root_url, root_url + "/login/openid/complete")
