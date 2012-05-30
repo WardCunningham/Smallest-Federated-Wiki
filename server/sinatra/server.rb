@@ -128,7 +128,7 @@ class Controller < Sinatra::Base
   end
 
   get '/random.png' do
-    unless authenticated? or !claimed?
+    unless authenticated? or (!identified? and !claimed?)
       halt 403
       return
     end
@@ -255,7 +255,7 @@ class Controller < Sinatra::Base
   end
 
   put %r{^/page/([a-z0-9-]+)/action$} do |name|
-    unless authenticated? or !claimed?
+    unless authenticated? or (!identified? and !claimed?)
       halt 403
       return
     end
