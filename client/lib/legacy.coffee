@@ -136,11 +136,13 @@ $ ->
           return false
         if e.which == $.ui.keyCode.BACKSPACE and util.getCaretPosition(textarea.get(0)) == 0
           prevItem = getItem(div.prev())
+          return unless prevItem.text?
           prevTextLen = prevItem.text.length
           prevItem.text += textarea.val()
           textarea.val('') # Need current text area to be empty. Item then gets deleted.
           # caret needs to be between the old text and the new appended text
           textEditor div.prev(), prevItem, prevTextLen
+          return false
         else if e.which == $.ui.keyCode.ENTER
           caret = util.getCaretPosition textarea.get(0)
           return false unless caret
@@ -159,7 +161,7 @@ $ ->
     if caretPos?
       util.setCaretPosition textarea.get(0), caretPos
     else
-      util.setCaretPosition textarea.get(0), textarea.val().length
+      textarea.focus()
 
   getItem = wiki.getItem = (element) ->
     $(element).data("item") or $(element).data('staticItem') if $(element).length > 0
