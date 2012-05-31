@@ -459,32 +459,38 @@ require.define("/lib/util.coffee", function (require, module, exports, __dirname
     };
   };
 
-  util.getCaretPosition = function(div) {
-    var caretPos, sel;
-    if (!(div != null)) return null;
-    caretPos = 0;
+  util.getSelectionPos = function(jQueryElement) {
+    var el, iePos, sel;
+    el = jQueryElement.get(0);
     if (document.selection) {
-      div.focus();
+      el.focus();
       sel = document.selection.createRange();
-      sel.moveStart("character", -div.value.length);
-      caretPos = sel.text.length;
+      sel.moveStart('character', -el.value.length);
+      iePos = sel.text.length;
+      return {
+        start: iePos,
+        end: iePos
+      };
     } else {
-      if (div.selectionStart != null) caretPos = div.selectionStart;
+      return {
+        start: el.selectionStart,
+        end: el.selectionEnd
+      };
     }
-    return caretPos;
   };
 
-  util.setCaretPosition = function(elem, caretPos) {
-    var range;
-    if (elem != null) {
-      if (elem.createTextRange) {
-        range = elem.createTextRange();
+  util.setCaretPosition = function(jQueryElement, caretPos) {
+    var el, range;
+    el = jQueryElement.get(0);
+    if (el != null) {
+      if (el.createTextRange) {
+        range = el.createTextRange();
         range.move("character", caretPos);
         range.select();
       } else {
-        elem.setSelectionRange(caretPos, caretPos);
+        el.setSelectionRange(caretPos, caretPos);
       }
-      return elem.focus();
+      return el.focus();
     }
   };
 
@@ -716,17 +722,19 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
       pageElement.addClass("local");
       return callback(JSON.parse(json));
     }
-    if (!(pageHandler.context.length > 0)) pageHandler.context = ['origin'];
+    if (!(pageHandler.context.length > 0)) {
+      pageHandler.context = ['origin'];
+    }
     if (site) {
       localContext = [];
     } else {
       if (localContext == null) {
         localContext = (function() {
-          var _i, _len, _ref2, _results;
-          _ref2 = pageHandler.context;
+          var _i, _len, _ref1, _results;
+          _ref1 = pageHandler.context;
           _results = [];
-          for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-            i = _ref2[_i];
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            i = _ref1[_i];
             _results.push(i);
           }
           return _results;
@@ -742,7 +750,9 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
       success: function(page) {
         wiki.log('fetch success', page, site || 'origin');
         $(pageElement).data('site', site);
-        if (rev) page = revision.create(rev, page);
+        if (rev) {
+          page = revision.create(rev, page);
+        }
         return callback(page);
       },
       error: function(xhr, type, msg) {
@@ -773,14 +783,18 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
   pushToLocal = function(pageElement, action) {
     var page;
     page = localStorage[pageElement.attr("id")];
-    if (page) page = JSON.parse(page);
+    if (page) {
+      page = JSON.parse(page);
+    }
     if (action.type === 'create') {
       page = {
         title: action.item.title
       };
     }
     page || (page = pageElement.data("data"));
-    if (page.journal == null) page.journal = [];
+    if (page.journal == null) {
+      page.journal = [];
+    }
     page.journal = page.journal.concat(action);
     page.story = $(pageElement).find(".item").map(function() {
       return $(this).data("item");
@@ -834,8 +848,8 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
 
 require.define("/lib/state.coffee", function (require, module, exports, __dirname, __filename) {
 (function() {
-  var active, state;
-  var __hasProp = Object.prototype.hasOwnProperty, __indexOf = Array.prototype.indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (__hasProp.call(this, i) && this[i] === item) return i; } return -1; };
+  var active, state,
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   active = require('./active');
 
@@ -884,9 +898,9 @@ require.define("/lib/state.coffee", function (require, module, exports, __dirnam
       locs = state.locsInDom();
       pages = state.pagesInDom();
       url = ((function() {
-        var _len, _results;
+        var _i, _len, _results;
         _results = [];
-        for (idx = 0, _len = pages.length; idx < _len; idx++) {
+        for (idx = _i = 0, _len = pages.length; _i < _len; idx = ++_i) {
           page = pages[idx];
           _results.push("/" + ((locs != null ? locs[idx] : void 0) || 'view') + "/" + page);
         }
@@ -900,20 +914,24 @@ require.define("/lib/state.coffee", function (require, module, exports, __dirnam
   };
 
   state.show = function(e) {
-    var idx, name, newLocs, newPages, old, oldLocs, oldPages, previous, _len;
+    var idx, name, newLocs, newPages, old, oldLocs, oldPages, previous, _i, _len;
     wiki.log('popstate', e);
     oldPages = state.pagesInDom();
     newPages = state.urlPages();
     oldLocs = state.locsInDom();
     newLocs = state.urlLocs();
-    if (!location.pathname || location.pathname === '/') return;
+    if (!location.pathname || location.pathname === '/') {
+      return;
+    }
     wiki.log('showState', oldPages, newPages, oldLocs, newLocs);
     previous = $('.page').eq(0);
-    for (idx = 0, _len = newPages.length; idx < _len; idx++) {
+    for (idx = _i = 0, _len = newPages.length; _i < _len; idx = ++_i) {
       name = newPages[idx];
       if (name !== oldPages[idx]) {
         old = $('.page').eq(idx);
-        if (old) old.remove();
+        if (old) {
+          old.remove();
+        }
         wiki.createPage(name, newLocs[idx]).insertAfter(previous).each(wiki.refresh);
       }
       previous = $('.page').eq(idx);
@@ -923,16 +941,18 @@ require.define("/lib/state.coffee", function (require, module, exports, __dirnam
   };
 
   state.first = function() {
-    var firstUrlLocs, firstUrlPages, idx, oldPages, urlPage, _len, _results;
+    var firstUrlLocs, firstUrlPages, idx, oldPages, urlPage, _i, _len, _results;
     state.setUrl();
     firstUrlPages = state.urlPages();
     firstUrlLocs = state.urlLocs();
     oldPages = state.pagesInDom();
     wiki.log('amost createPage', firstUrlPages, firstUrlLocs, oldPages);
     _results = [];
-    for (idx = 0, _len = firstUrlPages.length; idx < _len; idx++) {
+    for (idx = _i = 0, _len = firstUrlPages.length; _i < _len; idx = ++_i) {
       urlPage = firstUrlPages[idx];
-      if (!(__indexOf.call(oldPages, urlPage) < 0)) continue;
+      if (!(__indexOf.call(oldPages, urlPage) < 0)) {
+        continue;
+      }
       wiki.log('createPage', urlPage, idx);
       if (urlPage !== '') {
         _results.push(wiki.createPage(urlPage, firstUrlLocs[idx]).appendTo('.main'));
@@ -952,7 +972,7 @@ require.define("/lib/revision.coffee", function (require, module, exports, __dir
   var create;
 
   create = function(revIndex, data) {
-    var i, itemEdited, itemId, itemSplicedIn, items, journal, journalEntry, removeId, revJournal, revStory, revTitle, storyItem, _i, _j, _k, _len, _len2, _len3, _len4, _len5, _len6, _ref, _ref2;
+    var i, itemEdited, itemId, itemSplicedIn, items, journal, journalEntry, removeId, revJournal, revStory, revTitle, storyItem, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _len5, _m, _n, _ref, _ref1;
     journal = data.journal;
     revTitle = data.title;
     revStory = [];
@@ -965,11 +985,13 @@ require.define("/lib/revision.coffee", function (require, module, exports, __dir
       revJournal.push(journalEntry);
       switch (journalEntry.type) {
         case 'create':
-          if (journalEntry.item.title != null) revTitle = journalEntry.item.title;
+          if (journalEntry.item.title != null) {
+            revTitle = journalEntry.item.title;
+          }
           break;
         case 'add':
           if (journalEntry.after != null) {
-            for (i = 0, _len2 = revStory.length; i < _len2; i++) {
+            for (i = _j = 0, _len1 = revStory.length; _j < _len1; i = ++_j) {
               storyItem = revStory[i];
               if (storyItem.id === journalEntry.after) {
                 itemSplicedIn = true;
@@ -977,13 +999,15 @@ require.define("/lib/revision.coffee", function (require, module, exports, __dir
                 break;
               }
             }
-            if (!itemSplicedIn) revStory.push(journalEntry.item);
+            if (!itemSplicedIn) {
+              revStory.push(journalEntry.item);
+            }
           } else {
             revStory.push(journalEntry.item);
           }
           break;
         case 'edit':
-          for (i = 0, _len3 = revStory.length; i < _len3; i++) {
+          for (i = _k = 0, _len2 = revStory.length; _k < _len2; i = ++_k) {
             storyItem = revStory[i];
             if (storyItem.id === journalEntry.id) {
               revStory[i] = journalEntry.item;
@@ -991,24 +1015,26 @@ require.define("/lib/revision.coffee", function (require, module, exports, __dir
               break;
             }
           }
-          if (!itemEdited) revStory.push(journalEntry.item);
+          if (!itemEdited) {
+            revStory.push(journalEntry.item);
+          }
           break;
         case 'move':
           items = [];
-          for (_j = 0, _len4 = revStory.length; _j < _len4; _j++) {
-            storyItem = revStory[_j];
+          for (_l = 0, _len3 = revStory.length; _l < _len3; _l++) {
+            storyItem = revStory[_l];
             items[storyItem.id] = storyItem;
           }
           revStory = [];
-          _ref2 = journalEntry.order;
-          for (_k = 0, _len5 = _ref2.length; _k < _len5; _k++) {
-            itemId = _ref2[_k];
+          _ref1 = journalEntry.order;
+          for (_m = 0, _len4 = _ref1.length; _m < _len4; _m++) {
+            itemId = _ref1[_m];
             revStory.push(items[itemId]);
           }
           break;
         case 'remove':
           removeId = journalEntry.id;
-          for (i = 0, _len6 = revStory.length; i < _len6; i++) {
+          for (i = _n = 0, _len5 = revStory.length; _n < _len5; i = ++_n) {
             storyItem = revStory[i];
             if (storyItem.id === removeId) {
               revStory.splice(i, 1);
@@ -1162,7 +1188,7 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
     var buildPage, pageElement;
     pageElement = $(this);
     buildPage = function(data) {
-      var action, addContext, context, footerElement, journalElement, page, site, slug, storyElement, _i, _len, _ref, _ref2;
+      var action, addContext, context, footerElement, journalElement, page, site, slug, storyElement, _i, _len, _ref, _ref1;
       if (!(data != null)) {
         pageElement.find('.item').each(function(i, each) {
           var item;
@@ -1177,7 +1203,9 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
         slug = $(pageElement).attr('id');
         site = $(pageElement).data('site');
         context = ['origin'];
-        if (site != null) context.push(site);
+        if (site != null) {
+          context.push(site);
+        }
         addContext = function(site) {
           if ((site != null) && !_.include(context, site)) {
             return context.push(site);
@@ -1191,12 +1219,14 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
         wiki.resolutionContext = context;
         wiki.log('build', slug, 'site', site, 'context', context.join(' => '));
         emitHeader(pageElement, page);
-        _ref2 = ['story', 'journal', 'footer'].map(function(className) {
+        _ref1 = ['story', 'journal', 'footer'].map(function(className) {
           return $("<div />").addClass(className).appendTo(pageElement);
-        }), storyElement = _ref2[0], journalElement = _ref2[1], footerElement = _ref2[2];
+        }), storyElement = _ref1[0], journalElement = _ref1[1], footerElement = _ref1[2];
         $.each(page.story, function(i, item) {
           var div;
-          if ($.isArray(item)) item = item[0];
+          if ($.isArray(item)) {
+            item = item[0];
+          }
           div = $("<div />").addClass("item").addClass(item.type).attr("data-id", item.id);
           storyElement.append(div);
           return plugin["do"](div, item);
@@ -1229,7 +1259,9 @@ require.define("/lib/plugin.coffee", function (require, module, exports, __dirna
   scripts = {};
 
   getScript = wiki.getScript = function(url, callback) {
-    if (callback == null) callback = function() {};
+    if (callback == null) {
+      callback = function() {};
+    }
     if (scripts[url] != null) {
       return callback();
     } else {
@@ -1243,9 +1275,13 @@ require.define("/lib/plugin.coffee", function (require, module, exports, __dirna
   };
 
   plugin.get = wiki.getPlugin = function(name, callback) {
-    if (window.plugins[name]) return callback(window.plugins[name]);
+    if (window.plugins[name]) {
+      return callback(window.plugins[name]);
+    }
     return getScript("/plugins/" + name + "/" + name + ".js", function() {
-      if (window.plugins[name]) return callback(window.plugins[name]);
+      if (window.plugins[name]) {
+        return callback(window.plugins[name]);
+      }
       return getScript("/plugins/" + name + ".js", function() {
         return callback(window.plugins[name]);
       });
@@ -1286,7 +1322,7 @@ require.define("/lib/plugin.coffee", function (require, module, exports, __dirna
       },
       bind: function(div, item) {
         return div.dblclick(function() {
-          return wiki.textEditor(div, item);
+          return wiki.textEditor(div, item, null, true);
         });
       }
     },
@@ -1307,10 +1343,10 @@ require.define("/lib/plugin.coffee", function (require, module, exports, __dirna
     },
     changes: {
       emit: function(div, item) {
-        var a, i, key, ul, _ref, _results;
+        var a, i, key, ul, _i, _ref, _results;
         div.append(ul = $('<ul />').append(localStorage.length ? $('<input type="button" value="discard all" />').css('margin-top', '10px') : $('<p>empty</p>')));
         _results = [];
-        for (i = 0, _ref = localStorage.length; 0 <= _ref ? i < _ref : i > _ref; 0 <= _ref ? i++ : i--) {
+        for (i = _i = 0, _ref = localStorage.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
           key = localStorage.key(i);
           a = $('<a class="internal" href="#" />').append(key).data('pageName', key);
           _results.push(ul.prepend($('<li />').append(a)));
@@ -1421,7 +1457,7 @@ require.define("/test/revision.coffee", function (require, module, exports, __di
 
 require.define("/testclient.coffee", function (require, module, exports, __dirname, __filename) {
     (function() {
-  var __slice = Array.prototype.slice;
+  var __slice = [].slice;
 
   mocha.setup('bdd');
 

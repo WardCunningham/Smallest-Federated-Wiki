@@ -48,7 +48,7 @@ window.plugins =
   paragraph:
     emit: (div, item) -> div.append "<p>#{wiki.resolveLinks(item.text)}</p>"
     bind: (div, item) ->
-      div.dblclick -> wiki.textEditor div, item
+      div.dblclick -> wiki.textEditor div, item, null, true
   image:
     emit: (div, item) ->
       item.text ||= item.caption
