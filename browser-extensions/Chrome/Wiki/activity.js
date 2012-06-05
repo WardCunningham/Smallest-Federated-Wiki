@@ -69,6 +69,14 @@ if (window.top === window) {
                     }
                 }
             });
+        // give the page a half a sec, before injecting text
+        // NOTE: we won't be doing this if the page script could
+        // notify us when the page is fully loaded and interactive
+        var t = window.setTimeout( function() {
+            if (t) { window.clearTimeout(t); }
+            chrome.extension.sendRequest(undefined, {name:"fetch"}, function(r){ 
+                if ((r)&&(r=r.content)) { 
+                    persistContent(r); } } ); }, 500 );
     };
     var interval = window.setInterval(hook, 500);
 })();

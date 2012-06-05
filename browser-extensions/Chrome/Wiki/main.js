@@ -4,7 +4,35 @@
 // ignore the inner frames
 if (window.top === window) {
 
-var _tabs = {};
+var _tabs = {
+    getKey: function(tabId) { 
+        return "_" + String(tabId); },
+    cleanup: function(){
+        var s = this, m, now = (new Date()).valueOf(); 
+        for(var p in s.messages) {
+            if ((m=s.messages[p])&&(m["expire"]<now)) {
+                delete s.messages[p]; } } },
+    getMessage: function(tabId) {
+        var s = this, k = s.getKey(tabId), r = s.messages[k]; 
+        delete s.messages[k]; return (r?r.msg:undefined); },
+    putMessage: function(tabId, msg, agg) {
+        var s = this, k = s.getKey(tabId), m;
+        var expTime = ((new Date()).valueOf() + 120000);
+        if ( m = s.messages[k] ) {
+            // concatenating messages reflects the fact
+            // one can export to Wiki faster than the 
+            // Wiki page loads and assimilates the 
+            // exported text. TODO: may need to cleanup 
+            // (delete) the tab entry on empty message cache.
+            m.expire = expTime; 
+            if (msg) { 
+                if (agg) { m.msg = agg(m.msg, msg); }
+                else { m.msg = msg; } } }
+        else {
+            if (msg) { s.messages[k] = { 
+                "expire": expTime, "msg": msg }; } } },
+    messages: {}
+};
 
 // omnibox is available since version 9.0
 var omni = (function() {
@@ -38,22 +66,30 @@ var getWikiTab = function(tabs) {
                 return tabs[i]; } } }
     return null; };
 
-var storeToWiki = function(srcTab,dstTab) {
+var requestStoreToWiki = function(tabId, arg) {
+    chrome.tabs.sendRequest( 
+        tabId, arg,
+            function(m){
+                // As it turns, if no one listens to our
+                // background page request, the callback is not 
+                // getting called at all. Hence he deferred parameter
+                // and the local message cache. 
+                if (!m) { return; } 
+            } ); };
+
+var storeToWiki = function(srcTab,dstTab,deferred) {
     if (!( srcTab && dstTab ) ) { return; }
     var s = srcTab, d = dstTab;
     chrome.tabs.sendRequest( s.id, { name: "clip" }, 
         function(m) {
             if (!m) { return; }
-            chrome.tabs.sendRequest( 
-                d.id, { name: "persist", content: m.content },
-                    function(m){
-                        // TODO: If no one handled the request, perhaps the
-                        // activity script was not available at time of call.
-                        // persist the content, waiting for the activity script
-                        // to present itself upon load. a cleanup for the state
-                        // kept in the background page is needed too.
-                        if (!m) { return; } 
-                    } ) } );
+            var arg = { name: "persist", content: m.content };
+            if (deferred) {
+                _tabs.putMessage( d.id, arg, function(m1,m2){
+                    return ( m1.content ? String(m1.content) + "\r\n": "" ) + 
+                           ( m2.content ? String(m2.content) : "" ); } ); }
+            else {
+                requestStoreToWiki( d.id, arg ); } } );
 };
 
 var execWikiAction = function(action) {
@@ -76,7 +112,7 @@ var execWikiAction = function(action) {
                     (function(src){
                         var s = src;
                         chrome.tabs.create({ "url": _options["wikiUrl"]() },
-                            function(t){ storeToWiki( s, t ); } ); } )( argTab ) };
+                            function(t){ storeToWiki( s, t, true ); } ); } )( argTab ) };
          } );
      };
 };
@@ -120,15 +156,23 @@ var handleNewTab = function(tabId, changeInfo, tab) {
     // the badge and button state ties to the active window/tab    
     if (tab.selected) {
         setBadge( isSupportedUrl(u) ); }
+    _tabs.cleanup();
  };
 
 var handleTabClose = function(tabId) {
+    _tabs.getMessage( tabId ); _tabs.cleanup();
     return; };
 
 // processes requests from the browser tabs
 var handleRequest = function(request, sender, response) {
+    switch( request.name ) {
+        case "fetch":
+            var t, m; if ((t=sender)&&(t=t.tab)&&(t=t.id)) {
+                    if (m=_tabs.getMessage(t)) {
+                        response( m ); } }
+            break; }
+    _tabs.cleanup();
     return; };
-
 
 // init the extension
 (function() {
