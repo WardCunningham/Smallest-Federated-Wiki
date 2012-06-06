@@ -17,18 +17,6 @@ describe 'Server helpers' do
     it "should convert wikilinks to slug links" do
       helpers.resolve_links('[[My Page]]').should == '<a class="internal" href="/my-page.html" data-page-name="my-page">My Page</a>'
     end
-
-    it "should leave dashes in the name as dashes in the slug" do
-      helpers.resolve_links('[[My-Page]]').should == '<a class="internal" href="/my-page.html" data-page-name="my-page">My-Page</a>'
-    end
-
-    it "should create a dash for each whitespace character" do
-      helpers.resolve_links('[[   My   Page   ]]').should == '<a class="internal" href="/---my---page---.html" data-page-name="---my---page---">   My   Page   </a>'
-    end
-
-    it "should remove non-slug characters" do
-      helpers.resolve_links('[[My Page Røøøx!!!]]').should == '<a class="internal" href="/my-page-rx.html" data-page-name="my-page-rx">My Page Røøøx!!!</a>'
-    end
   end
 
   describe "#serve_resources_locally?" do
