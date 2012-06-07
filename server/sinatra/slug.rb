@@ -8,7 +8,7 @@ module FedWiki
     char_other_sub = ''
 
     massaged.gsub!(/\s+/, char_white_sub)
-    massaged.gsub!(/[^A-Za-z0-9-]+/, char_other_sub)
+    massaged.gsub!(/[^[[:alnum:]]-]+/, char_other_sub)
 
     # No more than one of the separator in a row; no separator at beginning/end of slug
 

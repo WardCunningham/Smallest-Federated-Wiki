@@ -8,7 +8,7 @@ def section (comment)
 end
 
 def test (given, expected)
-  describe "#{$section}: Test ##{$counter+=1}" do
+  describe ".slug - #{$section} (#{$counter+=1})" do
     it "should convert the string #{given.inspect} to the slug #{expected.inspect}" do
       FedWiki.slug(given).should == expected
     end
@@ -24,13 +24,16 @@ test 'welcome visitors', 'welcome-visitors'
 test 'Welcome-visitors', 'welcome-visitors'
 test 'slugs-are-unchanged', 'slugs-are-unchanged'
 
-section 'numbers and punctuation'
-test '2012 Report', '2012-report'
+section 'special characters'
 test 'Ward\'s Wiki', 'wards-wiki'
 test 'O\'malley', 'omalley'
 test 'holy cats !!! you don\'t say', 'holy-cats-you-dont-say'
-test '---holy cats !!! ---------', 'holy-cats'
+test '---holy cats !!! -- !@#$%^&*()_{}|:"<>?~"', 'holy-cats'
+test 'random chars: !@#$%^&*()_{}|:"<>?~"', 'random-chars'
 test 'Pride & Prejudice', 'pride-prejudice'
+test '---', ''
+test '   ', ''
+test ' - - - - ', ''
 
 section 'white space insenstive'
 test 'Welcome  Visitors', 'welcome-visitors'
@@ -38,10 +41,9 @@ test '  Welcome Visitors', 'welcome-visitors'
 test 'Welcome Visitors  ', 'welcome-visitors'
 
 section 'foreign language'
-test 'Les Misérables', 'les-misrables'
+test 'Les Misérables', 'les-misérables'
+test 'ßøå∂ƒ', 'ßøåƒ'
 
-section 'edge cases'
-test 'a', 'a'
-test 'ßøå∂ƒ', ''
-test '---', ''
-test ' - - - - ', ''
+section 'non-alphanumeric utf-8 chars'
+test '∑®†©¥', ''
+
