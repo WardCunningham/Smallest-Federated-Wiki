@@ -42,7 +42,7 @@ test 'Welcome Visitors  ', 'welcome-visitors'
 
 section 'foreign language'
 test 'Les Misérables', 'les-misérables'
-test 'ßøå∂ƒ', 'ßøåƒ'
+test 'ßøåƒ', 'ßøåƒ'
 
 section 'non-alphanumeric utf-8 chars'
 test '∑®†©¥', ''
