@@ -16,18 +16,22 @@
 	%body
 		%section.main
 			=yield
-		%footer{:class => authenticated? ? "logout" : claimed? ? "login" : "claim"}
+		%footer{:class => authenticated? ? "logout" : identified? ? "login" : claimed? ? "login" : "claim"}
 			- if authenticated?
 				%form{:method => 'POST', :action => "/logout"}
 					%input{:type => 'submit', :value => "Logout"}
 			- else
-				%form{:method => 'POST', :action => "/login"}
-					OpenID:
-					%input{:type => 'text', :name => 'identifier'}
-					%input{:type => 'submit', :value => claimed? ? "Login" : "Claim"}
-					or use:
-					%span{:class => 'provider'}
-						%input{:type => 'button', :title => 'google', :value => 'G', 'data-provider' => 'https://www.google.com/accounts/o8/id'}
-						%input{:type => 'button', :title => 'yahoo', :value => 'Y', 'data-provider' => 'https://me.yahoo.com'}
-						%input{:type => 'button', :title => 'aol', :value => 'A', 'data-provider' => 'https://www.aol.com'}
-						%input{:type => 'button', :title => 'livejournal', :value => 'L', 'data-provider' => 'http://www.livejournal.com/openid/server.bml'}
+				- if identified?
+					%form{:method => 'POST', :action => "/login"}
+						%input{:type => 'submit', :value => "Login"}
+				- else
+					%form{:method => 'POST', :action => "/login"}
+						OpenID:
+						%input{:type => 'text', :name => 'identifier'}
+						%input{:type => 'submit', :value => claimed? ? "Login" : "Claim"}
+						or use:
+						%span{:class => 'provider'}
+							%input{:type => 'button', :title => 'google', :value => 'G', 'data-provider' => 'https://www.google.com/accounts/o8/id'}
+							%input{:type => 'button', :title => 'yahoo', :value => 'Y', 'data-provider' => 'https://me.yahoo.com'}
+							%input{:type => 'button', :title => 'aol', :value => 'A', 'data-provider' => 'https://www.aol.com'}
+							%input{:type => 'button', :title => 'livejournal', :value => 'L', 'data-provider' => 'http://www.livejournal.com/openid/server.bml'}
