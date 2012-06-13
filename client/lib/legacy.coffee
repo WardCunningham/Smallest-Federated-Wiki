@@ -119,7 +119,7 @@ $ ->
     sleep = (time, code) -> setTimeout code, time
     sleep 500, -> pageHandler.put pageElement, {item: item, id: item.id, type: 'add', after: itemBefore?.id}
 
-  textEditor = wiki.textEditor = (div, item, caretPos) ->
+  textEditor = wiki.textEditor = (div, item, caretPos, doubleClicked) ->
     textarea = $("<textarea>#{original = item.text ? ''}</textarea>")
       .focusout ->
         if item.text = textarea.val()
@@ -134,32 +134,37 @@ $ ->
         if (e.altKey || e.ctlKey || e.metaKey) and e.which == 83 #alt-s
           textarea.focusout()
           return false
-        if e.which == $.ui.keyCode.BACKSPACE and util.getCaretPosition(textarea.get(0)) == 0
-          prevItem = getItem(div.prev())
-          return unless prevItem.text?
-          prevTextLen = prevItem.text.length
-          prevItem.text += textarea.val()
-          textarea.val('') # Need current text area to be empty. Item then gets deleted.
-          # caret needs to be between the old text and the new appended text
-          textEditor div.prev(), prevItem, prevTextLen
-          return false
-        else if e.which == $.ui.keyCode.ENTER
-          caret = util.getCaretPosition textarea.get(0)
-          return false unless caret
-          text = textarea.val()
-          prefix = text.substring(0,caret)
-          suffix = text.substring(caret)
-          textarea.val(prefix)
-          textarea.focusout()
-          pageElement = div.parent().parent()
-          createTextElement(pageElement, div, suffix)
-          return false
-      .bind 'dblclick', (e) ->
-        return false; #don't pass dblclick on to the div, as it'll reload
-
+        # provides automatic new paragraphs on enter and concatenation on backspace
+        if item.type is 'paragraph' 
+          sel = util.getSelectionPos(textarea) # position of caret or selected text coords
+          if e.which is $.ui.keyCode.BACKSPACE and sel.start is 0 and sel.start is sel.end 
+            prevItem = getItem(div.prev())
+            return unless prevItem.text?
+            prevTextLen = prevItem.text.length
+            prevItem.text += textarea.val()
+            textarea.val('') # Need current text area to be empty. Item then gets deleted.
+            # caret needs to be between the old text and the new appended text
+            textEditor div.prev(), prevItem, prevTextLen
+            return false
+          else if e.which is $.ui.keyCode.ENTER and item.type is 'paragraph'
+            return false unless sel
+            text = textarea.val()
+            prefix = text.substring 0, sel.start
+            middle = text.substring(sel.start, sel.end) if sel.start isnt sel.end
+            suffix = text.substring(sel.end)
+            textarea.val(prefix)
+            textarea.focusout()
+            pageElement = div.parent().parent()
+            createTextElement(pageElement, div, suffix)
+            createTextElement(pageElement, div, middle) if middle?
+            return false
     div.html textarea
     if caretPos?
-      util.setCaretPosition textarea.get(0), caretPos
+      util.setCaretPosition textarea, caretPos
+    else if doubleClicked # we want the caret to be at the end
+      util.setCaretPosition textarea, textarea.val().length
+      #scrolls to bottom of text area
+      textarea.scrollTop(textarea[0].scrollHeight - textarea.height())
     else
       textarea.focus()
 
