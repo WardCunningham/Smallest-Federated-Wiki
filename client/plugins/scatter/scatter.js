@@ -5,17 +5,34 @@
     emit: function(div, item) {
       return wiki.getScript('/js/d3/d3.js', function() {
         return wiki.getScript('/js/d3/d3.time.js', function() {
-          var data, extent, fill, h, horz, p, title, vert, vis, w, who, x, xdat, y, ydat;
+          var data, extent, fill, h, horz, p, title, value, vert, vis, w, who, x, xdat, y, ydat;
           div.append(' <style>\n svg {\n   font: 10px sans-serif;\n   background: #eee;\n }\n circle {\n   fill: gray;\n   stroke: white;\n }\n</style>');
+          value = function(obj) {
+            if (obj == null) return NaN;
+            switch (obj.constructor) {
+              case Number:
+                return obj;
+              case String:
+                return +obj;
+              case Array:
+                return value(obj[0]);
+              case Object:
+                return value(obj.value);
+              case Function:
+                return obj();
+              default:
+                return NaN;
+            }
+          };
           who = $('.chart,.data,.calculator').last();
           data = who.data('item').data;
           horz = "Water/Land Intensity Total";
           vert = "Total Score";
           xdat = function(d) {
-            return +d[horz];
+            return value(d[horz]);
           };
           ydat = function(d) {
-            return +d[vert];
+            return value(d[vert]);
           };
           title = function(d) {
             return "" + d.Material + "\n" + horz + ": " + d[horz] + "\n" + vert + ": " + d[vert] + "\nRank: " + d['Rank'];
