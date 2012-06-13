@@ -56,6 +56,9 @@
               limit[k] = max;
             }
           } else if ((who = candidates.filter(".data")).size()) {
+            who = who.filter(function(d) {
+              return $(this).data('item').data.length === 1;
+            });
             data = (function() {
               var _j, _len2, _results;
               _results = [];

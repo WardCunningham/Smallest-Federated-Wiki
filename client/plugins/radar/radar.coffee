@@ -44,6 +44,7 @@ window.plugins.radar =
           for k,v of keys
             limit[k] = max
         else if (who = candidates.filter ".data").size()
+          who = who.filter (d) -> $(this).data('item').data.length == 1
           data = ($(d).data('item').data[0] for d in who)
         else throw "Can't find suitable data"
 
