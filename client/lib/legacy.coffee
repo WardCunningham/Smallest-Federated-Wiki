@@ -139,7 +139,7 @@ $ ->
           sel = util.getSelectionPos(textarea) # position of caret or selected text coords
           if e.which is $.ui.keyCode.BACKSPACE and sel.start is 0 and sel.start is sel.end 
             prevItem = getItem(div.prev())
-            return unless prevItem.text?
+            return false unless prevItem.type is 'paragraph'
             prevTextLen = prevItem.text.length
             prevItem.text += textarea.val()
             textarea.val('') # Need current text area to be empty. Item then gets deleted.
