@@ -2,7 +2,7 @@
 
 window.plugins.pagefold =
   emit: (div, item) -> div.append """
-  	<div style="height: 10px; border-top: 2px solid lightgray; margin-top: 24px; text-align: center; position: relative; ">
+  	<div style="height: 10px; border-top: 2px solid lightgray; margin-top: 24px; text-align: center; position: relative; clear: both;">
   		<span style="position: relative; top: -.8em; background: white; display: inline-block; color: gray; ">
   			&nbsp; #{item.text} &nbsp;
   		</span>
