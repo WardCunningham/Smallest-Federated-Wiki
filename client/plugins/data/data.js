@@ -13,7 +13,9 @@
       div.find('p:first').mousemove(function(e) {
         var thumb;
         thumb = thumbs(item)[Math.floor(thumbs(item).length * e.offsetX / e.target.offsetWidth)];
-        if (thumb === lastThumb || null === (lastThumb = thumb)) return;
+        if (thumb === lastThumb || null === (lastThumb = thumb) || thumb.isNaN) {
+          return;
+        }
         $(e.target).siblings("p").last().html(label(thumb));
         $(e.target).text(readout(thumb));
         return $(div).triggerHandler('thumb', thumb);
@@ -51,11 +53,7 @@
         result = _.reduce(values, (function(m, n) {
           return m + n;
         }), 0) / values.length;
-        if (values.length > 1) {
-          return result.toFixed(2);
-        } else {
-          return result;
-        }
+        return result.toFixed(2);
       };
       readout = function(thumb) {
         var field;

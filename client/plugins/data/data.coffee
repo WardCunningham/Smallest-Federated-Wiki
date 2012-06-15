@@ -10,7 +10,7 @@ window.plugins.data =
     div.find('p:first')
       .mousemove (e) ->
         thumb = thumbs(item)[Math.floor(thumbs(item).length * e.offsetX / e.target.offsetWidth)]
-        return if thumb == lastThumb || null == (lastThumb = thumb)
+        return if thumb == lastThumb || null == (lastThumb = thumb) || thumb.isNaN
         $(e.target).siblings("p").last().html label(thumb)
         $(e.target).text(readout(thumb))
         $(div).triggerHandler('thumb', thumb)
@@ -34,7 +34,7 @@ window.plugins.data =
       values = _.map(item.data, (obj) -> value(obj[thumb]))
       values = _.reject(values, (obj) -> isNaN obj)
       result = _.reduce(values, ((m,n) -> m+n), 0) / values.length
-      if values.length > 1 then result.toFixed 2 else result
+      result.toFixed 2
 
     readout = (thumb) ->
       return average(thumb) if item.columns?
