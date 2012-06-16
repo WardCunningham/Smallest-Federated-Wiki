@@ -481,7 +481,10 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
     };
     textEditor = wiki.textEditor = function(div, item, caretPos, doubleClicked) {
       var original, textarea, _ref;
+      if (div.hasClass('textEditing')) return;
+      div.addClass('textEditing');
       textarea = $("<textarea>" + (original = (_ref = item.text) != null ? _ref : '') + "</textarea>").focusout(function() {
+        div.removeClass('textEditing');
         if (item.text = textarea.val()) {
           plugin["do"](div.empty(), item);
           if (item.text === original) return;

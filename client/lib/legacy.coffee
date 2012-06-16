@@ -120,8 +120,11 @@ $ ->
     sleep 500, -> pageHandler.put pageElement, {item: item, id: item.id, type: 'add', after: itemBefore?.id}
 
   textEditor = wiki.textEditor = (div, item, caretPos, doubleClicked) ->
+    return if div.hasClass 'textEditing'
+    div.addClass 'textEditing'
     textarea = $("<textarea>#{original = item.text ? ''}</textarea>")
       .focusout ->
+        div.removeClass 'textEditing'
         if item.text = textarea.val()
           plugin.do div.empty(), item
           return if item.text == original
