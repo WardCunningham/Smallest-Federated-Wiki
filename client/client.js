@@ -435,9 +435,8 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
         prev = journalElement.find(".edit[data-id=" + (action.id || 0) + "]");
       }
       actionTitle = action.type;
-      if (action.type === 'edit') actionTitle += "(" + prev.length + ")";
       if (action.date != null) {
-        actionTitle += ": " + (util.formatDate(action.date));
+        actionTitle += " " + (util.formatElapsedTime(action.date));
       }
       actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type).text(wiki.symbols[action.type]).attr('title', actionTitle).attr('data-id', action.id || "0").data('action', action);
       controls = journalElement.children('.control-buttons');
@@ -738,6 +737,21 @@ require.define("/lib/util.coffee", function (require, module, exports, __dirname
     mi = (d.getMinutes() < 10 ? "0" : "") + d.getMinutes();
     sec = (d.getSeconds() < 10 ? "0" : "") + d.getSeconds();
     return "" + wk + " " + mo + " " + day + " " + yr + " " + h + ":" + mi + ":" + sec + " " + am;
+  };
+
+  util.formatElapsedTime = function(msSinceEpoch) {
+    var days, hrs, mins, months, msecs, secs, weeks, years;
+    msecs = new Date().getTime() - msSinceEpoch;
+    if ((secs = msecs / 1000) < 2) {
+      return "" + (Math.floor(msecs)) + " milliseconds ago";
+    }
+    if ((mins = secs / 60) < 2) return "" + (Math.floor(secs)) + " seconds ago";
+    if ((hrs = mins / 60) < 2) return "" + (Math.floor(mins)) + " minutes ago";
+    if ((days = hrs / 24) < 2) return "" + (Math.floor(hrs)) + " hours ago";
+    if ((weeks = days / 7) < 2) return "" + (Math.floor(days)) + " days ago";
+    if ((months = days / 31) < 2) return "" + (Math.floor(weeks)) + " weeks ago";
+    if ((years = days / 365) < 2) return "" + (Math.floor(months)) + " months ago";
+    return "" + (Math.floor(years)) + " years ago";
   };
 
   util.asSlug = function(name) {

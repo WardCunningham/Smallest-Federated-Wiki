@@ -30,6 +30,17 @@ util.formatDate = (msSinceEpoch) ->
   sec = (if d.getSeconds() < 10 then "0" else "") + d.getSeconds()
   "#{wk} #{mo} #{day} #{yr} #{h}:#{mi}:#{sec} #{am}"
 
+util.formatElapsedTime = (msSinceEpoch) ->
+  msecs = (new Date().getTime() - msSinceEpoch)
+  return "#{Math.floor msecs} milliseconds ago" if (secs = msecs/1000) < 2
+  return "#{Math.floor secs} seconds ago" if (mins = secs/60) < 2
+  return "#{Math.floor mins} minutes ago" if (hrs = mins/60) < 2
+  return "#{Math.floor hrs} hours ago" if (days = hrs/24) < 2
+  return "#{Math.floor days} days ago" if (weeks = days/7) < 2
+  return "#{Math.floor weeks} weeks ago" if (months = days/31) < 2
+  return "#{Math.floor months} months ago" if (years = days/365) < 2
+  return "#{Math.floor years} years ago"
+
 util.asSlug = (name) ->
   name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase()
 

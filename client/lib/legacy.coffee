@@ -78,8 +78,7 @@ $ ->
     pageElement = journalElement.parents('.page:first')
     prev = journalElement.find(".edit[data-id=#{action.id || 0}]") if action.type == 'edit'
     actionTitle = action.type
-    actionTitle += "(#{prev.length})" if action.type == 'edit'
-    actionTitle += ": #{util.formatDate(action.date)}" if action.date?
+    actionTitle += " #{util.formatElapsedTime(action.date)}" if action.date?
     actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type)
       .text(wiki.symbols[action.type])
       .attr('title',actionTitle)

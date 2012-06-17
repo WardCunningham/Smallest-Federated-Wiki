@@ -447,6 +447,21 @@ require.define("/lib/util.coffee", function (require, module, exports, __dirname
     return "" + wk + " " + mo + " " + day + " " + yr + " " + h + ":" + mi + ":" + sec + " " + am;
   };
 
+  util.formatElapsedTime = function(msSinceEpoch) {
+    var days, hrs, mins, months, msecs, secs, weeks, years;
+    msecs = new Date().getTime() - msSinceEpoch;
+    if ((secs = msecs / 1000) < 2) {
+      return "" + (Math.floor(msecs)) + " milliseconds ago";
+    }
+    if ((mins = secs / 60) < 2) return "" + (Math.floor(secs)) + " seconds ago";
+    if ((hrs = mins / 60) < 2) return "" + (Math.floor(mins)) + " minutes ago";
+    if ((days = hrs / 24) < 2) return "" + (Math.floor(hrs)) + " hours ago";
+    if ((weeks = days / 7) < 2) return "" + (Math.floor(days)) + " days ago";
+    if ((months = days / 31) < 2) return "" + (Math.floor(weeks)) + " weeks ago";
+    if ((years = days / 365) < 2) return "" + (Math.floor(months)) + " months ago";
+    return "" + (Math.floor(years)) + " years ago";
+  };
+
   util.asSlug = function(name) {
     return name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase();
   };
