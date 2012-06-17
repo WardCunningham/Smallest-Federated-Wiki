@@ -5,25 +5,27 @@
   window.plugins.data = {
     emit: function(div, item) {
       $('<p />').addClass('readout').appendTo(div).text(summary(item));
-      return $('<p />').html(wiki.resolveLinks(item.text || 'data')).appendTo(div);
+      return $('<p />').addClass('label').appendTo(div).html(wiki.resolveLinks(item.text || 'data'));
     },
     bind: function(div, item) {
-      var average, label, lastThumb, readout, value;
+      var average, label, lastThumb, readout, refresh, value;
       lastThumb = null;
       div.find('p:first').mousemove(function(e) {
         var thumb;
         thumb = thumbs(item)[Math.floor(thumbs(item).length * e.offsetX / e.target.offsetWidth)];
-        if (thumb === lastThumb || null === (lastThumb = thumb) || thumb.isNaN) {
-          return;
-        }
-        $(e.target).siblings("p").last().html(label(thumb));
-        $(e.target).text(readout(thumb));
+        if (thumb === lastThumb || null === (lastThumb = thumb)) return;
+        refresh(thumb);
         return $(div).triggerHandler('thumb', thumb);
       }).dblclick(function(e) {
         return wiki.dialog("JSON for " + item.text, $('<pre/>').text(JSON.stringify(item, null, 2)));
       });
       div.find('p:last').dblclick(function() {
         return wiki.textEditor(div, item);
+      });
+      $('.data').on('thumb', function(evt, thumb) {
+        if (!(thumb === lastThumb || -1 === (thumbs(item).indexOf(thumb)))) {
+          return refresh(thumb);
+        }
       });
       value = function(obj) {
         if (obj == null) return NaN;
@@ -64,11 +66,15 @@
         if (field.constructor === Number) return "" + (field.toFixed(2));
         return NaN;
       };
-      return label = function(thumb) {
+      label = function(thumb) {
         if ((item.columns != null) && item.data.length > 1) {
           return "Averaged:<br>" + thumb;
         }
         return thumb;
+      };
+      return refresh = function(thumb) {
+        div.find('.readout').text(readout(thumb));
+        return div.find('.label').html(label(thumb));
       };
     }
   };

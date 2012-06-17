@@ -4,21 +4,22 @@
 window.plugins.data =
   emit: (div, item) ->
     $('<p />').addClass('readout').appendTo(div).text(summary(item))
-    $('<p />').html(wiki.resolveLinks(item.text||'data')).appendTo(div)
+    $('<p />').addClass('label').appendTo(div).html(wiki.resolveLinks(item.text||'data'))
   bind: (div, item) ->
     lastThumb = null
     div.find('p:first')
       .mousemove (e) ->
         thumb = thumbs(item)[Math.floor(thumbs(item).length * e.offsetX / e.target.offsetWidth)]
-        return if thumb == lastThumb || null == (lastThumb = thumb) || thumb.isNaN
-        $(e.target).siblings("p").last().html label(thumb)
-        $(e.target).text(readout(thumb))
+        return if thumb == lastThumb || null == (lastThumb = thumb)
+        refresh thumb
         $(div).triggerHandler('thumb', thumb)
       .dblclick (e) ->
         wiki.dialog "JSON for #{item.text}",  $('<pre/>').text(JSON.stringify(item, null, 2))
     div.find('p:last')
       .dblclick ->
         wiki.textEditor div, item
+    $('.data').on 'thumb', (evt, thumb) ->
+      refresh thumb unless thumb == lastThumb || -1 == (thumbs(item).indexOf thumb)
 
     value = (obj) ->
       return NaN unless obj?
@@ -48,6 +49,9 @@ window.plugins.data =
       return "Averaged:<br>#{thumb}" if item.columns? && item.data.length > 1
       thumb
 
+    refresh = (thumb) ->
+      div.find('.readout').text readout(thumb)
+      div.find('.label').html label(thumb)
 
 summary = (item) ->
   return "#{item.data.length}x#{item.columns.length}" if item.columns?
