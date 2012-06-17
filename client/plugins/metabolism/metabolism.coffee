@@ -8,7 +8,7 @@ window.plugins.metabolism =
 
     div.addClass 'radar-source'
     div.get(0).radarData = -> output
-    div.mousemove (e) -> $(div).triggerHandler('thumb', $(e.target).text())
+    div.mousemove (e) -> $(div).triggerHandler('plugin.thumb', $(e.target).text())
 
     # http://stella.laurenzo.org/2011/03/bulletproof-node-js-coding/
 

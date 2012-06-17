@@ -12,13 +12,13 @@ window.plugins.data =
         thumb = thumbs(item)[Math.floor(thumbs(item).length * e.offsetX / e.target.offsetWidth)]
         return if thumb == lastThumb || null == (lastThumb = thumb)
         refresh thumb
-        $(div).triggerHandler('thumb', thumb)
+        $(div).trigger('plugin:thumb', thumb)
       .dblclick (e) ->
         wiki.dialog "JSON for #{item.text}",  $('<pre/>').text(JSON.stringify(item, null, 2))
     div.find('p:last')
       .dblclick ->
         wiki.textEditor div, item
-    $('.data').on 'thumb', (evt, thumb) ->
+    $(".main").on 'plugin:thumb', (evt, thumb) ->
       refresh thumb unless thumb == lastThumb || -1 == (thumbs(item).indexOf thumb)
 
     value = (obj) ->

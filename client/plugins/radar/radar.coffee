@@ -116,7 +116,7 @@ window.plugins.radar =
         vizBody.attr "transform", "translate(#{centerXPos},#{centerYPos})" + rotate(0)
 
         lastThumb = null
-        who.bind 'thumb', (e, thumb) ->
+        who.bind 'plugin.thumb', (e, thumb) ->
           return if thumb == lastThumb || -1 == (index = keys.indexOf lastThumb = thumb)
           vizBody.transition().duration(750)
             .attr "transform", "translate(#{centerXPos},#{centerYPos})" + rotate(-index)
