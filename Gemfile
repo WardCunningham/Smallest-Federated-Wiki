@@ -27,5 +27,5 @@ group :test do
   gem 'rspec-mocks'        , '2.4.0'
   gem 'capybara'
   gem 'launchy'
-  gem 'selenium-webdriver', '2.19.0'
+  gem 'selenium-webdriver', '2.22.2'
 end
