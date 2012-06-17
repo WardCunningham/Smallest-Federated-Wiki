@@ -41,9 +41,9 @@ window.plugins.scatter =
           Rank: #{d['Rank']}
           """
 
-        who.bind 'thumb', (e, thumb) ->
+        who.bind 'plugin.thumb', (e, thumb) ->
           return if thumb == horz
-          wiki.log 'thumb', thumb
+          wiki.log 'plugin.thumb', thumb
           horz = thumb
           x = d3.scale.linear().domain(extent xdat).range([ 0, w ])
           d3.selectAll("circle").transition()
