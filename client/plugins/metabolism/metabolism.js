@@ -12,7 +12,7 @@
         return output;
       };
       div.mousemove(function(e) {
-        return $(div).triggerHandler('plugin.thumb', $(e.target).text());
+        return $(div).triggerHandler('thumb', $(e.target).text());
       });
       attach = function(search, callback) {
         var elem, new_data, source, _i, _len, _ref;

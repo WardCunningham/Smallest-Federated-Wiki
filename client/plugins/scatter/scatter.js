@@ -37,10 +37,10 @@
           title = function(d) {
             return "" + d.Material + "\n" + horz + ": " + d[horz] + "\n" + vert + ": " + d[vert] + "\nRank: " + d['Rank'];
           };
-          who.bind('plugin.thumb', function(e, thumb) {
+          who.bind('thumb', function(e, thumb) {
             var x;
             if (thumb === horz) return;
-            wiki.log('plugin.thumb', thumb);
+            wiki.log('thumb', thumb);
             horz = thumb;
             x = d3.scale.linear().domain(extent(xdat)).range([0, w]);
             return d3.selectAll("circle").transition().duration(500).delay(function(d, i) {

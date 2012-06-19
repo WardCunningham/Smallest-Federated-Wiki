@@ -159,7 +159,7 @@
           centerYPos = heightCircleConstraint / 2 + vizPadding.top;
           vizBody.attr("transform", ("translate(" + centerXPos + "," + centerYPos + ")") + rotate(0));
           lastThumb = null;
-          who.bind('plugin.thumb', function(e, thumb) {
+          who.bind('thumb', function(e, thumb) {
             var index;
             if (thumb === lastThumb || -1 === (index = keys.indexOf(lastThumb = thumb))) {
               return;

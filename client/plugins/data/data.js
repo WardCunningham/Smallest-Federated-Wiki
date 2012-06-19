@@ -15,14 +15,14 @@
         thumb = thumbs(item)[Math.floor(thumbs(item).length * e.offsetX / e.target.offsetWidth)];
         if (thumb === lastThumb || null === (lastThumb = thumb)) return;
         refresh(thumb);
-        return $(div).trigger('plugin:thumb', thumb);
+        return $(div).trigger('thumb', thumb);
       }).dblclick(function(e) {
         return wiki.dialog("JSON for " + item.text, $('<pre/>').text(JSON.stringify(item, null, 2)));
       });
       div.find('p:last').dblclick(function() {
         return wiki.textEditor(div, item);
       });
-      $(".main").on('plugin:thumb', function(evt, thumb) {
+      $(".main").on('thumb', function(evt, thumb) {
         if (!(thumb === lastThumb || -1 === (thumbs(item).indexOf(thumb)))) {
           return refresh(thumb);
         }
