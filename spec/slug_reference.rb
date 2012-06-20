@@ -40,10 +40,13 @@ test 'Welcome  Visitors', 'welcome-visitors'
 test '  Welcome Visitors', 'welcome-visitors'
 test 'Welcome Visitors  ', 'welcome-visitors'
 
-section 'foreign language'
+section 'alphanumeric extended chars'
 test 'Les Misérables', 'les-misérables'
 test 'ßøåƒ', 'ßøåƒ'
 
-section 'non-alphanumeric utf-8 chars'
+section 'alphanumeric extended chars are not lowercased'
+test 'ÀÁÂÃÅĀ', 'ÀÁÂÃÅĀ'
+
+section 'non-alphanumeric extended chars'
 test '∑®†©¥', ''
 
