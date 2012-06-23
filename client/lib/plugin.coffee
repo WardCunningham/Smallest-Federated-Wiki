@@ -29,18 +29,15 @@ plugin.do = wiki.doPlugin = (div, item) ->
     errorElement.text(ex.toString())
     div.append(errorElement)
 
-  try
-    div.data 'pageElement', div.parents(".page")
-    div.data 'item', item
-    plugin.get item.type, (script) ->
-      try
-        throw TypeError("Can't find plugin for '#{item.type}'") unless script?
-        script.emit div, item
-        script.bind div, item
-      catch err
-        error(err)
-  catch err
-    error(err)
+  div.data 'pageElement', div.parents(".page")
+  div.data 'item', item
+  plugin.get item.type, (script) ->
+    try
+      throw TypeError("Can't find plugin for '#{item.type}'") unless script?
+      script.emit div, item
+      script.bind div, item
+    catch err
+      error(err)
 
 # PLUGINS for each story item type
 
