@@ -7,7 +7,7 @@ findScrollContainer = ->
   if scrolled.length > 0
     scrolled
   else
-    $("body, html").scrollLeft(4).filter(-> $(this).scrollLeft() > 0).scrollTop(0)
+    $("body, html").scrollLeft(12).filter(-> $(this).scrollLeft() > 0).scrollTop(0)
 
 scrollTo = (el) ->
   active.scrollContainer ?= findScrollContainer()
