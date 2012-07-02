@@ -184,6 +184,24 @@ class Controller < Sinatra::Base
     haml :view, :locals => {:pages => pages}
   end
 
+  get '/system/plugins.json' do
+    content_type 'application/json'
+    cross_origin
+    plugins = []
+    path = File.join(APP_ROOT, "client/plugins")
+    pathname = Pathname.new path
+    Dir.glob("#{path}/*/") {|filename| plugins << Pathname.new(filename).relative_path_from(pathname)}
+    JSON.pretty_generate plugins
+  end
+
+  get '/system/sitemap.json' do
+    content_type 'application/json'
+    cross_origin
+    pages = Store.annotated_pages farm_page.directory
+    sitemap = pages.collect {|p| {"slug" => p['name'], "title" => p['title'], "date" => p['updated_at'].to_i*1000}}
+    JSON.pretty_generate sitemap
+  end
+
   get '/recent-changes.json' do
     content_type 'application/json'
     cross_origin
