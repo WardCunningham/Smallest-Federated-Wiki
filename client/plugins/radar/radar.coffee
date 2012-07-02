@@ -29,11 +29,7 @@ window.plugins.radar =
           "Physical Waste Total": 25
           "Total score": 100
 
-        candidates = $(".item:lt(#{$('.item').index(div)})")
-        if (who = candidates.filter ".radar-source").size()
-          data = (d.radarData() for d in who)
-          console.log ['got radar-source', who]
-          console.log ['data', data]
+        limitsFromData = (data) ->
           max = -Infinity
           keys = {}
           for d in data
@@ -43,10 +39,18 @@ window.plugins.radar =
           limit = {}
           for k,v of keys
             limit[k] = max
+
+        candidates = $(".item:lt(#{$('.item').index(div)})")
+        if (who = candidates.filter ".radar-source").size()
+          limitsFromData (data = (d.radarData() for d in who))
         else if (who = candidates.filter ".data").size()
           who = who.filter (d) -> $(this).data('item').data.length == 1
           data = ($(d).data('item').data[0] for d in who)
         else throw "Can't find suitable data"
+
+        # if item.text?
+        #   for line in item.text.split /\n/
+        #     console.log ['line', line]
 
         keys = Object.keys(limit)
 

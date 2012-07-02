@@ -5,7 +5,7 @@
     emit: function(div, item) {
       return wiki.getScript('/js/d3/d3.js', function() {
         return wiki.getScript('/js/d3/d3.time.js', function() {
-          var angle, c, candidates, centerXPos, centerYPos, circleAxes, circleConstraint, colorSelector, comments, d, data, dimension, fill, h, heightCircleConstraint, hours, k, keys, lastThumb, limit, lineAxes, m, max, maxVal, minVal, o, percents, radialTicks, radius, radiusLength, rotate, ruleColor, series, translate, v, value, viz, vizBody, vizPadding, w, who, widthCircleConstraint, _i, _j, _len, _ref, _ref2, _ref3, _results;
+          var angle, c, candidates, centerXPos, centerYPos, circleAxes, circleConstraint, colorSelector, comments, d, data, dimension, fill, h, heightCircleConstraint, hours, keys, lastThumb, limit, limitsFromData, lineAxes, m, maxVal, minVal, o, percents, radialTicks, radius, radiusLength, rotate, ruleColor, series, translate, value, viz, vizBody, vizPadding, w, who, widthCircleConstraint, _i, _ref, _ref2, _ref3, _results;
           div.append(' <style>\n svg { font: 10px sans-serif; }\n</style>');
           limit = {
             "Carcinogenicity": 7,
@@ -27,19 +27,8 @@
             "Physical Waste Total": 25,
             "Total score": 100
           };
-          candidates = $(".item:lt(" + ($('.item').index(div)) + ")");
-          if ((who = candidates.filter(".radar-source")).size()) {
-            data = (function() {
-              var _i, _len, _results;
-              _results = [];
-              for (_i = 0, _len = who.length; _i < _len; _i++) {
-                d = who[_i];
-                _results.push(d.radarData());
-              }
-              return _results;
-            })();
-            console.log(['got radar-source', who]);
-            console.log(['data', data]);
+          limitsFromData = function(data) {
+            var d, k, keys, max, v, _i, _len, _results;
             max = -Infinity;
             keys = {};
             for (_i = 0, _len = data.length; _i < _len; _i++) {
@@ -51,19 +40,33 @@
               }
             }
             limit = {};
+            _results = [];
             for (k in keys) {
               v = keys[k];
-              limit[k] = max;
+              _results.push(limit[k] = max);
             }
+            return _results;
+          };
+          candidates = $(".item:lt(" + ($('.item').index(div)) + ")");
+          if ((who = candidates.filter(".radar-source")).size()) {
+            limitsFromData((data = (function() {
+              var _i, _len, _results;
+              _results = [];
+              for (_i = 0, _len = who.length; _i < _len; _i++) {
+                d = who[_i];
+                _results.push(d.radarData());
+              }
+              return _results;
+            })()));
           } else if ((who = candidates.filter(".data")).size()) {
             who = who.filter(function(d) {
               return $(this).data('item').data.length === 1;
             });
             data = (function() {
-              var _j, _len2, _results;
+              var _i, _len, _results;
               _results = [];
-              for (_j = 0, _len2 = who.length; _j < _len2; _j++) {
-                d = who[_j];
+              for (_i = 0, _len = who.length; _i < _len; _i++) {
+                d = who[_i];
                 _results.push($(d).data('item').data[0]);
               }
               return _results;
@@ -90,11 +93,11 @@
             }
           };
           percents = function(obj) {
-            var k, _j, _len2, _ref, _results;
+            var k, _i, _len, _ref, _results;
             _ref = keys.concat(keys[0]);
             _results = [];
-            for (_j = 0, _len2 = _ref.length; _j < _len2; _j++) {
-              k = _ref[_j];
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              k = _ref[_i];
               _results.push(100.0 * value(obj[k]) / limit[k]);
             }
             return _results;
@@ -119,10 +122,10 @@
             return "translate(" + (radius(maxVal * percent / 100)) + ")";
           };
           series = (function() {
-            var _j, _len2, _results;
+            var _i, _len, _results;
             _results = [];
-            for (_j = 0, _len2 = data.length; _j < _len2; _j++) {
-              d = data[_j];
+            for (_i = 0, _len = data.length; _i < _len; _i++) {
+              d = data[_i];
               _results.push(percents(d));
             }
             return _results;
@@ -143,7 +146,7 @@
           }
           hours = (function() {
             _results = [];
-            for (var _j = 0, _ref3 = dimension - 1; 0 <= _ref3 ? _j <= _ref3 : _j >= _ref3; 0 <= _ref3 ? _j++ : _j--){ _results.push(_j); }
+            for (var _i = 0, _ref3 = dimension - 1; 0 <= _ref3 ? _i <= _ref3 : _i >= _ref3; 0 <= _ref3 ? _i++ : _i--){ _results.push(_i); }
             return _results;
           }).apply(this);
           minVal = 0;
