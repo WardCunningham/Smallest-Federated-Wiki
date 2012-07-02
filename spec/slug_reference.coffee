@@ -1,5 +1,6 @@
 asSlug = (name) ->
   name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase()
+  # name.replace(/\s+/g, '-').replace(/[^A-Za-z0-9-]|^\-+|\-+$/g, '').toLowerCase()
 
 section = (comment) ->
   console.log "\n\t#{comment}\n"
@@ -31,3 +32,4 @@ test 'Welcome Visitors  ', 'welcome-visitors'
 section 'foreign language'
 test 'Les Misérables', 'les-misérables'
 test 'Les Misérables', 'les-miserables'
+test 'Är du där?', 'ar-du-dar' # Swedish
