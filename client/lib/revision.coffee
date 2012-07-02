@@ -10,27 +10,22 @@ create = (revIndex, data) ->
   revStory = []
   revJournal = []
   for journalEntry in journal.slice 0, (+revIndex)+1
-    itemSplicedIn = false
-    itemEdited = false
     revJournal.push(journalEntry)
+    revStoryIds = revStory.map (storyItem) -> storyItem.id
     switch journalEntry.type
       when 'create'
         if journalEntry.item.title?
           revTitle = journalEntry.item.title
       when 'add'
-        for storyItem, i in revStory when storyItem.id == journalEntry.after
-          itemSplicedIn = true
-          revStory.splice(i+1,0,journalEntry.item)
-          break
-        if !itemSplicedIn #defensive coding for if we don't have a story item to put this after
+        if (afterIndex = revStoryIds.indexOf journalEntry.after) != -1
+          revStory.splice(afterIndex+1,0,journalEntry.item)
+        else
           revStory.push journalEntry.item
       when 'edit'
-        for storyItem, i in revStory when storyItem.id == journalEntry.id
-          revStory[i] = journalEntry.item
-          itemEdited = true
-          break
-        if !itemEdited  #the first journal entry for welcome visitors is an edit
-          revStory.push(journalEntry.item)
+        if (editIndex = revStoryIds.indexOf journalEntry.id) != -1
+          revStory.splice(editIndex,1,journalEntry.item)
+        else
+          revStory.push journalEntry.item
       when 'move'
         items = []
         for storyItem in revStory
@@ -39,11 +34,9 @@ create = (revIndex, data) ->
         for itemId in journalEntry.order
           revStory.push(items[itemId])
       when 'remove'
-        for storyItem, i in revStory when storyItem.id == journalEntry.id
-          revStory.splice(i,1)
-          break
+        if (removeIndex = revStoryIds.indexOf journalEntry.id) != -1
+          revStory.splice(removeIndex,1)
       #when 'fork'   # do nothing when fork
   return {story: revStory, journal: revJournal, title: revTitle}
-
 
 exports.create = create
