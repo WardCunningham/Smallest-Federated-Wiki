@@ -1075,7 +1075,7 @@ require.define("/lib/active.coffee", function (require, module, exports, __dirna
     if (scrolled.length > 0) {
       return scrolled;
     } else {
-      return $("body, html").scrollLeft(4).filter(function() {
+      return $("body, html").scrollLeft(12).filter(function() {
         return $(this).scrollLeft() > 0;
       }).scrollTop(0);
     }
@@ -1244,23 +1244,19 @@ require.define("/lib/plugin.coffee", function (require, module, exports, __dirna
       errorElement.text(ex.toString());
       return div.append(errorElement);
     };
-    try {
-      div.data('pageElement', div.parents(".page"));
-      div.data('item', item);
-      return plugin.get(item.type, function(script) {
-        try {
-          if (script == null) {
-            throw TypeError("Can't find plugin for '" + item.type + "'");
-          }
-          script.emit(div, item);
-          return script.bind(div, item);
-        } catch (err) {
-          return error(err);
+    div.data('pageElement', div.parents(".page"));
+    div.data('item', item);
+    return plugin.get(item.type, function(script) {
+      try {
+        if (script == null) {
+          throw TypeError("Can't find plugin for '" + item.type + "'");
         }
-      });
-    } catch (err) {
-      return error(err);
-    }
+        script.emit(div, item);
+        return script.bind(div, item);
+      } catch (err) {
+        return error(err);
+      }
+    });
   };
 
   window.plugins = {
