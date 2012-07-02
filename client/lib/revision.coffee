@@ -18,22 +18,17 @@ create = (revIndex, data) ->
         if journalEntry.item.title?
           revTitle = journalEntry.item.title
       when 'add'
-        if journalEntry.after?
-          for storyItem, i in revStory
-            if storyItem.id == journalEntry.after
-              itemSplicedIn = true
-              revStory.splice(i+1,0,journalEntry.item)
-              break
-          if !itemSplicedIn #defensive coding for if we don't have a story item to put this after
-            revStory.push journalEntry.item
-        else
+        for storyItem, i in revStory when storyItem.id == journalEntry.after
+          itemSplicedIn = true
+          revStory.splice(i+1,0,journalEntry.item)
+          break
+        if !itemSplicedIn #defensive coding for if we don't have a story item to put this after
           revStory.push journalEntry.item
       when 'edit'
-        for storyItem, i in revStory
-          if storyItem.id == journalEntry.id
-            revStory[i] = journalEntry.item
-            itemEdited = true
-            break
+        for storyItem, i in revStory when storyItem.id == journalEntry.id
+          revStory[i] = journalEntry.item
+          itemEdited = true
+          break
         if !itemEdited  #the first journal entry for welcome visitors is an edit
           revStory.push(journalEntry.item)
       when 'move'
@@ -44,11 +39,9 @@ create = (revIndex, data) ->
         for itemId in journalEntry.order
           revStory.push(items[itemId])
       when 'remove'
-        removeId = journalEntry.id;
-        for storyItem, i in revStory
-          if storyItem.id == removeId
-            revStory.splice(i,1)
-            break
+        for storyItem, i in revStory when storyItem.id == journalEntry.id
+          revStory.splice(i,1)
+          break
       #when 'fork'   # do nothing when fork
   return {story: revStory, journal: revJournal, title: revTitle}
 
