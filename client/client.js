@@ -1124,68 +1124,50 @@ require.define("/lib/revision.coffee", function (require, module, exports, __dir
   var create;
 
   create = function(revIndex, data) {
-    var i, itemEdited, itemId, itemSplicedIn, items, journal, journalEntry, removeId, revJournal, revStory, revTitle, storyItem, _i, _j, _k, _len, _len2, _len3, _len4, _len5, _len6, _ref, _ref2;
+    var afterIndex, editIndex, itemId, items, journal, journalEntry, removeIndex, revJournal, revStory, revStoryIds, revTitle, storyItem, _i, _j, _k, _len, _len2, _len3, _ref;
     journal = data.journal;
     revTitle = data.title;
     revStory = [];
-    revJournal = [];
-    _ref = journal.slice(0, (+revIndex) + 1);
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      journalEntry = _ref[_i];
-      itemSplicedIn = false;
-      itemEdited = false;
-      revJournal.push(journalEntry);
+    revJournal = journal.slice(0, (+revIndex) + 1 || 9e9);
+    for (_i = 0, _len = revJournal.length; _i < _len; _i++) {
+      journalEntry = revJournal[_i];
+      revStoryIds = revStory.map(function(storyItem) {
+        return storyItem.id;
+      });
       switch (journalEntry.type) {
         case 'create':
           if (journalEntry.item.title != null) revTitle = journalEntry.item.title;
           break;
         case 'add':
-          if (journalEntry.after != null) {
-            for (i = 0, _len2 = revStory.length; i < _len2; i++) {
-              storyItem = revStory[i];
-              if (storyItem.id === journalEntry.after) {
-                itemSplicedIn = true;
-                revStory.splice(i + 1, 0, journalEntry.item);
-                break;
-              }
-            }
-            if (!itemSplicedIn) revStory.push(journalEntry.item);
+          if ((afterIndex = revStoryIds.indexOf(journalEntry.after)) !== -1) {
+            revStory.splice(afterIndex + 1, 0, journalEntry.item);
           } else {
             revStory.push(journalEntry.item);
           }
           break;
         case 'edit':
-          for (i = 0, _len3 = revStory.length; i < _len3; i++) {
-            storyItem = revStory[i];
-            if (storyItem.id === journalEntry.id) {
-              revStory[i] = journalEntry.item;
-              itemEdited = true;
-              break;
-            }
+          if ((editIndex = revStoryIds.indexOf(journalEntry.id)) !== -1) {
+            revStory.splice(editIndex, 1, journalEntry.item);
+          } else {
+            revStory.push(journalEntry.item);
           }
-          if (!itemEdited) revStory.push(journalEntry.item);
           break;
         case 'move':
           items = [];
-          for (_j = 0, _len4 = revStory.length; _j < _len4; _j++) {
+          for (_j = 0, _len2 = revStory.length; _j < _len2; _j++) {
             storyItem = revStory[_j];
             items[storyItem.id] = storyItem;
           }
           revStory = [];
-          _ref2 = journalEntry.order;
-          for (_k = 0, _len5 = _ref2.length; _k < _len5; _k++) {
-            itemId = _ref2[_k];
+          _ref = journalEntry.order;
+          for (_k = 0, _len3 = _ref.length; _k < _len3; _k++) {
+            itemId = _ref[_k];
             revStory.push(items[itemId]);
           }
           break;
         case 'remove':
-          removeId = journalEntry.id;
-          for (i = 0, _len6 = revStory.length; i < _len6; i++) {
-            storyItem = revStory[i];
-            if (storyItem.id === removeId) {
-              revStory.splice(i, 1);
-              break;
-            }
+          if ((removeIndex = revStoryIds.indexOf(journalEntry.id)) !== -1) {
+            revStory.splice(removeIndex, 1);
           }
       }
     }

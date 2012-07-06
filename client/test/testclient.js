@@ -973,68 +973,50 @@ require.define("/lib/revision.coffee", function (require, module, exports, __dir
   var create;
 
   create = function(revIndex, data) {
-    var i, itemEdited, itemId, itemSplicedIn, items, journal, journalEntry, removeId, revJournal, revStory, revTitle, storyItem, _i, _j, _k, _len, _len2, _len3, _len4, _len5, _len6, _ref, _ref2;
+    var afterIndex, editIndex, itemId, items, journal, journalEntry, removeIndex, revJournal, revStory, revStoryIds, revTitle, storyItem, _i, _j, _k, _len, _len2, _len3, _ref;
     journal = data.journal;
     revTitle = data.title;
     revStory = [];
-    revJournal = [];
-    _ref = journal.slice(0, (+revIndex) + 1);
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      journalEntry = _ref[_i];
-      itemSplicedIn = false;
-      itemEdited = false;
-      revJournal.push(journalEntry);
+    revJournal = journal.slice(0, (+revIndex) + 1 || 9e9);
+    for (_i = 0, _len = revJournal.length; _i < _len; _i++) {
+      journalEntry = revJournal[_i];
+      revStoryIds = revStory.map(function(storyItem) {
+        return storyItem.id;
+      });
       switch (journalEntry.type) {
         case 'create':
           if (journalEntry.item.title != null) revTitle = journalEntry.item.title;
           break;
         case 'add':
-          if (journalEntry.after != null) {
-            for (i = 0, _len2 = revStory.length; i < _len2; i++) {
-              storyItem = revStory[i];
-              if (storyItem.id === journalEntry.after) {
-                itemSplicedIn = true;
-                revStory.splice(i + 1, 0, journalEntry.item);
-                break;
-              }
-            }
-            if (!itemSplicedIn) revStory.push(journalEntry.item);
+          if ((afterIndex = revStoryIds.indexOf(journalEntry.after)) !== -1) {
+            revStory.splice(afterIndex + 1, 0, journalEntry.item);
           } else {
             revStory.push(journalEntry.item);
           }
           break;
         case 'edit':
-          for (i = 0, _len3 = revStory.length; i < _len3; i++) {
-            storyItem = revStory[i];
-            if (storyItem.id === journalEntry.id) {
-              revStory[i] = journalEntry.item;
-              itemEdited = true;
-              break;
-            }
+          if ((editIndex = revStoryIds.indexOf(journalEntry.id)) !== -1) {
+            revStory.splice(editIndex, 1, journalEntry.item);
+          } else {
+            revStory.push(journalEntry.item);
           }
-          if (!itemEdited) revStory.push(journalEntry.item);
           break;
         case 'move':
           items = [];
-          for (_j = 0, _len4 = revStory.length; _j < _len4; _j++) {
+          for (_j = 0, _len2 = revStory.length; _j < _len2; _j++) {
             storyItem = revStory[_j];
             items[storyItem.id] = storyItem;
           }
           revStory = [];
-          _ref2 = journalEntry.order;
-          for (_k = 0, _len5 = _ref2.length; _k < _len5; _k++) {
-            itemId = _ref2[_k];
+          _ref = journalEntry.order;
+          for (_k = 0, _len3 = _ref.length; _k < _len3; _k++) {
+            itemId = _ref[_k];
             revStory.push(items[itemId]);
           }
           break;
         case 'remove':
-          removeId = journalEntry.id;
-          for (i = 0, _len6 = revStory.length; i < _len6; i++) {
-            storyItem = revStory[i];
-            if (storyItem.id === removeId) {
-              revStory.splice(i, 1);
-              break;
-            }
+          if ((removeIndex = revStoryIds.indexOf(journalEntry.id)) !== -1) {
+            revStory.splice(removeIndex, 1);
           }
       }
     }
@@ -1388,47 +1370,252 @@ require.define("/test/plugin.coffee", function (require, module, exports, __dirn
 
 require.define("/test/revision.coffee", function (require, module, exports, __dirname, __filename) {
 (function() {
-  var revision;
+  var revision, util;
+
+  util = require('../lib/util.coffee');
 
   revision = require('../lib/revision.coffee');
 
   describe('revision', function() {
     var data;
     data = {
-      "title": "foo",
-      "story": [],
+      "title": "new-page",
+      "story": [
+        {
+          "type": "paragraph",
+          "id": "2b3e1bef708cb8d3",
+          "text": "A new paragraph is now in first position"
+        }, {
+          "type": "paragraph",
+          "id": "ee416d431ebf4fb4",
+          "text": "Start writing. Read [[How to Wiki]] for more ideas."
+        }, {
+          "type": "paragraph",
+          "id": "5bfaef3699a88622",
+          "text": "Some paragraph text"
+        }
+      ],
       "journal": [
         {
           "type": "create",
-          "id": "ec76ba61a6e35dec",
+          "id": "8311895173802a8e",
           "item": {
-            "title": "foo"
+            "title": "new-page"
           },
-          "date": 1335650095871
+          "date": 1340999639114
         }, {
           "item": {
             "type": "factory",
-            "id": "6d8aca1c97d06674"
+            "id": "5bfaef3699a88622"
           },
-          "id": "6d8aca1c97d06674",
+          "id": "5bfaef3699a88622",
           "type": "add",
-          "date": 1335650110092
+          "date": 1341191691509
+        }, {
+          "type": "edit",
+          "id": "5bfaef3699a88622",
+          "item": {
+            "type": "paragraph",
+            "id": "5bfaef3699a88622",
+            "text": "Some paragraph text"
+          },
+          "date": 1341191697815
+        }, {
+          "item": {
+            "type": "paragraph",
+            "id": "2b3e1bef708cb8d3",
+            "text": ""
+          },
+          "id": "2b3e1bef708cb8d3",
+          "type": "add",
+          "after": "5bfaef3699a88622",
+          "date": 1341191698321
+        }, {
+          "type": "edit",
+          "id": "2b3e1bef708cb8d3",
+          "item": {
+            "type": "paragraph",
+            "id": "2b3e1bef708cb8d3",
+            "text": "A new paragraph after the first"
+          },
+          "date": 1341191703725
+        }, {
+          "type": "add",
+          "item": {
+            "type": "paragraph",
+            "id": "ee416d431ebf4fb4",
+            "text": "Start writing. Read [[How to Wiki]] for more ideas."
+          },
+          "after": "5bfaef3699a88622",
+          "id": "ee416d431ebf4fb4",
+          "date": 1341193068611
+        }, {
+          "type": "move",
+          "order": ["2b3e1bef708cb8d3", "ee416d431ebf4fb4", "5bfaef3699a88622"],
+          "id": "2b3e1bef708cb8d3",
+          "date": 1341191714682
+        }, {
+          "type": "edit",
+          "id": "2b3e1bef708cb8d3",
+          "item": {
+            "type": "paragraph",
+            "id": "2b3e1bef708cb8d3",
+            "text": "A new paragraph is now"
+          },
+          "date": 1341191723289
+        }, {
+          "item": {
+            "type": "paragraph",
+            "id": "2dcb9c5558f21329",
+            "text": " first"
+          },
+          "id": "2dcb9c5558f21329",
+          "type": "add",
+          "after": "2b3e1bef708cb8d3",
+          "date": 1341191723794
         }, {
           "type": "remove",
-          "id": "6d8aca1c97d06674",
-          "date": 1335650117996
+          "id": "2dcb9c5558f21329",
+          "date": 1341191725509
+        }, {
+          "type": "edit",
+          "id": "2b3e1bef708cb8d3",
+          "item": {
+            "type": "paragraph",
+            "id": "2b3e1bef708cb8d3",
+            "text": "A new paragraph is now in first position"
+          },
+          "date": 1341191748944
         }
       ]
     };
-    it('it should shorten the journal', function() {
+    it('an empty page should look like itself', function() {
+      var emptyPage, version;
+      emptyPage = util.emptyPage();
+      version = revision.create(0, emptyPage);
+      return expect(version).to.eql(emptyPage);
+    });
+    it('should shorten the journal to given revision', function() {
       var version;
       version = revision.create(1, data);
       return expect(version.journal.length).to.be(2);
     });
-    return it('it should recover the factory', function() {
+    it('should recreate story on given revision', function() {
       var version;
-      version = revision.create(1, data);
-      return expect(version.story[0].type).to.be('factory');
+      version = revision.create(2, data);
+      expect(version.story.length).to.be(1);
+      return expect(version.story[0].text).to.be('Some paragraph text');
+    });
+    it('should accept revision as string', function() {
+      var version;
+      version = revision.create('1', data);
+      return expect(version.journal.length).to.be(2);
+    });
+    return describe('journal entry types', function() {
+      describe('create', function() {
+        it('should use original title if item has no title', function() {
+          var version;
+          version = revision.create(0, data);
+          return expect(version.title).to.eql('new-page');
+        });
+        return it('should define the title of the version', function() {
+          var pageWithNewTitle, version;
+          pageWithNewTitle = jQuery.extend(true, {}, data);
+          pageWithNewTitle.journal[0].item.title = "new-title";
+          version = revision.create(0, pageWithNewTitle);
+          return expect(version.title).to.eql('new-title');
+        });
+      });
+      describe('add', function() {
+        describe('using a factory', function() {
+          return it('should recover the factory as last item of the story', function() {
+            var version;
+            version = revision.create(1, data);
+            return expect(version.story[0].type).to.be("factory");
+          });
+        });
+        describe('dragging item from another page', function() {
+          it('should place story item on dropped position', function() {
+            var version;
+            version = revision.create(5, data);
+            return expect(version.story[1].text).to.be("Start writing. Read [[How to Wiki]] for more ideas.");
+          });
+          return it('should place story item at the end if dropped position is not defined', function() {
+            var draggedItemWithoutAfter, version;
+            draggedItemWithoutAfter = jQuery.extend(true, {}, data);
+            delete draggedItemWithoutAfter.journal[5].after;
+            version = revision.create(5, draggedItemWithoutAfter);
+            return expect(version.story[2].text).to.be("Start writing. Read [[How to Wiki]] for more ideas.");
+          });
+        });
+        return describe('splitting paragraph', function() {
+          it('should place paragraphs after each other', function() {
+            var version;
+            version = revision.create(8, data);
+            expect(version.story[0].text).to.be('A new paragraph is now');
+            return expect(version.story[1].text).to.be(' first');
+          });
+          return it('should place new paragraph at the end if split item is not defined', function() {
+            var splitParagraphWithoutAfter, version;
+            splitParagraphWithoutAfter = jQuery.extend(true, {}, data);
+            delete splitParagraphWithoutAfter.journal[8].after;
+            version = revision.create(8, splitParagraphWithoutAfter);
+            expect(version.story[0].text).to.be('A new paragraph is now');
+            return expect(version.story[3].text).to.be(' first');
+          });
+        });
+      });
+      describe('edit', function() {
+        it('should replace edited story item', function() {
+          var version;
+          version = revision.create(7, data);
+          return expect(version.story[0].text).to.be('A new paragraph is now');
+        });
+        return it('should place item at the end if edited item is not found', function() {
+          var editedItem, pageWithOnlyEdit, version;
+          pageWithOnlyEdit = util.emptyPage();
+          editedItem = {
+            "type": "paragraph",
+            "id": "2b3e1bef708cb8d3",
+            "text": "A new paragraph"
+          };
+          pageWithOnlyEdit.journal.push({
+            "type": "edit",
+            "id": "2b3e1bef708cb8d3",
+            "item": editedItem,
+            "date": 1341191748944
+          });
+          version = revision.create(1, pageWithOnlyEdit);
+          return expect(version.story[0].text).to.be('A new paragraph');
+        });
+      });
+      describe('move', function() {
+        return it('should reorder the story items according to move order', function() {
+          var version;
+          version = revision.create(5, data);
+          expect(version.story[0].text).to.be('Some paragraph text');
+          expect(version.story[1].text).to.be('Start writing. Read [[How to Wiki]] for more ideas.');
+          expect(version.story[2].text).to.be('A new paragraph after the first');
+          version = revision.create(6, data);
+          expect(version.story[0].text).to.be('A new paragraph after the first');
+          expect(version.story[1].text).to.be('Start writing. Read [[How to Wiki]] for more ideas.');
+          return expect(version.story[2].text).to.be('Some paragraph text');
+        });
+      });
+      return describe('remove', function() {
+        return it('should remove the story item', function() {
+          var version;
+          version = revision.create(8, data);
+          expect(version.story[0].text).to.be('A new paragraph is now');
+          expect(version.story[1].text).to.be(' first');
+          expect(version.story[2].text).to.be('Start writing. Read [[How to Wiki]] for more ideas.');
+          expect(version.story[3].text).to.be('Some paragraph text');
+          version = revision.create(9, data);
+          expect(version.story[0].text).to.be('A new paragraph is now');
+          expect(version.story[1].text).to.be('Start writing. Read [[How to Wiki]] for more ideas.');
+          return expect(version.story[2].text).to.be('Some paragraph text');
+        });
+      });
     });
   });
 
