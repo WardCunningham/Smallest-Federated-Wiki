@@ -8,9 +8,8 @@ create = (revIndex, data) ->
   journal = data.journal
   revTitle = data.title
   revStory = []
-  revJournal = []
-  for journalEntry in journal.slice 0, (+revIndex)+1
-    revJournal.push(journalEntry)
+  revJournal = journal[0..(+revIndex)]
+  for journalEntry in revJournal
     revStoryIds = revStory.map (storyItem) -> storyItem.id
     switch journalEntry.type
       when 'create'
