@@ -167,6 +167,7 @@ class Controller < Sinatra::Base
   end
 
   get %r{^/([a-z0-9-]+)\.html$} do |name|
+    halt 404 unless farm_page.exists?(name)
     haml :page, :locals => { :page => farm_page.get(name), :page_name => name }
   end
 
@@ -343,6 +344,10 @@ class Controller < Sinatra::Base
     else
       RestClient.get "#{site}/favicon.png"
     end
+  end
+
+  not_found do
+    oops 404, "Page not found"
   end
 
 end
