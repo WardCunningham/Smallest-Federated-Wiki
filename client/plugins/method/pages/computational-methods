@@ -1,0 +1,64 @@
+{
+  "title": "Computational Methods",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "c826590fb0580b4f",
+      "text": "We notice that federated sites inherit from others like objects inherit from prototypes. Can we extend the metaphor to computations in a way that makes sense in a wiki?"
+    },
+    {
+      "type": "paragraph",
+      "id": "98f171c28467353b",
+      "text": "[[Computing Bottles of Beer]] on the wall."
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "id": "1cf80bbd88888bf7",
+      "item": {
+        "title": "Computational Methods"
+      },
+      "date": 1342142897275
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "c826590fb0580b4f"
+      },
+      "id": "c826590fb0580b4f",
+      "type": "add",
+      "date": 1342142902230
+    },
+    {
+      "type": "edit",
+      "id": "c826590fb0580b4f",
+      "item": {
+        "type": "paragraph",
+        "id": "c826590fb0580b4f",
+        "text": "We notice that federated sites inherit from others like objects inherit from prototypes. Can we extend the metaphor to computations in a way that makes sense in a wiki?"
+      },
+      "date": 1342143019326
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "98f171c28467353b"
+      },
+      "id": "98f171c28467353b",
+      "type": "add",
+      "after": "c826590fb0580b4f",
+      "date": 1342143022565
+    },
+    {
+      "type": "edit",
+      "id": "98f171c28467353b",
+      "item": {
+        "type": "paragraph",
+        "id": "98f171c28467353b",
+        "text": "[[Computing Bottles of Beer]] on the wall."
+      },
+      "date": 1342143066669
+    }
+  ]
+}

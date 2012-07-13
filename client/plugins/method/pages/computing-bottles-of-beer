@@ -1,0 +1,315 @@
+{
+  "title": "Computing Bottles of Beer",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "49ce95060c207806",
+      "text": "A method keeps a running tally and (re)binds results to names given to computational results."
+    },
+    {
+      "type": "method",
+      "id": "305add93f1f9bcc9",
+      "text": "99 Bottles of Beer on the Wall\n-1 Take One Down Pass it Around\nSUM Bottles of Beer on the Wall\n-1 Take One Down Pass it Around\nSUM Bottles of Beer on the Wall"
+    },
+    {
+      "type": "paragraph",
+      "id": "c5af6f487a7b9907",
+      "text": "The first few characters determine how a line of a method is interpreted."
+    },
+    {
+      "type": "paragraph",
+      "id": "bbcc1f9548618bb4",
+      "text": "A line starting with <b>digits</b> defines a value and contributes that value to the contribution."
+    },
+    {
+      "type": "paragraph",
+      "id": "aec640909082f3b3",
+      "text": "A line starting with <b>words</b> retrieves that value from nearby datasets and contributes it to the computation."
+    },
+    {
+      "type": "paragraph",
+      "id": "f982813c60a78119",
+      "text": "A line starting with <b>all-caps</b> calls out a computation to be applied to previous contributions."
+    },
+    {
+      "type": "paragraph",
+      "id": "f3532c800d9b42ba",
+      "text": "All computations are defined in the <i>apply</i> function inside the method plugin. This limits the things you can say to compute."
+    },
+    {
+      "type": "paragraph",
+      "id": "0c61adb097e329f2",
+      "text": "Say <b>SUM</b> to sum the previous contributions."
+    },
+    {
+      "type": "paragraph",
+      "id": "5072042a5e1ddf59",
+      "text": "Say <b>AVG</b> to average the previous contributions."
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "id": "2fb0e61d16fa04e2",
+      "item": {
+        "title": "Computing Bottles of Beer"
+      },
+      "date": 1342143069184
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "305add93f1f9bcc9"
+      },
+      "id": "305add93f1f9bcc9",
+      "type": "add",
+      "date": 1342143072736
+    },
+    {
+      "type": "edit",
+      "id": "305add93f1f9bcc9",
+      "item": {
+        "type": "method",
+        "id": "305add93f1f9bcc9",
+        "text": "99 Bottles of Beer on the Wall\n-1 Take One Down Pass it Around\nSUM Bottles of Beer on the Wall\n-1 Take One Down Pass it Around\nSUM Bottles of Beer on the Wall"
+      },
+      "date": 1342143132557
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "49ce95060c207806"
+      },
+      "id": "49ce95060c207806",
+      "type": "add",
+      "after": "305add93f1f9bcc9",
+      "date": 1342143147918
+    },
+    {
+      "type": "edit",
+      "id": "49ce95060c207806",
+      "item": {
+        "type": "paragraph",
+        "id": "49ce95060c207806",
+        "text": "A method keeps a running tally and (re)binds results to names given to computational results."
+      },
+      "date": 1342143213385
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "c5af6f487a7b9907",
+        "text": ""
+      },
+      "id": "c5af6f487a7b9907",
+      "type": "add",
+      "after": "49ce95060c207806",
+      "date": 1342143218071
+    },
+    {
+      "type": "edit",
+      "id": "c5af6f487a7b9907",
+      "item": {
+        "type": "paragraph",
+        "id": "c5af6f487a7b9907",
+        "text": "The first few characters determine how a line of a method is interpreted."
+      },
+      "date": 1342143256529
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "bbcc1f9548618bb4",
+        "text": ""
+      },
+      "id": "bbcc1f9548618bb4",
+      "type": "add",
+      "after": "c5af6f487a7b9907",
+      "date": 1342143257033
+    },
+    {
+      "type": "edit",
+      "id": "bbcc1f9548618bb4",
+      "item": {
+        "type": "paragraph",
+        "id": "bbcc1f9548618bb4",
+        "text": "A line starting with digits defines a value and contributes that value to the contribution."
+      },
+      "date": 1342143309062
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "aec640909082f3b3",
+        "text": ""
+      },
+      "id": "aec640909082f3b3",
+      "type": "add",
+      "after": "bbcc1f9548618bb4",
+      "date": 1342143309567
+    },
+    {
+      "type": "edit",
+      "id": "aec640909082f3b3",
+      "item": {
+        "type": "paragraph",
+        "id": "aec640909082f3b3",
+        "text": "A line starting with Title Case words retrieves that value from nearby datasets and contributes it to the computation."
+      },
+      "date": 1342143386244
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "f982813c60a78119",
+        "text": ""
+      },
+      "id": "f982813c60a78119",
+      "type": "add",
+      "after": "aec640909082f3b3",
+      "date": 1342143386748
+    },
+    {
+      "type": "edit",
+      "id": "f982813c60a78119",
+      "item": {
+        "type": "paragraph",
+        "id": "f982813c60a78119",
+        "text": "A line starting with All Caps calls out a computation to be applied to previous contributions."
+      },
+      "date": 1342143529087
+    },
+    {
+      "type": "edit",
+      "id": "bbcc1f9548618bb4",
+      "item": {
+        "type": "paragraph",
+        "id": "bbcc1f9548618bb4",
+        "text": "A line starting with <b>digits</b> defines a value and contributes that value to the contribution."
+      },
+      "date": 1342143542872
+    },
+    {
+      "type": "edit",
+      "id": "aec640909082f3b3",
+      "item": {
+        "type": "paragraph",
+        "id": "aec640909082f3b3",
+        "text": "A line starting with <b>words</b> retrieves that value from nearby datasets and contributes it to the computation."
+      },
+      "date": 1342143575685
+    },
+    {
+      "type": "edit",
+      "id": "f982813c60a78119",
+      "item": {
+        "type": "paragraph",
+        "id": "f982813c60a78119",
+        "text": "A line starting with <b>all-caps</b> calls out a computation to be applied to previous contributions."
+      },
+      "date": 1342143616725
+    },
+    {
+      "type": "move",
+      "order": [
+        "49ce95060c207806",
+        "305add93f1f9bcc9",
+        "c5af6f487a7b9907",
+        "bbcc1f9548618bb4",
+        "aec640909082f3b3",
+        "f982813c60a78119"
+      ],
+      "id": "49ce95060c207806",
+      "date": 1342143626610
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "d2d3f245e53665de",
+        "text": ""
+      },
+      "id": "d2d3f245e53665de",
+      "type": "add",
+      "after": "f982813c60a78119",
+      "date": 1342143776680
+    },
+    {
+      "type": "remove",
+      "id": "d2d3f245e53665de",
+      "date": 1342143791378
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "0c61adb097e329f2",
+        "text": ""
+      },
+      "id": "0c61adb097e329f2",
+      "type": "add",
+      "after": "f982813c60a78119",
+      "date": 1342143793648
+    },
+    {
+      "type": "edit",
+      "id": "0c61adb097e329f2",
+      "item": {
+        "type": "paragraph",
+        "id": "0c61adb097e329f2",
+        "text": "Say SUM to sum the previous contributions."
+      },
+      "date": 1342143808248
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "5072042a5e1ddf59",
+        "text": ""
+      },
+      "id": "5072042a5e1ddf59",
+      "type": "add",
+      "after": "0c61adb097e329f2",
+      "date": 1342143808752
+    },
+    {
+      "type": "edit",
+      "id": "5072042a5e1ddf59",
+      "item": {
+        "type": "paragraph",
+        "id": "5072042a5e1ddf59",
+        "text": "Say <b>AVG</b> to average the previous contributions."
+      },
+      "date": 1342143829319
+    },
+    {
+      "type": "edit",
+      "id": "0c61adb097e329f2",
+      "item": {
+        "type": "paragraph",
+        "id": "0c61adb097e329f2",
+        "text": "Say <b>SUM</b> to sum the previous contributions."
+      },
+      "date": 1342143837848
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "f3532c800d9b42ba",
+        "text": ""
+      },
+      "id": "f3532c800d9b42ba",
+      "type": "add",
+      "after": "f982813c60a78119",
+      "date": 1342143854463
+    },
+    {
+      "type": "edit",
+      "id": "f3532c800d9b42ba",
+      "item": {
+        "type": "paragraph",
+        "id": "f3532c800d9b42ba",
+        "text": "All computations are defined in the <i>apply</i> function inside the method plugin. This limits the things you can say to compute."
+      },
+      "date": 1342143963972
+    }
+  ]
+}
