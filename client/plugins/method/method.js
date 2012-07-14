@@ -3,10 +3,19 @@
   window.plugins.method = {
     emit: function(div, item) {},
     bind: function(div, item) {
-      var annotate, avg, calculate, data, input, output, round, sum;
-      data = [];
+      var annotate, avg, calculate, candidates, elem, input, output, round, sum, _i, _len;
       input = {};
       output = {};
+      candidates = $(".item:lt(" + ($('.item').index(div)) + ")");
+      for (_i = 0, _len = candidates.length; _i < _len; _i++) {
+        elem = candidates[_i];
+        elem = $(elem);
+        if (elem.hasClass('radar-source')) {
+          _.extend(input, elem.get(0).radarData());
+        } else if (elem.hasClass('data')) {
+          _.extend(input, elem.data('item').data[0]);
+        }
+      }
       div.addClass('radar-source');
       div.get(0).radarData = function() {
         return output;
@@ -49,7 +58,7 @@
           if (line == null) return done(report);
           next_dispatch = function() {
             if ((value != null) && !isNaN(+value)) list.push(+value);
-            report.push("<tr style=\"background:" + color + ";\"><td style=\"width: 20%;\"><b>" + (round(value)) + "</b><td>" + line + (annotate(comment)));
+            report.push("<tr style=\"background:" + color + ";\"><td style=\"width: 20%; text-align: right;\"><b>" + (round(value)) + "</b><td>" + line + (annotate(comment)));
             return dispatch(list, allocated, lines, report, done);
           };
           apply = function(name, list) {
@@ -64,14 +73,7 @@
             }
           };
           try {
-            if (args = line.match(/^USE ([\w ]+)$/)) {
-              color = '#ddd';
-              value = ' ';
-              return attach((line = args[1]), function(new_data) {
-                data = new_data;
-                return next_dispatch();
-              });
-            } else if (args = line.match(/^(-?[0-9.]+) ([\w ]+)$/)) {
+            if (args = line.match(/^(-?[0-9.]+) ([\w ]+)$/)) {
               result = hours = +args[1];
               line = args[2];
               output[line] = value = result;
@@ -81,13 +83,19 @@
               output[line] = value;
             } else if (args = line.match(/^([A-Z]+)$/)) {
               _ref2 = [apply(args[1], list), []], value = _ref2[0], list = _ref2[1];
-            } else if (input[line] != null) {
-              value = input[line];
-              comment = input["" + line + " Assumptions"] || null;
             } else if (line.match(/^[0-9\.-]+$/)) {
               value = +line;
+              line = '';
+            } else if (line.match(/^([\w ]+)$/)) {
+              if (input[line] != null) {
+                value = input[line];
+              } else {
+                color = '#edd';
+                comment = "can't find value of '" + line + "'";
+              }
             } else {
               color = '#edd';
+              comment = "can't parse '" + line + "'";
             }
           } catch (err) {
             color = '#edd';

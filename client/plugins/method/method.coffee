@@ -2,40 +2,22 @@ window.plugins.method =
   emit: (div, item) ->
   bind: (div, item) ->
 
-    data = []
     input = {}
     output = {}
+
+    candidates = $(".item:lt(#{$('.item').index(div)})")
+    for elem in candidates
+      elem = $(elem)
+      if elem.hasClass 'radar-source'
+        _.extend input, elem.get(0).radarData()
+      else if elem.hasClass 'data'
+        _.extend input, elem.data('item').data[0]
 
     div.addClass 'radar-source'
     div.get(0).radarData = -> output
     div.mousemove (e) -> $(div).triggerHandler('thumb', $(e.target).text())
 
     # http://stella.laurenzo.org/2011/03/bulletproof-node-js-coding/
-
-    # attach = (search,callback = ->) ->
-    #   for elem in wiki.getDataNodes div
-    #     if (source = $(elem).data('item')).text.indexOf(search) >= 0
-    #       new_data = _.select source.data, (row) -> row.Activity?
-    #       return callback new_data
-    #   $.get "/data/#{search}", (page) ->
-    #     throw new Error "can't find dataset '#{s}'" unless page
-    #     for obj in page.story
-    #       if obj.type == 'data' && obj.text? && obj.text.indexOf(search) >= 0
-    #         new_data = _.select obj.data, (row) -> row.Activity?
-    #         return callback new_data
-    #     throw new Error "can't find dataset '#{s}' in '#{page.title}'"
-
-
-    # query = (s) ->
-    #   keys = $.trim(s).split ' '
-    #   choices = data
-    #   for k in keys
-    #     next if k == ' '
-    #     n = choices.length
-    #     choices = _.select choices, (row) ->
-    #       row.Activity.indexOf(k) >= 0 || row.Category.indexOf(k) >= 0
-    #     throw new Error "Can't find #{k} in remaining #{n} choices" if choices.length == 0
-    #   choices
 
     sum = (v) ->
       _.reduce v, (s,n) -> s += n
@@ -69,7 +51,7 @@ window.plugins.method =
 
         next_dispatch = ->
           list.push +value if value? and ! isNaN +value
-          report.push "<tr style=\"background:#{color};\"><td style=\"width: 20%;\"><b>#{round value}</b><td>#{line}#{annotate comment}"
+          report.push "<tr style=\"background:#{color};\"><td style=\"width: 20%; text-align: right;\"><b>#{round value}</b><td>#{line}#{annotate comment}"
           dispatch list, allocated, lines, report, done
 
         apply = (name, list) ->
@@ -83,13 +65,7 @@ window.plugins.method =
             color = '#edd'
 
         try
-          if args = line.match /^USE ([\w ]+)$/
-            color = '#ddd'
-            value = ' '
-            return attach (line = args[1]), (new_data) ->
-              data = new_data
-              next_dispatch()
-          else if args = line.match /^(-?[0-9.]+) ([\w ]+)$/
+          if args = line.match /^(-?[0-9.]+) ([\w ]+)$/
             result = hours = +args[1]
             line = args[2]
             output[line] = value = result
@@ -99,13 +75,18 @@ window.plugins.method =
             output[line] = value
           else if args = line.match /^([A-Z]+)$/
             [value, list] = [apply(args[1], list), []]
-          else if input[line]?
-            value = input[line]
-            comment = input["#{line} Assumptions"] || null
           else if line.match /^[0-9\.-]+$/
             value = +line
+            line = ''
+          else if line.match /^([\w ]+)$/
+            if input[line]?
+              value = input[line]
+            else
+              color = '#edd'
+              comment = "can't find value of '#{line}'"
           else
             color = '#edd'
+            comment = "can't parse '#{line}'"
         catch err
           color = '#edd'
           value = null

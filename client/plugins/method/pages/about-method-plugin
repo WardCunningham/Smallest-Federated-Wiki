@@ -1,0 +1,351 @@
+{
+  "title": "About Method Plugin",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "df8885c094fc1710",
+      "text": "The Method plugin keeps a running tally of calculations expressed as a series of lines. "
+    },
+    {
+      "type": "method",
+      "id": "682d22af9d46f3a5",
+      "text": "2\n3\nSUM"
+    },
+    {
+      "type": "paragraph",
+      "id": "cd9bdca1991d8090",
+      "text": "See [[Bottles of Beer Methods]] for examples."
+    },
+    {
+      "type": "paragraph",
+      "id": "c6c02f7fae9f4f03",
+      "text": "<h3>Lines"
+    },
+    {
+      "type": "paragraph",
+      "id": "c5af6f487a7b9907",
+      "text": "The first few characters determine how a line of a method is interpreted."
+    },
+    {
+      "type": "paragraph",
+      "id": "bbcc1f9548618bb4",
+      "text": "A line starting with <b>digits</b> defines a value and contributes that value to the contribution."
+    },
+    {
+      "type": "paragraph",
+      "id": "aec640909082f3b3",
+      "text": "A line starting with <b>words</b> retrieves that value from nearby datasets and contributes it to the computation."
+    },
+    {
+      "type": "paragraph",
+      "id": "f982813c60a78119",
+      "text": "A line starting with <b>all-caps</b> calls out a computation to be applied to previous contributions."
+    },
+    {
+      "type": "paragraph",
+      "id": "9b5e3d7a7cc65329",
+      "text": "Defined values and computation results are available to subsequent methods by the name that follows on the remainder of the line."
+    },
+    {
+      "type": "paragraph",
+      "id": "69084bb462636274",
+      "text": "<h3>Computations"
+    },
+    {
+      "type": "paragraph",
+      "id": "f3532c800d9b42ba",
+      "text": "All computations are defined in the <i>apply</i> function inside the method plugin. This limits the things you can say to compute."
+    },
+    {
+      "type": "paragraph",
+      "id": "0c61adb097e329f2",
+      "text": "Say <b>SUM</b> to sum the previous contributions."
+    },
+    {
+      "type": "paragraph",
+      "id": "5072042a5e1ddf59",
+      "text": "Say <b>AVG</b> to average the previous contributions."
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "id": "4e4c68f08db85513",
+      "item": {
+        "title": "About Method Plugin"
+      },
+      "date": 1342299574825
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "df8885c094fc1710"
+      },
+      "id": "df8885c094fc1710",
+      "type": "add",
+      "date": 1342299623556
+    },
+    {
+      "type": "edit",
+      "id": "df8885c094fc1710",
+      "item": {
+        "type": "paragraph",
+        "id": "df8885c094fc1710",
+        "text": "The Method plugin keeps a running tally of calculations expressed as a series of lines. "
+      },
+      "date": 1342299755963
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "c5af6f487a7b9907",
+        "text": "The first few characters determine how a line of a method is interpreted."
+      },
+      "after": "df8885c094fc1710",
+      "id": "c5af6f487a7b9907",
+      "date": 1342299808946
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "bbcc1f9548618bb4",
+        "text": "A line starting with <b>digits</b> defines a value and contributes that value to the contribution."
+      },
+      "after": "c5af6f487a7b9907",
+      "id": "bbcc1f9548618bb4",
+      "date": 1342299813219
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "aec640909082f3b3",
+        "text": "A line starting with <b>words</b> retrieves that value from nearby datasets and contributes it to the computation."
+      },
+      "after": "bbcc1f9548618bb4",
+      "id": "aec640909082f3b3",
+      "date": 1342299816951
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "f982813c60a78119",
+        "text": "A line starting with <b>all-caps</b> calls out a computation to be applied to previous contributions."
+      },
+      "after": "aec640909082f3b3",
+      "id": "f982813c60a78119",
+      "date": 1342299820710
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "69084bb462636274"
+      },
+      "id": "69084bb462636274",
+      "type": "add",
+      "after": "f982813c60a78119",
+      "date": 1342299854521
+    },
+    {
+      "type": "edit",
+      "id": "69084bb462636274",
+      "item": {
+        "type": "paragraph",
+        "id": "69084bb462636274",
+        "text": "<h3>Functions"
+      },
+      "date": 1342299862952
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "c503148a4552be44",
+        "text": ""
+      },
+      "id": "c503148a4552be44",
+      "type": "add",
+      "after": "69084bb462636274",
+      "date": 1342299863458
+    },
+    {
+      "type": "remove",
+      "id": "c503148a4552be44",
+      "date": 1342299872239
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "f3532c800d9b42ba",
+        "text": "All computations are defined in the <i>apply</i> function inside the method plugin. This limits the things you can say to compute."
+      },
+      "after": "69084bb462636274",
+      "id": "f3532c800d9b42ba",
+      "date": 1342299877382
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "0c61adb097e329f2",
+        "text": "Say <b>SUM</b> to sum the previous contributions."
+      },
+      "after": "f3532c800d9b42ba",
+      "id": "0c61adb097e329f2",
+      "date": 1342299880545
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "5072042a5e1ddf59",
+        "text": "Say <b>AVG</b> to average the previous contributions."
+      },
+      "after": "0c61adb097e329f2",
+      "id": "5072042a5e1ddf59",
+      "date": 1342299884412
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "c6c02f7fae9f4f03",
+        "text": ""
+      },
+      "id": "c6c02f7fae9f4f03",
+      "type": "add",
+      "after": "df8885c094fc1710",
+      "date": 1342299906950
+    },
+    {
+      "type": "edit",
+      "id": "c6c02f7fae9f4f03",
+      "item": {
+        "type": "paragraph",
+        "id": "c6c02f7fae9f4f03",
+        "text": "<h3>Lines"
+      },
+      "date": 1342299938286
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "method",
+        "id": "682d22af9d46f3a5",
+        "text": "2\n3\nSUM"
+      },
+      "after": "df8885c094fc1710",
+      "id": "682d22af9d46f3a5",
+      "date": 1342300170634
+    },
+    {
+      "type": "edit",
+      "id": "69084bb462636274",
+      "item": {
+        "type": "paragraph",
+        "id": "69084bb462636274",
+        "text": "<h3>Computations"
+      },
+      "date": 1342300258893
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "9b5e3d7a7cc65329",
+        "text": ""
+      },
+      "id": "9b5e3d7a7cc65329",
+      "type": "add",
+      "after": "f982813c60a78119",
+      "date": 1342300265324
+    },
+    {
+      "type": "edit",
+      "id": "9b5e3d7a7cc65329",
+      "item": {
+        "type": "paragraph",
+        "id": "9b5e3d7a7cc65329",
+        "text": "Defined values and computation results are available to subsequent methods by the name that follow on the remainder of the line."
+      },
+      "date": 1342300385888
+    },
+    {
+      "type": "edit",
+      "id": "9b5e3d7a7cc65329",
+      "item": {
+        "type": "paragraph",
+        "id": "9b5e3d7a7cc65329",
+        "text": "Defined values and computation results are available to subsequent methods by the name that follows on the remainder of the line."
+      },
+      "date": 1342300466198
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "cd9bdca1991d8090"
+      },
+      "id": "cd9bdca1991d8090",
+      "type": "add",
+      "after": "5072042a5e1ddf59",
+      "date": 1342300499728
+    },
+    {
+      "type": "edit",
+      "id": "cd9bdca1991d8090",
+      "item": {
+        "type": "paragraph",
+        "id": "cd9bdca1991d8090",
+        "text": "<h3>Examples"
+      },
+      "date": 1342300511686
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "08ff531bbe482a54",
+        "text": ""
+      },
+      "id": "08ff531bbe482a54",
+      "type": "add",
+      "after": "cd9bdca1991d8090",
+      "date": 1342300512190
+    },
+    {
+      "type": "remove",
+      "id": "08ff531bbe482a54",
+      "date": 1342300531227
+    },
+    {
+      "type": "edit",
+      "id": "cd9bdca1991d8090",
+      "item": {
+        "type": "paragraph",
+        "id": "cd9bdca1991d8090",
+        "text": "See [[Bottles of Beer Methods]] for examples."
+      },
+      "date": 1342300620922
+    },
+    {
+      "type": "move",
+      "order": [
+        "df8885c094fc1710",
+        "682d22af9d46f3a5",
+        "cd9bdca1991d8090",
+        "c6c02f7fae9f4f03",
+        "c5af6f487a7b9907",
+        "bbcc1f9548618bb4",
+        "aec640909082f3b3",
+        "f982813c60a78119",
+        "9b5e3d7a7cc65329",
+        "69084bb462636274",
+        "f3532c800d9b42ba",
+        "0c61adb097e329f2",
+        "5072042a5e1ddf59"
+      ],
+      "id": "cd9bdca1991d8090",
+      "date": 1342300642257
+    }
+  ]
+}
