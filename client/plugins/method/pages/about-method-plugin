@@ -18,6 +18,11 @@
     },
     {
       "type": "paragraph",
+      "id": "942ad9155083e706",
+      "text": "See [https://github.com/WardCunningham/Smallest-Federated-Wiki/tree/master/client/plugins/method GitHub] for plugin source."
+    },
+    {
+      "type": "paragraph",
       "id": "c6c02f7fae9f4f03",
       "text": "<h3>Lines"
     },
@@ -346,6 +351,57 @@
       ],
       "id": "cd9bdca1991d8090",
       "date": 1342300642257
+    },
+    {
+      "type": "edit",
+      "id": "cd9bdca1991d8090",
+      "item": {
+        "type": "paragraph",
+        "id": "cd9bdca1991d8090",
+        "text": "See [[Bottles of Beer Methods]] for examples, see [https://github.com/WardCunningham/Smallest-Federated-Wiki/tree/master/client/plugins/method GitHub] for plugin source."
+      },
+      "date": 1342305418293
+    },
+    {
+      "type": "edit",
+      "id": "cd9bdca1991d8090",
+      "item": {
+        "type": "paragraph",
+        "id": "cd9bdca1991d8090",
+        "text": "See [[Bottles of Beer Methods]] for examples, [https://github.com/WardCunningham/Smallest-Federated-Wiki/tree/master/client/plugins/method GitHub] for plugin source."
+      },
+      "date": 1342305486675
+    },
+    {
+      "type": "edit",
+      "id": "cd9bdca1991d8090",
+      "item": {
+        "type": "paragraph",
+        "id": "cd9bdca1991d8090",
+        "text": "See [[Bottles of Beer Methods]] for examples."
+      },
+      "date": 1342305558939
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "942ad9155083e706",
+        "text": " [https://github.com/WardCunningham/Smallest-Federated-Wiki/tree/master/client/plugins/method GitHub] for plugin source."
+      },
+      "id": "942ad9155083e706",
+      "type": "add",
+      "after": "cd9bdca1991d8090",
+      "date": 1342305559445
+    },
+    {
+      "type": "edit",
+      "id": "942ad9155083e706",
+      "item": {
+        "type": "paragraph",
+        "id": "942ad9155083e706",
+        "text": "See [https://github.com/WardCunningham/Smallest-Federated-Wiki/tree/master/client/plugins/method GitHub] for plugin source."
+      },
+      "date": 1342305561842
     }
   ]
 }
