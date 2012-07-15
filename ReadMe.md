@@ -26,7 +26,11 @@ First you will want to get caught up with some project history. We've been recor
 
 * http://wardcunningham.github.com
 
-Then you will want to read through the project roadmap. This and a number of other forward looking pages are kept in the project's GitHub wiki:
+Then you may want to read through the end-user how-to documentation which is itself written in a federated wiki:
+
+* http://fed.wiki.org/how-to-wiki.html
+
+Once you know where we are and how we got there, you could peruse the project roadmap. This and a number of other forward looking pages are kept in the project's GitHub wiki:
 
 * [Project Roadmap](https://github.com/WardCunningham/Smallest-Federated-Wiki/wiki)
 * [List of Wiki Pages](https://github.com/WardCunningham/Smallest-Federated-Wiki/wiki/_pages)
