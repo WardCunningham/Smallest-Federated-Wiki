@@ -1,0 +1,304 @@
+{
+  "title": "About MathJax Plugin",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "1f4c86f9fa066640",
+      "text": "The MathJax plugin renders LaTeX mathematical notation imbedded within an otherwise normal paragraph."
+    },
+    {
+      "type": "mathjax",
+      "id": "e3fec2556bc095f6",
+      "text": "Probability of getting \\(k\\) heads when flipping \\(n\\) coins\n\\[ P(E) = {n \\choose k} p^k (1-p)^{ n-k } \\]"
+    },
+    {
+      "type": "paragraph",
+      "id": "5d3817548c32cb38",
+      "text": "Read about the MathJax display engine at [http://www.mathjax.org/ mathjax.org]."
+    },
+    {
+      "type": "paragraph",
+      "id": "1734820a1be9fce6",
+      "text": "See [https://github.com/hng/Smallest-Federated-Wiki/tree/master/client/plugins/mathjax GitHub] for plugin source."
+    },
+    {
+      "type": "paragraph",
+      "id": "7b6da595c4441d1b",
+      "text": "<h3>Escapes"
+    },
+    {
+      "type": "paragraph",
+      "id": "0ec67ffa5abf3384",
+      "text": "Enclose LaTeX within <b>backslashed parens</b> when you want to imbed an expression fragment within running text."
+    },
+    {
+      "type": "paragraph",
+      "id": "952bbfe603e3eac5",
+      "text": "Enclose LaTeX within <b>backslashed square brackets</b> when you want to write complete expressions on lines by themselves."
+    },
+    {
+      "type": "paragraph",
+      "id": "e82ffe59fe537c54",
+      "text": "<h3>Limitations"
+    },
+    {
+      "type": "paragraph",
+      "id": "c36b8db6fdf61c20",
+      "text": "The engine expects to scan a complete html page for escapes. The plugin makes use of the advanced engine api attempting to focus the engine on only recently rendered items of type mathjax. "
+    },
+    {
+      "type": "paragraph",
+      "id": "e8482440f4be2a73",
+      "text": "We load the engine from the MathJax content deliver network (cdn). This means that a laptop based wiki will not render LaTeX unless the laptop also has network connectivity."
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "id": "3ec0daa7d893563d",
+      "item": {
+        "title": "About MathJax Plugin"
+      },
+      "date": 1342315153889
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "1f4c86f9fa066640"
+      },
+      "id": "1f4c86f9fa066640",
+      "type": "add",
+      "date": 1342315182159
+    },
+    {
+      "type": "edit",
+      "id": "1f4c86f9fa066640",
+      "item": {
+        "type": "paragraph",
+        "id": "1f4c86f9fa066640",
+        "text": "The MathJax plugin renders LaTex mathematical notation imbedded within an otherwise normal paragraph."
+      },
+      "date": 1342315311811
+    },
+    {
+      "type": "edit",
+      "id": "1f4c86f9fa066640",
+      "item": {
+        "type": "paragraph",
+        "id": "1f4c86f9fa066640",
+        "text": "The MathJax plugin renders LaTeX mathematical notation imbedded within an otherwise normal paragraph."
+      },
+      "date": 1342315412288
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "5d3817548c32cb38"
+      },
+      "id": "5d3817548c32cb38",
+      "type": "add",
+      "after": "1f4c86f9fa066640",
+      "date": 1342315414250
+    },
+    {
+      "type": "edit",
+      "id": "5d3817548c32cb38",
+      "item": {
+        "type": "paragraph",
+        "id": "5d3817548c32cb38",
+        "text": "Read about the MathJax display engine at [http://www.mathjax.org/ mathjax.org]."
+      },
+      "date": 1342315449119
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "mathjax",
+        "id": "e3fec2556bc095f6",
+        "text": "Probability of getting \\(k\\) heads when flipping \\(n\\) coins\n\\[ P(E) = {n \\choose k} p^k (1-p)^{ n-k } \\]"
+      },
+      "after": "1f4c86f9fa066640",
+      "id": "e3fec2556bc095f6",
+      "date": 1342315501907
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "7b6da595c4441d1b"
+      },
+      "id": "7b6da595c4441d1b",
+      "type": "add",
+      "after": "5d3817548c32cb38",
+      "date": 1342315571737
+    },
+    {
+      "type": "edit",
+      "id": "7b6da595c4441d1b",
+      "item": {
+        "type": "paragraph",
+        "id": "7b6da595c4441d1b",
+        "text": "<h3>Escapes"
+      },
+      "date": 1342315592298
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "0ec67ffa5abf3384"
+      },
+      "id": "0ec67ffa5abf3384",
+      "type": "add",
+      "after": "7b6da595c4441d1b",
+      "date": 1342315596152
+    },
+    {
+      "type": "edit",
+      "id": "0ec67ffa5abf3384",
+      "item": {
+        "type": "paragraph",
+        "id": "0ec67ffa5abf3384",
+        "text": "Enclose LaTeX within <b>backslashed parens</b> when you want to imbed an expression fragment within running text."
+      },
+      "date": 1342315704895
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "952bbfe603e3eac5",
+        "text": ""
+      },
+      "id": "952bbfe603e3eac5",
+      "type": "add",
+      "after": "0ec67ffa5abf3384",
+      "date": 1342315705400
+    },
+    {
+      "type": "edit",
+      "id": "952bbfe603e3eac5",
+      "item": {
+        "type": "paragraph",
+        "id": "952bbfe603e3eac5",
+        "text": "Enclose LaTeX within backslashed square brackets</b> when you want to write complete expressions on lines by themselves."
+      },
+      "date": 1342315750566
+    },
+    {
+      "type": "edit",
+      "id": "952bbfe603e3eac5",
+      "item": {
+        "type": "paragraph",
+        "id": "952bbfe603e3eac5",
+        "text": "Enclose LaTeX within <b>backslashed square brackets</b> when you want to write complete expressions on lines by themselves."
+      },
+      "date": 1342315758206
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "0495785ef34f065b"
+      },
+      "id": "0495785ef34f065b",
+      "type": "add",
+      "after": "952bbfe603e3eac5",
+      "date": 1342316068284
+    },
+    {
+      "type": "remove",
+      "id": "0495785ef34f065b",
+      "date": 1342316113739
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "e82ffe59fe537c54",
+        "text": ""
+      },
+      "id": "e82ffe59fe537c54",
+      "type": "add",
+      "after": "952bbfe603e3eac5",
+      "date": 1342316116636
+    },
+    {
+      "type": "edit",
+      "id": "e82ffe59fe537c54",
+      "item": {
+        "type": "paragraph",
+        "id": "e82ffe59fe537c54",
+        "text": "The engine expects to scan a complete html page for escapes. The plugin makes use of the advanced engine api attempting to focus the engine on only recently rendered items of type mathjax. "
+      },
+      "date": 1342316269016
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "e8482440f4be2a73"
+      },
+      "id": "e8482440f4be2a73",
+      "type": "add",
+      "after": "e82ffe59fe537c54",
+      "date": 1342316300470
+    },
+    {
+      "type": "edit",
+      "id": "e8482440f4be2a73",
+      "item": {
+        "type": "paragraph",
+        "id": "e8482440f4be2a73",
+        "text": "We load the engine from the MathJax content deliver network (cdn). This means that a laptop based wiki will not render LaTeX unless the laptop has network connectivity."
+      },
+      "date": 1342316425507
+    },
+    {
+      "type": "edit",
+      "id": "e82ffe59fe537c54",
+      "item": {
+        "type": "paragraph",
+        "id": "e82ffe59fe537c54",
+        "text": "<h3>Limitations"
+      },
+      "date": 1342316445330
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "c36b8db6fdf61c20",
+        "text": "The engine expects to scan a complete html page for escapes. The plugin makes use of the advanced engine api attempting to focus the engine on only recently rendered items of type mathjax. "
+      },
+      "id": "c36b8db6fdf61c20",
+      "type": "add",
+      "after": "e82ffe59fe537c54",
+      "date": 1342316445836
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "1734820a1be9fce6",
+        "text": ""
+      },
+      "id": "1734820a1be9fce6",
+      "type": "add",
+      "after": "5d3817548c32cb38",
+      "date": 1342316532188
+    },
+    {
+      "type": "edit",
+      "id": "1734820a1be9fce6",
+      "item": {
+        "type": "paragraph",
+        "id": "1734820a1be9fce6",
+        "text": "See [https://github.com/hng/Smallest-Federated-Wiki/tree/master/client/plugins/mathjax GitHub] for plugin source."
+      },
+      "date": 1342316546408
+    },
+    {
+      "type": "edit",
+      "id": "e8482440f4be2a73",
+      "item": {
+        "type": "paragraph",
+        "id": "e8482440f4be2a73",
+        "text": "We load the engine from the MathJax content deliver network (cdn). This means that a laptop based wiki will not render LaTeX unless the laptop also has network connectivity."
+      },
+      "date": 1342316599269
+    }
+  ]
+}
