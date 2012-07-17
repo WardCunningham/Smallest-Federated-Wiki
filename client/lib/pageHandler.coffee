@@ -69,17 +69,18 @@ pushToServer = (pageElement, action) ->
 
 pageHandler.put = (pageElement, action) ->
   action.date = (new Date()).getTime()
-  if action.type != 'fork' and (site = pageElement.data('site'))?
-    # bundle implicit fork with next action
-    action.fork = site
+  if (site = pageElement.data('site'))?
     pageElement.find('h1 img').attr('src', '/favicon.png')
     pageElement.find('h1 a').attr('href', '/')
     pageElement.data('site', null)
     state.setUrl()
-    wiki.addToJournal pageElement.find('.journal'),
-      type: 'fork'
-      site: site
-      date: action.date
+    if action.type != 'fork'
+      # bundle implicit fork with next action
+      action.fork = site
+      wiki.addToJournal pageElement.find('.journal'),
+        type: 'fork'
+        site: site
+        date: action.date
   if wiki.useLocalStorage()
     pushToLocal(pageElement, action)
     pageElement.addClass("local")

@@ -829,17 +829,19 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
   pageHandler.put = function(pageElement, action) {
     var site;
     action.date = (new Date()).getTime();
-    if (action.type !== 'fork' && ((site = pageElement.data('site')) != null)) {
-      action.fork = site;
+    if ((site = pageElement.data('site')) != null) {
       pageElement.find('h1 img').attr('src', '/favicon.png');
       pageElement.find('h1 a').attr('href', '/');
       pageElement.data('site', null);
       state.setUrl();
-      wiki.addToJournal(pageElement.find('.journal'), {
-        type: 'fork',
-        site: site,
-        date: action.date
-      });
+      if (action.type !== 'fork') {
+        action.fork = site;
+        wiki.addToJournal(pageElement.find('.journal'), {
+          type: 'fork',
+          site: site,
+          date: action.date
+        });
+      }
     }
     if (wiki.useLocalStorage()) {
       pushToLocal(pageElement, action);
