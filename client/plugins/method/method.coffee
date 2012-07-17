@@ -79,7 +79,9 @@ window.plugins.method =
             value = +line
             line = ''
           else if line.match /^([\w ]+)$/
-            if input[line]?
+            if output[line]?
+              value = output[line]
+            else if input[line]?
               value = input[line]
             else
               color = '#edd'

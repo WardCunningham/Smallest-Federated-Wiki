@@ -96,7 +96,9 @@
               value = +line;
               line = '';
             } else if (line.match(/^([\w ]+)$/)) {
-              if (input[line] != null) {
+              if (output[line] != null) {
+                value = output[line];
+              } else if (input[line] != null) {
                 value = input[line];
               } else {
                 color = '#edd';
