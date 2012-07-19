@@ -1,36 +1,52 @@
-def asSlug (name)
-  name.gsub(/\s/, '-').gsub(/[^A-Za-z0-9-]/, '').downcase()
-end
+# encoding: UTF-8
+require "rspec"
+require_relative "../server/sinatra/slug"
 
 def section (comment)
-  puts "\n\t#{comment}\n"
+  $section = comment
+  $counter = 0
 end
 
 def test (given, expected)
-  actual = asSlug given
-  puts actual == expected ? "OK\t#{given}" : "YIKES\t#{given} => #{actual}, not #{expected} as expected"
+  describe ".slug - #{$section} (#{$counter+=1})" do
+    it "should convert the string #{given.inspect} to the slug #{expected.inspect}" do
+      FedWiki.slug(given).should == expected
+    end
+  end
 end
 
 # the following test cases presume to be implementation language agnostic
 # perhaps they should be included from a common file
 
-# 'WORKING'
 section 'case and hyphen insensitive'
 test 'Welcome Visitors', 'welcome-visitors'
 test 'welcome visitors', 'welcome-visitors'
 test 'Welcome-visitors', 'welcome-visitors'
+test 'slugs-are-unchanged', 'slugs-are-unchanged'
 
-
-section 'numbers and punctuation'
-test '2012 Report', '2012-report'
+section 'special characters'
 test 'Ward\'s Wiki', 'wards-wiki'
+test 'O\'malley', 'omalley'
+test 'holy cats !!! you don\'t say', 'holy-cats-you-dont-say'
+test '---holy cats !!! -- !@#$%^&*()_{}|:"<>?~"', 'holy-cats'
+test 'random chars: !@#$%^&*()_{}|:"<>?~"', 'random-chars'
+test 'Pride & Prejudice', 'pride-prejudice'
+test '---', ''
+test '   ', ''
+test ' - - - - ', ''
 
-# 'PROBLEMATIC'
 section 'white space insenstive'
 test 'Welcome  Visitors', 'welcome-visitors'
 test '  Welcome Visitors', 'welcome-visitors'
 test 'Welcome Visitors  ', 'welcome-visitors'
 
-section 'foreign language'
+section 'alphanumeric extended chars'
 test 'Les Misérables', 'les-misérables'
-test 'Les Misérables', 'les-miserables'
+test 'ßøåƒ', 'ßøåƒ'
+
+section 'alphanumeric extended chars are not lowercased'
+test 'ÀÁÂÃÅĀ', 'ÀÁÂÃÅĀ'
+
+section 'non-alphanumeric extended chars'
+test '∑®†©¥', ''
+

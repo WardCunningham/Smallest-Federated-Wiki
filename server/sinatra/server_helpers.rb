@@ -1,3 +1,5 @@
+require_relative 'slug'
+
 module ServerHelpers
 
   def cross_origin
@@ -9,9 +11,7 @@ module ServerHelpers
       gsub(/\[\[([^\]]+)\]\]/i) {
                   |name|
                   name.gsub!(/^\[\[(.*)\]\]/, '\1')
-
-                  slug = name.gsub(/\s/, '-')
-                  slug = slug.gsub(/[^A-Za-z0-9-]/, '').downcase
+                  slug = FedWiki.slug(name)
                   '<a class="internal" href="/'+slug+'.html" data-page-name="'+slug+'">'+name+'</a>'
               }.
       gsub(/\[(http.*?) (.*?)\]/i, '<a class="external" href="\1">\2</a>')
