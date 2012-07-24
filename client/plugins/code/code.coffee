@@ -1,8 +1,8 @@
 class window.plugins.code
   load = (callback) ->
-    wiki.getScript '/js/google-code-prettify/prettify.js', callback
+    wiki.getScript '/plugins/code/prettify.js', callback
     $('<style type="text/css"></style>')
-      .html('@import url("/js/google-code-prettify/prettify.css")')
+      .html('@import url("/plugins/code/prettify.css")')
       .appendTo("head");
    
   @emit: (div, item) ->

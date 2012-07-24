@@ -7,8 +7,8 @@
     function code() {}
 
     load = function(callback) {
-      wiki.getScript('/js/google-code-prettify/prettify.js', callback);
-      return $('<style type="text/css"></style>').html('@import url("/js/google-code-prettify/prettify.css")').appendTo("head");
+      wiki.getScript('/plugins/code/prettify.js', callback);
+      return $('<style type="text/css"></style>').html('@import url("/plugins/code/prettify.css")').appendTo("head");
     };
 
     code.emit = function(div, item) {
