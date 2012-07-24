@@ -1,5 +1,23 @@
 module.exports = util = {}
 
+util.symbols =
+  create: '☼'
+  add: '+'
+  edit: '✎'
+  fork: '⚑'
+  move: '↕'
+  remove: '✕'
+
+util.resolveLinks = (string) ->
+  renderInternalLink = (match, name) ->
+    # spaces become 'slugs', non-alpha-num get removed
+    slug = util.asSlug name
+    wiki.log 'resolve', slug, 'context', wiki.resolutionContext.join(' => ')
+    "<a class=\"internal\" href=\"/#{slug}.html\" data-page-name=\"#{slug}\" title=\"#{wiki.resolutionContext.join(' => ')}\">#{name}</a>"
+  string
+    .replace(/\[\[([^\]]+)\]\]/gi, renderInternalLink)
+    .replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" target=\"_blank\" href=\"$1\">$2</a>")
+
 util.randomByte = ->
   (((1+Math.random())*0x100)|0).toString(16).substring(1)
 

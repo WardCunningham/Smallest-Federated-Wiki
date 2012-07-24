@@ -5,6 +5,9 @@ window.wiki = {}
 wiki.log = (things...) ->
   console.log things if console?.log?
 
+util = require('./lib/util.coffee')
+wiki.resolveLinks = util.resolveLinks
+
 require('./test/util.coffee')
 require('./test/active.coffee')
 require('./test/pageHandler.coffee')
