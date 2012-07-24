@@ -152,7 +152,9 @@ module.exports = exports = (argv) ->
         cb(e, 'Page not found', 404)
       )
       resp.on('end', ->
-        if responsedata
+        if resp.statusCode == 404
+          cb(null, 'Page not found', 404)
+        else if responsedata
           cb(null, JSON.parse(responsedata), resp.statusCode)
         else
           cb(null, 'Page not found', 404)
