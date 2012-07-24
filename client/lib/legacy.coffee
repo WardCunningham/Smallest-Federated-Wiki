@@ -6,6 +6,8 @@ state = require('./state.coffee')
 active = require('./active.coffee')
 refresh = require('./refresh.coffee')
 
+resolveLinks = wiki.resolveLinks = util.resolveLinks
+
 Array::last = ->
   this[@length - 1]
 
@@ -55,16 +57,6 @@ $ ->
       callback()
     finally
       wiki.resolutionContext.pop()
-
-  resolveLinks = wiki.resolveLinks = (string) ->
-    renderInternalLink = (match, name) ->
-      # spaces become 'slugs', non-alpha-num get removed
-      slug = util.asSlug name
-      wiki.log 'resolve', slug, 'context', wiki.resolutionContext.join(' => ')
-      "<a class=\"internal\" href=\"/#{slug}.html\" data-page-name=\"#{slug}\" title=\"#{wiki.resolutionContext.join(' => ')}\">#{name}</a>"
-    string
-      .replace(/\[\[([^\]]+)\]\]/gi, renderInternalLink)
-      .replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" target=\"_blank\" href=\"$1\">$2</a>")
 
   addToJournal = wiki.addToJournal = (journalElement, action) ->
     pageElement = journalElement.parents('.page:first')
