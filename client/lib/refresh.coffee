@@ -115,8 +115,8 @@ module.exports = refresh = wiki.refresh = ->
 
       journalElement.append """
         <div class="control-buttons">
-          <a href="#" class="button fork-page" title="fork this page">#{wiki.symbols['fork']}</a>
-          <a href="#" class="button add-factory" title="add paragraph">#{wiki.symbols['add']}</a>
+          <a href="#" class="button fork-page" title="fork this page">#{util.symbols['fork']}</a>
+          <a href="#" class="button add-factory" title="add paragraph">#{util.symbols['add']}</a>
         </div>
                             """
       footerElement

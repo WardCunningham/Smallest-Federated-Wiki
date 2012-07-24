@@ -1,5 +1,13 @@
 module.exports = util = {}
 
+util.symbols =
+  create: '☼'
+  add: '+'
+  edit: '✎'
+  fork: '⚑'
+  move: '↕'
+  remove: '✕'
+
 util.randomByte = ->
   (((1+Math.random())*0x100)|0).toString(16).substring(1)
 
