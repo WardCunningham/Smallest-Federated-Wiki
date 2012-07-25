@@ -98,7 +98,7 @@ Now go to your browser and browse your new wiki:
 Running specs
 =============
 
-The test suite is written using RSpec 2 and utilizes Selenium heavily. You must have a recent version of Firefox installed to run the test suite.
+The acceptance test suite is written using RSpec 2 and utilizes Selenium heavily. You must have a recent version of Firefox installed to run the test suite.
 
 To run an individual spec, run
 
@@ -107,6 +107,11 @@ To run an individual spec, run
 To run all specs, run
 
 	bundle exec rake spec
+
+Running coffeescript tests
+=============
+
+Client-side unit and integration tests are written using mocha. The test runner is an HTML page (runtests.html) which is self-served by the wiki server itself. If your server is running at http:///localhost:9292 then you can run your tests by going to http://localhost:9292/runtests.html. Note that that test runner page does need to be accessed via a server - loading the page in a browser directly from your filesystem will not work correctly.
 
 Looking For Code Bloat
 ======================
