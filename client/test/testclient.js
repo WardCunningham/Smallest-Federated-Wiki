@@ -1389,21 +1389,27 @@ require.define("/test/plugin.coffee",function(require,module,exports,__dirname,_
   plugin = require('../lib/plugin.coffee');
 
   describe('plugin', function() {
+    var fakeDeferred;
+    fakeDeferred = void 0;
     before(function() {
-      sinon.stub(jQuery, "getScript").yieldsTo();
-      return $('<div id="plugin" />').appendTo('body');
+      $('<div id="plugin" />').appendTo('body');
+      fakeDeferred = {};
+      fakeDeferred.done = sinon.mock().returns(fakeDeferred);
+      fakeDeferred.fail = sinon.mock().returns(fakeDeferred);
+      return sinon.stub(jQuery, 'getScript').returns(fakeDeferred);
+    });
+    after(function() {
+      return jQuery.getScript.restore();
     });
     it('should have default image type', function() {
       return expect(window.plugins).to.have.property('image');
     });
-    it('should get a plugin', function(done) {
-      return plugin.get('test', function() {
-        expect(jQuery.getScript.calledOnce).to.be(true);
-        expect(jQuery.getScript.args[0][0]).to.be('/plugins/test.js');
-        return done();
-      });
+    it('should fetch a plugin script from the right location', function() {
+      plugin.get('test');
+      expect(jQuery.getScript.calledOnce).to.be(true);
+      return expect(jQuery.getScript.args[0][0]).to.be('/plugins/test/test.js');
     });
-    it('should render a plugin', function() {
+    return it('should render a plugin', function() {
       var item;
       item = {
         type: 'paragraph',
@@ -1411,9 +1417,6 @@ require.define("/test/plugin.coffee",function(require,module,exports,__dirname,_
       };
       plugin["do"]($('#plugin'), item);
       return expect($('#plugin').html()).to.be('<p>blah <a class="internal" href="/link.html" data-page-name="link" title="origin">Link</a> asdf</p>');
-    });
-    return after(function() {
-      return jQuery.getScript.restore();
     });
   });
 
