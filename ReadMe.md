@@ -74,12 +74,23 @@ When you have git. Use it to clone the repository:
 
 We have several server implementations that share the same client code.
 Our reference implementation is in Sinatra.
-We're using Ruby 1.9.2 which we manage with rvm:
+We're using Ruby 1.9.2 which we manage with rvm.
+
+To install rvm: 
+
+	curl -L https://get.rvm.io | bash -s stable --ruby
+
+Then run: 
 
 	rvm install 1.9.2
 	rvm use 1.9.2
 
 The software has been known to run trouble-free under version 1.8.5 so long as appropriate gem versions are installed. The latest releases of OSX work better with 1.9.3.
+
+For latest versions of OS X: 
+
+	rvm install 1.9.3 --with-gcc=clang
+	rvm use 1.9.3
 
 The server is a ruby bundle. Get the bundler gem and then use it to get everything else:
 
