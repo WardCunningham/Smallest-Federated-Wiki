@@ -211,7 +211,7 @@ class Controller < Sinatra::Base
     pages = Store.annotated_pages farm_page.directory
     pages.each do |page|
       dt = Time.now - page['updated_at']
-      bins[(dt/=60)<1?'Minute':(dt/=60)<1?'Hour':(dt/=24)<1?'Day':(dt/=7)<1?'Week':(dt/=4)<1?'Month':(dt/=3)<1?'Season':(dt/=4)<1?'Year':'Forever']<<page
+      bins[(dt/=60)<1?'Minute':(dt/=60)<1?'Hour':(dt/=24)<1?'Day':(dt/=7)<1?'Week':(dt/=4)<1?'Month':(dt/=3)<1?'Season':(dt/=4)<1?'Year':'Forever'] << page
     end
 
     story = []
