@@ -13,21 +13,21 @@ window.plugins.radar =
           "Carcinogenicity": 7
           "Acute Toxicity": 7
           "Chronic Toxicity": 7
-          "Reproductive/Endocrine Disrupter Toxicity": 4
+          "Reproductive / Endocrine Disrupter Toxicity": 4
           "Chemistry Total": 25
           "Energy Intensity": 10
           "GHG Emissions Intensity": 15
-          "Energy/GHG Emissions Total": 25
+          "Energy / GHG Emissions Total": 25
           "Water Intensity": 18
           "Land Use Intensity": 7
-          "Water/ Land Use Total": 25
+          "Water / Land Use Total": 25
           "Hazardous Waste": 10
           "MSW": 6.25
-          "Industrial waste": 5
-          "Recyclable/ Compostable waste": 2.5
-          "Mineral waste": 1.25
+          "Industrial Waste": 5
+          "Recyclable / Compostable Waste": 2.5
+          "Mineral Waste": 1.25
           "Physical Waste Total": 25
-          "Total score": 100
+          "Total Score": 100
 
         limitsFromData = (data) ->
           max = -Infinity

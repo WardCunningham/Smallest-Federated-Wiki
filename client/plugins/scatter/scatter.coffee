@@ -29,7 +29,7 @@ window.plugins.scatter =
 
         who = $('.chart,.data,.calculator').last()
         data = who.data('item').data
-        horz = "Water/Land Intensity Total"
+        horz = "Water / Land Intensity Total"
         vert = "Total Score"
         xdat = (d) -> value d[horz]
         ydat = (d) -> value d[vert]

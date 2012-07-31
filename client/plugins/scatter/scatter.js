@@ -29,7 +29,7 @@
           };
           who = $('.chart,.data,.calculator').last();
           data = who.data('item').data;
-          horz = "Water/Land Intensity Total";
+          horz = "Water / Land Intensity Total";
           vert = "Total Score";
           xdat = function(d) {
             return value(d[horz]);
