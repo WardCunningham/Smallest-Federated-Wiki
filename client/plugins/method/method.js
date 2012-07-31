@@ -4,9 +4,28 @@
   window.plugins.method = {
     emit: function(div, item) {},
     bind: function(div, item) {
-      var annotate, avg, calculate, candidates, elem, input, output, round, sum, _i, _len;
+      var annotate, asValue, avg, calculate, candidates, elem, input, output, round, sum, _i, _len;
       input = {};
       output = {};
+      asValue = function(obj) {
+        if (obj == null) {
+          return NaN;
+        }
+        switch (obj.constructor) {
+          case Number:
+            return obj;
+          case String:
+            return +obj;
+          case Array:
+            return asValue(obj[0]);
+          case Object:
+            return asValue(obj.value);
+          case Function:
+            return obj();
+          default:
+            return NaN;
+        }
+      };
       candidates = $(".item:lt(" + ($('.item').index(div)) + ")");
       for (_i = 0, _len = candidates.length; _i < _len; _i++) {
         elem = candidates[_i];
@@ -55,7 +74,7 @@
         lines = item.text.split("\n");
         report = [];
         dispatch = function(list, allocated, lines, report, done) {
-          var apply, args, color, comment, hours, line, next_dispatch, result, value, _ref, _ref1;
+          var apply, args, color, comment, hours, line, next_dispatch, previous, result, value, _ref, _ref1;
           color = '#eee';
           value = comment = null;
           hours = '';
@@ -82,24 +101,29 @@
             }
           };
           try {
-            if (args = line.match(/^(-?[0-9.]+) ([\w ]+)$/)) {
+            if (args = line.match(/^(-?[0-9.]+) ([\w \/%()-]+)$/)) {
               result = hours = +args[1];
               line = args[2];
               output[line] = value = result;
-            } else if (args = line.match(/^([A-Z]+) ([\w ]+)$/)) {
+            } else if (args = line.match(/^([A-Z]+) ([\w \/%()-]+)$/)) {
               _ref = [apply(args[1], list), []], value = _ref[0], list = _ref[1];
               line = args[2];
+              if ((output[line] != null) || (input[line] != null)) {
+                if (value !== (previous = asValue(output[line] || input[line]))) {
+                  comment = "previously " + previous + " Δ" + (value - previous);
+                }
+              }
               output[line] = value;
             } else if (args = line.match(/^([A-Z]+)$/)) {
               _ref1 = [apply(args[1], list), []], value = _ref1[0], list = _ref1[1];
             } else if (line.match(/^[0-9\.-]+$/)) {
               value = +line;
               line = '';
-            } else if (line.match(/^([\w ]+)$/)) {
+            } else if (line.match(/^([\w \/%()-]+)$/)) {
               if (output[line] != null) {
                 value = output[line];
               } else if (input[line] != null) {
-                value = input[line];
+                value = asValue(input[line]);
               } else {
                 color = '#edd';
                 comment = "can't find value of '" + line + "'";
