@@ -142,7 +142,7 @@ class Controller < Sinatra::Base
     haml :view, :locals => {:pages => [ {:id => identity['root']} ]}
   end
 
-  get '/plugins/factory.js' do
+  get %r{^/plugins/factory(/factory)?.js$} do
     catalog = Dir.glob(File.join(APP_ROOT, "client/plugins/*/factory.json")).collect do |info|
       begin
         JSON.parse(File.read(info))
