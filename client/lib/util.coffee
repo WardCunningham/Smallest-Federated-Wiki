@@ -24,6 +24,9 @@ util.randomByte = ->
 util.randomBytes = (n) ->
   (util.randomByte() for [1..n]).join('')
 
+util.timezoneOffset = ->
+  ((new Date()).getTimezoneOffset() * 60)
+
 # for chart plug-in
 util.formatTime = (time) ->
   d = new Date (if time > 10000000000 then time else time*1000)
