@@ -10,11 +10,11 @@ module.exports = describe 'util', ->
     expect(s.length).to.be 8
 
   it 'should format unix time', ->
-    s = util.formatTime 1333843344
-    expect(s).to.be '5:02 PM<br>7 Apr 2012'
+    s = util.formatTime(1333843344 + util.timezoneOffset())
+    expect(s).to.be '12:02 AM<br>8 Apr 2012'
   it 'should format javascript time', ->
-    s = util.formatTime 1333843344000
-    expect(s).to.be '5:02 PM<br>7 Apr 2012'
+    s = util.formatTime(1333843344000 + util.timezoneOffset() * 1000)
+    expect(s).to.be '12:02 AM<br>8 Apr 2012'
   it 'should slug a name', ->
     s = util.asSlug 'Welcome Visitors'
     expect(s).to.be 'welcome-visitors'
