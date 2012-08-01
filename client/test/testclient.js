@@ -1329,7 +1329,7 @@ require.define("/lib/plugin.coffee", function (require, module, exports, __dirna
         _results = [];
         for (i = 0, _ref = localStorage.length; 0 <= _ref ? i < _ref : i > _ref; 0 <= _ref ? i++ : i--) {
           key = localStorage.key(i);
-          a = $('<a class="internal" href="#" title="origin"/>').append(key).data('pageName', key);
+          a = $('<a class="internal" href="#" title="origin"/>').append(JSON.parse(localStorage[key]).title).data('pageName', key);
           _results.push(ul.prepend($('<li />').append(a)));
         }
         return _results;
