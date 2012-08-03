@@ -58,9 +58,15 @@ window.plugins =
     emit: (div, item) ->
       div.append ul = $('<ul />').append if localStorage.length then $('<input type="button" value="discard all" />').css('margin-top','10px') else $('<p>empty</p>')
       for i in [0...localStorage.length]
-        key = localStorage.key(i)
-        a = $('<a class="internal" href="#" title="origin"/>').append(JSON.parse(localStorage[key]).title).data('pageName', key)
-        ul.prepend($('<li />').append(a))
+        slug = localStorage.key(i)
+        wikiPage = JSON.parse(localStorage[slug])
+        ul.prepend """
+          <li>
+            <a class="internal" href="#" title="origin" data-page-name="#{slug}"/> 
+              #{wikiPage.title} <button>X</button>
+            </a>
+          </li>
+        """
     bind: (div, item) ->
       div.find('input').click ->
         localStorage.clear()
