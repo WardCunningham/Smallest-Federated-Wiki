@@ -75,11 +75,11 @@ window.plugins.method =
             color = '#edd'
 
         try
-          if args = line.match /^(-?[0-9.]+) ([\w \/%()-]+)$/
+          if args = line.match /^([0-9.eE-]+) ([\w \/%(),-]+)$/
             result = hours = +args[1]
             line = args[2]
             output[line] = value = result
-          else if args = line.match /^([A-Z]+) ([\w \/%()-]+)$/
+          else if args = line.match /^([A-Z]+) ([\w \/%(),-]+)$/
             [value, list] = [apply(args[1], list), []]
             line = args[2]
             if output[line]? or input[line]?
@@ -88,10 +88,10 @@ window.plugins.method =
             output[line] = value
           else if args = line.match /^([A-Z]+)$/
             [value, list] = [apply(args[1], list), []]
-          else if line.match /^[0-9\.-]+$/
+          else if line.match /^[0-9\.eE-]+$/
             value = +line
             line = ''
-          else if line.match /^([\w \/%()-]+)$/
+          else if line.match /^([\w \/%(),-]+)$/
             if output[line]?
               value = output[line]
             else if input[line]?
