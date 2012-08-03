@@ -181,7 +181,8 @@ p.readout {
     z-index: 10; }
 
 .page.local {
-  background-color: #fbfbef; }
+  border: 3px solid #EE8;
+}
 
 .factory,
 textarea {
