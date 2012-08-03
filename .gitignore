@@ -8,4 +8,5 @@
 /spec/data
 /client/js
 /client/node_modules
+/client/plugins/*/test.js
 /server/express/node_modules
