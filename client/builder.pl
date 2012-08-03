@@ -23,7 +23,7 @@ sub run {
 }
 
 while (sleep 1) {
-  $new = `ls -lt *.coffee lib/*.coffee test/*.coffee`;
+  $new = `ls -lt *.coffee lib/*.coffee test/*.coffee plugins/*/*.coffee`;
   next if $old eq $new;
   $old = $new;
   say('client.');
