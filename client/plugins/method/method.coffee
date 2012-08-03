@@ -71,6 +71,12 @@ window.plugins.method =
           else if name == 'AVG'
             color = '#ddd'
             avg(list)
+          else if name == 'MIN'
+            color = '#ddd'
+            _.min list
+          else if name == 'MAX'
+            color = '#ddd'
+            _.max list
           else
             color = '#edd'
 

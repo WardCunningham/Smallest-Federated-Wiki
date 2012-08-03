@@ -96,16 +96,22 @@
             } else if (name === 'AVG') {
               color = '#ddd';
               return avg(list);
+            } else if (name === 'MIN') {
+              color = '#ddd';
+              return _.min(list);
+            } else if (name === 'MAX') {
+              color = '#ddd';
+              return _.max(list);
             } else {
               return color = '#edd';
             }
           };
           try {
-            if (args = line.match(/^(-?[0-9.]+) ([\w \/%()-]+)$/)) {
+            if (args = line.match(/^([0-9.eE-]+) ([\w \/%(),-]+)$/)) {
               result = hours = +args[1];
               line = args[2];
               output[line] = value = result;
-            } else if (args = line.match(/^([A-Z]+) ([\w \/%()-]+)$/)) {
+            } else if (args = line.match(/^([A-Z]+) ([\w \/%(),-]+)$/)) {
               _ref = [apply(args[1], list), []], value = _ref[0], list = _ref[1];
               line = args[2];
               if ((output[line] != null) || (input[line] != null)) {
@@ -116,10 +122,10 @@
               output[line] = value;
             } else if (args = line.match(/^([A-Z]+)$/)) {
               _ref1 = [apply(args[1], list), []], value = _ref1[0], list = _ref1[1];
-            } else if (line.match(/^[0-9\.-]+$/)) {
+            } else if (line.match(/^[0-9\.eE-]+$/)) {
               value = +line;
               line = '';
-            } else if (line.match(/^([\w \/%()-]+)$/)) {
+            } else if (line.match(/^([\w \/%(),-]+)$/)) {
               if (output[line] != null) {
                 value = output[line];
               } else if (input[line] != null) {
