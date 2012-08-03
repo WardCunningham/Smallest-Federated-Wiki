@@ -56,19 +56,23 @@ window.plugins =
       div.find('img').dblclick -> wiki.dialog item.text, this
   changes:
     emit: (div, item) ->
-      div.append ul = $('<ul />').append if localStorage.length then $('<input type="button" value="discard all" />').css('margin-top','10px') else $('<p>empty</p>')
+      div.append ul = $('<ul />')
+      ul.append( '<p>empty</p>' ) if localStorage.length == 0
       for i in [0...localStorage.length]
         slug = localStorage.key(i)
         wikiPage = JSON.parse(localStorage[slug])
         ul.prepend """
           <li>
-            <a class="internal" href="#" title="origin" data-page-name="#{slug}"/> 
-              #{wikiPage.title} <button>X</button>
-            </a>
+            <a class="internal" href="#" title="origin" data-page-name="#{slug}"> 
+              #{wikiPage.title}
+            </a> 
+            <button>X</button>
           </li>
         """
     bind: (div, item) ->
-      div.find('input').click ->
-        localStorage.clear()
-        div.find('li').remove()
-
+      div.find('button').click ->
+        slug = $(this).siblings('a.internal').data('pageName')
+        console.log( ['deleting', slug] )
+        localStorage.removeItem(slug)
+        # re-render plugin div
+        plugin.do div.empty(), item
