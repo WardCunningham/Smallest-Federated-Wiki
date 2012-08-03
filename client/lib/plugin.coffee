@@ -39,6 +39,10 @@ plugin.do = wiki.doPlugin = (div, item) ->
     catch err
       error(err)
 
+wiki.registerPlugin = (pluginName,pluginFn)->
+  window.plugins[pluginName] = pluginFn($)
+
+
 # PLUGINS for each story item type
 
 window.plugins =
@@ -54,25 +58,3 @@ window.plugins =
     bind: (div, item) ->
       div.dblclick -> wiki.textEditor div, item
       div.find('img').dblclick -> wiki.dialog item.text, this
-  changes:
-    emit: (div, item) ->
-      div.append ul = $('<ul />')
-      ul.append( '<p>empty</p>' ) if localStorage.length == 0
-      for i in [0...localStorage.length]
-        slug = localStorage.key(i)
-        wikiPage = JSON.parse(localStorage[slug])
-        ul.prepend """
-          <li>
-            <a class="internal" href="#" title="origin" data-page-name="#{slug}"> 
-              #{wikiPage.title}
-            </a> 
-            <button>X</button>
-          </li>
-        """
-    bind: (div, item) ->
-      div.find('button').click ->
-        slug = $(this).siblings('a.internal').data('pageName')
-        console.log( ['deleting', slug] )
-        localStorage.removeItem(slug)
-        # re-render plugin div
-        plugin.do div.empty(), item
