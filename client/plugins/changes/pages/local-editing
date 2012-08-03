@@ -1,5 +1,5 @@
 {
-  "title": "Local Editing from Plugins",
+  "title": "Local Editing",
   "story": [
     {
       "text": "Modern browsers can save changes in local storage. Engage this feature by selecting the <b>Local editing</b> option at the bottom of this web page.",
