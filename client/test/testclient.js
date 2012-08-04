@@ -1639,7 +1639,7 @@ require.define("/changes.js", function (require, module, exports, __dirname, __f
   var constructor, listItemHtml;
 
   listItemHtml = function(slug, wikiPage) {
-    return "<li>\n  <a class=\"internal\" href=\"#\" title=\"origin\" data-page-name=\"" + slug + "\"> \n    " + wikiPage.title + "\n  </a> \n  <button>X</button>\n</li>";
+    return "<li>\n  <a class=\"internal\" href=\"#\" title=\"origin\" data-page-name=\"" + slug + "\"> \n    " + wikiPage.title + "\n  </a> \n  <button>✕</button>\n</li>";
   };
 
   constructor = function($, dependencies) {
