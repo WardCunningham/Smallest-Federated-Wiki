@@ -154,7 +154,7 @@ require.alias = function (from, to) {
             var requiredModule = require(file, dirname);
             var cached = require.cache[require.resolve(file, dirname)];
 
-            if (cached.parent === null) {
+            if (cached && cached.parent === null) {
                 cached.parent = module_;
             }
 
@@ -376,6 +376,97 @@ process.binding = function (name) {
         cwd = path.resolve(dir, cwd);
     };
 })();
+});
+
+require.define("vm",function(require,module,exports,__dirname,__filename,process){module.exports = require("vm-browserify")});
+
+require.define("/node_modules/vm-browserify/package.json",function(require,module,exports,__dirname,__filename,process){module.exports = {"main":"index.js"}});
+
+require.define("/node_modules/vm-browserify/index.js",function(require,module,exports,__dirname,__filename,process){var Object_keys = function (obj) {
+    if (Object.keys) return Object.keys(obj)
+    else {
+        var res = [];
+        for (var key in obj) res.push(key)
+        return res;
+    }
+};
+
+var forEach = function (xs, fn) {
+    if (xs.forEach) return xs.forEach(fn)
+    else for (var i = 0; i < xs.length; i++) {
+        fn(xs[i], i, xs);
+    }
+};
+
+var Script = exports.Script = function NodeScript (code) {
+    if (!(this instanceof Script)) return new Script(code);
+    this.code = code;
+};
+
+Script.prototype.runInNewContext = function (context) {
+    if (!context) context = {};
+    
+    var iframe = document.createElement('iframe');
+    if (!iframe.style) iframe.style = {};
+    iframe.style.display = 'none';
+    
+    document.body.appendChild(iframe);
+    
+    var win = iframe.contentWindow;
+    
+    forEach(Object_keys(context), function (key) {
+        win[key] = context[key];
+    });
+     
+    if (!win.eval && win.execScript) {
+        // win.eval() magically appears when this is called in IE:
+        win.execScript('null');
+    }
+    
+    var res = win.eval(this.code);
+    
+    forEach(Object_keys(win), function (key) {
+        context[key] = win[key];
+    });
+    
+    document.body.removeChild(iframe);
+    
+    return res;
+};
+
+Script.prototype.runInThisContext = function () {
+    return eval(this.code); // maybe...
+};
+
+Script.prototype.runInContext = function (context) {
+    // seems to be just runInNewContext on magical context objects which are
+    // otherwise indistinguishable from objects except plain old objects
+    // for the parameter segfaults node
+    return this.runInNewContext(context);
+};
+
+forEach(Object_keys(Script.prototype), function (name) {
+    exports[name] = Script[name] = function (code) {
+        var s = Script(code);
+        return s[name].apply(s, [].slice.call(arguments, 1));
+    };
+});
+
+exports.createScript = function (code) {
+    return exports.Script(code);
+};
+
+exports.createContext = Script.createContext = function (context) {
+    // not really sure what this one does
+    // seems to just make a shallow copy
+    var copy = {};
+    if(typeof context === 'object') {
+        forEach(Object_keys(context), function (key) {
+            copy[key] = context[key];
+        });
+    }
+    return copy;
+};
 });
 
 require.define("/lib/util.coffee",function(require,module,exports,__dirname,__filename,process){(function() {
@@ -1351,6 +1442,10 @@ require.define("/lib/plugin.coffee",function(require,module,exports,__dirname,__
     });
   };
 
+  wiki.registerPlugin = function(pluginName, pluginFn) {
+    return window.plugins[pluginName] = pluginFn($);
+  };
+
   window.plugins = {
     paragraph: {
       emit: function(div, item) {
@@ -1374,25 +1469,6 @@ require.define("/lib/plugin.coffee",function(require,module,exports,__dirname,__
         });
         return div.find('img').dblclick(function() {
           return wiki.dialog(item.text, this);
-        });
-      }
-    },
-    changes: {
-      emit: function(div, item) {
-        var a, i, key, ul, _i, _ref, _results;
-        div.append(ul = $('<ul />').append(localStorage.length ? $('<input type="button" value="discard all" />').css('margin-top', '10px') : $('<p>empty</p>')));
-        _results = [];
-        for (i = _i = 0, _ref = localStorage.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-          key = localStorage.key(i);
-          a = $('<a class="internal" href="#" title="origin"/>').append(JSON.parse(localStorage[key]).title).data('pageName', key);
-          _results.push(ul.prepend($('<li />').append(a)));
-        }
-        return _results;
-      },
-      bind: function(div, item) {
-        return div.find('input').click(function() {
-          localStorage.clear();
-          return div.find('li').remove();
         });
       }
     }
@@ -1694,6 +1770,58 @@ require.define("/test/revision.coffee",function(require,module,exports,__dirname
 }).call(this);
 });
 
+require.define("/plugins/changes/changes.js",function(require,module,exports,__dirname,__filename,process){// Generated by CoffeeScript 1.3.3
+(function() {
+  var constructor, listItemHtml;
+
+  listItemHtml = function(slug, wikiPage) {
+    return "<li>\n  <a class=\"internal\" href=\"#\" title=\"origin\" data-page-name=\"" + slug + "\"> \n    " + wikiPage.title + "\n  </a> \n  <button>X</button>\n</li>";
+  };
+
+  constructor = function($, dependencies) {
+    var bind, emit, localStorage;
+    if (dependencies == null) {
+      dependencies = {};
+    }
+    localStorage = dependencies.localStorage || window.localStorage;
+    emit = function($div, item) {
+      var i, slug, ul, wikiPage, _i, _ref, _results;
+      if (localStorage.length === 0) {
+        $div.append('<p>empty</p>');
+        return;
+      }
+      $div.append(ul = $('<ul />'));
+      _results = [];
+      for (i = _i = 0, _ref = localStorage.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+        slug = localStorage.key(i);
+        wikiPage = JSON.parse(localStorage.getItem(slug));
+        _results.push(ul.prepend(listItemHtml(slug, wikiPage)));
+      }
+      return _results;
+    };
+    bind = function($div, item) {
+      return $div.on('click', 'button', function() {
+        var slug;
+        slug = $(this).siblings('a.internal').data('pageName');
+        localStorage.removeItem(slug);
+        return emit($div.empty(), item);
+      });
+    };
+    return {
+      emit: emit,
+      bind: bind
+    };
+  };
+
+  wiki.registerPlugin('changes', constructor);
+
+  if (typeof module !== "undefined" && module !== null) {
+    module.exports = constructor;
+  }
+
+}).call(this);
+});
+
 require.define("/testclient.coffee",function(require,module,exports,__dirname,__filename,process){(function() {
   var util,
     __slice = [].slice;
@@ -1734,4 +1862,125 @@ require.define("/testclient.coffee",function(require,module,exports,__dirname,__
 }).call(this);
 });
 require("/testclient.coffee");
+
+require.define("/plugins/changes/test.coffee",function(require,module,exports,__dirname,__filename,process){(function() {
+  var createFakeLocalStorage, pluginCtor;
+
+  pluginCtor = require('./changes');
+
+  createFakeLocalStorage = function(initialContents) {
+    var fake, getStoreSize, keys, store;
+    if (initialContents == null) {
+      initialContents = {};
+    }
+    store = initialContents;
+    keys = function() {
+      var k, _, _results;
+      _results = [];
+      for (k in store) {
+        _ = store[k];
+        _results.push(k);
+      }
+      return _results;
+    };
+    getStoreSize = function() {
+      return keys().length;
+    };
+    fake = {
+      setItem: function(k, v) {
+        return store[k] = v;
+      },
+      getItem: function(k) {
+        return store[k];
+      },
+      key: function(i) {
+        return keys()[i];
+      },
+      removeItem: function(k) {
+        return delete store[k];
+      }
+    };
+    Object.defineProperty(fake, 'length', {
+      get: getStoreSize
+    });
+    return fake;
+  };
+
+  describe('changes plugin', function() {
+    var $div, clickDeleteForPageWithSlug, expectNumberOfPagesToBe, fakeLocalStore, installPlugin, makePlugin;
+    fakeLocalStore = void 0;
+    $div = void 0;
+    beforeEach(function() {
+      $div = $('<div/>');
+      return fakeLocalStore = createFakeLocalStorage();
+    });
+    makePlugin = function() {
+      return pluginCtor($, {
+        localStorage: fakeLocalStore
+      });
+    };
+    installPlugin = function() {
+      var plugin;
+      plugin = makePlugin();
+      plugin.emit($div, {});
+      return plugin.bind($div, {});
+    };
+    expectNumberOfPagesToBe = function(expectedLength) {
+      return expect($div.find('li a').length).to.be(expectedLength);
+    };
+    clickDeleteForPageWithSlug = function(slug) {
+      return $div.find("li a[data-page-name='" + slug + "']").siblings('button').trigger('click');
+    };
+    it("renders 'empty' when there are no local changes", function() {
+      installPlugin();
+      expect($div.html()).to.contain('empty');
+      return expectNumberOfPagesToBe(0);
+    });
+    return describe('some pages in local store', function() {
+      beforeEach(function() {
+        return fakeLocalStore = createFakeLocalStorage({
+          page1: JSON.stringify({
+            title: "A Page"
+          }),
+          page2: JSON.stringify({
+            title: "Another Page"
+          }),
+          page3: JSON.stringify({
+            title: "Page the Third"
+          })
+        });
+      });
+      it("doesn't render 'empty'", function() {
+        installPlugin();
+        return expect($div.html()).not.to.contain('empty');
+      });
+      it("lists each page found in the local store", function() {
+        var allTitles;
+        installPlugin();
+        expectNumberOfPagesToBe(3);
+        allTitles = $div.find('li a').map(function(_, a) {
+          return $(a).html();
+        }).toArray().join('');
+        expect(allTitles).to.contain('A Page');
+        expect(allTitles).to.contain('Another Page');
+        return expect(allTitles).to.contain('Page the Third');
+      });
+      it("removes a page from local store", function() {
+        installPlugin();
+        expect(fakeLocalStore.getItem('page2')).to.be.ok();
+        clickDeleteForPageWithSlug('page2');
+        return expect(fakeLocalStore.getItem('page2')).not.to.be.ok();
+      });
+      return it("updates the plugin div when a page is removed", function() {
+        installPlugin();
+        expectNumberOfPagesToBe(3);
+        clickDeleteForPageWithSlug('page2');
+        return expectNumberOfPagesToBe(2);
+      });
+    });
+  });
+
+}).call(this);
+});
+require("/plugins/changes/test.coffee");
 })();

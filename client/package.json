@@ -8,7 +8,7 @@
     "browserify": "*"
   },
   "scripts": {
-    "test": "./node_modules/.bin/browserify testclient.coffee -o test/testclient.js",
+    "test": "./node_modules/.bin/browserify testclient.coffee ./plugins/*/test.coffee -o test/testclient.js",
     "start": "./node_modules/.bin/browserify client.coffee -o client.js"
   },
   "devDependencies": {
