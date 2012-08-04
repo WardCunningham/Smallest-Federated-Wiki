@@ -4,7 +4,7 @@ listItemHtml = (slug,wikiPage)->
       <a class="internal" href="#" title="origin" data-page-name="#{slug}"> 
         #{wikiPage.title}
       </a> 
-      <button>X</button>
+      <button>✕</button>
     </li>
   """
 
