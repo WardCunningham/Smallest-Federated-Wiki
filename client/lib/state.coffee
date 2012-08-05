@@ -18,6 +18,7 @@ state.urlLocs = ->
   (j for j in $(location).attr('pathname').split('/')[1..] by 2)
 
 state.setUrl = ->
+  document.title = $('.page:last').data('data')?.title
   if history and history.pushState
     locs = state.locsInDom()
     pages = state.pagesInDom()
@@ -49,6 +50,7 @@ state.show = (e) ->
   previous.nextAll().remove()
 
   active.set($('.page').last())
+  document.title = $('.page:last').data('data')?.title
 
 state.first = ->
   state.setUrl()

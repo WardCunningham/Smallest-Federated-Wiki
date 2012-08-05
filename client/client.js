@@ -997,7 +997,8 @@ require.define("/lib/state.coffee", function (require, module, exports, __dirnam
   };
 
   state.setUrl = function() {
-    var idx, locs, page, pages, url;
+    var idx, locs, page, pages, url, _ref;
+    document.title = (_ref = $('.page:last').data('data')) != null ? _ref.title : void 0;
     if (history && history.pushState) {
       locs = state.locsInDom();
       pages = state.pagesInDom();
@@ -1018,7 +1019,7 @@ require.define("/lib/state.coffee", function (require, module, exports, __dirnam
   };
 
   state.show = function(e) {
-    var idx, name, newLocs, newPages, old, oldLocs, oldPages, previous, _len;
+    var idx, name, newLocs, newPages, old, oldLocs, oldPages, previous, _len, _ref;
     wiki.log('popstate', e);
     oldPages = state.pagesInDom();
     newPages = state.urlPages();
@@ -1037,7 +1038,8 @@ require.define("/lib/state.coffee", function (require, module, exports, __dirnam
       previous = $('.page').eq(idx);
     }
     previous.nextAll().remove();
-    return active.set($('.page').last());
+    active.set($('.page').last());
+    return document.title = (_ref = $('.page:last').data('data')) != null ? _ref.title : void 0;
   };
 
   state.first = function() {
