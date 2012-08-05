@@ -28,6 +28,14 @@ constructor = ($, dependencies={})->
       localStorage.removeItem(slug)
       emit( $div.empty(), item )
 
+    $div.dblclick ->
+      bundle = {}
+      length = localStorage.length
+      for i in [0...length]
+        slug = localStorage.key i
+        bundle[slug] = JSON.parse localStorage.getItem slug
+      wiki.dialog "JSON bundle for #{length} pages",  $('<pre/>').text(JSON.stringify(bundle, null, 2))
+
   {
     emit: emit
     bind: bind

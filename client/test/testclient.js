@@ -1655,7 +1655,7 @@ require.define("/changes.js", function (require, module, exports, __dirname, __f
     emit = function($div, item) {
       var i, page, slug, ul, _i, _ref, _results;
       if (localStorage.length === 0) {
-        $div.append('<p>empty</p>');
+        $div.append('<ul><p>empty</p></ul>');
         return;
       }
       $div.append(ul = $('<ul />'));
@@ -1668,11 +1668,21 @@ require.define("/changes.js", function (require, module, exports, __dirname, __f
       return _results;
     };
     bind = function($div, item) {
-      return $div.on('click', 'button', function() {
+      $div.on('click', 'button', function() {
         var slug;
         slug = $(this).siblings('a.internal').data('pageName');
         localStorage.removeItem(slug);
         return emit($div.empty(), item);
+      });
+      return $div.dblclick(function() {
+        var bundle, i, length, slug, _i;
+        bundle = {};
+        length = localStorage.length;
+        for (i = _i = 0; 0 <= length ? _i < length : _i > length; i = 0 <= length ? ++_i : --_i) {
+          slug = localStorage.key(i);
+          bundle[slug] = JSON.parse(localStorage.getItem(slug));
+        }
+        return wiki.dialog("JSON bundle for " + length + " pages", $('<pre/>').text(JSON.stringify(bundle, null, 2)));
       });
     };
     return {
