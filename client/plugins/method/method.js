@@ -74,7 +74,7 @@
         lines = item.text.split("\n");
         report = [];
         dispatch = function(list, allocated, lines, report, done) {
-          var apply, args, color, comment, hours, hover, line, next_dispatch, previous, result, value, _ref, _ref1;
+          var apply, args, change, color, comment, count, hours, hover, line, next_dispatch, previous, result, value, _ref, _ref1;
           color = '#eee';
           value = comment = hover = null;
           hours = '';
@@ -112,16 +112,19 @@
               line = args[2];
               output[line] = value = result;
             } else if (args = line.match(/^([A-Z]+) ([\w \/%(),-]+)$/)) {
-              _ref = [apply(args[1], list), [], "" + args[1] + " of " + list.length + " numbers"], value = _ref[0], list = _ref[1], hover = _ref[2];
+              _ref = [apply(args[1], list), [], list.length], value = _ref[0], list = _ref[1], count = _ref[2];
+              hover = "" + args[1] + " of " + count + " numbers\n= " + value;
               line = args[2];
               if ((output[line] != null) || (input[line] != null)) {
-                if (value !== (previous = asValue(output[line] || input[line]))) {
-                  comment = "previously " + previous + " Δ" + (value - previous);
+                previous = asValue(output[line] || input[line]);
+                if (Math.abs(change = value / previous - 1) > 0.0001) {
+                  comment = "previously " + previous + "\nΔ " + (round(change * 100)) + "%";
                 }
               }
               output[line] = value;
             } else if (args = line.match(/^([A-Z]+)$/)) {
-              _ref1 = [apply(args[1], list), [], "" + args[1] + " of " + list.length + " numbers"], value = _ref1[0], list = _ref1[1], hover = _ref1[2];
+              _ref1 = [apply(args[1], list), [], list.length], value = _ref1[0], list = _ref1[1], count = _ref1[2];
+              hover = "" + args[1] + " of " + count + " numbers\n= " + value;
             } else if (line.match(/^[0-9\.eE-]+$/)) {
               value = +line;
               line = '';

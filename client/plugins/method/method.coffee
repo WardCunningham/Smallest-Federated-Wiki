@@ -91,7 +91,8 @@ window.plugins.method =
             line = args[2]
             output[line] = value = result
           else if args = line.match /^([A-Z]+) ([\w \/%(),-]+)$/
-            [value, list, hover] = [apply(args[1], list), [], "#{args[1]} of #{list.length} numbers"]
+            [value, list, count] = [apply(args[1], list), [], list.length]
+            hover = "#{args[1]} of #{count} numbers\n= #{value}"
             line = args[2]
             if output[line]? or input[line]?
               previous = asValue(output[line]||input[line])
@@ -99,7 +100,8 @@ window.plugins.method =
                 comment = "previously #{previous}\nΔ #{round(change*100)}%"
             output[line] = value
           else if args = line.match /^([A-Z]+)$/
-            [value, list, hover] = [apply(args[1], list), [], "#{args[1]} of #{list.length} numbers"]
+            [value, list, count] = [apply(args[1], list), [], list.length]
+            hover = "#{args[1]} of #{count} numbers\n= #{value}"
           else if line.match /^[0-9\.eE-]+$/
             value = +line
             line = ''
