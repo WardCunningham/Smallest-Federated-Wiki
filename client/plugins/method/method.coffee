@@ -54,14 +54,19 @@ window.plugins.method =
 
       dispatch = (list, allocated, lines, report, done) ->
         color = '#eee'
-        value = comment = null
+        value = comment = hover = null
         hours = ''
         line = lines.shift()
         return done report unless line?
 
         next_dispatch = ->
           list.push +value if value? and ! isNaN +value
-          report.push "<tr style=\"background:#{color};\"><td style=\"width: 20%; text-align: right;\"><b>#{round value}</b><td>#{line}#{annotate comment}"
+          report.push """
+            <tr style="background:#{color};">
+              <td style="width: 20%; text-align: right;" title="#{hover||''}">
+                <b>#{round value}</b>
+              <td>#{line}#{annotate comment}
+            """
           dispatch list, allocated, lines, report, done
 
         apply = (name, list) ->
@@ -86,14 +91,14 @@ window.plugins.method =
             line = args[2]
             output[line] = value = result
           else if args = line.match /^([A-Z]+) ([\w \/%(),-]+)$/
-            [value, list] = [apply(args[1], list), []]
+            [value, list, hover] = [apply(args[1], list), [], "#{args[1]} of #{list.length} numbers"]
             line = args[2]
             if output[line]? or input[line]?
               if value != (previous = asValue(output[line]||input[line]))
                 comment = "previously #{previous} Δ#{value-previous}"
             output[line] = value
           else if args = line.match /^([A-Z]+)$/
-            [value, list] = [apply(args[1], list), []]
+            [value, list, hover] = [apply(args[1], list), [], "#{args[1]} of #{list.length} numbers"]
           else if line.match /^[0-9\.eE-]+$/
             value = +line
             line = ''
