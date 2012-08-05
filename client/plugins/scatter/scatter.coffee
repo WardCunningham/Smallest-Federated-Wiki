@@ -26,6 +26,12 @@ window.plugins.scatter =
             when Function then obj()
             else NaN
 
+        round = (n) ->
+          return '?' unless n?
+          if n.toString().match /\.\d\d\d/
+            n.toFixed 2
+          else
+            n
 
         who = $('.chart,.data,.calculator').last()
         data = who.data('item').data
@@ -36,9 +42,9 @@ window.plugins.scatter =
         title = (d) ->
           """
           #{d.Material}
-          #{horz}: #{d[horz]}
-          #{vert}: #{d[vert]}
-          Rank: #{d['Rank']}
+          #{horz}: #{round xdat d}
+          #{vert}: #{round ydat d}
+          Rank: #{value d['Rank']}
           """
 
         who.bind 'thumb', (e, thumb) ->

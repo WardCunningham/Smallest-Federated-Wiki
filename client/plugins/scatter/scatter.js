@@ -6,7 +6,7 @@
     emit: function(div, item) {
       return wiki.getScript('/js/d3/d3.js', function() {
         return wiki.getScript('/js/d3/d3.time.js', function() {
-          var data, extent, fill, h, horz, p, title, value, vert, vis, w, who, x, xdat, y, ydat;
+          var data, extent, fill, h, horz, p, round, title, value, vert, vis, w, who, x, xdat, y, ydat;
           div.append(' <style>\n svg {\n   font: 10px sans-serif;\n   background: #eee;\n }\n circle {\n   fill: gray;\n   stroke: white;\n }\n</style>');
           value = function(obj) {
             if (obj == null) {
@@ -27,6 +27,16 @@
                 return NaN;
             }
           };
+          round = function(n) {
+            if (n == null) {
+              return '?';
+            }
+            if (n.toString().match(/\.\d\d\d/)) {
+              return n.toFixed(2);
+            } else {
+              return n;
+            }
+          };
           who = $('.chart,.data,.calculator').last();
           data = who.data('item').data;
           horz = "Water / Land Intensity Total";
@@ -38,7 +48,7 @@
             return value(d[vert]);
           };
           title = function(d) {
-            return "" + d.Material + "\n" + horz + ": " + d[horz] + "\n" + vert + ": " + d[vert] + "\nRank: " + d['Rank'];
+            return "" + d.Material + "\n" + horz + ": " + (round(xdat(d))) + "\n" + vert + ": " + (round(ydat(d))) + "\nRank: " + (value(d['Rank']));
           };
           who.bind('thumb', function(e, thumb) {
             var x;
