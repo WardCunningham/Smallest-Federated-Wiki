@@ -72,10 +72,13 @@ emitHeader = (pageElement, page) ->
           ), " #{page.title}"))
   if (rev = pageElement.attr('id').split('_rev')[1])?
     date = page.journal[page.journal.length-1].date
-    $(pageElement)
-      .append $('<h4 class="revision"/>')
-        .html if date? then util.formatDate(date) else "Revision #{rev}"
-    $(pageElement).addClass 'ghost'
+    $(pageElement).addClass('ghost').append $ """
+      <h2 class="revision">
+        <span>
+          #{if date? then util.formatDate(date) else "Revision #{rev}"}
+        </span>
+      </h2>
+    """
 
 module.exports = refresh = wiki.refresh = ->
   pageElement = $(this)

@@ -46,7 +46,7 @@ util.formatDate = (msSinceEpoch) ->
   h = if h == 0 then 12 else if h > 12 then h - 12 else h
   mi = (if d.getMinutes() < 10 then "0" else "") + d.getMinutes()
   sec = (if d.getSeconds() < 10 then "0" else "") + d.getSeconds()
-  "#{wk} #{mo} #{day} #{yr} #{h}:#{mi}:#{sec} #{am}"
+  "#{wk} #{mo} #{day}, #{yr}<br>#{h}:#{mi}:#{sec} #{am}"
 
 util.formatElapsedTime = (msSinceEpoch) ->
   msecs = (new Date().getTime() - msSinceEpoch)

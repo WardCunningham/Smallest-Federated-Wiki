@@ -740,7 +740,7 @@ require.define("/lib/util.coffee", function (require, module, exports, __dirname
     h = h === 0 ? 12 : h > 12 ? h - 12 : h;
     mi = (d.getMinutes() < 10 ? "0" : "") + d.getMinutes();
     sec = (d.getSeconds() < 10 ? "0" : "") + d.getSeconds();
-    return "" + wk + " " + mo + " " + day + " " + yr + " " + h + ":" + mi + ":" + sec + " " + am;
+    return "" + wk + " " + mo + " " + day + ", " + yr + "<br>" + h + ":" + mi + ":" + sec + " " + am;
   };
 
   util.formatElapsedTime = function(msSinceEpoch) {
@@ -1377,8 +1377,7 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
     }
     if ((rev = pageElement.attr('id').split('_rev')[1]) != null) {
       date = page.journal[page.journal.length - 1].date;
-      $(pageElement).append($('<h4 class="revision"/>').html(date != null ? util.formatDate(date) : "Revision " + rev));
-      return $(pageElement).addClass('ghost');
+      return $(pageElement).addClass('ghost').append($("<h2 class=\"revision\">\n  <span>\n    " + (date != null ? util.formatDate(date) : "Revision " + rev) + "\n  </span>\n</h2>"));
     }
   };
 

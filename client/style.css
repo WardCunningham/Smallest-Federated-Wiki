@@ -241,12 +241,22 @@ textarea {
 
 .revision {
   position: relative;
-  margin-top: -23px;
-  margin-bottom: -9px;
-  text-align: right;
-  font-size: 13px;
-  color: #7b2106;
-  font-weight: 500; }
+  font-size: 24px;
+  color: rgba(128,32,16,0.7); #7b2106
+  font-weight: bold; }
+
+.revision span {
+  background: rgba(255,255,255,0.8);
+  padding: 10px;
+  position: absolute;
+  display: block;
+  text-align: center;
+  top: -40px;
+  right: 10px;
+  -webkit-transform: rotate(-15deg); 
+  -moz-transform: rotate(-15deg);
+
+}
 
 .favicon {
   position: relative;
