@@ -110,11 +110,6 @@ class Controller < Sinatra::Base
     end
   end
 
-  get '/style.css' do
-    content_type 'text/css'
-    sass :style
-  end
-
   get '/system/slugs.json' do
     content_type 'application/json'
     cross_origin
