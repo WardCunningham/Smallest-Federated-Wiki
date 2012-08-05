@@ -78,7 +78,7 @@ window.plugins.method =
             color = '#ddd'
             _.max list
           else
-            color = '#edd'
+            throw new Error "don't know how to #{name}"
 
         try
           if args = line.match /^([0-9.eE-]+) ([\w \/%(),-]+)$/
