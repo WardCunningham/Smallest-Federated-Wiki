@@ -1,8 +1,8 @@
-listItemHtml = (slug,wikiPage)->
+listItemHtml = (slug, page)->
   """
     <li>
       <a class="internal" href="#" title="origin" data-page-name="#{slug}"> 
-        #{wikiPage.title}
+        #{page.title}
       </a> 
       <button>✕</button>
     </li>
@@ -19,14 +19,13 @@ constructor = ($, dependencies={})->
     $div.append( ul = $('<ul />') )
     for i in [0...localStorage.length]
       slug = localStorage.key(i)
-      wikiPage = JSON.parse(localStorage.getItem(slug))
-      ul.prepend listItemHtml(slug,wikiPage)
+      page = JSON.parse(localStorage.getItem(slug))
+      ul.prepend listItemHtml(slug,page)
 
   bind = ($div, item) ->
     $div.on 'click', 'button', ->
       slug = $(this).siblings('a.internal').data('pageName')
       localStorage.removeItem(slug)
-      # re-render
       emit( $div.empty(), item )
 
   {

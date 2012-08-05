@@ -2,8 +2,8 @@
 (function() {
   var constructor, listItemHtml;
 
-  listItemHtml = function(slug, wikiPage) {
-    return "<li>\n  <a class=\"internal\" href=\"#\" title=\"origin\" data-page-name=\"" + slug + "\"> \n    " + wikiPage.title + "\n  </a> \n  <button>✕</button>\n</li>";
+  listItemHtml = function(slug, page) {
+    return "<li>\n  <a class=\"internal\" href=\"#\" title=\"origin\" data-page-name=\"" + slug + "\"> \n    " + page.title + "\n  </a> \n  <button>✕</button>\n</li>";
   };
 
   constructor = function($, dependencies) {
@@ -13,7 +13,7 @@
     }
     localStorage = dependencies.localStorage || window.localStorage;
     emit = function($div, item) {
-      var i, slug, ul, wikiPage, _i, _ref, _results;
+      var i, page, slug, ul, _i, _ref, _results;
       if (localStorage.length === 0) {
         $div.append('<p>empty</p>');
         return;
@@ -22,8 +22,8 @@
       _results = [];
       for (i = _i = 0, _ref = localStorage.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
         slug = localStorage.key(i);
-        wikiPage = JSON.parse(localStorage.getItem(slug));
-        _results.push(ul.prepend(listItemHtml(slug, wikiPage)));
+        page = JSON.parse(localStorage.getItem(slug));
+        _results.push(ul.prepend(listItemHtml(slug, page)));
       }
       return _results;
     };
