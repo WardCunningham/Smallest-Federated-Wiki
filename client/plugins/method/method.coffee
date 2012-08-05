@@ -94,8 +94,9 @@ window.plugins.method =
             [value, list, hover] = [apply(args[1], list), [], "#{args[1]} of #{list.length} numbers"]
             line = args[2]
             if output[line]? or input[line]?
-              if value != (previous = asValue(output[line]||input[line]))
-                comment = "previously #{previous} Δ#{value-previous}"
+              previous = asValue(output[line]||input[line])
+              if Math.abs(change = value/previous-1) > 0.0001
+                comment = "previously #{previous}\nΔ #{round(change*100)}%"
             output[line] = value
           else if args = line.match /^([A-Z]+)$/
             [value, list, hover] = [apply(args[1], list), [], "#{args[1]} of #{list.length} numbers"]
