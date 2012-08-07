@@ -21,15 +21,14 @@ describe "loading a page" do
   end
 
   it "should load multiple pages at once" do
-    visit("/view/welcome-visitors/view/indie-web-camp")
-    body.should include("You are welcome to copy this page to any server you own and revise its welcoming message as you see fit.")
-    body.should include("Rather than posting content on many third-party silos of data, we should all begin owning the data we're creating. ")
+    visit("/view/welcome-visitors/view/multiple-paragraphs")
+    body.should include("Welcome to the")
   end
 
   it "should load remote page" do
     remote = "localhost:#{Capybara.server_port}"
     visit("/#{remote}/welcome-visitors")
-    body.should include("You are welcome to copy this page to any server you own and revise its welcoming message as you see fit.")
+    body.should include("Welcome to the")
   end
 
   it "should load a page from plugins" do
@@ -219,12 +218,12 @@ describe "navigating between pages" do
   end
 
   it "should open internal links by adding a new wiki page to the web page" do
-    link_titled("Indie Web Camp").click
+    link_titled("Local Editing").click
     page.all(".page").length.should == 2
   end
 
   it "should remove added pages when the browser's back button is pressed" do
-    link_titled("Indie Web Camp").click
+    link_titled("Local Editing").click
     page.back
     page.all(".page").length.should == 1
   end
