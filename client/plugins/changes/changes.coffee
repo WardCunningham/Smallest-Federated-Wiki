@@ -4,7 +4,7 @@ listItemHtml = (slug, page)->
       <a class="internal" href="#" title="origin" data-page-name="#{slug}"> 
         #{page.title}
       </a> 
-      <button>✕</button>
+      <button class="delete">✕</button>
     </li>
   """
 
@@ -20,13 +20,17 @@ constructor = ($, dependencies={})->
     for i in [0...localStorage.length]
       slug = localStorage.key(i)
       page = JSON.parse(localStorage.getItem(slug))
-      ul.prepend listItemHtml(slug,page)
+      ul.append listItemHtml(slug,page)
+    ul.append """<button class="submit">Submit Changes</button>""" if item.submit?
 
   bind = ($div, item) ->
-    $div.on 'click', 'button', ->
+    $div.on 'click', '.delete', ->
       slug = $(this).siblings('a.internal').data('pageName')
       localStorage.removeItem(slug)
       emit( $div.empty(), item )
+
+    $div.on 'click', '.submit', ->
+      alert "submit"
 
     $div.dblclick ->
       bundle = {}
