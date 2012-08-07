@@ -2,9 +2,37 @@
   "title": "Welcome Visitors",
   "story": [
     {
-      "text": "Welcome to the [[Smallest Federated Wiki]]. This page was first drafted Sunday, June 26th, 2011, at [[Indie Web Camp]]. You are welcome to copy this page to any server you own and revise its welcoming message as you see fit. You can assume this has happened many times already.",
+      "text": "Welcome to the [[Smallest Federated Wiki]]. You may be seeing this page because you have just entered a wiki of your own. If so, you have three things to do before you go on.",
       "id": "7b56f22a4b9ee974",
       "type": "paragraph"
+    },
+    {
+      "type": "paragraph",
+      "id": "821827c99b90cfd1",
+      "text": "<b>One:</b> Create a page about yourself. Start by making a link to that page right here. Double-click the gray box below. That opens an editor. Type your name enclosed in double square brackets. Then press Command/CTRL-S to save."
+    },
+    {
+      "type": "factory",
+      "id": "63ad2e58eecdd9e5"
+    },
+    {
+      "type": "paragraph",
+      "id": "2bbd646ff3f44b51",
+      "text": "<b>Two:</b> Create a page about things you do on this wiki. Double-click the gray box below. Type a descriptive name of something you will be writing aout. Enclose it in square brackets. Then press Command/CTRL-S to save."
+    },
+    {
+      "type": "factory",
+      "id": "05e2fa92643677ca"
+    },
+    {
+      "type": "paragraph",
+      "id": "0cbb4ef5f5d7e472",
+      "text": "<b>Three:</b> Look for the <i>claim</i> button below this page. If you have your own OpenID you can use it to claim these pages so that only you can edit them. If you have a Google account you can use that too. Press the (G) button. Press the (Y) button to use your Yahoo account. You get the idea."
+    },
+    {
+      "type": "paragraph",
+      "id": "ee416d431ebf4fb4",
+      "text": "Start writing. Click either link. Press [+] to add more writing spaces. Read [[How to Wiki]] for more ideas. Track changes with [[Recent Changes]] and [[Local Editing]]."
     }
   ],
   "journal": [
@@ -29,6 +57,85 @@
     {
       "type": "fork",
       "site": "fed.wiki.org"
+    },
+    {
+      "type": "edit",
+      "id": "7b56f22a4b9ee974",
+      "item": {
+        "text": "Welcome to the [[Smallest Federated Wiki]]. You may be seeing this page because you have just entered a wiki of your own. If so, you have three things to do before you go on.",
+        "id": "7b56f22a4b9ee974",
+        "type": "paragraph"
+      },
+      "date": 1344306124590
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "821827c99b90cfd1",
+        "text": "<b>One:</b> Create a page about yourself. Start by making a link to that page right here. Double-click the gray box below. That opens an editor. Type your name enclosed in double square brackets. Then press Command/CTRL-S to save."
+      },
+      "after": "7b56f22a4b9ee974",
+      "id": "821827c99b90cfd1",
+      "date": 1344306133455
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "factory",
+        "id": "63ad2e58eecdd9e5"
+      },
+      "after": "821827c99b90cfd1",
+      "id": "63ad2e58eecdd9e5",
+      "date": 1344306138935
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "2bbd646ff3f44b51",
+        "text": "<b>Two:</b> Create a page about things you do on this wiki. Double-click the gray box below. Type a descriptive name of something you will be writing aout. Enclose it in square brackets. Then press Command/CTRL-S to save."
+      },
+      "after": "63ad2e58eecdd9e5",
+      "id": "2bbd646ff3f44b51",
+      "date": 1344306143742
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "factory",
+        "id": "05e2fa92643677ca"
+      },
+      "after": "2bbd646ff3f44b51",
+      "id": "05e2fa92643677ca",
+      "date": 1344306148580
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "0cbb4ef5f5d7e472",
+        "text": "<b>Three:</b> Look for the <i>claim</i> button below this page. If you have your own OpenID you can use it to claim these pages so that only you can edit them. If you have a Google account you can use that too. Press the (G) button. Press the (Y) button to use your Yahoo account. You get the idea."
+      },
+      "after": "05e2fa92643677ca",
+      "id": "0cbb4ef5f5d7e472",
+      "date": 1344306151782
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "ee416d431ebf4fb4",
+        "text": "Start writing. Click either link. Press [+] to add more writing spaces. Read [[How to Wiki]] for more ideas. Track changes with [[Recent Changes]] and [[Local Editing]]."
+      },
+      "after": "0cbb4ef5f5d7e472",
+      "id": "ee416d431ebf4fb4",
+      "date": 1344306168918
+    },
+    {
+      "type": "fork",
+      "site": "new.fed.wiki.org",
+      "date": 1344306178918
     }
   ]
 }
