@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'bundler'
 require 'pathname'
+require 'pp'
 Bundler.require
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
@@ -343,6 +344,16 @@ class Controller < Sinatra::Base
 
   not_found do
     oops 404, "Page not found"
+  end
+
+  put '/submit' do
+    content_type 'application/json'
+    bundle = JSON.parse params['action']
+    spawn = "#{(rand*1000000).to_i}.#{request.host}"
+    bundle.each do |slug, page|
+      farm_page(spawn).put slug, page
+    end
+    JSON.pretty_generate({"site"=>spawn})
   end
 
 end
