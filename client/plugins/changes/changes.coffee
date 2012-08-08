@@ -43,9 +43,17 @@ constructor = ($, dependencies={})->
         url: "/submit"
         data:
           'bundle': JSON.stringify(pageBundle())
-        success: (data, textStatus, jqXHR) ->
-          wiki.log "ajax submit success", data, textStatus, jqXHR
-          # wiki.addToJournal pageElement.find('.journal'), action
+        success: (citation, textStatus, jqXHR) ->
+          wiki.log "ajax submit success", citation, textStatus, jqXHR
+          throw new Exception "Incomplete Submission" unless citation.type and citation.site
+          pageElement = $div.parents('.page:first')
+          itemElement = $("<div />", class: "item #{citation.type}").data('item',citation).attr('data-id', citation.id)
+          itemElement.data 'pageElement', pageElement
+          pageElement.find(".story").append(itemElement)
+          wiki.doPlugin itemElement, citation
+          beforeElement = itemElement.prev('.item')
+          before = wiki.getItem(beforeElement)
+          wiki.pageHandler.put pageElement, {item: citation, id: citation.id, type: "add", after: before?.id}
         error: (xhr, type, msg) ->
           wiki.log "ajax error callback", type, msg
 

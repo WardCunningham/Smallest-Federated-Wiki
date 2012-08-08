@@ -53,8 +53,27 @@
           data: {
             'bundle': JSON.stringify(pageBundle())
           },
-          success: function(data, textStatus, jqXHR) {
-            return wiki.log("ajax submit success", data, textStatus, jqXHR);
+          success: function(citation, textStatus, jqXHR) {
+            var before, beforeElement, itemElement, pageElement;
+            wiki.log("ajax submit success", citation, textStatus, jqXHR);
+            if (!(citation.type && citation.site)) {
+              throw new Exception("Incomplete Submission");
+            }
+            pageElement = $div.parents('.page:first');
+            itemElement = $("<div />", {
+              "class": "item " + citation.type
+            }).data('item', citation).attr('data-id', citation.id);
+            itemElement.data('pageElement', pageElement);
+            pageElement.find(".story").append(itemElement);
+            wiki.doPlugin(itemElement, citation);
+            beforeElement = itemElement.prev('.item');
+            before = wiki.getItem(beforeElement);
+            return wiki.pageHandler.put(pageElement, {
+              item: citation,
+              id: citation.id,
+              type: "add",
+              after: before != null ? before.id : void 0
+            });
           },
           error: function(xhr, type, msg) {
             return wiki.log("ajax error callback", type, msg);
