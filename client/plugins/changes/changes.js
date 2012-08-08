@@ -51,7 +51,7 @@
           type: 'PUT',
           url: "/submit",
           data: {
-            'action': JSON.stringify(pageBundle())
+            'bundle': JSON.stringify(pageBundle())
           },
           success: function(data, textStatus, jqXHR) {
             return wiki.log("ajax submit success", data, textStatus, jqXHR);

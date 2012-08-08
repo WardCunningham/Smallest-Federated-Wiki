@@ -42,7 +42,7 @@ constructor = ($, dependencies={})->
         type: 'PUT'
         url: "/submit"
         data:
-          'action': JSON.stringify(pageBundle())
+          'bundle': JSON.stringify(pageBundle())
         success: (data, textStatus, jqXHR) ->
           wiki.log "ajax submit success", data, textStatus, jqXHR
           # wiki.addToJournal pageElement.find('.journal'), action

@@ -348,12 +348,32 @@ class Controller < Sinatra::Base
 
   put '/submit' do
     content_type 'application/json'
-    bundle = JSON.parse params['action']
+    bundle = JSON.parse params['bundle']
     spawn = "#{(rand*1000000).to_i}.#{request.host}"
+    site = request.port == 80 ? spawn : "#{spawn}:#{request.port}"
     bundle.each do |slug, page|
       farm_page(spawn).put slug, page
     end
-    JSON.pretty_generate({"site"=>spawn})
+    citation = {
+      "type"=> "federatedWiki",
+      "id"=> RandomId.generate,
+      "site"=> site,
+      "slug"=> "recent-changes",
+      "title"=> "Recent Changes",
+      "text"=> bundle.collect{|slug, page| "<li> [[#{page['title']||slug}]]"}.join("\n")
+    }
+    action = {
+      "type"=> "add",
+      "id"=> citation['id'],
+      "date"=> Time.new.to_i*1000,
+      "item"=> citation
+    }
+    slug = 'recent-submissions'
+    page = farm_page.get slug
+    (page['story']||=[]) << citation
+    (page['journal']||=[]) << action
+    farm_page.put slug, page
+    JSON.pretty_generate citation
   end
 
 end
