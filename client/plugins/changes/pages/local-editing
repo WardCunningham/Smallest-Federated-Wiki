@@ -2,28 +2,28 @@
   "title": "Local Editing",
   "story": [
     {
-      "text": "Modern browsers can save changes in local storage. Engage this feature by selecting the <b>Local editing</b> option at the bottom of this web page.",
+      "text": "Modern browsers can save changes in local storage. This feature is automatically engaged when editing from a server you don't own (or aren't logged in.)",
       "id": "ed7bf3c8b951a090",
       "type": "paragraph"
     },
     {
-      "text": "<i>Notice: this is an under developed experimental feature. It takes some ingenuity to even see what it is doing. However, you will know you are seeing a locally stored page because it will have a tinted background.",
-      "id": "730888a4d784bc57",
-      "type": "paragraph"
-    },
-    {
-      "text": "<h2>Local Edits",
+      "text": "<h3>Your Changes",
       "id": "20d07f5b9d9a59c7",
       "type": "paragraph"
     },
     {
-      "text": "Here we list pages known to have locally stored copies. These copies aren't accessed unless local editing is selected.",
+      "text": "Here we list changes you have made and have stored in your browser. You can review changed pages and discard those you no longer want.",
       "id": "5549bb4f8d557954",
       "type": "paragraph"
     },
     {
       "id": "ca824b55462eff23",
       "type": "changes"
+    },
+    {
+      "text": "<i>Notice: this is an under developed experimental feature. It takes some ingenuity to even see what it is doing. However, you will know you are seeing a locally stored page when it has a yellow border.",
+      "id": "730888a4d784bc57",
+      "type": "paragraph"
     }
   ],
   "journal": [
@@ -132,6 +132,91 @@
     {
       "id": "bd9ef6843f41f87f",
       "type": "remove"
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "332c1b41b6b39b9f"
+      },
+      "id": "332c1b41b6b39b9f",
+      "type": "add",
+      "after": "ca824b55462eff23"
+    },
+    {
+      "type": "remove",
+      "id": "332c1b41b6b39b9f"
+    },
+    {
+      "type": "edit",
+      "id": "ed7bf3c8b951a090",
+      "item": {
+        "text": "Modern browsers can save changes in local storage. This feature is automatically engaged when editing from a server you don't own (or aren't logged in.)",
+        "id": "ed7bf3c8b951a090",
+        "type": "paragraph"
+      },
+      "date": 1344463970006
+    },
+    {
+      "type": "edit",
+      "id": "730888a4d784bc57",
+      "item": {
+        "text": "<i>Notice: this is an under developed experimental feature. It takes some ingenuity to even see what it is doing. However, you will know you are seeing a locally stored page because it will have a yellow border.",
+        "id": "730888a4d784bc57",
+        "type": "paragraph"
+      },
+      "date": 1344463987023
+    },
+    {
+      "type": "edit",
+      "id": "5549bb4f8d557954",
+      "item": {
+        "text": "Here we list changes you have made and have stored in your browser. You can review changed pages and discard those you no longer want.",
+        "id": "5549bb4f8d557954",
+        "type": "paragraph"
+      },
+      "date": 1344464140342
+    },
+    {
+      "type": "edit",
+      "id": "20d07f5b9d9a59c7",
+      "item": {
+        "text": "<h2>Your Changes",
+        "id": "20d07f5b9d9a59c7",
+        "type": "paragraph"
+      },
+      "date": 1344464191600
+    },
+    {
+      "type": "edit",
+      "id": "730888a4d784bc57",
+      "item": {
+        "text": "<i>Notice: this is an under developed experimental feature. It takes some ingenuity to even see what it is doing. However, you will know you are seeing a locally stored page when it has a yellow border.",
+        "id": "730888a4d784bc57",
+        "type": "paragraph"
+      },
+      "date": 1344464231137
+    },
+    {
+      "type": "move",
+      "order": [
+        "ed7bf3c8b951a090",
+        "20d07f5b9d9a59c7",
+        "5549bb4f8d557954",
+        "ca824b55462eff23",
+        "730888a4d784bc57"
+      ],
+      "id": "730888a4d784bc57",
+      "date": 1344464267116
+    },
+    {
+      "type": "edit",
+      "id": "20d07f5b9d9a59c7",
+      "item": {
+        "text": "<h3>Your Changes",
+        "id": "20d07f5b9d9a59c7",
+        "type": "paragraph"
+      },
+      "date": 1344464362226
     }
   ]
 }

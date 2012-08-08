@@ -1,0 +1,303 @@
+{
+  "title": "Submit Changes",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "fb1e7c1fff23e01d",
+      "text": "Here we list changes you have made and have stored in your browser. You can review changed pages, discard some, and submit the remainder as a contribution."
+    },
+    {
+      "type": "paragraph",
+      "id": "0ab346ac2634bae9",
+      "text": "<i>Notice: This capability is only available for sites that choose to accept changes."
+    },
+    {
+      "type": "paragraph",
+      "id": "b52782aafcdb17ab",
+      "text": "<h3>Describe Your Contribution"
+    },
+    {
+      "type": "paragraph",
+      "id": "88fb0961a9823f6e",
+      "text": "Use this space to describe who you are and why you are making a submission. "
+    },
+    {
+      "type": "factory",
+      "id": "4d971b96c8d5dce6"
+    },
+    {
+      "type": "paragraph",
+      "id": "093ecda699fda59c",
+      "text": "<h3>Submit Your Changes"
+    },
+    {
+      "type": "changes",
+      "submit": true,
+      "id": "a672a633bbe6414b"
+    },
+    {
+      "type": "paragraph",
+      "id": "81a26f11a4d0c6cd",
+      "text": "<h3>Submission History"
+    },
+    {
+      "type": "paragraph",
+      "id": "4e61a8cfc5efcbf5",
+      "text": "When a submission completes, this page is amended with a citation for a newly created site that host the submitted pages. Common practice is for the submitter to claim this site and review [[Recent Submissions]] that might appear there."
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "id": "77210f565dcfb25a",
+      "item": {
+        "title": "Submit Changes"
+      },
+      "date": 1344460831830
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "fb1e7c1fff23e01d"
+      },
+      "id": "fb1e7c1fff23e01d",
+      "type": "add",
+      "date": 1344461000404
+    },
+    {
+      "type": "edit",
+      "id": "fb1e7c1fff23e01d",
+      "item": {
+        "type": "paragraph",
+        "id": "fb1e7c1fff23e01d",
+        "text": "Here we list changes you have made and have stored in your browser. You can review changed pages, discard some, and submit the remainder as a contribution."
+      },
+      "date": 1344461004309
+    },
+    {
+      "item": {
+        "type": "changes",
+        "submit": true,
+        "id": "a672a633bbe6414b"
+      },
+      "id": "a672a633bbe6414b",
+      "type": "add",
+      "after": "fb1e7c1fff23e01d",
+      "date": 1344461298827
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "0ab346ac2634bae9"
+      },
+      "id": "0ab346ac2634bae9",
+      "type": "add",
+      "after": "a672a633bbe6414b",
+      "date": 1344461548374
+    },
+    {
+      "type": "edit",
+      "id": "0ab346ac2634bae9",
+      "item": {
+        "type": "paragraph",
+        "id": "0ab346ac2634bae9",
+        "text": "Note: This capability is only available for sites that choose to accept changes."
+      },
+      "date": 1344461629973
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "093ecda699fda59c"
+      },
+      "id": "093ecda699fda59c",
+      "type": "add",
+      "after": "0ab346ac2634bae9",
+      "date": 1344461640885
+    },
+    {
+      "type": "edit",
+      "id": "093ecda699fda59c",
+      "item": {
+        "type": "paragraph",
+        "id": "093ecda699fda59c",
+        "text": "<h3>Submission History"
+      },
+      "date": 1344461655949
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "4e61a8cfc5efcbf5",
+        "text": ""
+      },
+      "id": "4e61a8cfc5efcbf5",
+      "type": "add",
+      "after": "093ecda699fda59c",
+      "date": 1344461656454
+    },
+    {
+      "type": "edit",
+      "id": "4e61a8cfc5efcbf5",
+      "item": {
+        "type": "paragraph",
+        "id": "4e61a8cfc5efcbf5",
+        "text": "When a submission completes, this page is amended with a citation for a newly created site that host the submitted pages. Common practice is for the submitter to claim this site and review [[Recent Submissions]] that might appear there."
+      },
+      "date": 1344462064308
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "b52782aafcdb17ab"
+      },
+      "id": "b52782aafcdb17ab",
+      "type": "add",
+      "after": "4e61a8cfc5efcbf5",
+      "date": 1344462419871
+    },
+    {
+      "type": "edit",
+      "id": "b52782aafcdb17ab",
+      "item": {
+        "type": "paragraph",
+        "id": "b52782aafcdb17ab",
+        "text": "<h3>Describe Your Submission"
+      },
+      "date": 1344462438122
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "3cfbe8b203383258",
+        "text": ""
+      },
+      "id": "3cfbe8b203383258",
+      "type": "add",
+      "after": "b52782aafcdb17ab",
+      "date": 1344462438626
+    },
+    {
+      "type": "move",
+      "order": [
+        "fb1e7c1fff23e01d",
+        "a672a633bbe6414b",
+        "0ab346ac2634bae9",
+        "b52782aafcdb17ab",
+        "093ecda699fda59c",
+        "4e61a8cfc5efcbf5",
+        "3cfbe8b203383258"
+      ],
+      "id": "b52782aafcdb17ab",
+      "date": 1344462443426
+    },
+    {
+      "type": "remove",
+      "id": "3cfbe8b203383258",
+      "date": 1344462446843
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "88fb0961a9823f6e",
+        "text": ""
+      },
+      "id": "88fb0961a9823f6e",
+      "type": "add",
+      "after": "b52782aafcdb17ab",
+      "date": 1344462473238
+    },
+    {
+      "type": "edit",
+      "id": "88fb0961a9823f6e",
+      "item": {
+        "type": "paragraph",
+        "id": "88fb0961a9823f6e",
+        "text": "Use this space to describe who you are and why you are making a submission. "
+      },
+      "date": 1344462520278
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "4d971b96c8d5dce6"
+      },
+      "id": "4d971b96c8d5dce6",
+      "type": "add",
+      "after": "4e61a8cfc5efcbf5",
+      "date": 1344462522585
+    },
+    {
+      "type": "move",
+      "order": [
+        "fb1e7c1fff23e01d",
+        "a672a633bbe6414b",
+        "0ab346ac2634bae9",
+        "b52782aafcdb17ab",
+        "88fb0961a9823f6e",
+        "4d971b96c8d5dce6",
+        "093ecda699fda59c",
+        "4e61a8cfc5efcbf5"
+      ],
+      "id": "4d971b96c8d5dce6",
+      "date": 1344462525772
+    },
+    {
+      "type": "edit",
+      "id": "0ab346ac2634bae9",
+      "item": {
+        "type": "paragraph",
+        "id": "0ab346ac2634bae9",
+        "text": "<i>Notice: This capability is only available for sites that choose to accept changes."
+      },
+      "date": 1344464293687
+    },
+    {
+      "type": "edit",
+      "id": "093ecda699fda59c",
+      "item": {
+        "type": "paragraph",
+        "id": "093ecda699fda59c",
+        "text": "<h3>Submit Your Changes"
+      },
+      "date": 1344464505520
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "81a26f11a4d0c6cd",
+        "text": "<h3>Submission History"
+      },
+      "id": "81a26f11a4d0c6cd",
+      "type": "add",
+      "after": "093ecda699fda59c",
+      "date": 1344464506025
+    },
+    {
+      "type": "move",
+      "order": [
+        "fb1e7c1fff23e01d",
+        "0ab346ac2634bae9",
+        "b52782aafcdb17ab",
+        "88fb0961a9823f6e",
+        "4d971b96c8d5dce6",
+        "093ecda699fda59c",
+        "a672a633bbe6414b",
+        "81a26f11a4d0c6cd",
+        "4e61a8cfc5efcbf5"
+      ],
+      "id": "a672a633bbe6414b",
+      "date": 1344464517947
+    },
+    {
+      "type": "edit",
+      "id": "b52782aafcdb17ab",
+      "item": {
+        "type": "paragraph",
+        "id": "b52782aafcdb17ab",
+        "text": "<h3>Describe Your Contribution"
+      },
+      "date": 1344464633990
+    }
+  ]
+}
