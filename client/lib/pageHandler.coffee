@@ -4,44 +4,79 @@ revision = require('./revision')
 
 module.exports = pageHandler = {}
 
-pageHandler.get = (pageElement, callback, localContext) ->
-  [slug, rev] = pageElement.attr('id').split('_rev')
-  site = pageElement.data('site')
-  if pageElement.attr('data-server-generated') == 'true'
-    return callback null
-  if wiki.useLocalStorage() and json = localStorage[slug]
-    pageElement.addClass("local")
-    return callback JSON.parse(json)
-  pageHandler.context = ['origin'] unless pageHandler.context.length > 0
-  if site
-    localContext = []
+simpleGet = (site,slug,errback,callback)->
+  if site?
+    resource = "remote/#{site}/#{slug}"
   else
-    localContext ?= (i for own i in pageHandler.context)
-    site = localContext.shift()
-  resource = if site=='origin'
-    site = null
-    slug
-  else
-    "remote/#{site}/#{slug}"
-
+    resource = slug
   $.ajax
     type: 'GET'
     dataType: 'json'
     url: "/#{resource}.json?random=#{util.randomBytes(4)}"
     success: (page) ->
-      wiki.log 'fetch success', page, site || 'origin'
-      $(pageElement).data('site', site)
-      page = revision.create rev, page if rev
-      return callback(page)
+      callback(page)
     error: (xhr, type, msg) ->
+      errback()
+
+pageFromLocalStorage = (slug)->
+  if wiki.useLocalStorage() and json = localStorage[slug]
+    JSON.parse(json)
+  else
+    undefined
+
+createNewPageBasedOnSlug = (slug,pageElement)->
+  title = $("""a[href="/#{slug}.html"]""").html()
+  title or= slug
+  pageHandler.put $(pageElement), {type: 'create', id: util.randomBytes(8), item: {title}}
+  {title}
+
+recursiveGet = (params, pageElement, callback, localContext) ->
+  {slug,rev,site} = params
+
+  if site
+    localContext = []
+  else
+    site = localContext.shift()
+
+  site = null if site=='origin'
+
+
+  simpleGet site, slug,
+    ->
       if localContext.length > 0
-        pageHandler.get pageElement, callback, localContext
+        recursiveGet( params, pageElement, callback, localContext )
       else
-        site = null
-        title = $("""a[href="/#{slug}.html"]""").html()
-        title or= slug
-        pageHandler.put $(pageElement), {type: 'create', id: util.randomBytes(8), item: {title}}
-        callback {title}
+        page = createNewPageBasedOnSlug(slug,pageElement)
+        callback(page)
+    (page)->
+      wiki.log 'fetch success', page, site || 'origin'
+      page = revision.create rev, page if rev
+      return callback(page,site)
+
+fullGet = (pageElement, callback, localContext) ->
+  [slug, rev] = pageElement.attr('id').split('_rev')
+  pageInformation = {
+    slug: slug
+    rev: rev
+    site: pageElement.data('site')
+    wasServerGenerated: pageElement.attr('data-server-generated') == 'true'
+  }
+  wiki.log( 'pageInformation', pageInformation )
+
+  if pageInformation.wasServerGenerated
+    return callback null
+
+  if localPage = pageFromLocalStorage(slug)
+    return callback localPage, 'local'
+
+  pageHandler.context = ['origin'] unless pageHandler.context.length > 0
+
+  localContext = _.clone(pageHandler.context)
+  recursiveGet( pageInformation, pageElement, callback, localContext )
+
+
+pageHandler.get = fullGet
+
 
 pageHandler.context = []
 

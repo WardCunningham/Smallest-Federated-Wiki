@@ -83,7 +83,13 @@ emitHeader = (pageElement, page) ->
 module.exports = refresh = wiki.refresh = ->
   pageElement = $(this)
 
-  buildPage = (data) ->
+  buildPage = (data,siteFound) ->
+
+    if siteFound == 'local'
+      pageElement.addClass('local') 
+    else
+      pageElement.data('site', siteFound)
+
     if not data?
       pageElement.find('.item').each (i, each) ->
         item = wiki.getItem($(each))
