@@ -59,7 +59,9 @@ constructor = ($, dependencies={})->
 
 
     $div.dblclick ->
-      wiki.dialog "JSON bundle for #{length} pages",  $('<pre/>').text(JSON.stringify(pageBundle(), null, 2))
+      bundle = pageBundle()
+      count = _.size(bundle)
+      wiki.dialog "JSON bundle for #{count} pages",  $('<pre/>').text(JSON.stringify(bundle, null, 2))
 
   {
     emit: emit
