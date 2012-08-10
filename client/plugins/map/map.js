@@ -8,14 +8,14 @@
         div.css('height', '300px');
         options = {
           elt: div[0],
-          zoom: 13,
-          latLng: {
+          zoom: item.zoom || 13,
+          latLng: item.latlng || {
             lat: 40.735383,
             lng: -73.984655
           },
           mtype: 'osm',
           bestFitMargin: 0,
-          zoomOnDoubleClick: 0
+          zoomOnDoubleClick: true
         };
         map = new MQA.TileMap(options);
         MQA.withModule('largezoom', 'viewoptions', 'geolocationcontrol', 'mousewheel', function() {
@@ -26,7 +26,27 @@
           lat: 40.735383,
           lng: -73.984655
         });
-        return map.addShape(spot);
+        map.addShape(spot);
+        MQA.EventManager.addListener(map, 'dragend', function(e) {
+          var center;
+          center = map.getCenter();
+          item.latlng = {
+            lat: center.lat,
+            lng: center.lng
+          };
+          return plugins.map.save(div, item);
+        });
+        return MQA.EventManager.addListener(map, 'zoomend', function(e) {
+          item.zoom = e.zoom;
+          return plugins.map.save(div, item);
+        });
+      });
+    },
+    save: function(div, item) {
+      return wiki.pageHandler.put(div.parents('.page:first'), {
+        type: 'edit',
+        id: item.id,
+        item: item
       });
     }
   };
