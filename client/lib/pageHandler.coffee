@@ -5,7 +5,7 @@ revision = require('./revision')
 module.exports = pageHandler = {}
 
 pageFromLocalStorage = (slug)->
-  if wiki.useLocalStorage() and json = localStorage[slug]
+  if json = localStorage[slug]
     JSON.parse(json)
   else
     undefined
@@ -17,9 +17,20 @@ recursiveGet = ({pageInformation, whenGotten, whenNotGotten, localContext}) ->
     localContext = []
   else
     site = localContext.shift()
+
   site = null if site=='origin'
 
-  resource = if site? then "remote/#{site}/#{slug}" else slug 
+  if site?
+    if site == 'local'
+      if localPage = pageFromLocalStorage(pageInformation.slug)
+        return whenGotten( localPage, 'local' )
+      else
+        resource = slug
+    else
+      resource = "remote/#{site}/#{slug}"
+  else
+    resource = slug
+
   pageUrl = "/#{resource}.json?random=#{util.randomBytes(4)}"
 
   $.ajax
@@ -36,11 +47,15 @@ recursiveGet = ({pageInformation, whenGotten, whenNotGotten, localContext}) ->
         whenNotGotten()
 
 pageHandler.get = ({whenGotten,whenNotGotten,pageInformation}  ) ->
+
+  wiki.log 'pageHandler.get', pageInformation.site, pageInformation.slug, pageInformation.rev, 'context', pageHandler.context.join ' => '
+
   if pageInformation.wasServerGenerated
     return whenGotten( null )
 
-  if localPage = pageFromLocalStorage(pageInformation.slug)
-    return whenGotten( localPage, 'local' )
+  if wiki.useLocalStorage()
+    if localPage = pageFromLocalStorage(pageInformation.slug)
+      return whenGotten( localPage, 'local' )
 
   pageHandler.context = ['origin'] unless pageHandler.context.length
 

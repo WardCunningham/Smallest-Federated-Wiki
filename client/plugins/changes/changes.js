@@ -3,7 +3,7 @@
   var constructor, listItemHtml, pageBundle;
 
   listItemHtml = function(slug, page) {
-    return "<li>\n  <a class=\"internal\" href=\"#\" title=\"origin\" data-page-name=\"" + slug + "\"> \n    " + page.title + "\n  </a> \n  <button class=\"delete\">✕</button>\n</li>";
+    return "<li>\n  <a class=\"internal\" href=\"#\" title=\"origin\" data-page-name=\"" + slug + "\" data-site=\"local\">\n    " + page.title + "\n  </a> \n  <button class=\"delete\">✕</button>\n</li>";
   };
 
   pageBundle = function() {

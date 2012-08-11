@@ -364,7 +364,6 @@ require.define("/lib/util.coffee", function (require, module, exports, __dirname
     renderInternalLink = function(match, name) {
       var slug;
       slug = util.asSlug(name);
-      wiki.log('resolve', slug, 'context', wiki.resolutionContext.join(' => '));
       return "<a class=\"internal\" href=\"/" + slug + ".html\" data-page-name=\"" + slug + "\" title=\"" + (wiki.resolutionContext.join(' => ')) + "\">" + name + "</a>";
     };
     return string.replace(/\[\[([^\]]+)\]\]/gi, renderInternalLink).replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" target=\"_blank\" href=\"$1\">$2</a>");
@@ -600,7 +599,6 @@ require.define("/lib/active.coffee", function (require, module, exports, __dirna
     bodyWidth = $("body").width();
     minX = active.scrollContainer.scrollLeft();
     maxX = minX + bodyWidth;
-    wiki.log('scrollTo', el, el.position());
     target = el.position().left;
     width = el.outerWidth(true);
     contentWidth = $(".page").outerWidth(true) * $(".page").size();
@@ -621,7 +619,6 @@ require.define("/lib/active.coffee", function (require, module, exports, __dirna
 
   active.set = function(el) {
     el = $(el);
-    wiki.log('set active', el);
     $(".active").removeClass("active");
     return scrollTo(el.addClass("active"));
   };
@@ -778,7 +775,7 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
 
   pageFromLocalStorage = function(slug) {
     var json;
-    if (wiki.useLocalStorage() && (json = localStorage[slug])) {
+    if (json = localStorage[slug]) {
       return JSON.parse(json);
     } else {
       return;
@@ -786,7 +783,7 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
   };
 
   recursiveGet = function(_arg) {
-    var localContext, pageInformation, pageUrl, resource, rev, site, slug, whenGotten, whenNotGotten;
+    var localContext, localPage, pageInformation, pageUrl, resource, rev, site, slug, whenGotten, whenNotGotten;
     pageInformation = _arg.pageInformation, whenGotten = _arg.whenGotten, whenNotGotten = _arg.whenNotGotten, localContext = _arg.localContext;
     slug = pageInformation.slug, rev = pageInformation.rev, site = pageInformation.site;
     if (site) {
@@ -795,14 +792,25 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
       site = localContext.shift();
     }
     if (site === 'origin') site = null;
-    resource = site != null ? "remote/" + site + "/" + slug : slug;
+    if (site != null) {
+      if (site === 'local') {
+        if (localPage = pageFromLocalStorage(pageInformation.slug)) {
+          return whenGotten(localPage, 'local');
+        } else {
+          resource = slug;
+        }
+      } else {
+        resource = "remote/" + site + "/" + slug;
+      }
+    } else {
+      resource = slug;
+    }
     pageUrl = "/" + resource + ".json?random=" + (util.randomBytes(4));
     return $.ajax({
       type: 'GET',
       dataType: 'json',
       url: pageUrl,
       success: function(page) {
-        wiki.log('fetch success', page, site || 'origin');
         if (rev) page = revision.create(rev, page);
         return whenGotten(page, site);
       },
@@ -824,9 +832,12 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
   pageHandler.get = function(_arg) {
     var localPage, pageInformation, whenGotten, whenNotGotten;
     whenGotten = _arg.whenGotten, whenNotGotten = _arg.whenNotGotten, pageInformation = _arg.pageInformation;
+    wiki.log('pageHandler.get', pageInformation.site, pageInformation.slug, pageInformation.rev, 'context', pageHandler.context.join(' => '));
     if (pageInformation.wasServerGenerated) return whenGotten(null);
-    if (localPage = pageFromLocalStorage(pageInformation.slug)) {
-      return whenGotten(localPage, 'local');
+    if (wiki.useLocalStorage()) {
+      if (localPage = pageFromLocalStorage(pageInformation.slug)) {
+        return whenGotten(localPage, 'local');
+      }
     }
     if (!pageHandler.context.length) pageHandler.context = ['origin'];
     return recursiveGet({
@@ -965,7 +976,6 @@ require.define("/lib/state.coffee", function (require, module, exports, __dirnam
         return _results;
       })()).join('');
       if (url !== $(location).attr('pathname')) {
-        wiki.log('set state', locs, pages);
         return history.pushState(null, null, url);
       }
     }
@@ -973,13 +983,11 @@ require.define("/lib/state.coffee", function (require, module, exports, __dirnam
 
   state.show = function(e) {
     var idx, name, newLocs, newPages, old, oldLocs, oldPages, previous, _len, _ref;
-    wiki.log('popstate', e);
     oldPages = state.pagesInDom();
     newPages = state.urlPages();
     oldLocs = state.locsInDom();
     newLocs = state.urlLocs();
     if (!location.pathname || location.pathname === '/') return;
-    wiki.log('showState', oldPages, newPages, oldLocs, newLocs);
     previous = $('.page').eq(0);
     for (idx = 0, _len = newPages.length; idx < _len; idx++) {
       name = newPages[idx];
@@ -1001,16 +1009,15 @@ require.define("/lib/state.coffee", function (require, module, exports, __dirnam
     firstUrlPages = state.urlPages();
     firstUrlLocs = state.urlLocs();
     oldPages = state.pagesInDom();
-    wiki.log('amost createPage', firstUrlPages, firstUrlLocs, oldPages);
     _results = [];
     for (idx = 0, _len = firstUrlPages.length; idx < _len; idx++) {
       urlPage = firstUrlPages[idx];
-      if (!(__indexOf.call(oldPages, urlPage) < 0)) continue;
-      wiki.log('createPage', urlPage, idx);
-      if (urlPage !== '') {
-        _results.push(wiki.createPage(urlPage, firstUrlLocs[idx]).appendTo('.main'));
-      } else {
-        _results.push(void 0);
+      if (__indexOf.call(oldPages, urlPage) < 0) {
+        if (urlPage !== '') {
+          _results.push(wiki.createPage(urlPage, firstUrlLocs[idx]).appendTo('.main'));
+        } else {
+          _results.push(void 0);
+        }
       }
     }
     return _results;
@@ -1193,7 +1200,7 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
   emitHeader = function(pageElement, page) {
     var date, rev, site;
     site = $(pageElement).data('site');
-    if (site != null) {
+    if ((site != null) && site !== 'local') {
       $(pageElement).append("<h1><a href=\"//" + site + "\"><img src = \"/remote/" + site + "/favicon.png\" height = \"32px\"></a> " + page.title + "</h1>");
     } else {
       $(pageElement).append($("<h1 />").append($("<a />").attr('href', '/').append($("<img>").error(function(e) {
@@ -1251,7 +1258,7 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
           addContext(action.site);
         }
         wiki.resolutionContext = context;
-        wiki.log('build', slug, 'site', site, 'context', context.join(' => '));
+        wiki.log('buildPage', slug, 'site', site, 'context', context.join(' => '));
         emitHeader(pageElement, page);
         _ref3 = ['story', 'journal', 'footer'].map(function(className) {
           return $("<div />").addClass(className).appendTo(pageElement);
@@ -1695,7 +1702,7 @@ require.define("/changes.js", function (require, module, exports, __dirname, __f
   var constructor, listItemHtml, pageBundle;
 
   listItemHtml = function(slug, page) {
-    return "<li>\n  <a class=\"internal\" href=\"#\" title=\"origin\" data-page-name=\"" + slug + "\"> \n    " + page.title + "\n  </a> \n  <button class=\"delete\">✕</button>\n</li>";
+    return "<li>\n  <a class=\"internal\" href=\"#\" title=\"origin\" data-page-name=\"" + slug + "\" data-site=\"local\">\n    " + page.title + "\n  </a> \n  <button class=\"delete\">✕</button>\n</li>";
   };
 
   pageBundle = function() {

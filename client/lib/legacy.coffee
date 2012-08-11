@@ -168,10 +168,10 @@ $ ->
       who = $('.chart,.data,.calculator').toArray().reverse()
       $(who)
 
-  doInternalLink = wiki.doInternalLink = (name, page) ->
+  doInternalLink = wiki.doInternalLink = (name, page, site=null) ->
     name = util.asSlug(name)
     $(page).nextAll().remove() if page?
-    createPage(name)
+    createPage(name,site)
       .appendTo($('.main'))
       .each refresh
     active.set($('.page').last())
@@ -211,7 +211,7 @@ $ ->
   finishClick = (e, name) ->
     e.preventDefault()
     page = $(e.target).parents('.page') unless e.shiftKey
-    doInternalLink name, page
+    doInternalLink name, page, $(e.target).data('site')
 
   $('.main')
     .delegate '.show-page-source', 'click', (e) ->
