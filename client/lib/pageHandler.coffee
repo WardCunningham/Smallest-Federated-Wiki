@@ -4,44 +4,53 @@ revision = require('./revision')
 
 module.exports = pageHandler = {}
 
-pageHandler.get = (pageElement, callback, localContext) ->
-  [slug, rev] = pageElement.attr('id').split('_rev')
-  site = pageElement.data('site')
-  if pageElement.attr('data-server-generated') == 'true'
-    return callback null
+pageFromLocalStorage = (slug)->
   if wiki.useLocalStorage() and json = localStorage[slug]
-    pageElement.addClass("local")
-    return callback JSON.parse(json)
-  pageHandler.context = ['origin'] unless pageHandler.context.length > 0
+    JSON.parse(json)
+  else
+    undefined
+
+recursiveGet = ({pageInformation, whenGotten, whenNotGotten, localContext}) ->
+  {slug,rev,site} = pageInformation
+
   if site
     localContext = []
   else
-    localContext ?= (i for own i in pageHandler.context)
     site = localContext.shift()
-  resource = if site=='origin'
-    site = null
-    slug
-  else
-    "remote/#{site}/#{slug}"
+  site = null if site=='origin'
+
+  resource = if site? then "remote/#{site}/#{slug}" else slug 
+  pageUrl = "/#{resource}.json?random=#{util.randomBytes(4)}"
 
   $.ajax
     type: 'GET'
     dataType: 'json'
-    url: "/#{resource}.json?random=#{util.randomBytes(4)}"
+    url: pageUrl
     success: (page) ->
       wiki.log 'fetch success', page, site || 'origin'
-      $(pageElement).data('site', site)
       page = revision.create rev, page if rev
-      return callback(page)
+      return whenGotten(page,site)
     error: (xhr, type, msg) ->
       if localContext.length > 0
-        pageHandler.get pageElement, callback, localContext
+        recursiveGet( {pageInformation, whenGotten, whenNotGotten, localContext} )
       else
-        site = null
-        title = $("""a[href="/#{slug}.html"]""").html()
-        title or= slug
-        pageHandler.put $(pageElement), {type: 'create', id: util.randomBytes(8), item: {title}}
-        callback {title}
+        whenNotGotten()
+
+pageHandler.get = ({whenGotten,whenNotGotten,pageInformation}  ) ->
+  if pageInformation.wasServerGenerated
+    return whenGotten( null )
+
+  if localPage = pageFromLocalStorage(pageInformation.slug)
+    return whenGotten( localPage, 'local' )
+
+  pageHandler.context = ['origin'] unless pageHandler.context.length
+
+  recursiveGet
+    pageInformation: pageInformation
+    whenGotten: whenGotten
+    whenNotGotten: whenNotGotten
+    localContext: _.clone(pageHandler.context)
+
 
 pageHandler.context = []
 

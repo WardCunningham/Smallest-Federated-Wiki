@@ -6,59 +6,88 @@ wiki.useLocalStorage = -> false
 wiki.addToJournal = ->
 
 describe 'pageHandler.get', ->
-  before ->
-    $('<div id="pageHandler" data-site="foo" />').appendTo('body')
-    $('<div id="pageHandler4" />').appendTo('body')
 
   it 'should have an empty context', ->
     expect(pageHandler.context).to.eql([])
+
+  pageInformationWithoutSite = {
+    wasServerGenerated: false
+    slug: 'slugName'
+    rev: 'revName'
+  }
+
+  genericPageInformation = _.extend( {}, pageInformationWithoutSite, {site: 'siteName'} )
+
+  genericPageData = {
+    journal: []
+  }
 
   describe 'ajax fails', ->
 
     before ->
       sinon.stub(jQuery, "ajax").yieldsTo('error')
 
-    it 'should create a page when it can not find it (server specified)', (done) ->
-      pageHandler.get $('#pageHandler'), (page) ->
-        expect(page).to.eql({title: 'pageHandler'})
-        done()
-
-    it 'should create a page when it can not find it (server unspecified)', (done) ->
-      pageHandler.get $('#pageHandler4'), (page) ->
-        expect(page).to.eql({title: 'pageHandler4'})
-        done()
-
     after ->
       jQuery.ajax.restore()
 
+    it "should tell us when it can't find a page (server specified)", ->
+      whenGotten = sinon.spy()
+      whenNotGotten = sinon.spy()
+
+      pageHandler.get 
+        pageInformation: _.clone( genericPageInformation )
+        whenGotten: whenGotten
+        whenNotGotten: whenNotGotten
+
+      expect( whenGotten.called ).to.be.false
+      expect( whenNotGotten.called ).to.be.true
+
+    it "should tell us when it can't find a page (server unspecified)", ->
+      whenGotten = sinon.spy()
+      whenNotGotten = sinon.spy()
+
+      pageHandler.get 
+        pageInformation: _.clone( pageInformationWithoutSite )
+        whenGotten: whenGotten
+        whenNotGotten: whenNotGotten
+
+      expect( whenGotten.called ).to.be.false
+      expect( whenNotGotten.called ).to.be.true
+
   describe 'ajax, success', ->
     before ->
-      sinon.stub(jQuery, "ajax").yieldsTo('success', 'test')
+      sinon.stub(jQuery, "ajax").yieldsTo('success', genericPageData)
       $('<div id="pageHandler5" data-site="foo" />').appendTo('body')
 
-    it 'should get a page from specific site', (done) ->
-      pageHandler.get $('#pageHandler5'), (page) ->
-        expect(jQuery.ajax.calledOnce).to.be.true
-        expect(jQuery.ajax.args[0][0]).to.have.property('type', 'GET')
-        expect(jQuery.ajax.args[0][0].url).to.match(///^/remote/foo/pageHandler5\.json\?random=[a-z0-9]{8}$///)
-        done()
+    it 'should get a page from specific site', ->
+      whenGotten = sinon.spy()
+      pageHandler.get 
+        pageInformation: _.clone( genericPageInformation )
+        whenGotten: whenGotten
+
+      expect(whenGotten.calledOnce).to.be.true
+      expect(jQuery.ajax.calledOnce).to.be.true
+      expect(jQuery.ajax.args[0][0]).to.have.property('type', 'GET')
+      expect(jQuery.ajax.args[0][0].url).to.match(///^/remote/siteName/slugName\.json\?random=[a-z0-9]{8}$///)
 
     after ->
       jQuery.ajax.restore()
 
   describe 'ajax, search', ->
     before ->
-      $('<div id="pageHandler2" />').appendTo('body')
       sinon.stub(jQuery, "ajax").yieldsTo('error')
       pageHandler.context = ['origin', 'example.com', 'asdf.test', 'foo.bar']
 
-    it 'should search through the context for a page', (done) ->
-      pageHandler.get $('#pageHandler2'), (page) ->
-        expect(jQuery.ajax.args[0][0].url).to.match(///^/pageHandler2\.json\?random=[a-z0-9]{8}$///)
-        expect(jQuery.ajax.args[1][0].url).to.match(///^/remote/example.com/pageHandler2\.json\?random=[a-z0-9]{8}$///)
-        expect(jQuery.ajax.args[2][0].url).to.match(///^/remote/asdf.test/pageHandler2\.json\?random=[a-z0-9]{8}$///)
-        expect(jQuery.ajax.args[3][0].url).to.match(///^/remote/foo.bar/pageHandler2\.json\?random=[a-z0-9]{8}$///)
-        done()
+    it 'should search through the context for a page', ->
+      pageHandler.get 
+        pageInformation: _.clone( pageInformationWithoutSite )
+        whenGotten: sinon.stub()
+        whenNotGotten: sinon.stub()
+
+      expect(jQuery.ajax.args[0][0].url).to.match(///^/slugName\.json\?random=[a-z0-9]{8}$///)
+      expect(jQuery.ajax.args[1][0].url).to.match(///^/remote/example.com/slugName\.json\?random=[a-z0-9]{8}$///)
+      expect(jQuery.ajax.args[2][0].url).to.match(///^/remote/asdf.test/slugName\.json\?random=[a-z0-9]{8}$///)
+      expect(jQuery.ajax.args[3][0].url).to.match(///^/remote/foo.bar/slugName\.json\?random=[a-z0-9]{8}$///)
 
     after ->
       jQuery.ajax.restore()
