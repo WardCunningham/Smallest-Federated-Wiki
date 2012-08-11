@@ -969,7 +969,7 @@ require.define("/lib/util.coffee",function(require,module,exports,__dirname,__fi
 });
 
 require.define("/lib/pageHandler.coffee",function(require,module,exports,__dirname,__filename,process){(function() {
-  var pageFromLocalStorage, pageHandler, pushToLocal, pushToServer, recursiveGet, revision, simpleGet, state, util;
+  var pageFromLocalStorage, pageHandler, pushToLocal, pushToServer, recursiveGet, revision, state, util;
 
   util = require('./util');
 
@@ -978,26 +978,6 @@ require.define("/lib/pageHandler.coffee",function(require,module,exports,__dirna
   revision = require('./revision');
 
   module.exports = pageHandler = {};
-
-  simpleGet = function(site, slug, errback, callback) {
-    var resource;
-    if (site != null) {
-      resource = "remote/" + site + "/" + slug;
-    } else {
-      resource = slug;
-    }
-    return $.ajax({
-      type: 'GET',
-      dataType: 'json',
-      url: "/" + resource + ".json?random=" + (util.randomBytes(4)),
-      success: function(page) {
-        return callback(page);
-      },
-      error: function(xhr, type, msg) {
-        return errback();
-      }
-    });
-  };
 
   pageFromLocalStorage = function(slug) {
     var json;
@@ -1009,8 +989,8 @@ require.define("/lib/pageHandler.coffee",function(require,module,exports,__dirna
   };
 
   recursiveGet = function(_arg) {
-    var localContext, pageElement, pageInformation, resource, rev, site, slug, whenGotten, whenNotGotten;
-    pageInformation = _arg.pageInformation, pageElement = _arg.pageElement, whenGotten = _arg.whenGotten, whenNotGotten = _arg.whenNotGotten, localContext = _arg.localContext;
+    var localContext, pageInformation, pageUrl, resource, rev, site, slug, whenGotten, whenNotGotten;
+    pageInformation = _arg.pageInformation, whenGotten = _arg.whenGotten, whenNotGotten = _arg.whenNotGotten, localContext = _arg.localContext;
     slug = pageInformation.slug, rev = pageInformation.rev, site = pageInformation.site;
     if (site) {
       localContext = [];
@@ -1020,35 +1000,37 @@ require.define("/lib/pageHandler.coffee",function(require,module,exports,__dirna
     if (site === 'origin') {
       site = null;
     }
-    if (site != null) {
-      resource = "remote/" + site + "/" + slug;
-    } else {
-      resource = slug;
-    }
-    return simpleGet(site, slug, function() {
-      if (localContext.length > 0) {
-        return recursiveGet({
-          pageInformation: pageInformation,
-          pageElement: pageElement,
-          whenGotten: whenGotten,
-          whenNotGotten: whenNotGotten,
-          localContext: localContext
-        });
-      } else {
-        return whenNotGotten();
+    resource = site != null ? "remote/" + site + "/" + slug : slug;
+    pageUrl = "/" + resource + ".json?random=" + (util.randomBytes(4));
+    return $.ajax({
+      type: 'GET',
+      dataType: 'json',
+      url: pageUrl,
+      success: function(page) {
+        wiki.log('fetch success', page, site || 'origin');
+        if (rev) {
+          page = revision.create(rev, page);
+        }
+        return whenGotten(page, site);
+      },
+      error: function(xhr, type, msg) {
+        if (localContext.length > 0) {
+          return recursiveGet({
+            pageInformation: pageInformation,
+            whenGotten: whenGotten,
+            whenNotGotten: whenNotGotten,
+            localContext: localContext
+          });
+        } else {
+          return whenNotGotten();
+        }
       }
-    }, function(page) {
-      wiki.log('fetch success', page, site || 'origin');
-      if (rev) {
-        page = revision.create(rev, page);
-      }
-      return whenGotten(page, site);
     });
   };
 
   pageHandler.get = function(_arg) {
-    var localPage, pageElement, pageInformation, whenGotten, whenNotGotten;
-    pageElement = _arg.pageElement, whenGotten = _arg.whenGotten, whenNotGotten = _arg.whenNotGotten, pageInformation = _arg.pageInformation;
+    var localPage, pageInformation, whenGotten, whenNotGotten;
+    whenGotten = _arg.whenGotten, whenNotGotten = _arg.whenNotGotten, pageInformation = _arg.pageInformation;
     if (pageInformation.wasServerGenerated) {
       return whenGotten(null);
     }
@@ -1060,7 +1042,6 @@ require.define("/lib/pageHandler.coffee",function(require,module,exports,__dirna
     }
     return recursiveGet({
       pageInformation: pageInformation,
-      pageElement: pageElement,
       whenGotten: whenGotten,
       whenNotGotten: whenNotGotten,
       localContext: _.clone(pageHandler.context)
@@ -1659,7 +1640,6 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
       });
     };
     return pageHandler.get({
-      pageElement: pageElement,
       whenGotten: buildPage,
       whenNotGotten: createPage,
       pageInformation: pageInformation

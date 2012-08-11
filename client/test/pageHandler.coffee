@@ -36,7 +36,6 @@ describe 'pageHandler.get', ->
 
       pageHandler.get 
         pageInformation: _.clone( genericPageInformation )
-        pageElement: $('<div>')
         whenGotten: whenGotten
         whenNotGotten: whenNotGotten
 
@@ -49,7 +48,6 @@ describe 'pageHandler.get', ->
 
       pageHandler.get 
         pageInformation: _.clone( pageInformationWithoutSite )
-        pageElement: $('<div>')
         whenGotten: whenGotten
         whenNotGotten: whenNotGotten
 
@@ -65,7 +63,6 @@ describe 'pageHandler.get', ->
       whenGotten = sinon.spy()
       pageHandler.get 
         pageInformation: _.clone( genericPageInformation )
-        pageElement: $('<div>')
         whenGotten: whenGotten
 
       expect(whenGotten.calledOnce).to.be.true
@@ -84,7 +81,6 @@ describe 'pageHandler.get', ->
     it 'should search through the context for a page', ->
       pageHandler.get 
         pageInformation: _.clone( pageInformationWithoutSite )
-        pageElement: $('<div>') 
         whenGotten: sinon.stub()
         whenNotGotten: sinon.stub()
 

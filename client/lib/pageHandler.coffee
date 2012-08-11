@@ -4,20 +4,6 @@ revision = require('./revision')
 
 module.exports = pageHandler = {}
 
-simpleGet = (site,slug,errback,callback)->
-  if site?
-    resource = "remote/#{site}/#{slug}"
-  else
-    resource = slug
-  $.ajax
-    type: 'GET'
-    dataType: 'json'
-    url: "/#{resource}.json?random=#{util.randomBytes(4)}"
-    success: (page) ->
-      callback(page)
-    error: (xhr, type, msg) ->
-      errback()
-
 pageFromLocalStorage = (slug)->
   if wiki.useLocalStorage() and json = localStorage[slug]
     JSON.parse(json)
@@ -33,12 +19,13 @@ recursiveGet = ({pageInformation, whenGotten, whenNotGotten, localContext}) ->
     site = localContext.shift()
   site = null if site=='origin'
 
-  resource = site? ? "remote/#{site}/#{slug}" : slug
+  resource = if site? then "remote/#{site}/#{slug}" else slug 
+  pageUrl = "/#{resource}.json?random=#{util.randomBytes(4)}"
 
   $.ajax
     type: 'GET'
     dataType: 'json'
-    url: "/#{resource}.json?random=#{util.randomBytes(4)}"
+    url: pageUrl
     success: (page) ->
       wiki.log 'fetch success', page, site || 'origin'
       page = revision.create rev, page if rev
