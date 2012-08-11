@@ -240,11 +240,17 @@ $ ->
       pageHandler.context = [$(e.target).data('site')]
       finishClick e, name
 
+    .delegate '.revision', 'dblclick', (e) ->
+      e.preventDefault()
+      $page = $(this).parents('.page')
+      rev = $page.data('rev')
+      action = $page.data('data').journal[rev]
+      json = JSON.stringify(action, null, 2)
+      wiki.dialog "Revision #{rev}, #{action.type} action", $('<pre/>').text(json)
+
     .delegate '.action', 'click', (e) ->
       e.preventDefault()
       element = $(e.target)
-      if e.shiftKey
-        return wiki.dialog "#{element.data('action').type} action", $('<pre/>').text(JSON.stringify(element.data('action'), null, 2))
       if element.is('.fork')
         name = $(e.target).data('slug')
         pageHandler.context = [$(e.target).data('site')]

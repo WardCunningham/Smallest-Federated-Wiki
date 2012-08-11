@@ -72,7 +72,7 @@ emitHeader = (pageElement, page) ->
           ), " #{page.title}"))
   if (rev = pageElement.attr('id').split('_rev')[1])?
     date = page.journal[page.journal.length-1].date
-    $(pageElement).addClass('ghost').append $ """
+    $(pageElement).addClass('ghost').data('rev',rev).append $ """
       <h2 class="revision">
         <span>
           #{if date? then util.formatDate(date) else "Revision #{rev}"}
