@@ -12,7 +12,6 @@ util.resolveLinks = (string) ->
   renderInternalLink = (match, name) ->
     # spaces become 'slugs', non-alpha-num get removed
     slug = util.asSlug name
-    wiki.log 'resolve', slug, 'context', wiki.resolutionContext.join(' => ')
     "<a class=\"internal\" href=\"/#{slug}.html\" data-page-name=\"#{slug}\" title=\"#{wiki.resolutionContext.join(' => ')}\">#{name}</a>"
   string
     .replace(/\[\[([^\]]+)\]\]/gi, renderInternalLink)

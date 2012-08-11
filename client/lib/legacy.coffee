@@ -44,12 +44,6 @@ $ ->
   wiki.log = (things...) ->
     console.log things if console?.log?
 
-  wiki.dump = ->
-    for p in $('.page')
-      wiki.log '.page', p
-      wiki.log '.item', i, 'data-item', $(i).data('item') for i in $(p).find('.item')
-    null
-
   wiki.resolutionContext = []
   resolveFrom = wiki.resolveFrom = (addition, callback) ->
     wiki.resolutionContext.push addition
@@ -81,7 +75,6 @@ $ ->
         .data("slug", pageElement.attr('id'))
 
   useLocalStorage = wiki.useLocalStorage = ->
-    wiki.log 'useLocalStorage', $(".login").length > 0
     $(".login").length > 0
 
   createTextElement = (pageElement, beforeElement, initialText) ->

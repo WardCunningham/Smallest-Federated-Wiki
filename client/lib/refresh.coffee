@@ -116,7 +116,7 @@ module.exports = refresh = wiki.refresh = ->
       addContext action.site for action in page.journal.slice(0).reverse()
       wiki.resolutionContext = context
 
-      wiki.log 'build', slug, 'site', site, 'context', context.join ' => '
+      wiki.log 'buildPage', slug, 'site', site, 'context', context.join ' => '
       emitHeader pageElement, page
 
       [storyElement, journalElement, footerElement] = ['story', 'journal', 'footer'].map (className) ->

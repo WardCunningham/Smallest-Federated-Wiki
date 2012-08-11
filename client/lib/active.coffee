@@ -14,7 +14,6 @@ scrollTo = (el) ->
   bodyWidth = $("body").width()
   minX = active.scrollContainer.scrollLeft()
   maxX = minX + bodyWidth
-  wiki.log 'scrollTo', el, el.position()
   target = el.position().left
   width = el.outerWidth(true)
   contentWidth = $(".page").outerWidth(true) * $(".page").size()
@@ -28,7 +27,6 @@ scrollTo = (el) ->
 
 active.set = (el) ->
   el = $(el)
-  wiki.log 'set active', el
   $(".active").removeClass("active")
   scrollTo el.addClass("active")
 

@@ -27,7 +27,6 @@ recursiveGet = ({pageInformation, whenGotten, whenNotGotten, localContext}) ->
     dataType: 'json'
     url: pageUrl
     success: (page) ->
-      wiki.log 'fetch success', page, site || 'origin'
       page = revision.create rev, page if rev
       return whenGotten(page,site)
     error: (xhr, type, msg) ->
