@@ -81,7 +81,10 @@
         });
       });
       return $div.dblclick(function() {
-        return wiki.dialog("JSON bundle for " + length + " pages", $('<pre/>').text(JSON.stringify(pageBundle(), null, 2)));
+        var bundle, count;
+        bundle = pageBundle();
+        count = _.size(bundle);
+        return wiki.dialog("JSON bundle for " + count + " pages", $('<pre/>').text(JSON.stringify(bundle, null, 2)));
       });
     };
     return {
