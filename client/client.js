@@ -969,7 +969,7 @@ require.define("/lib/util.coffee",function(require,module,exports,__dirname,__fi
 });
 
 require.define("/lib/pageHandler.coffee",function(require,module,exports,__dirname,__filename,process){(function() {
-  var createNewPageBasedOnSlug, fullGet, pageFromLocalStorage, pageHandler, pushToLocal, pushToServer, recursiveGet, revision, simpleGet, state, util;
+  var pageFromLocalStorage, pageHandler, pushToLocal, pushToServer, recursiveGet, revision, simpleGet, state, util;
 
   util = require('./util');
 
@@ -1008,25 +1008,10 @@ require.define("/lib/pageHandler.coffee",function(require,module,exports,__dirna
     }
   };
 
-  createNewPageBasedOnSlug = function(slug, pageElement) {
-    var title;
-    title = $("a[href=\"/" + slug + ".html\"]").html();
-    title || (title = slug);
-    pageHandler.put($(pageElement), {
-      type: 'create',
-      id: util.randomBytes(8),
-      item: {
-        title: title
-      }
-    });
-    return {
-      title: title
-    };
-  };
-
-  recursiveGet = function(params, pageElement, callback, localContext) {
-    var rev, site, slug;
-    slug = params.slug, rev = params.rev, site = params.site;
+  recursiveGet = function(_arg) {
+    var localContext, pageElement, pageInformation, resource, rev, site, slug, whenGotten, whenNotGotten;
+    pageInformation = _arg.pageInformation, pageElement = _arg.pageElement, whenGotten = _arg.whenGotten, whenNotGotten = _arg.whenNotGotten, localContext = _arg.localContext;
+    slug = pageInformation.slug, rev = pageInformation.rev, site = pageInformation.site;
     if (site) {
       localContext = [];
     } else {
@@ -1035,47 +1020,52 @@ require.define("/lib/pageHandler.coffee",function(require,module,exports,__dirna
     if (site === 'origin') {
       site = null;
     }
+    if (site != null) {
+      resource = "remote/" + site + "/" + slug;
+    } else {
+      resource = slug;
+    }
     return simpleGet(site, slug, function() {
-      var page;
       if (localContext.length > 0) {
-        return recursiveGet(params, pageElement, callback, localContext);
+        return recursiveGet({
+          pageInformation: pageInformation,
+          pageElement: pageElement,
+          whenGotten: whenGotten,
+          whenNotGotten: whenNotGotten,
+          localContext: localContext
+        });
       } else {
-        page = createNewPageBasedOnSlug(slug, pageElement);
-        return callback(page);
+        return whenNotGotten();
       }
     }, function(page) {
       wiki.log('fetch success', page, site || 'origin');
       if (rev) {
         page = revision.create(rev, page);
       }
-      return callback(page, site);
+      return whenGotten(page, site);
     });
   };
 
-  fullGet = function(pageElement, callback, localContext) {
-    var localPage, pageInformation, rev, slug, _ref;
-    _ref = pageElement.attr('id').split('_rev'), slug = _ref[0], rev = _ref[1];
-    pageInformation = {
-      slug: slug,
-      rev: rev,
-      site: pageElement.data('site'),
-      wasServerGenerated: pageElement.attr('data-server-generated') === 'true'
-    };
-    wiki.log('pageInformation', pageInformation);
+  pageHandler.get = function(_arg) {
+    var localPage, pageElement, pageInformation, whenGotten, whenNotGotten;
+    pageElement = _arg.pageElement, whenGotten = _arg.whenGotten, whenNotGotten = _arg.whenNotGotten, pageInformation = _arg.pageInformation;
     if (pageInformation.wasServerGenerated) {
-      return callback(null);
+      return whenGotten(null);
     }
-    if (localPage = pageFromLocalStorage(slug)) {
-      return callback(localPage, 'local');
+    if (localPage = pageFromLocalStorage(pageInformation.slug)) {
+      return whenGotten(localPage, 'local');
     }
-    if (!(pageHandler.context.length > 0)) {
+    if (!pageHandler.context.length) {
       pageHandler.context = ['origin'];
     }
-    localContext = _.clone(pageHandler.context);
-    return recursiveGet(pageInformation, pageElement, callback, localContext);
+    return recursiveGet({
+      pageInformation: pageInformation,
+      pageElement: pageElement,
+      whenGotten: whenGotten,
+      whenNotGotten: whenNotGotten,
+      localContext: _.clone(pageHandler.context)
+    });
   };
-
-  pageHandler.get = fullGet;
 
   pageHandler.context = [];
 
@@ -1585,10 +1575,17 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
   };
 
   module.exports = refresh = wiki.refresh = function() {
-    var buildPage, pageElement;
+    var buildPage, createPage, pageElement, pageInformation, rev, slug, _ref;
     pageElement = $(this);
+    _ref = pageElement.attr('id').split('_rev'), slug = _ref[0], rev = _ref[1];
+    pageInformation = {
+      slug: slug,
+      rev: rev,
+      site: pageElement.data('site'),
+      wasServerGenerated: pageElement.attr('data-server-generated') === 'true'
+    };
     buildPage = function(data, siteFound) {
-      var action, addContext, context, footerElement, journalElement, page, site, slug, storyElement, _i, _len, _ref, _ref1;
+      var action, addContext, context, footerElement, journalElement, page, site, storyElement, _i, _len, _ref1, _ref2;
       if (siteFound === 'local') {
         pageElement.addClass('local');
       } else {
@@ -1616,17 +1613,17 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
             return context.push(site);
           }
         };
-        _ref = page.journal.slice(0).reverse();
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          action = _ref[_i];
+        _ref1 = page.journal.slice(0).reverse();
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          action = _ref1[_i];
           addContext(action.site);
         }
         wiki.resolutionContext = context;
         wiki.log('build', slug, 'site', site, 'context', context.join(' => '));
         emitHeader(pageElement, page);
-        _ref1 = ['story', 'journal', 'footer'].map(function(className) {
+        _ref2 = ['story', 'journal', 'footer'].map(function(className) {
           return $("<div />").addClass(className).appendTo(pageElement);
-        }), storyElement = _ref1[0], journalElement = _ref1[1], footerElement = _ref1[2];
+        }), storyElement = _ref2[0], journalElement = _ref2[1], footerElement = _ref2[2];
         $.each(page.story, function(i, item) {
           var div;
           if ($.isArray(item)) {
@@ -1646,7 +1643,27 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
       initDragging(pageElement);
       return initAddButton(pageElement);
     };
-    return pageHandler.get(pageElement, buildPage);
+    createPage = function() {
+      var title;
+      title = $("a[href=\"/" + slug + ".html\"]").html();
+      title || (title = slug);
+      pageHandler.put($(pageElement), {
+        type: 'create',
+        id: util.randomBytes(8),
+        item: {
+          title: title
+        }
+      });
+      return buildPage({
+        title: title
+      });
+    };
+    return pageHandler.get({
+      pageElement: pageElement,
+      whenGotten: buildPage,
+      whenNotGotten: createPage,
+      pageInformation: pageInformation
+    });
   };
 
 }).call(this);

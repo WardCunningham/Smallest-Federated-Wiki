@@ -24,58 +24,45 @@ pageFromLocalStorage = (slug)->
   else
     undefined
 
-createNewPageBasedOnSlug = (slug,pageElement)->
-  title = $("""a[href="/#{slug}.html"]""").html()
-  title or= slug
-  pageHandler.put $(pageElement), {type: 'create', id: util.randomBytes(8), item: {title}}
-  {title}
-
-recursiveGet = (params, pageElement, callback, localContext) ->
-  {slug,rev,site} = params
+recursiveGet = ({pageInformation, whenGotten, whenNotGotten, localContext}) ->
+  {slug,rev,site} = pageInformation
 
   if site
     localContext = []
   else
     site = localContext.shift()
-
   site = null if site=='origin'
 
+  resource = site? ? "remote/#{site}/#{slug}" : slug
 
-  simpleGet site, slug,
-    ->
-      if localContext.length > 0
-        recursiveGet( params, pageElement, callback, localContext )
-      else
-        page = createNewPageBasedOnSlug(slug,pageElement)
-        callback(page)
-    (page)->
+  $.ajax
+    type: 'GET'
+    dataType: 'json'
+    url: "/#{resource}.json?random=#{util.randomBytes(4)}"
+    success: (page) ->
       wiki.log 'fetch success', page, site || 'origin'
       page = revision.create rev, page if rev
-      return callback(page,site)
+      return whenGotten(page,site)
+    error: (xhr, type, msg) ->
+      if localContext.length > 0
+        recursiveGet( {pageInformation, whenGotten, whenNotGotten, localContext} )
+      else
+        whenNotGotten()
 
-fullGet = (pageElement, callback, localContext) ->
-  [slug, rev] = pageElement.attr('id').split('_rev')
-  pageInformation = {
-    slug: slug
-    rev: rev
-    site: pageElement.data('site')
-    wasServerGenerated: pageElement.attr('data-server-generated') == 'true'
-  }
-  wiki.log( 'pageInformation', pageInformation )
-
+pageHandler.get = ({whenGotten,whenNotGotten,pageInformation}  ) ->
   if pageInformation.wasServerGenerated
-    return callback null
+    return whenGotten( null )
 
-  if localPage = pageFromLocalStorage(slug)
-    return callback localPage, 'local'
+  if localPage = pageFromLocalStorage(pageInformation.slug)
+    return whenGotten( localPage, 'local' )
 
-  pageHandler.context = ['origin'] unless pageHandler.context.length > 0
+  pageHandler.context = ['origin'] unless pageHandler.context.length
 
-  localContext = _.clone(pageHandler.context)
-  recursiveGet( pageInformation, pageElement, callback, localContext )
-
-
-pageHandler.get = fullGet
+  recursiveGet
+    pageInformation: pageInformation
+    whenGotten: whenGotten
+    whenNotGotten: whenNotGotten
+    localContext: _.clone(pageHandler.context)
 
 
 pageHandler.context = []

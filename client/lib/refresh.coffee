@@ -83,6 +83,15 @@ emitHeader = (pageElement, page) ->
 module.exports = refresh = wiki.refresh = ->
   pageElement = $(this)
 
+
+  [slug, rev] = pageElement.attr('id').split('_rev')
+  pageInformation = {
+    slug: slug
+    rev: rev
+    site: pageElement.data('site')
+    wasServerGenerated: pageElement.attr('data-server-generated') == 'true'
+  }
+
   buildPage = (data,siteFound) ->
 
     if siteFound == 'local'
@@ -137,5 +146,15 @@ module.exports = refresh = wiki.refresh = ->
     initDragging pageElement
     initAddButton pageElement
 
-  pageHandler.get pageElement, buildPage
+  createPage = ->
+    title = $("""a[href="/#{slug}.html"]""").html()
+    title or= slug
+    pageHandler.put $(pageElement), {type: 'create', id: util.randomBytes(8), item: {title}}
+    buildPage( {title} )
+      
+
+  pageHandler.get
+    whenGotten: buildPage
+    whenNotGotten: createPage
+    pageInformation: pageInformation
 

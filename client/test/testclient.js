@@ -771,49 +771,72 @@ require.define("/test/pageHandler.coffee",function(require,module,exports,__dirn
   wiki.addToJournal = function() {};
 
   describe('pageHandler.get', function() {
-    before(function() {
-      $('<div id="pageHandler" data-site="foo" />').appendTo('body');
-      return $('<div id="pageHandler4" />').appendTo('body');
-    });
+    var genericPageData, genericPageInformation, pageInformationWithoutSite;
     it('should have an empty context', function() {
       return expect(pageHandler.context).to.eql([]);
     });
+    pageInformationWithoutSite = {
+      wasServerGenerated: false,
+      slug: 'slugName',
+      rev: 'revName'
+    };
+    genericPageInformation = _.extend({}, pageInformationWithoutSite, {
+      site: 'siteName'
+    });
+    genericPageData = {
+      journal: []
+    };
     describe('ajax fails', function() {
       before(function() {
         return sinon.stub(jQuery, "ajax").yieldsTo('error');
       });
-      it('should create a page when it can not find it (server specified)', function(done) {
-        return pageHandler.get($('#pageHandler'), function(page) {
-          expect(page).to.eql({
-            title: 'pageHandler'
-          });
-          return done();
-        });
-      });
-      it('should create a page when it can not find it (server unspecified)', function(done) {
-        return pageHandler.get($('#pageHandler4'), function(page) {
-          expect(page).to.eql({
-            title: 'pageHandler4'
-          });
-          return done();
-        });
-      });
-      return after(function() {
+      after(function() {
         return jQuery.ajax.restore();
+      });
+      it("should tell us when it can't find a page (server specified)", function() {
+        var whenGotten, whenNotGotten;
+        whenGotten = sinon.spy();
+        whenNotGotten = sinon.spy();
+        pageHandler.get({
+          pageInformation: _.clone(genericPageInformation),
+          pageElement: $('<div>'),
+          whenGotten: whenGotten,
+          whenNotGotten: whenNotGotten
+        });
+        expect(whenGotten.called).to.be["false"];
+        return expect(whenNotGotten.called).to.be["true"];
+      });
+      return it("should tell us when it can't find a page (server unspecified)", function() {
+        var whenGotten, whenNotGotten;
+        whenGotten = sinon.spy();
+        whenNotGotten = sinon.spy();
+        pageHandler.get({
+          pageInformation: _.clone(pageInformationWithoutSite),
+          pageElement: $('<div>'),
+          whenGotten: whenGotten,
+          whenNotGotten: whenNotGotten
+        });
+        expect(whenGotten.called).to.be["false"];
+        return expect(whenNotGotten.called).to.be["true"];
       });
     });
     describe('ajax, success', function() {
       before(function() {
-        sinon.stub(jQuery, "ajax").yieldsTo('success', 'test');
+        sinon.stub(jQuery, "ajax").yieldsTo('success', genericPageData);
         return $('<div id="pageHandler5" data-site="foo" />').appendTo('body');
       });
-      it('should get a page from specific site', function(done) {
-        return pageHandler.get($('#pageHandler5'), function(page) {
-          expect(jQuery.ajax.calledOnce).to.be["true"];
-          expect(jQuery.ajax.args[0][0]).to.have.property('type', 'GET');
-          expect(jQuery.ajax.args[0][0].url).to.match(/^\/remote\/foo\/pageHandler5\.json\?random=[a-z0-9]{8}$/);
-          return done();
+      it('should get a page from specific site', function() {
+        var whenGotten;
+        whenGotten = sinon.spy();
+        pageHandler.get({
+          pageInformation: _.clone(genericPageInformation),
+          pageElement: $('<div>'),
+          whenGotten: whenGotten
         });
+        expect(whenGotten.calledOnce).to.be["true"];
+        expect(jQuery.ajax.calledOnce).to.be["true"];
+        expect(jQuery.ajax.args[0][0]).to.have.property('type', 'GET');
+        return expect(jQuery.ajax.args[0][0].url).to.match(/^\/remote\/siteName\/slugName\.json\?random=[a-z0-9]{8}$/);
       });
       return after(function() {
         return jQuery.ajax.restore();
@@ -821,18 +844,20 @@ require.define("/test/pageHandler.coffee",function(require,module,exports,__dirn
     });
     return describe('ajax, search', function() {
       before(function() {
-        $('<div id="pageHandler2" />').appendTo('body');
         sinon.stub(jQuery, "ajax").yieldsTo('error');
         return pageHandler.context = ['origin', 'example.com', 'asdf.test', 'foo.bar'];
       });
-      it('should search through the context for a page', function(done) {
-        return pageHandler.get($('#pageHandler2'), function(page) {
-          expect(jQuery.ajax.args[0][0].url).to.match(/^\/pageHandler2\.json\?random=[a-z0-9]{8}$/);
-          expect(jQuery.ajax.args[1][0].url).to.match(/^\/remote\/example.com\/pageHandler2\.json\?random=[a-z0-9]{8}$/);
-          expect(jQuery.ajax.args[2][0].url).to.match(/^\/remote\/asdf.test\/pageHandler2\.json\?random=[a-z0-9]{8}$/);
-          expect(jQuery.ajax.args[3][0].url).to.match(/^\/remote\/foo.bar\/pageHandler2\.json\?random=[a-z0-9]{8}$/);
-          return done();
+      it('should search through the context for a page', function() {
+        pageHandler.get({
+          pageInformation: _.clone(pageInformationWithoutSite),
+          pageElement: $('<div>'),
+          whenGotten: sinon.stub(),
+          whenNotGotten: sinon.stub()
         });
+        expect(jQuery.ajax.args[0][0].url).to.match(/^\/slugName\.json\?random=[a-z0-9]{8}$/);
+        expect(jQuery.ajax.args[1][0].url).to.match(/^\/remote\/example.com\/slugName\.json\?random=[a-z0-9]{8}$/);
+        expect(jQuery.ajax.args[2][0].url).to.match(/^\/remote\/asdf.test\/slugName\.json\?random=[a-z0-9]{8}$/);
+        return expect(jQuery.ajax.args[3][0].url).to.match(/^\/remote\/foo.bar\/slugName\.json\?random=[a-z0-9]{8}$/);
       });
       return after(function() {
         return jQuery.ajax.restore();
@@ -871,7 +896,7 @@ require.define("/test/pageHandler.coffee",function(require,module,exports,__dirn
 });
 
 require.define("/lib/pageHandler.coffee",function(require,module,exports,__dirname,__filename,process){(function() {
-  var createNewPageBasedOnSlug, fullGet, pageFromLocalStorage, pageHandler, pushToLocal, pushToServer, recursiveGet, revision, simpleGet, state, util;
+  var pageFromLocalStorage, pageHandler, pushToLocal, pushToServer, recursiveGet, revision, simpleGet, state, util;
 
   util = require('./util');
 
@@ -910,25 +935,10 @@ require.define("/lib/pageHandler.coffee",function(require,module,exports,__dirna
     }
   };
 
-  createNewPageBasedOnSlug = function(slug, pageElement) {
-    var title;
-    title = $("a[href=\"/" + slug + ".html\"]").html();
-    title || (title = slug);
-    pageHandler.put($(pageElement), {
-      type: 'create',
-      id: util.randomBytes(8),
-      item: {
-        title: title
-      }
-    });
-    return {
-      title: title
-    };
-  };
-
-  recursiveGet = function(params, pageElement, callback, localContext) {
-    var rev, site, slug;
-    slug = params.slug, rev = params.rev, site = params.site;
+  recursiveGet = function(_arg) {
+    var localContext, pageElement, pageInformation, resource, rev, site, slug, whenGotten, whenNotGotten;
+    pageInformation = _arg.pageInformation, pageElement = _arg.pageElement, whenGotten = _arg.whenGotten, whenNotGotten = _arg.whenNotGotten, localContext = _arg.localContext;
+    slug = pageInformation.slug, rev = pageInformation.rev, site = pageInformation.site;
     if (site) {
       localContext = [];
     } else {
@@ -937,47 +947,52 @@ require.define("/lib/pageHandler.coffee",function(require,module,exports,__dirna
     if (site === 'origin') {
       site = null;
     }
+    if (site != null) {
+      resource = "remote/" + site + "/" + slug;
+    } else {
+      resource = slug;
+    }
     return simpleGet(site, slug, function() {
-      var page;
       if (localContext.length > 0) {
-        return recursiveGet(params, pageElement, callback, localContext);
+        return recursiveGet({
+          pageInformation: pageInformation,
+          pageElement: pageElement,
+          whenGotten: whenGotten,
+          whenNotGotten: whenNotGotten,
+          localContext: localContext
+        });
       } else {
-        page = createNewPageBasedOnSlug(slug, pageElement);
-        return callback(page);
+        return whenNotGotten();
       }
     }, function(page) {
       wiki.log('fetch success', page, site || 'origin');
       if (rev) {
         page = revision.create(rev, page);
       }
-      return callback(page, site);
+      return whenGotten(page, site);
     });
   };
 
-  fullGet = function(pageElement, callback, localContext) {
-    var localPage, pageInformation, rev, slug, _ref;
-    _ref = pageElement.attr('id').split('_rev'), slug = _ref[0], rev = _ref[1];
-    pageInformation = {
-      slug: slug,
-      rev: rev,
-      site: pageElement.data('site'),
-      wasServerGenerated: pageElement.attr('data-server-generated') === 'true'
-    };
-    wiki.log('pageInformation', pageInformation);
+  pageHandler.get = function(_arg) {
+    var localPage, pageElement, pageInformation, whenGotten, whenNotGotten;
+    pageElement = _arg.pageElement, whenGotten = _arg.whenGotten, whenNotGotten = _arg.whenNotGotten, pageInformation = _arg.pageInformation;
     if (pageInformation.wasServerGenerated) {
-      return callback(null);
+      return whenGotten(null);
     }
-    if (localPage = pageFromLocalStorage(slug)) {
-      return callback(localPage, 'local');
+    if (localPage = pageFromLocalStorage(pageInformation.slug)) {
+      return whenGotten(localPage, 'local');
     }
-    if (!(pageHandler.context.length > 0)) {
+    if (!pageHandler.context.length) {
       pageHandler.context = ['origin'];
     }
-    localContext = _.clone(pageHandler.context);
-    return recursiveGet(pageInformation, pageElement, callback, localContext);
+    return recursiveGet({
+      pageInformation: pageInformation,
+      pageElement: pageElement,
+      whenGotten: whenGotten,
+      whenNotGotten: whenNotGotten,
+      localContext: _.clone(pageHandler.context)
+    });
   };
-
-  pageHandler.get = fullGet;
 
   pageHandler.context = [];
 
@@ -1355,10 +1370,17 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
   };
 
   module.exports = refresh = wiki.refresh = function() {
-    var buildPage, pageElement;
+    var buildPage, createPage, pageElement, pageInformation, rev, slug, _ref;
     pageElement = $(this);
+    _ref = pageElement.attr('id').split('_rev'), slug = _ref[0], rev = _ref[1];
+    pageInformation = {
+      slug: slug,
+      rev: rev,
+      site: pageElement.data('site'),
+      wasServerGenerated: pageElement.attr('data-server-generated') === 'true'
+    };
     buildPage = function(data, siteFound) {
-      var action, addContext, context, footerElement, journalElement, page, site, slug, storyElement, _i, _len, _ref, _ref1;
+      var action, addContext, context, footerElement, journalElement, page, site, storyElement, _i, _len, _ref1, _ref2;
       if (siteFound === 'local') {
         pageElement.addClass('local');
       } else {
@@ -1386,17 +1408,17 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
             return context.push(site);
           }
         };
-        _ref = page.journal.slice(0).reverse();
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          action = _ref[_i];
+        _ref1 = page.journal.slice(0).reverse();
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          action = _ref1[_i];
           addContext(action.site);
         }
         wiki.resolutionContext = context;
         wiki.log('build', slug, 'site', site, 'context', context.join(' => '));
         emitHeader(pageElement, page);
-        _ref1 = ['story', 'journal', 'footer'].map(function(className) {
+        _ref2 = ['story', 'journal', 'footer'].map(function(className) {
           return $("<div />").addClass(className).appendTo(pageElement);
-        }), storyElement = _ref1[0], journalElement = _ref1[1], footerElement = _ref1[2];
+        }), storyElement = _ref2[0], journalElement = _ref2[1], footerElement = _ref2[2];
         $.each(page.story, function(i, item) {
           var div;
           if ($.isArray(item)) {
@@ -1416,7 +1438,27 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
       initDragging(pageElement);
       return initAddButton(pageElement);
     };
-    return pageHandler.get(pageElement, buildPage);
+    createPage = function() {
+      var title;
+      title = $("a[href=\"/" + slug + ".html\"]").html();
+      title || (title = slug);
+      pageHandler.put($(pageElement), {
+        type: 'create',
+        id: util.randomBytes(8),
+        item: {
+          title: title
+        }
+      });
+      return buildPage({
+        title: title
+      });
+    };
+    return pageHandler.get({
+      pageElement: pageElement,
+      whenGotten: buildPage,
+      whenNotGotten: createPage,
+      pageInformation: pageInformation
+    });
   };
 
 }).call(this);
