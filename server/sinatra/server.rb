@@ -172,7 +172,7 @@ class Controller < Sinatra::Base
     pages = []
     elements.shift
     while (site = elements.shift) && (id = elements.shift)
-      if site == 'view' || site == 'my'
+      if site == 'view'
         pages << {:id => id}
       else
         pages << {:id => id, :site => site}

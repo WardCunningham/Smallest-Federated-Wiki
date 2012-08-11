@@ -587,7 +587,7 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       }
     });
     createPage = wiki.createPage = function(name, loc) {
-      if (loc && (loc !== ('view' || 'my'))) {
+      if (loc && loc !== 'view') {
         return $("<div/>").attr('id', name).attr('data-site', loc).addClass("page");
       } else {
         return $("<div/>").attr('id', name).addClass("page");
