@@ -250,20 +250,17 @@ $ ->
 
     .delegate '.action', 'click', (e) ->
       e.preventDefault()
-      element = $(e.target)
-      if element.is('.fork')
+      $action = $(e.target)
+      if $action.is('.fork')
         name = $(e.target).data('slug')
-        pageHandler.context = [$(e.target).data('site')]
+        pageHandler.context = [$action.data('site')]
         finishClick e, name
       else
-        journalEntryIndex = $(this).parent().children().index(element)
-        data = $(this).parent().parent().data('data')
-        titleUrl = util.asSlug(data.title)
-        revUrl = "#{titleUrl}_rev#{journalEntryIndex}"
-        e.preventDefault()
-        page = $(e.target).parents('.page') unless e.shiftKey
-        $(page).nextAll().remove() if page?
-        createPage(revUrl)
+        $page = $(this).parents('.page')
+        slug = util.asSlug($page.data('data').title)
+        rev = $(this).parent().children().index($action)
+        $page.nextAll().remove() unless e.shiftKey
+        createPage("#{slug}_rev#{rev}", $page.data('site'))
           .appendTo($('.main'))
           .each refresh
         active.set($('.page').last())

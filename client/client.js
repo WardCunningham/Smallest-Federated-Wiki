@@ -633,22 +633,19 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       json = JSON.stringify(action, null, 2);
       return wiki.dialog("Revision " + rev + ", " + action.type + " action", $('<pre/>').text(json));
     }).delegate('.action', 'click', function(e) {
-      var data, element, journalEntryIndex, name, page, revUrl, titleUrl;
+      var $action, $page, name, rev, slug;
       e.preventDefault();
-      element = $(e.target);
-      if (element.is('.fork')) {
+      $action = $(e.target);
+      if ($action.is('.fork')) {
         name = $(e.target).data('slug');
-        pageHandler.context = [$(e.target).data('site')];
+        pageHandler.context = [$action.data('site')];
         return finishClick(e, name);
       } else {
-        journalEntryIndex = $(this).parent().children().index(element);
-        data = $(this).parent().parent().data('data');
-        titleUrl = util.asSlug(data.title);
-        revUrl = "" + titleUrl + "_rev" + journalEntryIndex;
-        e.preventDefault();
-        if (!e.shiftKey) page = $(e.target).parents('.page');
-        if (page != null) $(page).nextAll().remove();
-        createPage(revUrl).appendTo($('.main')).each(refresh);
+        $page = $(this).parents('.page');
+        slug = util.asSlug($page.data('data').title);
+        rev = $(this).parent().children().index($action);
+        if (!e.shiftKey) $page.nextAll().remove();
+        createPage("" + slug + "_rev" + rev, $page.data('site')).appendTo($('.main')).each(refresh);
         return active.set($('.page').last());
       }
     }).delegate('.fork-page', 'click', function(e) {
