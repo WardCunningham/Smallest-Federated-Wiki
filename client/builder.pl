@@ -9,9 +9,8 @@ sub say {
     my $msg = shift;
     if ($OSXsay) {
         `say $msg&`;
-    } else {
-        print $msg."\n";
     }
+    print $msg."\n";
 }
 sub run {
   $trouble = `($_[0] || echo 'failed to run') 2>&1`;
@@ -21,7 +20,7 @@ sub run {
     print "\n$_[0]\n$trouble";
   }elsif ($trouble =~ /failed to run/) {
     say('failed to run');
-    print('failed to run');
+    print("\n$_[0]\n$trouble");
   }
 
 }
@@ -30,6 +29,7 @@ while (sleep 1) {
   $new = `ls -lt *.coffee lib/*.coffee test/*.coffee plugins/*/*.coffee`;
   next if $old eq $new;
   $old = $new;
+  print `clear; date`;
   say('client.');
   run('npm start');
   say('test.');
