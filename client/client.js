@@ -869,7 +869,7 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
     whenGotten = _arg.whenGotten, whenNotGotten = _arg.whenNotGotten, pageInformation = _arg.pageInformation;
     wiki.log('pageHandler.get', pageInformation.site, pageInformation.slug, pageInformation.rev, 'context', pageHandler.context.join(' => '));
     if (pageInformation.wasServerGenerated) return whenGotten(null);
-    if (wiki.useLocalStorage()) {
+    if (!pageInformation.site) {
       if (localPage = pageFromLocalStorage(pageInformation.slug)) {
         return whenGotten(localPage, 'local');
       }
@@ -1361,7 +1361,7 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
   emitHeader = function(pageElement, page) {
     var date, rev, site;
     site = $(pageElement).data('site');
-    if ((site != null) && site !== 'local') {
+    if ((site != null) && site !== 'local' && site !== 'origin') {
       $(pageElement).append("<h1><a href=\"//" + site + "\"><img src = \"/remote/" + site + "/favicon.png\" height = \"32px\"></a> " + page.title + "</h1>");
     } else {
       $(pageElement).append($("<h1 />").append($("<a />").attr('href', '/').append($("<img>").error(function(e) {

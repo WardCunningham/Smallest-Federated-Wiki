@@ -54,7 +54,7 @@ createFactory = (pageElement) ->
 
 emitHeader = (pageElement, page) ->
   site = $(pageElement).data('site')
-  if site? and site != 'local'
+  if site? and site != 'local' and site != 'origin'
     $(pageElement)
       .append "<h1><a href=\"//#{site}\"><img src = \"/remote/#{site}/favicon.png\" height = \"32px\"></a> #{page.title}</h1>"
   else

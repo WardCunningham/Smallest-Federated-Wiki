@@ -53,7 +53,7 @@ pageHandler.get = ({whenGotten,whenNotGotten,pageInformation}  ) ->
   if pageInformation.wasServerGenerated
     return whenGotten( null )
 
-  if wiki.useLocalStorage()
+  unless pageInformation.site
     if localPage = pageFromLocalStorage(pageInformation.slug)
       return whenGotten( localPage, 'local' )
 
