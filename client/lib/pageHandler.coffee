@@ -41,6 +41,16 @@ recursiveGet = ({pageInformation, whenGotten, whenNotGotten, localContext}) ->
       page = revision.create rev, page if rev
       return whenGotten(page,site)
     error: (xhr, type, msg) ->
+      if xhr.status != 404
+        wiki.log 'pageHandler.get error', xhr, xhr.status, type, msg
+        report =
+          'title': msg
+          'story': [
+            'type': 'paragraph'
+            'id': '928739187243'
+            'text': "<pre>#{xhr.responseText}"
+          ]
+        return whenGotten report, 'local'
       if localContext.length > 0
         recursiveGet( {pageInformation, whenGotten, whenNotGotten, localContext} )
       else
