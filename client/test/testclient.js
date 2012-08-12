@@ -711,7 +711,7 @@ require.define("/test/pageHandler.coffee", function (require, module, exports, _
     return describe('ajax, search', function() {
       before(function() {
         sinon.stub(jQuery, "ajax").yieldsTo('error');
-        return pageHandler.context = ['origin', 'example.com', 'asdf.test', 'foo.bar'];
+        return pageHandler.context = ['view', 'example.com', 'asdf.test', 'foo.bar'];
       });
       it('should search through the context for a page', function() {
         pageHandler.get({
@@ -791,7 +791,7 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
     } else {
       site = localContext.shift();
     }
-    if (site === 'origin') site = null;
+    if (site === 'view') site = null;
     if (site != null) {
       if (site === 'local') {
         if (localPage = pageFromLocalStorage(pageInformation.slug)) {
@@ -839,7 +839,7 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
         return whenGotten(localPage, 'local');
       }
     }
-    if (!pageHandler.context.length) pageHandler.context = ['origin'];
+    if (!pageHandler.context.length) pageHandler.context = ['view'];
     return recursiveGet({
       pageInformation: pageInformation,
       whenGotten: whenGotten,
@@ -1200,7 +1200,7 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
   emitHeader = function(pageElement, page) {
     var date, rev, site;
     site = $(pageElement).data('site');
-    if ((site != null) && site !== 'local' && site !== 'origin') {
+    if ((site != null) && site !== 'local' && site !== 'origin' && site !== 'view') {
       $(pageElement).append("<h1><a href=\"//" + site + "\"><img src = \"/remote/" + site + "/favicon.png\" height = \"32px\"></a> " + page.title + "</h1>");
     } else {
       $(pageElement).append($("<h1 />").append($("<a />").attr('href', '/').append($("<img>").error(function(e) {
@@ -1245,7 +1245,7 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
         $(pageElement).data("data", page);
         slug = $(pageElement).attr('id');
         site = $(pageElement).data('site');
-        context = ['origin'];
+        context = ['view'];
         if (site != null) context.push(site);
         addContext = function(site) {
           if ((site != null) && !_.include(context, site)) {
@@ -1433,7 +1433,7 @@ require.define("/test/plugin.coffee", function (require, module, exports, __dirn
         text: 'blah [[Link]] asdf'
       };
       plugin["do"]($('#plugin'), item);
-      return expect($('#plugin').html()).to.be('<p>blah <a class="internal" href="/link.html" data-page-name="link" title="origin">Link</a> asdf</p>');
+      return expect($('#plugin').html()).to.be('<p>blah <a class="internal" href="/link.html" data-page-name="link" title="view">Link</a> asdf</p>');
     });
   });
 
@@ -1702,7 +1702,7 @@ require.define("/changes.js", function (require, module, exports, __dirname, __f
   var constructor, listItemHtml, pageBundle;
 
   listItemHtml = function(slug, page) {
-    return "<li>\n  <a class=\"internal\" href=\"#\" title=\"origin\" data-page-name=\"" + slug + "\" data-site=\"local\">\n    " + page.title + "\n  </a> \n  <button class=\"delete\">✕</button>\n</li>";
+    return "<li>\n  <a class=\"internal\" href=\"#\" title=\"local\" data-page-name=\"" + slug + "\" data-site=\"local\">\n    " + page.title + "\n  </a> \n  <button class=\"delete\">✕</button>\n</li>";
   };
 
   pageBundle = function() {

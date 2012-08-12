@@ -28,5 +28,5 @@ describe 'plugin', ->
       text: 'blah [[Link]] asdf'
     plugin.do $('#plugin'), item
     expect($('#plugin').html()).to
-      .be('<p>blah <a class="internal" href="/link.html" data-page-name="link" title="origin">Link</a> asdf</p>')
+      .be('<p>blah <a class="internal" href="/link.html" data-page-name="link" title="view">Link</a> asdf</p>')
 

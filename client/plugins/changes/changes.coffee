@@ -1,7 +1,7 @@
 listItemHtml = (slug, page)->
   """
     <li>
-      <a class="internal" href="#" title="origin" data-page-name="#{slug}" data-site="local">
+      <a class="internal" href="#" title="local" data-page-name="#{slug}" data-site="local">
         #{page.title}
       </a> 
       <button class="delete">✕</button>

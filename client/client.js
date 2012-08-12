@@ -826,7 +826,7 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
     } else {
       site = localContext.shift();
     }
-    if (site === 'origin') site = null;
+    if (site === 'view') site = null;
     if (site != null) {
       if (site === 'local') {
         if (localPage = pageFromLocalStorage(pageInformation.slug)) {
@@ -874,7 +874,7 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
         return whenGotten(localPage, 'local');
       }
     }
-    if (!pageHandler.context.length) pageHandler.context = ['origin'];
+    if (!pageHandler.context.length) pageHandler.context = ['view'];
     return recursiveGet({
       pageInformation: pageInformation,
       whenGotten: whenGotten,
@@ -1361,7 +1361,7 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
   emitHeader = function(pageElement, page) {
     var date, rev, site;
     site = $(pageElement).data('site');
-    if ((site != null) && site !== 'local' && site !== 'origin') {
+    if ((site != null) && site !== 'local' && site !== 'origin' && site !== 'view') {
       $(pageElement).append("<h1><a href=\"//" + site + "\"><img src = \"/remote/" + site + "/favicon.png\" height = \"32px\"></a> " + page.title + "</h1>");
     } else {
       $(pageElement).append($("<h1 />").append($("<a />").attr('href', '/').append($("<img>").error(function(e) {
@@ -1406,7 +1406,7 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
         $(pageElement).data("data", page);
         slug = $(pageElement).attr('id');
         site = $(pageElement).data('site');
-        context = ['origin'];
+        context = ['view'];
         if (site != null) context.push(site);
         addContext = function(site) {
           if ((site != null) && !_.include(context, site)) {

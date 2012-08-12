@@ -18,7 +18,7 @@ recursiveGet = ({pageInformation, whenGotten, whenNotGotten, localContext}) ->
   else
     site = localContext.shift()
 
-  site = null if site=='origin'
+  site = null if site=='view'
 
   if site?
     if site == 'local'
@@ -57,7 +57,7 @@ pageHandler.get = ({whenGotten,whenNotGotten,pageInformation}  ) ->
     if localPage = pageFromLocalStorage(pageInformation.slug)
       return whenGotten( localPage, 'local' )
 
-  pageHandler.context = ['origin'] unless pageHandler.context.length
+  pageHandler.context = ['view'] unless pageHandler.context.length
 
   recursiveGet
     pageInformation: pageInformation

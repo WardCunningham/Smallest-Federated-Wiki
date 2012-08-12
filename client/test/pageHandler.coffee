@@ -76,7 +76,7 @@ describe 'pageHandler.get', ->
   describe 'ajax, search', ->
     before ->
       sinon.stub(jQuery, "ajax").yieldsTo('error')
-      pageHandler.context = ['origin', 'example.com', 'asdf.test', 'foo.bar']
+      pageHandler.context = ['view', 'example.com', 'asdf.test', 'foo.bar']
 
     it 'should search through the context for a page', ->
       pageHandler.get 

@@ -54,7 +54,7 @@ createFactory = (pageElement) ->
 
 emitHeader = (pageElement, page) ->
   site = $(pageElement).data('site')
-  if site? and site != 'local' and site != 'origin'
+  if site? and site != 'local' and site != 'origin' and site != 'view'
     $(pageElement)
       .append "<h1><a href=\"//#{site}\"><img src = \"/remote/#{site}/favicon.png\" height = \"32px\"></a> #{page.title}</h1>"
   else
@@ -110,7 +110,7 @@ module.exports = refresh = wiki.refresh = ->
       slug = $(pageElement).attr('id')
       site = $(pageElement).data('site')
 
-      context = ['origin']
+      context = ['view']
       context.push site if site?
       addContext = (site) -> context.push site if site? and not _.include context, site
       addContext action.site for action in page.journal.slice(0).reverse()
