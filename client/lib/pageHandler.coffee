@@ -67,6 +67,7 @@ pageHandler.get = ({whenGotten,whenNotGotten,pageInformation}  ) ->
 
   unless pageInformation.site
     if localPage = pageFromLocalStorage(pageInformation.slug)
+      localPage = revision.create pageInformation.rev, localPage if pageInformation.rev
       return whenGotten( localPage, 'local' )
 
   pageHandler.context = ['view'] unless pageHandler.context.length
