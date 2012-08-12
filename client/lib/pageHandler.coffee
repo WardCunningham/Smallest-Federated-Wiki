@@ -25,9 +25,11 @@ recursiveGet = ({pageInformation, whenGotten, whenNotGotten, localContext}) ->
       if localPage = pageFromLocalStorage(pageInformation.slug)
         return whenGotten( localPage, 'local' )
       else
-        resource = slug
     else
-      resource = "remote/#{site}/#{slug}"
+      if site == 'origin'
+        resource = slug
+      else
+        resource = "remote/#{site}/#{slug}"
   else
     resource = slug
 
@@ -101,8 +103,11 @@ pushToServer = (pageElement, action) ->
       wiki.log "ajax error callback", type, msg
 
 pageHandler.put = (pageElement, action) ->
+  wiki.log 'pageHandler.put', pageElement, action, 'pageElement-site', pageElement.data('site')
   action.date = (new Date()).getTime()
-  if (site = pageElement.data('site'))?
+  delete action.site if action.site == 'origin'
+  if (site = pageElement.data('site'))? and site != 'origin' and site != 'local'
+    # pull remote site closer to us
     pageElement.find('h1 img').attr('src', '/favicon.png')
     pageElement.find('h1 a').attr('href', '/')
     pageElement.data('site', null)
@@ -114,7 +119,7 @@ pageHandler.put = (pageElement, action) ->
         type: 'fork'
         site: site
         date: action.date
-  if wiki.useLocalStorage()
+  if wiki.useLocalStorage() or site == 'local'
     pushToLocal(pageElement, action)
     pageElement.addClass("local")
   else
