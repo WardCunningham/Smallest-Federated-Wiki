@@ -216,8 +216,12 @@ class Controller < Sinatra::Base
       story << {'type' => 'paragraph', 'text' => "<h3>Within a #{key}</h3>", 'id' => RandomId.generate}
       bins[key].each do |page|
         next if page['story'].empty?
+        next unless (action = (page['journal']||[]).last)
+        text = "Last change was #{action['type']}"
+        text << " #{action['item']['type']}" if action['item']
+        text << "<br>#{action['item']['text']}" if action['item'] && action['item']['text']
         site = "#{request.host}#{request.port==80 ? '' : ':'+request.port.to_s}"
-        story << {'type' => 'federatedWiki', 'site' => site, 'slug' => page['name'], 'title' => page['title'], 'text' => "", 'id' => RandomId.generate}
+        story << {'type' => 'federatedWiki', 'site' => site, 'slug' => page['name'], 'title' => page['title'], 'text' => text, 'id' => RandomId.generate}
       end
     end
     page = {'title' => 'Recent Changes', 'story' => story}
