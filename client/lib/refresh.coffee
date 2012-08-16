@@ -147,7 +147,7 @@ module.exports = refresh = wiki.refresh = ->
     initAddButton pageElement
 
   createPage = ->
-    title = $("""a[href="/#{slug}.html"]""").text()
+    title = $("""a[href="/#{slug}.html"]:last""").text()
     title or= slug
     pageHandler.put $(pageElement), {type: 'create', id: util.randomBytes(8), item: {title}}
     buildPage( {title} )
