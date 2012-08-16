@@ -27,6 +27,12 @@ window.plugins.method =
     div.get(0).radarData = -> output
     div.mousemove (e) -> $(div).triggerHandler('thumb', $(e.target).text())
 
+    attach = (search) ->
+      for elem in wiki.getDataNodes div
+        if (source = $(elem).data('item')).text.indexOf(search) >= 0
+          return source.data
+      throw new Error "can't find dataset with caption #{search}"
+
     # http://stella.laurenzo.org/2011/03/bulletproof-node-js-coding/
 
     sum = (v) ->
@@ -61,11 +67,15 @@ window.plugins.method =
 
         next_dispatch = ->
           list.push +value if value? and ! isNaN +value
+          long = ''
+          if line.length > 40
+            long = line
+            line = "#{line.substr 0, 20} ... #{line.substr -15}"
           report.push """
             <tr style="background:#{color};">
               <td style="width: 20%; text-align: right;" title="#{hover||''}">
                 <b>#{round value}</b>
-              <td>#{line}#{annotate comment}
+              <td title="#{long}">#{line}#{annotate comment}
             """
           dispatch list, allocated, lines, report, done
 
@@ -82,6 +92,19 @@ window.plugins.method =
           else if name == 'MAX'
             color = '#ddd'
             _.max list
+          else if name == 'FIRST'
+            color = '#ddd'
+            list[0]
+          else if name == 'PRODUCT'
+            color = '#ddd'
+            _.reduce list, (p,n) -> p *= n
+          else if name == 'LOOKUP'
+            color = '#ddd'
+            table = attach 'Tier3ExposurePercentages'
+            row = _.find table, (row) ->
+              asValue(row.Exposure)==list[0] and asValue(row.Raw)==list[1]
+            throw new Error "can't find exposure #{list[0]} and raw #{list[1]}" unless row?
+            asValue(row.Percentage)
           else
             throw new Error "don't know how to #{name}"
 

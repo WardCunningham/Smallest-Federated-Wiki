@@ -4,7 +4,7 @@
   window.plugins.method = {
     emit: function(div, item) {},
     bind: function(div, item) {
-      var annotate, asValue, avg, calculate, candidates, elem, input, output, round, sum, _i, _len;
+      var annotate, asValue, attach, avg, calculate, candidates, elem, input, output, round, sum, _i, _len;
       input = {};
       output = {};
       asValue = function(obj) {
@@ -43,6 +43,17 @@
       div.mousemove(function(e) {
         return $(div).triggerHandler('thumb', $(e.target).text());
       });
+      attach = function(search) {
+        var source, _j, _len1, _ref;
+        _ref = wiki.getDataNodes(div);
+        for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
+          elem = _ref[_j];
+          if ((source = $(elem).data('item')).text.indexOf(search) >= 0) {
+            return source.data;
+          }
+        }
+        throw new Error("can't find dataset with caption " + search);
+      };
       sum = function(v) {
         return _.reduce(v, function(s, n) {
           return s += n;
@@ -83,13 +94,20 @@
             return done(report);
           }
           next_dispatch = function() {
+            var long;
             if ((value != null) && !isNaN(+value)) {
               list.push(+value);
             }
-            report.push("<tr style=\"background:" + color + ";\">\n  <td style=\"width: 20%; text-align: right;\" title=\"" + (hover || '') + "\">\n    <b>" + (round(value)) + "</b>\n  <td>" + line + (annotate(comment)));
+            long = '';
+            if (line.length > 40) {
+              long = line;
+              line = "" + (line.substr(0, 20)) + " ... " + (line.substr(-15));
+            }
+            report.push("<tr style=\"background:" + color + ";\">\n  <td style=\"width: 20%; text-align: right;\" title=\"" + (hover || '') + "\">\n    <b>" + (round(value)) + "</b>\n  <td title=\"" + long + "\">" + line + (annotate(comment)));
             return dispatch(list, allocated, lines, report, done);
           };
           apply = function(name, list) {
+            var row, table;
             if (name === 'SUM') {
               color = '#ddd';
               return sum(list);
@@ -102,6 +120,24 @@
             } else if (name === 'MAX') {
               color = '#ddd';
               return _.max(list);
+            } else if (name === 'FIRST') {
+              color = '#ddd';
+              return list[0];
+            } else if (name === 'PRODUCT') {
+              color = '#ddd';
+              return _.reduce(list, function(p, n) {
+                return p *= n;
+              });
+            } else if (name === 'LOOKUP') {
+              color = '#ddd';
+              table = attach('Tier3ExposurePercentages');
+              row = _.find(table, function(row) {
+                return asValue(row.Exposure) === list[0] && asValue(row.Raw) === list[1];
+              });
+              if (row == null) {
+                throw new Error("can't find exposure " + list[0] + " and raw " + list[1]);
+              }
+              return asValue(row.Percentage);
             } else {
               throw new Error("don't know how to " + name);
             }
