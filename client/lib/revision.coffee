@@ -15,6 +15,7 @@ create = (revIndex, data) ->
       when 'create'
         if journalEntry.item.title?
           revTitle = journalEntry.item.title
+          revStory = journalEntry.item.story || []
       when 'add'
         if (afterIndex = revStoryIds.indexOf journalEntry.after) != -1
           revStory.splice(afterIndex+1,0,journalEntry.item)
