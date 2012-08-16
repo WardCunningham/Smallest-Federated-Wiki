@@ -81,18 +81,20 @@ pageHandler.get = ({whenGotten,whenNotGotten,pageInformation}  ) ->
 
 pageHandler.context = []
 
-pushToLocal = (pageElement, action) ->
-  page = localStorage[pageElement.attr("id")]
-  page = JSON.parse(page) if page
+pushToLocal = (pageElement, pageInformation, action) ->
+  page = pageFromLocalStorage pageInformation.slug
   page = {title: action.item.title} if action.type == 'create'
   page ||= pageElement.data("data")
   page.journal = [] unless page.journal?
+  if (site=action['fork'])?
+    page.journal = page.journal.concat({'type':'fork','site':site})
+    delete action['fork']
   page.journal = page.journal.concat(action)
   page.story = $(pageElement).find(".item").map(-> $(@).data("item")).get()
-  localStorage[pageElement.attr("id")] = JSON.stringify(page)
+  localStorage[pageInformation.slug] = JSON.stringify(page)
   wiki.addToJournal pageElement.find('.journal'), action
 
-pushToServer = (pageElement, action) ->
+pushToServer = (pageElement, pageInformation, action) ->
   $.ajax
     type: 'PUT'
     url: "/page/#{pageElement.attr('id')}/action"
@@ -104,10 +106,34 @@ pushToServer = (pageElement, action) ->
       wiki.log "ajax error callback", type, msg
 
 pageHandler.put = (pageElement, action) ->
-  wiki.log 'pageHandler.put', pageElement, action, 'pageElement-site', pageElement.data('site')
+
+  # about the page we have
+  [slug, rev] = pageElement.attr('id').split('_rev')
+  pageInformation = {
+    slug: slug
+    rev: rev
+    site: pageElement.data('site')
+    wasServerGenerated: pageElement.attr('data-server-generated') == 'true'
+  }
+  forkFrom = pageInformation.site
+  forkfrom = null if forkFrom == 'origin' or forkFrom == 'local' or forkFrom == 'view'
+  wiki.log 'pageHandler.put', pageElement, action, 'pageInformation', pageInformation, 'forkFrom', forkFrom
+
+  # detect when fork to local storage
+  if wiki.useLocalStorage()
+    if pageInformation.site == 'origin'
+      action.site = forkFrom = location.host
+      wiki.log 'local storage from origin', action, 'forkFrom', forkFrom
+    if !pageFromLocalStorage(pageInformation.slug)?
+      action.site = forkFrom = pageInformation.site
+      wiki.log 'local storage first time', action, 'forkFrom', forkFrom
+
+  # tweek action before saving
   action.date = (new Date()).getTime()
   delete action.site if action.site == 'origin'
-  if (site = pageElement.data('site'))? and site != 'origin' and site != 'local'
+
+  # update dom when forking
+  if forkFrom
     # pull remote site closer to us
     pageElement.find('h1 img').attr('src', '/favicon.png')
     pageElement.find('h1 a').attr('href', '/')
@@ -115,14 +141,16 @@ pageHandler.put = (pageElement, action) ->
     state.setUrl()
     if action.type != 'fork'
       # bundle implicit fork with next action
-      action.fork = site
+      action.fork = forkFrom
       wiki.addToJournal pageElement.find('.journal'),
         type: 'fork'
-        site: site
+        site: forkFrom
         date: action.date
-  if wiki.useLocalStorage() or site == 'local'
-    pushToLocal(pageElement, action)
+
+  # store as appropriate
+  if wiki.useLocalStorage() or pageInformation.site == 'local'
+    pushToLocal(pageElement, pageInformation, action)
     pageElement.addClass("local")
   else
-    pushToServer(pageElement, action)
+    pushToServer(pageElement, pageInformation, action)
 
