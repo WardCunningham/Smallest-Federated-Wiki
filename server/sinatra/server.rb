@@ -202,17 +202,16 @@ class Controller < Sinatra::Base
   get '/recent-changes.json' do
     content_type 'application/json'
     cross_origin
-    bins = Hash.new {|hash, key| hash[key] = Array.new}
 
     pages = Store.annotated_pages farm_page.directory
-    pages.each do |page|
+    bins = pages.group_by do |page|
       dt = Time.now - page['updated_at']
-      bins[(dt/=60)<1?'Minute':(dt/=60)<1?'Hour':(dt/=24)<1?'Day':(dt/=7)<1?'Week':(dt/=4)<1?'Month':(dt/=3)<1?'Season':(dt/=4)<1?'Year':'Forever'] << page
+      (dt/=60)<1?'Minute':(dt/=60)<1?'Hour':(dt/=24)<1?'Day':(dt/=7)<1?'Week':(dt/=4)<1?'Month':(dt/=3)<1?'Season':(dt/=4)<1?'Year':'Forever'
     end
 
     story = []
     ['Minute', 'Hour', 'Day', 'Week', 'Month', 'Season', 'Year'].each do |key|
-      next unless bins[key].length>0
+      next unless bins.has_key? key
       story << {'type' => 'paragraph', 'text' => "<h3>Within a #{key}</h3>", 'id' => RandomId.generate}
       bins[key].each do |page|
         next if page['story'].empty?
