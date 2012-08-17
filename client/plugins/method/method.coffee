@@ -83,13 +83,13 @@ window.plugins.method =
           if name == 'SUM'
             color = '#ddd'
             sum(list)
-          else if name == 'AVG'
+          else if name == 'AVG' or name == 'AVERAGE'
             color = '#ddd'
             avg(list)
-          else if name == 'MIN'
+          else if name == 'MIN' or name == 'MINIMUM'
             color = '#ddd'
             _.min list
-          else if name == 'MAX'
+          else if name == 'MAX' or name == 'MAXIMUM'
             color = '#ddd'
             _.max list
           else if name == 'FIRST'
