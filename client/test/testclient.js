@@ -797,10 +797,14 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
         if (localPage = pageFromLocalStorage(pageInformation.slug)) {
           return whenGotten(localPage, 'local');
         } else {
-          resource = slug;
+
         }
       } else {
-        resource = "remote/" + site + "/" + slug;
+        if (site === 'origin') {
+          resource = slug;
+        } else {
+          resource = "remote/" + site + "/" + slug;
+        }
       }
     } else {
       resource = slug;
@@ -815,6 +819,21 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
         return whenGotten(page, site);
       },
       error: function(xhr, type, msg) {
+        var report;
+        if (xhr.status !== 404) {
+          wiki.log('pageHandler.get error', xhr, xhr.status, type, msg);
+          report = {
+            'title': msg,
+            'story': [
+              {
+                'type': 'paragraph',
+                'id': '928739187243',
+                'text': "<pre>" + xhr.responseText
+              }
+            ]
+          };
+          return whenGotten(report, 'local');
+        }
         if (localContext.length > 0) {
           return recursiveGet({
             pageInformation: pageInformation,
@@ -836,6 +855,9 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
     if (pageInformation.wasServerGenerated) return whenGotten(null);
     if (!pageInformation.site) {
       if (localPage = pageFromLocalStorage(pageInformation.slug)) {
+        if (pageInformation.rev) {
+          localPage = revision.create(pageInformation.rev, localPage);
+        }
         return whenGotten(localPage, 'local');
       }
     }
@@ -850,10 +872,9 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
 
   pageHandler.context = [];
 
-  pushToLocal = function(pageElement, action) {
-    var page;
-    page = localStorage[pageElement.attr("id")];
-    if (page) page = JSON.parse(page);
+  pushToLocal = function(pageElement, pagePutInfo, action) {
+    var page, site;
+    page = pageFromLocalStorage(pagePutInfo.slug);
     if (action.type === 'create') {
       page = {
         title: action.item.title
@@ -861,18 +882,25 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
     }
     page || (page = pageElement.data("data"));
     if (page.journal == null) page.journal = [];
+    if ((site = action['fork']) != null) {
+      page.journal = page.journal.concat({
+        'type': 'fork',
+        'site': site
+      });
+      delete action['fork'];
+    }
     page.journal = page.journal.concat(action);
     page.story = $(pageElement).find(".item").map(function() {
       return $(this).data("item");
     }).get();
-    localStorage[pageElement.attr("id")] = JSON.stringify(page);
+    localStorage[pagePutInfo.slug] = JSON.stringify(page);
     return wiki.addToJournal(pageElement.find('.journal'), action);
   };
 
-  pushToServer = function(pageElement, action) {
+  pushToServer = function(pageElement, pagePutInfo, action) {
     return $.ajax({
       type: 'PUT',
-      url: "/page/" + (pageElement.attr('id')) + "/action",
+      url: "/page/" + pagePutInfo.slug + "/action",
       data: {
         'action': JSON.stringify(action)
       },
@@ -886,27 +914,57 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
   };
 
   pageHandler.put = function(pageElement, action) {
-    var site;
+    var checkedSite, forkFrom, pagePutInfo;
+    checkedSite = function() {
+      var site;
+      switch (site = pageElement.data('site')) {
+        case 'origin':
+        case 'local':
+        case 'view':
+          return null;
+        case location.host:
+          return null;
+        default:
+          return site;
+      }
+    };
+    pagePutInfo = {
+      slug: pageElement.attr('id').split('_rev')[0],
+      rev: pageElement.attr('id').split('_rev')[1],
+      site: checkedSite(),
+      local: pageElement.hasClass('local')
+    };
+    forkFrom = pagePutInfo.site;
+    wiki.log('pageHandler.put', pageElement, action, 'pagePutInfo', pagePutInfo, 'forkFrom', forkFrom);
+    if (wiki.useLocalStorage()) {
+      if (pagePutInfo.site != null) {
+        wiki.log('remote => local');
+      } else if (!pagePutInfo.local) {
+        wiki.log('origin => local');
+        action.site = forkFrom = location.host;
+      }
+    }
     action.date = (new Date()).getTime();
-    if ((site = pageElement.data('site')) != null) {
+    if (action.site === 'origin') delete action.site;
+    if (forkFrom) {
       pageElement.find('h1 img').attr('src', '/favicon.png');
       pageElement.find('h1 a').attr('href', '/');
       pageElement.data('site', null);
       state.setUrl();
       if (action.type !== 'fork') {
-        action.fork = site;
+        action.fork = forkFrom;
         wiki.addToJournal(pageElement.find('.journal'), {
           type: 'fork',
-          site: site,
+          site: forkFrom,
           date: action.date
         });
       }
     }
-    if (wiki.useLocalStorage()) {
-      pushToLocal(pageElement, action);
+    if (wiki.useLocalStorage() || pagePutInfo.site === 'local') {
+      pushToLocal(pageElement, pagePutInfo, action);
       return pageElement.addClass("local");
     } else {
-      return pushToServer(pageElement, action);
+      return pushToServer(pageElement, pagePutInfo, action);
     }
   };
 
@@ -1044,7 +1102,10 @@ require.define("/lib/revision.coffee", function (require, module, exports, __dir
       });
       switch (journalEntry.type) {
         case 'create':
-          if (journalEntry.item.title != null) revTitle = journalEntry.item.title;
+          if (journalEntry.item.title != null) {
+            revTitle = journalEntry.item.title;
+            revStory = journalEntry.item.story || [];
+          }
           break;
         case 'add':
           if ((afterIndex = revStoryIds.indexOf(journalEntry.after)) !== -1) {
@@ -1282,7 +1343,7 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
     };
     createPage = function() {
       var title;
-      title = $("a[href=\"/" + slug + ".html\"]").text();
+      title = $("a[href=\"/" + slug + ".html\"]:last").text();
       title || (title = slug);
       pageHandler.put($(pageElement), {
         type: 'create',

@@ -81,8 +81,8 @@ pageHandler.get = ({whenGotten,whenNotGotten,pageInformation}  ) ->
 
 pageHandler.context = []
 
-pushToLocal = (pageElement, pageInformation, action) ->
-  page = pageFromLocalStorage pageInformation.slug
+pushToLocal = (pageElement, pagePutInfo, action) ->
+  page = pageFromLocalStorage pagePutInfo.slug
   page = {title: action.item.title} if action.type == 'create'
   page ||= pageElement.data("data")
   page.journal = [] unless page.journal?
@@ -91,13 +91,13 @@ pushToLocal = (pageElement, pageInformation, action) ->
     delete action['fork']
   page.journal = page.journal.concat(action)
   page.story = $(pageElement).find(".item").map(-> $(@).data("item")).get()
-  localStorage[pageInformation.slug] = JSON.stringify(page)
+  localStorage[pagePutInfo.slug] = JSON.stringify(page)
   wiki.addToJournal pageElement.find('.journal'), action
 
-pushToServer = (pageElement, pageInformation, action) ->
+pushToServer = (pageElement, pagePutInfo, action) ->
   $.ajax
     type: 'PUT'
-    url: "/page/#{pageElement.attr('id')}/action"
+    url: "/page/#{pagePutInfo.slug}/action"
     data:
       'action': JSON.stringify(action)
     success: () ->
@@ -107,26 +107,33 @@ pushToServer = (pageElement, pageInformation, action) ->
 
 pageHandler.put = (pageElement, action) ->
 
+  checkedSite = () ->
+    switch site = pageElement.data('site')
+      when 'origin', 'local', 'view' then null
+      when location.host then null
+      else site
+
   # about the page we have
-  [slug, rev] = pageElement.attr('id').split('_rev')
-  pageInformation = {
-    slug: slug
-    rev: rev
-    site: pageElement.data('site')
-    wasServerGenerated: pageElement.attr('data-server-generated') == 'true'
+  pagePutInfo = {
+    slug: pageElement.attr('id').split('_rev')[0]
+    rev: pageElement.attr('id').split('_rev')[1]
+    site: checkedSite()
+    local: pageElement.hasClass('local')
   }
-  forkFrom = pageInformation.site
-  forkfrom = null if forkFrom == 'origin' or forkFrom == 'local' or forkFrom == 'view'
-  wiki.log 'pageHandler.put', pageElement, action, 'pageInformation', pageInformation, 'forkFrom', forkFrom
+  forkFrom = pagePutInfo.site
+  wiki.log 'pageHandler.put', pageElement, action, 'pagePutInfo', pagePutInfo, 'forkFrom', forkFrom
 
   # detect when fork to local storage
   if wiki.useLocalStorage()
-    if pageInformation.site == 'origin'
+    if pagePutInfo.site?
+      wiki.log 'remote => local'
+    else if !pagePutInfo.local
+      wiki.log 'origin => local'
       action.site = forkFrom = location.host
-      wiki.log 'local storage from origin', action, 'forkFrom', forkFrom
-    if !pageFromLocalStorage(pageInformation.slug)?
-      action.site = forkFrom = pageInformation.site
-      wiki.log 'local storage first time', action, 'forkFrom', forkFrom
+    # else if !pageFromLocalStorage(pagePutInfo.slug)
+    #   wiki.log ''
+    #   action.site = forkFrom = pagePutInfo.site
+    #   wiki.log 'local storage first time', action, 'forkFrom', forkFrom
 
   # tweek action before saving
   action.date = (new Date()).getTime()
@@ -148,9 +155,9 @@ pageHandler.put = (pageElement, action) ->
         date: action.date
 
   # store as appropriate
-  if wiki.useLocalStorage() or pageInformation.site == 'local'
-    pushToLocal(pageElement, pageInformation, action)
+  if wiki.useLocalStorage() or pagePutInfo.site == 'local'
+    pushToLocal(pageElement, pagePutInfo, action)
     pageElement.addClass("local")
   else
-    pushToServer(pageElement, pageInformation, action)
+    pushToServer(pageElement, pagePutInfo, action)
 
