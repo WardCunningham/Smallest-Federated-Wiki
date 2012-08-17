@@ -1341,7 +1341,7 @@ require.define("/lib/plugin.coffee", function (require, module, exports, __dirna
 
 require.define("/lib/refresh.coffee", function (require, module, exports, __dirname, __filename) {
 (function() {
-  var createFactory, emitHeader, handleDragging, initAddButton, initDragging, pageHandler, plugin, refresh, state, util;
+  var createFactory, emitHeader, handleDragging, initAddButton, initDragging, neighborhood, pageHandler, plugin, refresh, state, util;
 
   util = require('./util.coffee');
 
@@ -1350,6 +1350,8 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
   plugin = require('./plugin.coffee');
 
   state = require('./state.coffee');
+
+  neighborhood = require('./neighborhood.coffee');
 
   handleDragging = function(evt, ui) {
     var action, before, beforeElement, destinationPageElement, equals, item, itemElement, journalElement, moveFromPage, moveToPage, moveWithinPage, order, sourcePageElement, thisPageElement;
@@ -1438,7 +1440,7 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
   };
 
   module.exports = refresh = wiki.refresh = function() {
-    var buildPage, createPage, pageElement, pageInformation, rev, slug, _ref;
+    var buildPage, createPage, pageElement, pageInformation, registerNeighbors, rev, slug, whenGotten, _ref;
     pageElement = $(this);
     _ref = pageElement.attr('id').split('_rev'), slug = _ref[0], rev = _ref[1];
     pageInformation = {
@@ -1517,12 +1519,74 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
         title: title
       });
     };
+    registerNeighbors = function(data, site) {
+      var action, item, _i, _j, _len, _len2, _ref2, _ref3, _results;
+      if (_.include(['local', 'origin', 'view', null, void 0], site)) {
+        neighborhood.registerNeighbor(location.host);
+      } else {
+        neighborhood.registerNeighbor(site);
+      }
+      _ref2 = data.story || [];
+      for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+        item = _ref2[_i];
+        if (item.site != null) neighborhood.registerNeighbor(item.site);
+      }
+      _ref3 = data.journal || [];
+      _results = [];
+      for (_j = 0, _len2 = _ref3.length; _j < _len2; _j++) {
+        action = _ref3[_j];
+        if (action.site != null) {
+          _results.push(neighborhood.registerNeighbor(action.site));
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
+    };
+    whenGotten = function(data, siteFound) {
+      buildPage(data, siteFound);
+      return registerNeighbors(data, siteFound);
+    };
     return pageHandler.get({
-      whenGotten: buildPage,
+      whenGotten: whenGotten,
       whenNotGotten: createPage,
       pageInformation: pageInformation
     });
   };
+
+}).call(this);
+
+});
+
+require.define("/lib/neighborhood.coffee", function (require, module, exports, __dirname, __filename) {
+(function() {
+  var neighborhood, _ref;
+
+  module.exports = neighborhood = {};
+
+  if ((_ref = wiki.neighborhood) == null) wiki.neighborhood = {};
+
+  neighborhood.registerNeighbor = function(neighborDomain) {
+    var neighborInfo, _base;
+    neighborInfo = {};
+    (_base = wiki.neighborhood)[neighborDomain] || (_base[neighborDomain] = neighborInfo);
+    return $('body').trigger('neighborhood-change');
+  };
+
+  neighborhood.listNeighbors = function() {
+    return _.keys(wiki.neighborhood);
+  };
+
+  $(function() {
+    var $neighborhood;
+    $neighborhood = $('.neighborhood');
+    return $('body').on('neighborhood-change', function() {
+      $neighborhood.empty();
+      return _.each(neighborhood.listNeighbors(), function(neighborDomain) {
+        return $("<img src='http://" + neighborDomain + "/favicon.png'>").appendTo($neighborhood);
+      });
+    });
+  });
 
 }).call(this);
 

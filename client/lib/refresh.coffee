@@ -153,20 +153,19 @@ module.exports = refresh = wiki.refresh = ->
     pageHandler.put $(pageElement), {type: 'create', id: util.randomBytes(8), item: {title}}
     buildPage( {title} )
 
-  
-  noteSiteAsNeighbor = (site)->
-    return unless site? && site != 'local' && site != 'origin'
-
-    neighborhood.registerNeighbor( site ) 
-  
-  registerInterestingThingsAboutPage = (pageData, siteFound)->
-    noteSiteAsNeighbor(siteFound)
-    #noteNeighborsWithinPageStories
-    #noteNeighborsWithinPageJournal
+  registerNeighbors = (data, site) ->
+    if _.include ['local', 'origin', 'view', null, undefined], site
+      neighborhood.registerNeighbor location.host
+    else
+      neighborhood.registerNeighbor site
+    for item in (data.story || [])
+      neighborhood.registerNeighbor item.site if item.site?
+    for action in (data.journal || [])
+      neighborhood.registerNeighbor action.site if action.site?
       
   whenGotten = (data,siteFound) ->
     buildPage( data, siteFound )
-    registerInterestingThingsAboutPage( data, siteFound )
+    registerNeighbors( data, siteFound )
 
   pageHandler.get
     whenGotten: whenGotten
