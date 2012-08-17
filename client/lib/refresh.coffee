@@ -2,6 +2,7 @@ util = require('./util.coffee')
 pageHandler = require('./pageHandler.coffee')
 plugin = require('./plugin.coffee')
 state = require('./state.coffee')
+neighborhood = require('./neighborhood.coffee')
 
 handleDragging = (evt, ui) ->
   itemElement = ui.item
@@ -151,10 +152,24 @@ module.exports = refresh = wiki.refresh = ->
     title or= slug
     pageHandler.put $(pageElement), {type: 'create', id: util.randomBytes(8), item: {title}}
     buildPage( {title} )
+
+  
+  noteSiteAsNeighbor = (site)->
+    return unless site? && site != 'local' && site != 'origin'
+
+    neighborhood.registerNeighbor( site ) 
+  
+  registerInterestingThingsAboutPage = (pageData, siteFound)->
+    noteSiteAsNeighbor(siteFound)
+    #noteNeighborsWithinPageStories
+    #noteNeighborsWithinPageJournal
       
+  whenGotten = (data,siteFound) ->
+    buildPage( data, siteFound )
+    registerInterestingThingsAboutPage( data, siteFound )
 
   pageHandler.get
-    whenGotten: buildPage
+    whenGotten: whenGotten
     whenNotGotten: createPage
     pageInformation: pageInformation
 
