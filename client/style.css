@@ -40,6 +40,16 @@ footer {
   font-size: 80%;
   z-index: 1000;
   color: #ccdcd2; }
+ 
+footer form {
+  display: inline;
+}
+
+footer img {
+  width: 16px;
+  height: 16px;
+  padding-left: 8px;
+}
 
 header {
   top: 0; }
