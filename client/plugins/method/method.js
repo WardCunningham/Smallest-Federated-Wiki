@@ -111,13 +111,13 @@
             if (name === 'SUM') {
               color = '#ddd';
               return sum(list);
-            } else if (name === 'AVG') {
+            } else if (name === 'AVG' || name === 'AVERAGE') {
               color = '#ddd';
               return avg(list);
-            } else if (name === 'MIN') {
+            } else if (name === 'MIN' || name === 'MINIMUM') {
               color = '#ddd';
               return _.min(list);
-            } else if (name === 'MAX') {
+            } else if (name === 'MAX' || name === 'MAXIMUM') {
               color = '#ddd';
               return _.max(list);
             } else if (name === 'FIRST') {
@@ -143,11 +143,11 @@
             }
           };
           try {
-            if (args = line.match(/^([0-9.eE-]+) ([\w \/%(),-]+)$/)) {
+            if (args = line.match(/^([0-9.eE-]+) +([\w \/%(),-]+)$/)) {
               result = hours = +args[1];
               line = args[2];
               output[line] = value = result;
-            } else if (args = line.match(/^([A-Z]+) ([\w \/%(),-]+)$/)) {
+            } else if (args = line.match(/^([A-Z]+) +([\w \/%(),-]+)$/)) {
               _ref = [apply(args[1], list), [], list.length], value = _ref[0], list = _ref[1], count = _ref[2];
               hover = "" + args[1] + " of " + count + " numbers\n= " + value;
               line = args[2];
@@ -155,6 +155,9 @@
                 previous = asValue(output[line] || input[line]);
                 if (Math.abs(change = value / previous - 1) > 0.0001) {
                   comment = "previously " + previous + "\nΔ " + (round(change * 100)) + "%";
+                  if (!item.silent) {
+                    wiki.log('method', args[0], value, '!=', previous);
+                  }
                 }
               }
               output[line] = value;
@@ -164,11 +167,11 @@
             } else if (line.match(/^[0-9\.eE-]+$/)) {
               value = +line;
               line = '';
-            } else if (line.match(/^([\w \/%(),-]+)$/)) {
-              if (output[line] != null) {
-                value = output[line];
-              } else if (input[line] != null) {
-                value = asValue(input[line]);
+            } else if (args = line.match(/^ *([\w \/%(),-]+)$/)) {
+              if (output[args[1]] != null) {
+                value = output[args[1]];
+              } else if (input[args[1]] != null) {
+                value = asValue(input[args[1]]);
               } else {
                 color = '#edd';
                 comment = "can't find value of '" + line + "'";
