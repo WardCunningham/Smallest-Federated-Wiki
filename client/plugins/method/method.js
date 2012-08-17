@@ -151,13 +151,11 @@
               _ref = [apply(args[1], list), [], list.length], value = _ref[0], list = _ref[1], count = _ref[2];
               hover = "" + args[1] + " of " + count + " numbers\n= " + value;
               line = args[2];
-              if ((output[line] != null) || (input[line] != null)) {
+              if (((output[line] != null) || (input[line] != null)) && !item.silent) {
                 previous = asValue(output[line] || input[line]);
                 if (Math.abs(change = value / previous - 1) > 0.0001) {
                   comment = "previously " + previous + "\nΔ " + (round(change * 100)) + "%";
-                  if (!item.silent) {
-                    wiki.log('method', args[0], value, '!=', previous);
-                  }
+                  wiki.log('method', args[0], value, '!=', previous);
                 }
               }
               output[line] = value;

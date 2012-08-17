@@ -117,11 +117,11 @@ window.plugins.method =
             [value, list, count] = [apply(args[1], list), [], list.length]
             hover = "#{args[1]} of #{count} numbers\n= #{value}"
             line = args[2]
-            if output[line]? or input[line]?
+            if (output[line]? or input[line]?) and !item.silent
               previous = asValue(output[line]||input[line])
               if Math.abs(change = value/previous-1) > 0.0001
                 comment = "previously #{previous}\nΔ #{round(change*100)}%"
-                wiki.log 'method', args[0], value, '!=', previous unless item.silent
+                wiki.log 'method', args[0], value, '!=', previous
             output[line] = value
           else if args = line.match /^([A-Z]+)$/
             [value, list, count] = [apply(args[1], list), [], list.length]
