@@ -216,7 +216,8 @@ class Controller < Sinatra::Base
       story << {'type' => 'paragraph', 'text' => "<h3>Within a #{key}</h3>", 'id' => RandomId.generate}
       bins[key].each do |page|
         next if page['story'].empty?
-        next unless (action = (page['journal']||[]).last)
+        next unless page['journal'] && page['journal'].length > 0
+        action = page['journal'].last
         text = "Last change was #{action['type']}"
         text << " #{action['item']['type']}" if action['item']
         text << "<br>#{action['item']['text']}" if action['item'] && action['item']['text']
