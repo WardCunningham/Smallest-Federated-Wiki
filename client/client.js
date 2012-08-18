@@ -1566,11 +1566,12 @@ require.define("/lib/neighborhood.coffee", function (require, module, exports, _
 
   if ((_ref = wiki.neighborhood) == null) wiki.neighborhood = {};
 
-  neighborhood.registerNeighbor = function(neighborDomain) {
-    var neighborInfo, _base;
+  neighborhood.registerNeighbor = function(site) {
+    var neighborInfo;
     neighborInfo = {};
-    (_base = wiki.neighborhood)[neighborDomain] || (_base[neighborDomain] = neighborInfo);
-    return $('body').trigger('neighborhood-change');
+    if (wiki.neighborhood[site] != null) return;
+    wiki.neighborhood[site] = site;
+    return $('body').trigger('new-neighbor', site);
   };
 
   neighborhood.listNeighbors = function() {
@@ -1578,13 +1579,19 @@ require.define("/lib/neighborhood.coffee", function (require, module, exports, _
   };
 
   $(function() {
-    var $neighborhood;
+    var $neighborhood, flag;
     $neighborhood = $('.neighborhood');
+    flag = function(site) {
+      return "<span class=\"neighbor\">\n  <img src=\"http://" + site + "/favicon.png\" title=\"" + site + "\">\n</span>";
+    };
     return $('body').on('neighborhood-change', function() {
       $neighborhood.empty();
-      return _.each(neighborhood.listNeighbors(), function(domain) {
-        return $neighborhood.append("<img class=\"neighbor\" src=\"http://" + domain + "/favicon.png\" title=\"" + domain + "\">");
+      return _.each(neighborhood.listNeighbors(), function(site) {
+        return $neighborhood.append(flag(site));
       });
+    }).on('new-neighbor', function(e, site) {
+      wiki.log('new-neighbor', site);
+      return $neighborhood.append(flag(site));
     }).delegate('.neighbor', 'click', function(e) {
       return wiki.doInternalLink('welcome-visitors', null, this.title);
     });
