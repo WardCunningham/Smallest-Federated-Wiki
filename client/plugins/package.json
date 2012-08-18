@@ -1,7 +1,7 @@
 {
   "name": "sfw",
   "version": "0.0.1a",
-  "main": "federatedWiki.coffee",
+  "main": "client.coffee",
   "private": true,
   "dependencies": {
     "coffee-script": "*"
