@@ -156,7 +156,7 @@ describe "GET /recent-changes.json" do
     it "has a listing of the single recent change" do
       @json['story'][1]['slug'].should == "a-page"
       @json['story'][1]['title'].should == "A Page"
-      @json['story'][1]['type'].should == 'federatedWiki'
+      @json['story'][1]['type'].should == 'reference'
     end
   end
 end

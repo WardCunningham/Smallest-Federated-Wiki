@@ -126,7 +126,7 @@
               ignore = found[0], item.site = found[1], item.slug = found[2];
               return $.getJSON("http://" + item.site + "/" + item.slug + ".json", function(remote) {
                 wiki.log('remote', remote);
-                item.type = 'federatedWiki';
+                item.type = 'reference';
                 item.title = remote.title || item.slug;
                 item.text = remote.synopsis || remote.story[0].text || remote.story[1].text || 'A recently found federated wiki site.';
                 return syncEditAction();

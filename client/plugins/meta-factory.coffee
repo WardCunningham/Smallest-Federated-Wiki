@@ -87,7 +87,7 @@ window.plugins.factory =
             [ignore, item.site, item.slug] = found
             $.getJSON "http://#{item.site}/#{item.slug}.json", (remote) ->
               wiki.log 'remote', remote
-              item.type = 'federatedWiki'
+              item.type = 'reference'
               item.title = remote.title || item.slug
               item.text = remote.synopsis || remote.story[0].text || remote.story[1].text || 'A recently found federated wiki site.'
               syncEditAction()

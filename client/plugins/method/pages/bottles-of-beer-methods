@@ -72,7 +72,7 @@
       "text": "Caution: We have yet to make the order of operations within methods reliably deterministic. If you see errors or unexpected values try refreshing the page."
     },
     {
-      "type": "federatedWiki",
+      "type": "reference",
       "id": "7938d7d8442d3248",
       "site": "ward.fed.wiki.org",
       "slug": "99-bottles-of-beer",
@@ -324,7 +324,7 @@
       "type": "edit",
       "id": "7938d7d8442d3248",
       "item": {
-        "type": "federatedWiki",
+        "type": "reference",
         "id": "7938d7d8442d3248",
         "site": "ward.fed.wiki.org",
         "slug": "99-bottles-of-beer",
