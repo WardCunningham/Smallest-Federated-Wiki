@@ -1514,9 +1514,11 @@ require.define("/lib/neighborhood.coffee", function (require, module, exports, _
     $neighborhood = $('.neighborhood');
     return $('body').on('neighborhood-change', function() {
       $neighborhood.empty();
-      return _.each(neighborhood.listNeighbors(), function(neighborDomain) {
-        return $("<img src='http://" + neighborDomain + "/favicon.png'>").appendTo($neighborhood);
+      return _.each(neighborhood.listNeighbors(), function(domain) {
+        return $neighborhood.append("<img class=\"neighbor\" src=\"http://" + domain + "/favicon.png\" title=\"" + domain + "\">");
       });
+    }).delegate('.neighbor', 'click', function(e) {
+      return wiki.doInternalLink('welcome-visitors', null, this.title);
     });
   });
 
