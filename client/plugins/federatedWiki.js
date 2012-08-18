@@ -3,15 +3,16 @@
 
   window.plugins.federatedWiki = {
     emit: function(div, item) {
-      var slug;
+      var site, slug;
       slug = item.slug || 'welcome-visitors';
-      wiki.log('emit', slug, 'site', item.site);
-      return wiki.resolveFrom(item.site, function() {
+      site = item.site;
+      wiki.log('emit', slug, 'site', site);
+      return wiki.resolveFrom(site, function() {
         var title;
         title = wiki.resolveLinks("[[" + (item.title || slug) + "]]");
-        div.append($("<h3 style='margin-bottom:3px;'><img src='//" + item.site + "/favicon.png' class='remote' width='16px' height='16px'> " + title + "</h3>"));
+        div.append($("<h3 style='margin-bottom:3px;'><img src='//" + site + "/favicon.png' class='remote' width='16px' height='16px' title='" + site + "'> " + title + "</h3>"));
         div.append($("<div>" + (wiki.resolveLinks(item.text)) + "</div>"));
-        return div.find('img').data('slug', slug).data('site', item.site);
+        return div.find('img').data('slug', slug).data('site', site);
       });
     },
     bind: function(div, item) {
