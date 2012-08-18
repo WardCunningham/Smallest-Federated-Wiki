@@ -18,8 +18,8 @@ $ ->
   $('body')
     .on 'neighborhood-change', ()->
       $neighborhood.empty()
-      _.each neighborhood.listNeighbors(), (domain)->
-        $neighborhood.append """<img class="neighbor" src="http://#{domain}/favicon.png" title="#{domain}">"""
+      _.each neighborhood.listNeighbors(), (site)->
+        $neighborhood.append """<img class="neighbor" src="http://#{site}/favicon.png" title="#{site}">"""
 
     .delegate '.neighbor', 'click', (e) ->
       wiki.doInternalLink 'welcome-visitors', null, @.title
