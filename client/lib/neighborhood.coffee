@@ -16,7 +16,11 @@ $ ->
   $neighborhood = $('.neighborhood')
 
   flag = (site) ->
-    """<img class="neighbor" src="http://#{site}/favicon.png" title="#{site}">"""
+    """
+      <span class="neighbor">
+        <img src="http://#{site}/favicon.png" title="#{site}">
+      </span>
+    """
 
   $('body')
     .on 'neighborhood-change', ()->

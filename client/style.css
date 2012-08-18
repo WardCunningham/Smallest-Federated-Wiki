@@ -45,10 +45,15 @@ footer form {
   display: inline;
 }
 
+footer span {
+  padding-left: 8px;
+  width: 16px;
+}
+
 footer img {
   width: 16px;
   height: 16px;
-  padding-left: 8px;
+  background-color: #cccccc;
 }
 
 header {
@@ -161,7 +166,7 @@ footer {
   color: gray;
   font-size: 70%; }
 
-.federatedWiki .cite {
+.federatedWiki .reference {
   margin-top: 0;
   color: gray;
   font-size: 70%; }
