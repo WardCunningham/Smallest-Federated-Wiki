@@ -1524,7 +1524,7 @@ require.define("/lib/neighborhood.coffee", function (require, module, exports, _
     }).on('new-neighbor', function(e, site) {
       wiki.log('new-neighbor', site);
       return $neighborhood.append(flag(site));
-    }).delegate('.neighbor', 'click', function(e) {
+    }).delegate('.neighbor img', 'click', function(e) {
       return wiki.doInternalLink('welcome-visitors', null, this.title);
     });
   });

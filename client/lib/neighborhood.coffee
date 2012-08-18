@@ -32,5 +32,5 @@ $ ->
       wiki.log 'new-neighbor', site
       $neighborhood.append flag site
 
-    .delegate '.neighbor', 'click', (e) ->
+    .delegate '.neighbor img', 'click', (e) ->
       wiki.doInternalLink 'welcome-visitors', null, @.title

@@ -45,13 +45,14 @@ footer form {
   display: inline;
 }
 
-footer span {
+.neighbor {
+  float: right;
   padding-left: 8px;
   width: 16px;
 }
 
 img.remote,
-footer img {
+.neighbor img {
   width: 16px;
   height: 16px;
   background-color: #cccccc;
