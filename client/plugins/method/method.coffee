@@ -109,11 +109,11 @@ window.plugins.method =
             throw new Error "don't know how to #{name}"
 
         try
-          if args = line.match /^([0-9.eE-]+) +([\w \/%(),-]+)$/
+          if args = line.match /^([0-9.eE-]+) +([\w \/%(){},-]+)$/
             result = hours = +args[1]
             line = args[2]
             output[line] = value = result
-          else if args = line.match /^([A-Z]+) +([\w \/%(),-]+)$/
+          else if args = line.match /^([A-Z]+) +([\w \/%(){},-]+)$/
             [value, list, count] = [apply(args[1], list), [], list.length]
             hover = "#{args[1]} of #{count} numbers\n= #{value}"
             line = args[2]
@@ -129,7 +129,7 @@ window.plugins.method =
           else if line.match /^[0-9\.eE-]+$/
             value = +line
             line = ''
-          else if args = line.match /^ *([\w \/%(),-]+)$/
+          else if args = line.match /^ *([\w \/%(){},-]+)$/
             if output[args[1]]?
               value = output[args[1]]
             else if input[args[1]]?
