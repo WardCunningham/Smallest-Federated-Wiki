@@ -1206,14 +1206,19 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
     moveWithinPage = !sourcePageElement || equals(sourcePageElement, destinationPageElement);
     moveFromPage = !moveWithinPage && equals(thisPageElement, sourcePageElement);
     moveToPage = !moveWithinPage && equals(thisPageElement, destinationPageElement);
+    if (moveFromPage) {
+      if (sourcePageElement.hasClass('ghost') || sourcePageElement.attr('id') === destinationPageElement.attr('id')) {
+        return;
+      }
+    }
     action = moveWithinPage ? (order = $(this).children().map(function(_, value) {
       return $(value).attr('data-id');
     }).get(), {
       type: 'move',
       order: order
-    }) : moveFromPage ? {
+    }) : moveFromPage ? (wiki.log('drag from', sourcePageElement.find('h1').text()), {
       type: 'remove'
-    } : moveToPage ? (itemElement.data('pageElement', thisPageElement), beforeElement = itemElement.prev('.item'), before = wiki.getItem(beforeElement), {
+    }) : moveToPage ? (itemElement.data('pageElement', thisPageElement), beforeElement = itemElement.prev('.item'), before = wiki.getItem(beforeElement), {
       type: 'add',
       item: item,
       after: before != null ? before.id : void 0

@@ -17,10 +17,18 @@ handleDragging = (evt, ui) ->
   moveFromPage = not moveWithinPage and equals(thisPageElement, sourcePageElement)
   moveToPage = not moveWithinPage and equals(thisPageElement, destinationPageElement)
 
+  if moveFromPage
+    if sourcePageElement.hasClass('ghost') or
+      sourcePageElement.attr('id') == destinationPageElement.attr('id')
+        # stem the damage, better ideas here: 
+        # http://stackoverflow.com/questions/3916089/jquery-ui-sortables-connect-lists-copy-items
+        return
+
   action = if moveWithinPage
     order = $(this).children().map((_, value) -> $(value).attr('data-id')).get()
     {type: 'move', order: order}
   else if moveFromPage
+    wiki.log 'drag from', sourcePageElement.find('h1').text()
     {type: 'remove'}
   else if moveToPage
     itemElement.data 'pageElement', thisPageElement
