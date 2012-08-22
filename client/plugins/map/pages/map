@@ -1,0 +1,14 @@
+{
+  "title": "Map",
+  "story": [
+    {
+      "id": "40aca0157e6f8cf4",
+      "type": "map"
+    },
+    {
+      "text": "This is a map",
+      "id": "85f2901bdbdcedf8",
+      "type": "paragraph"
+    }
+  ]
+}
