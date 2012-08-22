@@ -4,7 +4,7 @@
   window.plugins.method = {
     emit: function(div, item) {},
     bind: function(div, item) {
-      var annotate, asValue, attach, avg, calculate, candidates, elem, input, output, round, sum, _i, _len;
+      var annotate, asValue, attach, avg, calculate, candidates, elem, input, output, polynomial, round, sum, _i, _len;
       input = {};
       output = {};
       asValue = function(obj) {
@@ -61,6 +61,13 @@
       };
       avg = function(v) {
         return sum(v) / v.length;
+      };
+      polynomial = function(v) {
+        if (v > 3838) {
+          return 1 - (1.94842569518139e-17 * v ^ 4 - 8.68253239668536e-13 * v ^ 3 + 1.34578302132028e-08 * v ^ 2 - 0.0000791719080691817 * v + 0.904364653010239);
+        } else {
+          return 1 - (-3.11369360179418e-08 * v ^ 2 + 0.000316339584740631 * v);
+        }
       };
       round = function(n) {
         if (n == null) {
@@ -138,6 +145,9 @@
                 throw new Error("can't find exposure " + list[0] + " and raw " + list[1]);
               }
               return asValue(row.Percentage);
+            } else if (name === 'POLYNOMIAL') {
+              color = '#ddd';
+              return polynomial(list[0]);
             } else {
               throw new Error("don't know how to " + name);
             }

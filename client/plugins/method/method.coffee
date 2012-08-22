@@ -41,6 +41,12 @@ window.plugins.method =
     avg = (v) ->
       sum(v)/v.length
 
+    polynomial = (v) ->
+      if v>3838
+        1 -(1.94842569518139e-17*v^4 - 8.68253239668536e-13*v^3  + 1.34578302132028e-08*v^2 - 0.0000791719080691817*v  + 0.904364653010239)
+      else
+       1-(-3.11369360179418e-08*v^2 + 0.000316339584740631*v)
+
     round = (n) ->
       return '?' unless n?
       if n.toString().match /\.\d\d\d/
@@ -105,6 +111,9 @@ window.plugins.method =
               asValue(row.Exposure)==list[0] and asValue(row.Raw)==list[1]
             throw new Error "can't find exposure #{list[0]} and raw #{list[1]}" unless row?
             asValue(row.Percentage)
+          else if name == 'POLYNOMIAL'
+            color = '#ddd'
+            polynomial list[0]
           else
             throw new Error "don't know how to #{name}"
 
