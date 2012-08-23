@@ -115,41 +115,38 @@
           };
           apply = function(name, list) {
             var row, table;
-            if (name === 'SUM') {
-              color = '#ddd';
-              return sum(list);
-            } else if (name === 'AVG' || name === 'AVERAGE') {
-              color = '#ddd';
-              return avg(list);
-            } else if (name === 'MIN' || name === 'MINIMUM') {
-              color = '#ddd';
-              return _.min(list);
-            } else if (name === 'MAX' || name === 'MAXIMUM') {
-              color = '#ddd';
-              return _.max(list);
-            } else if (name === 'FIRST') {
-              color = '#ddd';
-              return list[0];
-            } else if (name === 'PRODUCT') {
-              color = '#ddd';
-              return _.reduce(list, function(p, n) {
-                return p *= n;
-              });
-            } else if (name === 'LOOKUP') {
-              color = '#ddd';
-              table = attach('Tier3ExposurePercentages');
-              row = _.find(table, function(row) {
-                return asValue(row.Exposure) === list[0] && asValue(row.Raw) === list[1];
-              });
-              if (row == null) {
-                throw new Error("can't find exposure " + list[0] + " and raw " + list[1]);
-              }
-              return asValue(row.Percentage);
-            } else if (name === 'POLYNOMIAL') {
-              color = '#ddd';
-              return polynomial(list[0]);
-            } else {
-              throw new Error("don't know how to " + name);
+            color = '#ddd';
+            switch (name) {
+              case 'SUM':
+                return sum(list);
+              case 'AVG':
+              case 'AVERAGE':
+                return avg(list);
+              case 'MIN':
+              case 'MINIMUM':
+                return _.min(list);
+              case 'MAX':
+              case 'MAXIMUM':
+                return _.max(list);
+              case 'FIRST':
+                return list[0];
+              case 'PRODUCT':
+                return _.reduce(list, function(p, n) {
+                  return p *= n;
+                });
+              case 'LOOKUP':
+                table = attach('Tier3ExposurePercentages');
+                row = _.find(table, function(row) {
+                  return asValue(row.Exposure) === list[0] && asValue(row.Raw) === list[1];
+                });
+                if (row == null) {
+                  throw new Error("can't find exposure " + list[0] + " and raw " + list[1]);
+                }
+                return asValue(row.Percentage);
+              case 'POLYNOMIAL':
+                return polynomial(list[0]);
+              default:
+                throw new Error("don't know how to " + name);
             }
           };
           try {

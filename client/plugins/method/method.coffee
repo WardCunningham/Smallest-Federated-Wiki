@@ -88,36 +88,22 @@ window.plugins.method =
           dispatch list, allocated, lines, report, done
 
         apply = (name, list) ->
-          if name == 'SUM'
-            color = '#ddd'
-            sum(list)
-          else if name == 'AVG' or name == 'AVERAGE'
-            color = '#ddd'
-            avg(list)
-          else if name == 'MIN' or name == 'MINIMUM'
-            color = '#ddd'
-            _.min list
-          else if name == 'MAX' or name == 'MAXIMUM'
-            color = '#ddd'
-            _.max list
-          else if name == 'FIRST'
-            color = '#ddd'
-            list[0]
-          else if name == 'PRODUCT'
-            color = '#ddd'
-            _.reduce list, (p,n) -> p *= n
-          else if name == 'LOOKUP'
-            color = '#ddd'
-            table = attach 'Tier3ExposurePercentages'
-            row = _.find table, (row) ->
-              asValue(row.Exposure)==list[0] and asValue(row.Raw)==list[1]
-            throw new Error "can't find exposure #{list[0]} and raw #{list[1]}" unless row?
-            asValue(row.Percentage)
-          else if name == 'POLYNOMIAL'
-            color = '#ddd'
-            polynomial list[0]
-          else
-            throw new Error "don't know how to #{name}"
+          color = '#ddd'
+          switch name
+            when 'SUM' then sum list
+            when 'AVG', 'AVERAGE' then avg list
+            when 'MIN', 'MINIMUM' then _.min list
+            when 'MAX', 'MAXIMUM' then _.max list
+            when 'FIRST' then list[0]
+            when 'PRODUCT' then _.reduce list, (p,n) -> p *= n
+            when 'LOOKUP'
+              table = attach 'Tier3ExposurePercentages'
+              row = _.find table, (row) ->
+                asValue(row.Exposure)==list[0] and asValue(row.Raw)==list[1]
+              throw new Error "can't find exposure #{list[0]} and raw #{list[1]}" unless row?
+              asValue(row.Percentage)
+            when 'POLYNOMIAL' then polynomial list[0]
+            else throw new Error "don't know how to #{name}"
 
         try
           if args = line.match /^([0-9.eE-]+) +([\w \/%(){},-]+)$/
