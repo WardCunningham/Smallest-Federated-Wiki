@@ -57,7 +57,7 @@
       sum = function(v) {
         return _.reduce(v, function(s, n) {
           return s += n;
-        });
+        }, 0);
       };
       avg = function(v) {
         return sum(v) / v.length;

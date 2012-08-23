@@ -36,7 +36,9 @@ window.plugins.method =
     # http://stella.laurenzo.org/2011/03/bulletproof-node-js-coding/
 
     sum = (v) ->
-      _.reduce v, (s,n) -> s += n
+      _.reduce v,
+        (s,n) -> s += n
+        0
 
     avg = (v) ->
       sum(v)/v.length
