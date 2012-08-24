@@ -43,11 +43,22 @@ window.plugins.method =
     avg = (v) ->
       sum(v)/v.length
 
-    polynomial = (v) ->
-      if v>3838
-         1 -(1.94842569518139e-17*Math.pow(v,4) - 8.68253239668536e-13*Math.pow(v,3)  + 1.34578302132028e-08*Math.pow(v,2) - 0.0000791719080691817*v  + 0.904364653010239)
+    polynomial = (v, subtype) ->
+      table = attach 'Tier3Polynomials'
+      row = _.find table, (row) ->
+        row.SubType == subtype and asValue(row.Min) <= v and asValue(row.Max) > v
+      throw new Error "can't find applicable polynomial for #{v} in '#{subtype}'" unless row?
+      result  = asValue(row.C0)
+      result += asValue(row.C1) * v
+      result += asValue(row.C2) * Math.pow(v,2)
+      result += asValue(row.C3) * Math.pow(v,3)
+      result += asValue(row.C4) * Math.pow(v,4)
+      result += asValue(row.C5) * Math.pow(v,5)
+      result += asValue(row.C6) * Math.pow(v,6)
+      if asValue(row['One minus'])
+        1 - result
       else
-         1-(-3.11369360179418e-08*Math.pow(v,2) + 0.000316339584740631*v)
+        result
 
     round = (n) ->
       return '?' unless n?
@@ -87,7 +98,7 @@ window.plugins.method =
             """
           dispatch list, allocated, lines, report, done
 
-        apply = (name, list) ->
+        apply = (name, list, label) ->
           color = '#ddd'
           switch name
             when 'SUM' then sum list
@@ -102,7 +113,7 @@ window.plugins.method =
                 asValue(row.Exposure)==list[0] and asValue(row.Raw)==list[1]
               throw new Error "can't find exposure #{list[0]} and raw #{list[1]}" unless row?
               asValue(row.Percentage)
-            when 'POLYNOMIAL' then polynomial list[0]
+            when 'POLYNOMIAL' then polynomial list[0], label
             else throw new Error "don't know how to #{name}"
 
         try
@@ -111,7 +122,7 @@ window.plugins.method =
             line = args[2]
             output[line] = value = result
           else if args = line.match /^([A-Z]+) +([\w \/%(){},-]+)$/
-            [value, list, count] = [apply(args[1], list), [], list.length]
+            [value, list, count] = [apply(args[1], list, args[2]), [], list.length]
             hover = "#{args[1]} of #{count} numbers\n= #{value}"
             line = args[2]
             if (output[line]? or input[line]?) and !item.silent

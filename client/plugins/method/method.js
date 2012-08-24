@@ -62,11 +62,26 @@
       avg = function(v) {
         return sum(v) / v.length;
       };
-      polynomial = function(v) {
-        if (v > 3838) {
-          return 1 - (1.94842569518139e-17 * Math.pow(v, 4) - 8.68253239668536e-13 * Math.pow(v, 3) + 1.34578302132028e-08 * Math.pow(v, 2) - 0.0000791719080691817 * v + 0.904364653010239);
+      polynomial = function(v, subtype) {
+        var result, row, table;
+        table = attach('Tier3Polynomials');
+        row = _.find(table, function(row) {
+          return row.SubType === subtype && asValue(row.Min) <= v && asValue(row.Max) > v;
+        });
+        if (row == null) {
+          throw new Error("can't find applicable polynomial for " + v + " in '" + subtype + "'");
+        }
+        result = asValue(row.C0);
+        result += asValue(row.C1) * v;
+        result += asValue(row.C2) * Math.pow(v, 2);
+        result += asValue(row.C3) * Math.pow(v, 3);
+        result += asValue(row.C4) * Math.pow(v, 4);
+        result += asValue(row.C5) * Math.pow(v, 5);
+        result += asValue(row.C6) * Math.pow(v, 6);
+        if (asValue(row['One minus'])) {
+          return 1 - result;
         } else {
-          return 1 - (-3.11369360179418e-08 * Math.pow(v, 2) + 0.000316339584740631 * v);
+          return result;
         }
       };
       round = function(n) {
@@ -113,7 +128,7 @@
             report.push("<tr style=\"background:" + color + ";\">\n  <td style=\"width: 20%; text-align: right;\" title=\"" + (hover || '') + "\">\n    <b>" + (round(value)) + "</b>\n  <td title=\"" + long + "\">" + line + (annotate(comment)));
             return dispatch(list, allocated, lines, report, done);
           };
-          apply = function(name, list) {
+          apply = function(name, list, label) {
             var row, table;
             color = '#ddd';
             switch (name) {
@@ -144,7 +159,7 @@
                 }
                 return asValue(row.Percentage);
               case 'POLYNOMIAL':
-                return polynomial(list[0]);
+                return polynomial(list[0], label);
               default:
                 throw new Error("don't know how to " + name);
             }
@@ -155,7 +170,7 @@
               line = args[2];
               output[line] = value = result;
             } else if (args = line.match(/^([A-Z]+) +([\w \/%(){},-]+)$/)) {
-              _ref = [apply(args[1], list), [], list.length], value = _ref[0], list = _ref[1], count = _ref[2];
+              _ref = [apply(args[1], list, args[2]), [], list.length], value = _ref[0], list = _ref[1], count = _ref[2];
               hover = "" + args[1] + " of " + count + " numbers\n= " + value;
               line = args[2];
               if (((output[line] != null) || (input[line] != null)) && !item.silent) {
