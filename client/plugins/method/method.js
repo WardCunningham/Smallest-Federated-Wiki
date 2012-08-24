@@ -4,7 +4,7 @@
   window.plugins.method = {
     emit: function(div, item) {},
     bind: function(div, item) {
-      var annotate, asValue, attach, avg, calculate, candidates, elem, input, output, polynomial, round, sum, _i, _len;
+      var annotate, asValue, attach, avg, calculate, candidates, elem, input, lookup, output, polynomial, round, sum, _i, _len;
       input = {};
       output = {};
       asValue = function(obj) {
@@ -61,6 +61,17 @@
       };
       avg = function(v) {
         return sum(v) / v.length;
+      };
+      lookup = function(v) {
+        var row, table;
+        table = attach('Tier3ExposurePercentages');
+        row = _.find(table, function(row) {
+          return asValue(row.Exposure) === v[0] && asValue(row.Raw) === v[1];
+        });
+        if (row == null) {
+          throw new Error("can't find exposure " + v[0] + " and raw " + v[1]);
+        }
+        return asValue(row.Percentage);
       };
       polynomial = function(v, subtype) {
         var result, row, table;
@@ -129,7 +140,6 @@
             return dispatch(list, allocated, lines, report, done);
           };
           apply = function(name, list, label) {
-            var row, table;
             color = '#ddd';
             switch (name) {
               case 'SUM':
@@ -150,14 +160,7 @@
                   return p *= n;
                 });
               case 'LOOKUP':
-                table = attach('Tier3ExposurePercentages');
-                row = _.find(table, function(row) {
-                  return asValue(row.Exposure) === list[0] && asValue(row.Raw) === list[1];
-                });
-                if (row == null) {
-                  throw new Error("can't find exposure " + list[0] + " and raw " + list[1]);
-                }
-                return asValue(row.Percentage);
+                return lookup(list);
               case 'POLYNOMIAL':
                 return polynomial(list[0], label);
               default:
@@ -165,11 +168,11 @@
             }
           };
           try {
-            if (args = line.match(/^([0-9.eE-]+) +([\w \/%(){},-]+)$/)) {
+            if (args = line.match(/^([0-9.eE-]+) +([\w \/%(){},&-]+)$/)) {
               result = hours = +args[1];
               line = args[2];
               output[line] = value = result;
-            } else if (args = line.match(/^([A-Z]+) +([\w \/%(){},-]+)$/)) {
+            } else if (args = line.match(/^([A-Z]+) +([\w \/%(){},&-]+)$/)) {
               _ref = [apply(args[1], list, args[2]), [], list.length], value = _ref[0], list = _ref[1], count = _ref[2];
               hover = "" + args[1] + " of " + count + " numbers\n= " + value;
               line = args[2];
@@ -187,7 +190,7 @@
             } else if (line.match(/^[0-9\.eE-]+$/)) {
               value = +line;
               line = '';
-            } else if (args = line.match(/^ *([\w \/%(){},-]+)$/)) {
+            } else if (args = line.match(/^ *([\w \/%(){},&-]+)$/)) {
               if (output[args[1]] != null) {
                 value = output[args[1]];
               } else if (input[args[1]] != null) {
