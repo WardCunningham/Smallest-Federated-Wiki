@@ -43,6 +43,13 @@ window.plugins.method =
     avg = (v) ->
       sum(v)/v.length
 
+    lookup = (v) ->
+      table = attach 'Tier3ExposurePercentages'
+      row = _.find table, (row) ->
+        asValue(row.Exposure)==v[0] and asValue(row.Raw)==v[1]
+      throw new Error "can't find exposure #{v[0]} and raw #{v[1]}" unless row?
+      asValue(row.Percentage)
+
     polynomial = (v, subtype) ->
       table = attach 'Tier3Polynomials'
       row = _.find table, (row) ->
@@ -107,12 +114,7 @@ window.plugins.method =
             when 'MAX', 'MAXIMUM' then _.max list
             when 'FIRST' then list[0]
             when 'PRODUCT' then _.reduce list, (p,n) -> p *= n
-            when 'LOOKUP'
-              table = attach 'Tier3ExposurePercentages'
-              row = _.find table, (row) ->
-                asValue(row.Exposure)==list[0] and asValue(row.Raw)==list[1]
-              throw new Error "can't find exposure #{list[0]} and raw #{list[1]}" unless row?
-              asValue(row.Percentage)
+            when 'LOOKUP' then lookup list
             when 'POLYNOMIAL' then polynomial list[0], label
             else throw new Error "don't know how to #{name}"
 
