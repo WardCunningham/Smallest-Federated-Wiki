@@ -154,12 +154,25 @@ module.exports = refresh = wiki.refresh = ->
 
     initDragging pageElement
     initAddButton pageElement
+    pageElement
 
   createPage = ->
     title = $("""a[href="/#{slug}.html"]:last""").text()
     title or= slug
     pageHandler.put $(pageElement), {type: 'create', id: util.randomBytes(8), item: {title}}
     buildPage( {title} )
+
+  createGhostPage = ->
+    title = $("""a[href="/#{slug}.html"]:last""").text() or slug
+    page =
+      'title': title
+      'story': [
+        'id': util.randomBytes 8
+        'type': 'future'
+        'text': 'We could not find this page.'
+        'title': title
+      ]
+    buildPage( page ).addClass('ghost')
 
   registerNeighbors = (data, site) ->
     if _.include ['local', 'origin', 'view', null, undefined], site
@@ -178,5 +191,6 @@ module.exports = refresh = wiki.refresh = ->
   pageHandler.get
     whenGotten: whenGotten
     whenNotGotten: createPage
+    # whenNotGotten: createGhostPage
     pageInformation: pageInformation
 

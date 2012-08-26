@@ -650,6 +650,18 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       var id;
       id = $(this).attr('data-id');
       return $(".action[data-id=" + id + "]").toggleClass('target');
+    }).delegate('button.create', 'click', function(e) {
+      var $page, page;
+      $page = $(e.target).parents('.page:first');
+      $page.removeClass('ghost');
+      page = $page.data('data');
+      page.story = [];
+      pageHandler.put($page, {
+        type: 'create',
+        id: page.id,
+        item: page
+      });
+      return wiki.log("create", title);
     });
     $(".provider input").click(function() {
       $("footer input:first").val($(this).attr('data-provider'));
@@ -1332,6 +1344,12 @@ require.define("/lib/plugin.coffee", function (require, module, exports, __dirna
           return wiki.dialog(item.text, this);
         });
       }
+    },
+    future: {
+      emit: function(div, item) {
+        return div.append("<p>" + item.text + "<br><button class=\"create\">create</button>");
+      },
+      bind: function(div, item) {}
     }
   };
 
@@ -1445,7 +1463,7 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
   };
 
   module.exports = refresh = wiki.refresh = function() {
-    var buildPage, createPage, pageElement, pageInformation, registerNeighbors, rev, slug, whenGotten, _ref;
+    var buildPage, createGhostPage, createPage, pageElement, pageInformation, registerNeighbors, rev, slug, whenGotten, _ref;
     pageElement = $(this);
     _ref = pageElement.attr('id').split('_rev'), slug = _ref[0], rev = _ref[1];
     pageInformation = {
@@ -1507,7 +1525,8 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
         state.setUrl();
       }
       initDragging(pageElement);
-      return initAddButton(pageElement);
+      initAddButton(pageElement);
+      return pageElement;
     };
     createPage = function() {
       var title;
@@ -1523,6 +1542,22 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
       return buildPage({
         title: title
       });
+    };
+    createGhostPage = function() {
+      var page, title;
+      title = $("a[href=\"/" + slug + ".html\"]:last").text() || slug;
+      page = {
+        'title': title,
+        'story': [
+          {
+            'id': util.randomBytes(8),
+            'type': 'future',
+            'text': 'We could not find this page.',
+            'title': title
+          }
+        ]
+      };
+      return buildPage(page).addClass('ghost');
     };
     registerNeighbors = function(data, site) {
       var action, item, _i, _j, _len, _len2, _ref2, _ref3, _results;

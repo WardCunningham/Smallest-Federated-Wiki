@@ -271,6 +271,14 @@ $ ->
       id = $(this).attr('data-id')
       $(".action[data-id=#{id}]").toggleClass('target')
 
+    .delegate 'button.create', 'click', (e) ->
+      $page = $(e.target).parents('.page:first')
+      $page.removeClass 'ghost'
+      page = $page.data('data')
+      page.story = []
+      pageHandler.put $page, {type: 'create', id: page.id, item: page}
+      wiki.log "create", title
+
   $(".provider input").click ->
     $("footer input:first").val $(this).attr('data-provider')
     $("footer form").submit()

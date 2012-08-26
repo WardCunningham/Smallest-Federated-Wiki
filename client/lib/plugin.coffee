@@ -58,3 +58,6 @@ window.plugins =
     bind: (div, item) ->
       div.dblclick -> wiki.textEditor div, item
       div.find('img').dblclick -> wiki.dialog item.text, this
+  future:
+    emit: (div, item) -> div.append """<p>#{item.text}<br><button class="create">create</button>"""
+    bind: (div, item) ->
