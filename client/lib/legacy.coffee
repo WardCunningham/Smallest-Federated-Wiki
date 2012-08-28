@@ -266,6 +266,7 @@ $ ->
     .delegate '.action', 'hover', ->
       id = $(this).attr('data-id')
       $("[data-id=#{id}]").toggleClass('target')
+      $('.main').trigger('rev')
 
     .delegate '.item', 'hover', ->
       id = $(this).attr('data-id')
@@ -278,6 +279,15 @@ $ ->
       page.story = []
       pageHandler.put $page, {type: 'create', id: page.id, item: page}
       wiki.log "create", title
+
+    .delegate '.ghost', 'rev', (e) ->
+      wiki.log 'rev', e
+      $page = $(e.target).parents('.page:first')
+      $item = $page.find('.target')
+      position = $item.offset().top + $page.scrollTop() - $page.height()/2
+      wiki.log 'scroll', $page, $item, position
+      $page.stop().animate {scrollTop: postion}, 'slow'
+
 
   $(".provider input").click ->
     $("footer input:first").val $(this).attr('data-provider')

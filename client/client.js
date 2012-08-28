@@ -645,7 +645,8 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
     }).delegate('.action', 'hover', function() {
       var id;
       id = $(this).attr('data-id');
-      return $("[data-id=" + id + "]").toggleClass('target');
+      $("[data-id=" + id + "]").toggleClass('target');
+      return $('.main').trigger('rev');
     }).delegate('.item', 'hover', function() {
       var id;
       id = $(this).attr('data-id');
@@ -662,6 +663,16 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
         item: page
       });
       return wiki.log("create", title);
+    }).delegate('.ghost', 'rev', function(e) {
+      var $item, $page, position;
+      wiki.log('rev', e);
+      $page = $(e.target).parents('.page:first');
+      $item = $page.find('.target');
+      position = $item.offset().top + $page.scrollTop() - $page.height() / 2;
+      wiki.log('scroll', $page, $item, position);
+      return $page.stop().animate({
+        scrollTop: postion
+      }, 'slow');
     });
     $(".provider input").click(function() {
       $("footer input:first").val($(this).attr('data-provider'));
