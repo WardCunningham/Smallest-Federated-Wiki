@@ -77,7 +77,7 @@
         var result, row, table;
         table = attach('Tier3Polynomials');
         row = _.find(table, function(row) {
-          return row.SubType === subtype && asValue(row.Min) <= v && asValue(row.Max) > v;
+          return ("" + row.SubType + " Scaled") === subtype && asValue(row.Min) <= v && asValue(row.Max) > v;
         });
         if (row == null) {
           throw new Error("can't find applicable polynomial for " + v + " in '" + subtype + "'");
@@ -213,7 +213,7 @@
         return dispatch(list, allocated, lines, report, function(report) {
           var table, text;
           text = report.join("\n");
-          table = $('<table style="width:100%; background:#eee; padding:.8em;"/>').html(text);
+          table = $('<table style="width:100%; background:#eee; padding:.8em; margin-bottom:5px;"/>').html(text);
           div.append(table);
           return div.dblclick(function() {
             return wiki.textEditor(div, item);

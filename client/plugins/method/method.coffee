@@ -53,7 +53,7 @@ window.plugins.method =
     polynomial = (v, subtype) ->
       table = attach 'Tier3Polynomials'
       row = _.find table, (row) ->
-        row.SubType == subtype and asValue(row.Min) <= v and asValue(row.Max) > v
+        "#{row.SubType} Scaled" == subtype and asValue(row.Min) <= v and asValue(row.Max) > v
       throw new Error "can't find applicable polynomial for #{v} in '#{subtype}'" unless row?
       result  = asValue(row.C0)
       result += asValue(row.C1) * v
