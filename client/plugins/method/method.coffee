@@ -158,7 +158,7 @@ window.plugins.method =
 
       dispatch list, allocated, lines, report, (report) ->
         text = report.join "\n"
-        table = $('<table style="width:100%; background:#eee; padding:.8em;"/>').html text
+        table = $('<table style="width:100%; background:#eee; padding:.8em; margin-bottom:5px;"/>').html text
         div.append table
         div.dblclick -> wiki.textEditor div, item
 
