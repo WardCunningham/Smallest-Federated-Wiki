@@ -783,7 +783,7 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
   };
 
   recursiveGet = function(_arg) {
-    var localContext, localPage, pageInformation, pageUrl, resource, rev, site, slug, whenGotten, whenNotGotten;
+    var localContext, localPage, pageInformation, rev, site, slug, url, whenGotten, whenNotGotten;
     pageInformation = _arg.pageInformation, whenGotten = _arg.whenGotten, whenNotGotten = _arg.whenNotGotten, localContext = _arg.localContext;
     slug = pageInformation.slug, rev = pageInformation.rev, site = pageInformation.site;
     if (site) {
@@ -801,19 +801,18 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
         }
       } else {
         if (site === 'origin') {
-          resource = slug;
+          url = "/" + slug + ".json";
         } else {
-          resource = "remote/" + site + "/" + slug;
+          url = "http://" + site + "/" + slug + ".json";
         }
       }
     } else {
-      resource = slug;
+      url = "/" + slug + ".json";
     }
-    pageUrl = "/" + resource + ".json?random=" + (util.randomBytes(4));
     return $.ajax({
       type: 'GET',
       dataType: 'json',
-      url: pageUrl,
+      url: url + ("?random=" + (util.randomBytes(4))),
       success: function(page) {
         if (rev) page = revision.create(rev, page);
         return whenGotten(page, site);

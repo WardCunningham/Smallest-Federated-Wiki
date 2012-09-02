@@ -27,18 +27,16 @@ recursiveGet = ({pageInformation, whenGotten, whenNotGotten, localContext}) ->
       else
     else
       if site == 'origin'
-        resource = slug
+        url = "/#{slug}.json"
       else
-        resource = "remote/#{site}/#{slug}"
+        url = "http://#{site}/#{slug}.json"
   else
-    resource = slug
-
-  pageUrl = "/#{resource}.json?random=#{util.randomBytes(4)}"
+    url = "/#{slug}.json"
 
   $.ajax
     type: 'GET'
     dataType: 'json'
-    url: pageUrl
+    url: url + "?random=#{util.randomBytes(4)}"
     success: (page) ->
       page = revision.create rev, page if rev
       return whenGotten(page,site)
