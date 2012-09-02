@@ -84,18 +84,23 @@ window.plugins.factory =
             reader.readAsText(file)
           else
             punt
+              number: 1
               name: file.fileName
               type: file.type
         else
           punt
+            number: 2
             types: dropEvent.originalEvent.dataTransfer.types
 
       dropEvent.preventDefault()
       if (dt = dropEvent.originalEvent.dataTransfer)?
         if dt.types? and ('text/uri-list' in dt.types or 'text/x-moz-url' in dt.types)
           url = dt.getData 'URL'
-          if found = url.match /https?:\/\/([a-z0-9\:\.\-]+)\/.*?view\/([a-z0-9-]+)$/
-            [ignore, item.site, item.slug] = found
+          if found = url.match /^http:\/\/([a-zA-Z0-9:.-]+)(\/([a-zA-Z0-9:.-]+)\/([a-z0-9-]+(_rev\d+)?))+$/
+            wiki.log 'drop url', found
+            [ignore, origin, ignore, item.site, item.slug, ignore] = found
+            if $.inArray(['view','local','origin'],item.site) != -1
+              item.site = origin
             $.getJSON "http://#{item.site}/#{item.slug}.json", (remote) ->
               wiki.log 'remote', remote
               item.type = 'reference'
@@ -104,15 +109,18 @@ window.plugins.factory =
               syncEditAction()
           else
             punt
+              number: 4
               url: url
               types: dt.types
         else if 'Files' in dt.types
           readFile dt.files[0]
         else
           punt
+            number: 5
             types: dt.types
       else
         punt
+          number: 6
           trouble: "no data transfer object"
 
 # from http://www.bennadel.com/blog/1504-Ask-Ben-Parsing-CSV-Strings-With-Javascript-Exec-Regular-Expression-Command.htm

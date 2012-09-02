@@ -82,7 +82,7 @@
         return evt.preventDefault();
       });
       return div.bind("drop", function(dropEvent) {
-        var dt, found, ignore, punt, readFile, url;
+        var dt, found, ignore, origin, punt, readFile, url;
         punt = function(data) {
           wiki.log('punt', dropEvent);
           item.type = 'data';
@@ -121,12 +121,14 @@
               return reader.readAsText(file);
             } else {
               return punt({
+                number: 1,
                 name: file.fileName,
                 type: file.type
               });
             }
           } else {
             return punt({
+              number: 2,
               types: dropEvent.originalEvent.dataTransfer.types
             });
           }
@@ -135,8 +137,12 @@
         if ((dt = dropEvent.originalEvent.dataTransfer) != null) {
           if ((dt.types != null) && (__indexOf.call(dt.types, 'text/uri-list') >= 0 || __indexOf.call(dt.types, 'text/x-moz-url') >= 0)) {
             url = dt.getData('URL');
-            if (found = url.match(/https?:\/\/([a-z0-9\:\.\-]+)\/.*?view\/([a-z0-9-]+)$/)) {
-              ignore = found[0], item.site = found[1], item.slug = found[2];
+            if (found = url.match(/^http:\/\/([a-zA-Z0-9:.-]+)(\/([a-zA-Z0-9:.-]+)\/([a-z0-9-]+(_rev\d+)?))+$/)) {
+              wiki.log('drop url', found);
+              ignore = found[0], origin = found[1], ignore = found[2], item.site = found[3], item.slug = found[4], ignore = found[5];
+              if ($.inArray(['view', 'local', 'origin'], item.site) !== -1) {
+                item.site = origin;
+              }
               return $.getJSON("http://" + item.site + "/" + item.slug + ".json", function(remote) {
                 wiki.log('remote', remote);
                 item.type = 'reference';
@@ -146,6 +152,7 @@
               });
             } else {
               return punt({
+                number: 4,
                 url: url,
                 types: dt.types
               });
@@ -154,11 +161,13 @@
             return readFile(dt.files[0]);
           } else {
             return punt({
+              number: 5,
               types: dt.types
             });
           }
         } else {
           return punt({
+            number: 6,
             trouble: "no data transfer object"
           });
         }
