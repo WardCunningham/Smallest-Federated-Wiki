@@ -105,7 +105,12 @@ window.plugins.factory =
               wiki.log 'remote', remote
               item.type = 'reference'
               item.title = remote.title || item.slug
-              item.text = remote.synopsis || remote.story[0].text || remote.story[1].text || 'A recently found federated wiki site.'
+              item.text = remote.synopsis
+              p1 = remote.story[0]
+              p2 = remote.story[1]
+              item.text ||= p1.text if p1.type == 'paragraph'
+              item.text ||= p2.text if p2.type == 'paragraph'
+              item.text ||= p1.text || p2.text || 'A recently found page.'
               syncEditAction()
           else
             punt
