@@ -140,7 +140,7 @@
             if (found = url.match(/^http:\/\/([a-zA-Z0-9:.-]+)(\/([a-zA-Z0-9:.-]+)\/([a-z0-9-]+(_rev\d+)?))+$/)) {
               wiki.log('drop url', found);
               ignore = found[0], origin = found[1], ignore = found[2], item.site = found[3], item.slug = found[4], ignore = found[5];
-              if ($.inArray(['view', 'local', 'origin'], item.site) !== -1) {
+              if ($.inArray(item.site, ['view', 'local', 'origin']) >= 0) {
                 item.site = origin;
               }
               return $.getJSON("http://" + item.site + "/" + item.slug + ".json", function(remote) {

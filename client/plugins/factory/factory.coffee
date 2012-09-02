@@ -99,7 +99,7 @@ window.plugins.factory =
           if found = url.match /^http:\/\/([a-zA-Z0-9:.-]+)(\/([a-zA-Z0-9:.-]+)\/([a-z0-9-]+(_rev\d+)?))+$/
             wiki.log 'drop url', found
             [ignore, origin, ignore, item.site, item.slug, ignore] = found
-            if $.inArray(['view','local','origin'],item.site) != -1
+            if $.inArray(item.site,['view','local','origin']) >= 0
               item.site = origin
             $.getJSON "http://#{item.site}/#{item.slug}.json", (remote) ->
               wiki.log 'remote', remote
