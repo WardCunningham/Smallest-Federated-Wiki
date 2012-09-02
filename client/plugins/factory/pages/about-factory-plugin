@@ -1,0 +1,384 @@
+{
+  "title": "About Factory Plugin",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "8b805420f35e4382",
+      "text": "The Factory plugin manufactures a new plugin which then replaces the factory. A variety of user interactions trigger the manufacturing of a new plugin. "
+    },
+    {
+      "type": "factory",
+      "id": "44272ea1f9d95f6f"
+    },
+    {
+      "type": "paragraph",
+      "id": "a3f7496a126e2872",
+      "text": "Use the [+] button to add new factories to a page. This button appears at the bottom of every page, tucked into the lower-right corner of the space allocated to the journal."
+    },
+    {
+      "type": "paragraph",
+      "id": "ab74b8145c4303e4",
+      "text": "Use an un-triggered factory as an entry field suggesting to users where a page can be improved with additional information."
+    },
+    {
+      "type": "paragraph",
+      "id": "079be98abad601d3",
+      "text": "<h3>Interactions"
+    },
+    {
+      "type": "paragraph",
+      "id": "97e20fcb7d214a60",
+      "text": "User initiated interactions determine the type of item a factory becomes."
+    },
+    {
+      "type": "paragraph",
+      "id": "8e0ad36ff8c0ab5c",
+      "text": "<b>Double-Click</b> to create a normal paragraph and open the Text Editor to provide the text of the paragraph."
+    },
+    {
+      "type": "paragraph",
+      "id": "7a83f9411f33eda3",
+      "text": "<b>Drop a Text File</b> to create a normal paragraph containing the text of the file."
+    },
+    {
+      "type": "paragraph",
+      "id": "2206a3efc9e55e03",
+      "text": "<b>Drop an Image File</b> to create an image item.  The caption of the item will read \"uploaded image\". Double click the caption to revise it."
+    },
+    {
+      "type": "paragraph",
+      "id": "df48b1a581bf60e0",
+      "text": "<b>Drop a .CSV File</b> to create a data item containing the rows and columns of the .csv converted to an array of key-value objects."
+    },
+    {
+      "type": "paragraph",
+      "id": "3c4ca6503db48295",
+      "text": "<b>Drop a Weblocation File</b> to create a reference to a federated wiki page on another site. The reference will choose the last wiki page when a reference refers to multiple wiki pages."
+    },
+    {
+      "type": "paragraph",
+      "id": "8663501e2c0be714",
+      "text": "<b>Drop a Weblocation</b> from another browser tab to create a reference without first creating a file."
+    },
+    {
+      "type": "paragraph",
+      "id": "472c54a13e18f1ff",
+      "text": "Be aware that every file type and every browser on every system will present a somewhat different signature to the factory plugin. When the factory can't make sense of the signature it makes a data item with the caption <b>unexpected item</b> which will hold some identifying information about the dropped content."
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "id": "d86bdc2efe70b5bb",
+      "item": {
+        "title": "About Factory Plugin"
+      },
+      "date": 1346542764105
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "8b805420f35e4382"
+      },
+      "id": "8b805420f35e4382",
+      "type": "add",
+      "date": 1346542817171
+    },
+    {
+      "type": "edit",
+      "id": "8b805420f35e4382",
+      "item": {
+        "type": "paragraph",
+        "id": "8b805420f35e4382",
+        "text": "The Factory plugin manufactures a new plugin which then replaces the factory. A variety of user interactions trigger the manufacturing of a new plugin. "
+      },
+      "date": 1346542914328
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "44272ea1f9d95f6f"
+      },
+      "id": "44272ea1f9d95f6f",
+      "type": "add",
+      "after": "8b805420f35e4382",
+      "date": 1346542917678
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "a3f7496a126e2872"
+      },
+      "id": "a3f7496a126e2872",
+      "type": "add",
+      "after": "44272ea1f9d95f6f",
+      "date": 1346542921647
+    },
+    {
+      "type": "edit",
+      "id": "a3f7496a126e2872",
+      "item": {
+        "type": "paragraph",
+        "id": "a3f7496a126e2872",
+        "text": "Use the [+] button to add new factories to a page. This button appears at the bottom of every page, tucked into the lower-right corner of the space allocated to the journal."
+      },
+      "date": 1346543043081
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "ab74b8145c4303e4",
+        "text": ""
+      },
+      "id": "ab74b8145c4303e4",
+      "type": "add",
+      "after": "a3f7496a126e2872",
+      "date": 1346543043592
+    },
+    {
+      "type": "edit",
+      "id": "ab74b8145c4303e4",
+      "item": {
+        "type": "paragraph",
+        "id": "ab74b8145c4303e4",
+        "text": "Use an un-triggered factory as an entry field suggesting to users where a page can be improved with additional information."
+      },
+      "date": 1346543216024
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "079be98abad601d3",
+        "text": ""
+      },
+      "id": "079be98abad601d3",
+      "type": "add",
+      "after": "ab74b8145c4303e4",
+      "date": 1346543216531
+    },
+    {
+      "type": "edit",
+      "id": "079be98abad601d3",
+      "item": {
+        "type": "paragraph",
+        "id": "079be98abad601d3",
+        "text": "<h3>Interactions"
+      },
+      "date": 1346543316876
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "8e0ad36ff8c0ab5c",
+        "text": ""
+      },
+      "id": "8e0ad36ff8c0ab5c",
+      "type": "add",
+      "after": "079be98abad601d3",
+      "date": 1346543317395
+    },
+    {
+      "type": "edit",
+      "id": "8e0ad36ff8c0ab5c",
+      "item": {
+        "type": "paragraph",
+        "id": "8e0ad36ff8c0ab5c",
+        "text": "<b>Double-Click</b> a factory to create a normal paragraph and open the Text Editor to provide the text of the paragraph."
+      },
+      "date": 1346543401926
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "7a83f9411f33eda3",
+        "text": ""
+      },
+      "id": "7a83f9411f33eda3",
+      "type": "add",
+      "after": "8e0ad36ff8c0ab5c",
+      "date": 1346543402431
+    },
+    {
+      "type": "edit",
+      "id": "7a83f9411f33eda3",
+      "item": {
+        "type": "paragraph",
+        "id": "7a83f9411f33eda3",
+        "text": "<b>Drop a Text File</b>"
+      },
+      "date": 1346543447614
+    },
+    {
+      "type": "edit",
+      "id": "8e0ad36ff8c0ab5c",
+      "item": {
+        "type": "paragraph",
+        "id": "8e0ad36ff8c0ab5c",
+        "text": "<b>Double-Click</b> to create a normal paragraph and open the Text Editor to provide the text of the paragraph."
+      },
+      "date": 1346543454782
+    },
+    {
+      "type": "edit",
+      "id": "7a83f9411f33eda3",
+      "item": {
+        "type": "paragraph",
+        "id": "7a83f9411f33eda3",
+        "text": "<b>Drop a Text File</b> to create a normal paragraph containing the text of the file."
+      },
+      "date": 1346543478836
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "97e20fcb7d214a60",
+        "text": ""
+      },
+      "id": "97e20fcb7d214a60",
+      "type": "add",
+      "after": "079be98abad601d3",
+      "date": 1346543495702
+    },
+    {
+      "type": "edit",
+      "id": "97e20fcb7d214a60",
+      "item": {
+        "type": "paragraph",
+        "id": "97e20fcb7d214a60",
+        "text": "User initiated interactions determine the type of item a factory becomes."
+      },
+      "date": 1346543534237
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "2206a3efc9e55e03",
+        "text": ""
+      },
+      "id": "2206a3efc9e55e03",
+      "type": "add",
+      "after": "7a83f9411f33eda3",
+      "date": 1346543553759
+    },
+    {
+      "type": "edit",
+      "id": "2206a3efc9e55e03",
+      "item": {
+        "type": "paragraph",
+        "id": "2206a3efc9e55e03",
+        "text": "<b>Drop an Image File</b> to create an image item.  The caption of the item will read \"uploaded image\". Double click the caption to revise it."
+      },
+      "date": 1346543653758
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "df48b1a581bf60e0",
+        "text": ""
+      },
+      "id": "df48b1a581bf60e0",
+      "type": "add",
+      "after": "2206a3efc9e55e03",
+      "date": 1346543654270
+    },
+    {
+      "type": "edit",
+      "id": "df48b1a581bf60e0",
+      "item": {
+        "type": "paragraph",
+        "id": "df48b1a581bf60e0",
+        "text": "<b>Drop a .CSV File</b> to create a data item containing the rows and columns of the .csv converted to an array of key-value objects."
+      },
+      "date": 1346543761173
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "d893adff934b264e",
+        "text": ""
+      },
+      "id": "d893adff934b264e",
+      "type": "add",
+      "after": "df48b1a581bf60e0",
+      "date": 1346543761680
+    },
+    {
+      "type": "remove",
+      "id": "d893adff934b264e",
+      "date": 1346543821051
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "3c4ca6503db48295",
+        "text": ""
+      },
+      "id": "3c4ca6503db48295",
+      "type": "add",
+      "after": "df48b1a581bf60e0",
+      "date": 1346543823268
+    },
+    {
+      "type": "edit",
+      "id": "3c4ca6503db48295",
+      "item": {
+        "type": "paragraph",
+        "id": "3c4ca6503db48295",
+        "text": "<b>Drop a Weblocation File</b> to create a reference to a federated wiki page on another site. The reference will choose the last wiki page when a reference refers to multiple wiki pages."
+      },
+      "date": 1346543922487
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "8663501e2c0be714",
+        "text": ""
+      },
+      "id": "8663501e2c0be714",
+      "type": "add",
+      "after": "3c4ca6503db48295",
+      "date": 1346543937270
+    },
+    {
+      "type": "edit",
+      "id": "8663501e2c0be714",
+      "item": {
+        "type": "paragraph",
+        "id": "8663501e2c0be714",
+        "text": "<b>Drop a Weblocation</b> from another browser tab to create a reference without first creating a file."
+      },
+      "date": 1346543991229
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "472c54a13e18f1ff",
+        "text": ""
+      },
+      "id": "472c54a13e18f1ff",
+      "type": "add",
+      "after": "8663501e2c0be714",
+      "date": 1346544012460
+    },
+    {
+      "type": "edit",
+      "id": "472c54a13e18f1ff",
+      "item": {
+        "type": "paragraph",
+        "id": "472c54a13e18f1ff",
+        "text": "Be aware that every file type and every browser on every system will present a somewhat different signature to the factory plugin. When the factory can't make sense of the signature it makes a data item with the caption <b>unexpected data</b> which will hold some identifying information about the dropped content."
+      },
+      "date": 1346544247813
+    },
+    {
+      "type": "edit",
+      "id": "472c54a13e18f1ff",
+      "item": {
+        "type": "paragraph",
+        "id": "472c54a13e18f1ff",
+        "text": "Be aware that every file type and every browser on every system will present a somewhat different signature to the factory plugin. When the factory can't make sense of the signature it makes a data item with the caption <b>unexpected item</b> which will hold some identifying information about the dropped content."
+      },
+      "date": 1346544308596
+    }
+  ]
+}

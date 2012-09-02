@@ -138,15 +138,15 @@ class Controller < Sinatra::Base
     haml :view, :locals => {:pages => [ {:id => identity['root']} ]}
   end
 
-  get %r{^/plugins/factory(/factory)?.js$} do
-    catalog = Dir.glob(File.join(APP_ROOT, "client/plugins/*/factory.json")).collect do |info|
-      begin
-        JSON.parse(File.read(info))
-      rescue
-      end
-    end.reject {|info| info.nil?}
-    "window.catalog = #{JSON.generate(catalog)};" + File.read(File.join(APP_ROOT, "client/plugins/meta-factory.js"))
-  end
+  # get %r{^/plugins/factory(/factory)?.js$} do
+  #   catalog = Dir.glob(File.join(APP_ROOT, "client/plugins/*/factory.json")).collect do |info|
+  #     begin
+  #       JSON.parse(File.read(info))
+  #     rescue
+  #     end
+  #   end.reject {|info| info.nil?}
+  #   "window.catalog = #{JSON.generate(catalog)};" + File.read(File.join(APP_ROOT, "client/plugins/meta-factory.js"))
+  # end
 
   get %r{^/data/([\w -]+)$} do |search|
     content_type 'application/json'
@@ -197,6 +197,19 @@ class Controller < Sinatra::Base
     pages = Store.annotated_pages farm_page.directory
     sitemap = pages.collect {|p| {"slug" => p['name'], "title" => p['title'], "date" => p['updated_at'].to_i*1000}}
     JSON.pretty_generate sitemap
+  end
+
+  get '/system/factories.json' do
+    content_type 'application/json'
+    cross_origin
+    # return "[]"
+    factories = Dir.glob(File.join(APP_ROOT, "client/plugins/*/factory.json")).collect do |info|
+      begin
+        JSON.parse(File.read(info))
+      rescue
+      end
+    end.reject {|info| info.nil?}
+    JSON.pretty_generate factories
   end
 
   get '/recent-changes.json' do
