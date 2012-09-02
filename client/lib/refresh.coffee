@@ -65,7 +65,7 @@ emitHeader = (pageElement, page) ->
   site = $(pageElement).data('site')
   if site? and site != 'local' and site != 'origin' and site != 'view'
     $(pageElement)
-      .append "<h1><a href=\"//#{site}\"><img src = \"/remote/#{site}/favicon.png\" height = \"32px\"></a> #{page.title}</h1>"
+      .append "<h1><a href=\"//#{site}\"><img src = \"http://#{site}/favicon.png\" height = \"32px\"></a> #{page.title}</h1>"
   else
     $(pageElement)
       .append(

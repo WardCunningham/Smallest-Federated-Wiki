@@ -1268,7 +1268,7 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
     var date, rev, site;
     site = $(pageElement).data('site');
     if ((site != null) && site !== 'local' && site !== 'origin' && site !== 'view') {
-      $(pageElement).append("<h1><a href=\"//" + site + "\"><img src = \"/remote/" + site + "/favicon.png\" height = \"32px\"></a> " + page.title + "</h1>");
+      $(pageElement).append("<h1><a href=\"//" + site + "\"><img src = \"http://" + site + "/favicon.png\" height = \"32px\"></a> " + page.title + "</h1>");
     } else {
       $(pageElement).append($("<h1 />").append($("<a />").attr('href', '/').append($("<img>").error(function(e) {
         return plugin.get('favicon', function(favicon) {
