@@ -160,6 +160,10 @@ window.plugins.method =
         text = report.join "\n"
         table = $('<table style="width:100%; background:#eee; padding:.8em; margin-bottom:5px;"/>').html text
         div.append table
-        div.dblclick -> wiki.textEditor div, item
+        div.dblclick (e) ->
+          if e.shiftKey
+            wiki.dialog "JSON for Method plugin",  $('<pre/>').text(JSON.stringify(item, null, 2))
+          else
+            wiki.textEditor div, item
 
     calculate item
