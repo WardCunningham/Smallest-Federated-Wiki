@@ -819,10 +819,10 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
       },
       error: function(xhr, type, msg) {
         var report;
-        if (xhr.status !== 404) {
+        if ((xhr.status !== 404) && (xhr.status !== 0)) {
           wiki.log('pageHandler.get error', xhr, xhr.status, type, msg);
           report = {
-            'title': msg,
+            'title': "" + xhr.status + " " + msg,
             'story': [
               {
                 'type': 'paragraph',
