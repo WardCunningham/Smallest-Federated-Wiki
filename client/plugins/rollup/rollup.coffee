@@ -51,5 +51,5 @@ window.plugins.rollup =
         continue if col == 'Material'
         value = asValue row[col]
         title = "#{row.Material}\n#{col}\n#{value.toFixed 2}"
-        $row.append """<td class="score" title="#{title}">#{value.toFixed 0}</td>"""
+        $row.append """<td class="score" title="#{title}" data-thumb="#{col}">#{value.toFixed 0}</td>"""
       recalculate $row, slug

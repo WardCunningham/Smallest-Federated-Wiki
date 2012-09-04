@@ -288,6 +288,8 @@ $ ->
       wiki.log 'scroll', $page, $item, position
       $page.stop().animate {scrollTop: postion}, 'slow'
 
+    .delegate '.score', 'hover', (e) ->
+      $('.main').trigger 'thumb', $(e.target).data('thumb')
 
   $(".provider input").click ->
     $("footer input:first").val $(this).attr('data-provider')

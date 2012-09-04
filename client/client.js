@@ -673,6 +673,8 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       return $page.stop().animate({
         scrollTop: postion
       }, 'slow');
+    }).delegate('.score', 'hover', function(e) {
+      return $('.main').trigger('thumb', $(e.target).data('thumb'));
     });
     $(".provider input").click(function() {
       $("footer input:first").val($(this).attr('data-provider'));
