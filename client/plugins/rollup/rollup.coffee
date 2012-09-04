@@ -21,6 +21,10 @@ window.plugins.rollup =
         throw new Error "can't find dataset with caption #{search}"
 
     reference = attach "Materials Summary"
+    materials ={}
+    for row in reference.data
+      $.getJSON "/#{wiki.asSlug row.Material}.json", (data) ->
+        materials[row.Material] = data
 
     div.append """
       <style>

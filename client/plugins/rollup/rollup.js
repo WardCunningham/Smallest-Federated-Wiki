@@ -4,7 +4,7 @@
   window.plugins.rollup = {
     emit: function(div, item) {},
     bind: function(div, item) {
-      var $row, $table, asValue, attach, col, label, reference, row, rows, slug, title, value, _i, _len, _results;
+      var $row, $table, asValue, attach, col, label, materials, reference, row, rows, slug, title, value, _i, _j, _len, _len1, _ref, _results;
       div.dblclick(function() {
         return wiki.textEditor(div, item);
       });
@@ -39,6 +39,14 @@
         }
       };
       reference = attach("Materials Summary");
+      materials = {};
+      _ref = reference.data;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        row = _ref[_i];
+        $.getJSON("/" + (wiki.asSlug(row.Material)) + ".json", function(data) {
+          return materials[row.Material] = data;
+        });
+      }
       div.append("<style>\n  td.material {overflow:hidden;}\n  td.score {text-align:right; width:25px}\n</style>");
       div.append(($table = $("<table/>")));
       wiki.log('rollup', reference, reference.data, $table);
@@ -46,17 +54,17 @@
         return asValue(row['Total Score']);
       });
       _results = [];
-      for (_i = 0, _len = rows.length; _i < _len; _i++) {
-        row = rows[_i];
+      for (_j = 0, _len1 = rows.length; _j < _len1; _j++) {
+        row = rows[_j];
         label = wiki.resolveLinks("[[" + row.Material + "]]");
         slug = wiki.asSlug(row.Material);
         $table.append(($row = $("<tr class=\"" + slug + "\">\n  <td class=\"material\">" + label + "</td>")));
         _results.push((function() {
-          var _j, _len1, _ref, _results1;
-          _ref = reference.columns;
+          var _k, _len2, _ref1, _results1;
+          _ref1 = reference.columns;
           _results1 = [];
-          for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
-            col = _ref[_j];
+          for (_k = 0, _len2 = _ref1.length; _k < _len2; _k++) {
+            col = _ref1[_k];
             if (col === 'Material') {
               continue;
             }
