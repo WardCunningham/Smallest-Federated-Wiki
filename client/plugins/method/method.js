@@ -112,12 +112,11 @@
         return " <span title=\"" + text + "\">*</span>";
       };
       calculate = function(item) {
-        var allocated, dispatch, lines, list, report;
+        var dispatch, lines, list, report;
         list = [];
-        allocated = 0;
         lines = item.text.split("\n");
         report = [];
-        dispatch = function(list, allocated, lines, report, done) {
+        dispatch = function(list, lines, report, done) {
           var apply, args, change, color, comment, count, hours, hover, line, next_dispatch, previous, result, value, _ref, _ref1;
           color = '#eee';
           value = comment = hover = null;
@@ -137,7 +136,7 @@
               line = "" + (line.substr(0, 20)) + " ... " + (line.substr(-15));
             }
             report.push("<tr style=\"background:" + color + ";\">\n  <td style=\"width: 20%; text-align: right;\" title=\"" + (hover || '') + "\">\n    <b>" + (round(value)) + "</b>\n  <td title=\"" + long + "\">" + line + (annotate(comment)));
-            return dispatch(list, allocated, lines, report, done);
+            return dispatch(list, lines, report, done);
           };
           apply = function(name, list, label) {
             color = '#ddd';
@@ -210,7 +209,7 @@
           }
           return next_dispatch();
         };
-        return dispatch(list, allocated, lines, report, function(report) {
+        return dispatch(list, lines, report, function(report) {
           var table, text;
           text = report.join("\n");
           table = $('<table style="width:100%; background:#eee; padding:.8em; margin-bottom:5px;"/>').html(text);

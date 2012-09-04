@@ -80,11 +80,10 @@ window.plugins.method =
 
     calculate = (item) ->
       list = []
-      allocated = 0
       lines = item.text.split "\n"
       report = []
 
-      dispatch = (list, allocated, lines, report, done) ->
+      dispatch = (list, lines, report, done) ->
         color = '#eee'
         value = comment = hover = null
         hours = ''
@@ -103,7 +102,7 @@ window.plugins.method =
                 <b>#{round value}</b>
               <td title="#{long}">#{line}#{annotate comment}
             """
-          dispatch list, allocated, lines, report, done
+          dispatch list, lines, report, done
 
         apply = (name, list, label) ->
           color = '#ddd'
@@ -156,7 +155,7 @@ window.plugins.method =
           comment = err.message
         return next_dispatch()
 
-      dispatch list, allocated, lines, report, (report) ->
+      dispatch list, lines, report, (report) ->
         text = report.join "\n"
         table = $('<table style="width:100%; background:#eee; padding:.8em; margin-bottom:5px;"/>').html text
         div.append table
