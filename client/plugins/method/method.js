@@ -224,6 +224,10 @@
         });
       };
       return calculate(item);
+    },
+    "eval": function(context, item, done) {
+      context.foo += 1;
+      return done(context);
     }
   };
 

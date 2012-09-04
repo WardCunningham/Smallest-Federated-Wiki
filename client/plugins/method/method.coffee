@@ -166,3 +166,7 @@ window.plugins.method =
             wiki.textEditor div, item
 
     calculate item
+
+  eval: (context, item, done) ->
+    context.foo += 1
+    done context

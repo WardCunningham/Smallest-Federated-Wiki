@@ -4,7 +4,7 @@
   window.plugins.rollup = {
     emit: function(div, item) {},
     bind: function(div, item) {
-      var $row, $table, asValue, attach, col, label, materials, reference, row, rows, slug, title, value, _i, _j, _len, _len1, _ref, _results;
+      var $row, $table, asValue, attach, col, context, label, recalculate, reference, row, rows, slug, title, value, _i, _j, _len, _len1, _ref, _results;
       div.dblclick(function() {
         return wiki.textEditor(div, item);
       });
@@ -39,41 +39,41 @@
         }
       };
       reference = attach("Materials Summary");
-      materials = {};
-      _ref = reference.data;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        row = _ref[_i];
-        $.getJSON("/" + (wiki.asSlug(row.Material)) + ".json", function(data) {
-          return materials[row.Material] = data;
+      context = {
+        foo: 0
+      };
+      recalculate = function($row, slug) {
+        return wiki.getPlugin('method', function(plugin) {
+          return $.getJSON("/" + slug + ".json", function(data) {
+            return plugin["eval"](context, item, function() {
+              return $row.find("td:first").append(" #" + context.foo);
+            });
+          });
         });
-      }
+      };
       div.append("<style>\n  td.material {overflow:hidden;}\n  td.score {text-align:right; width:25px}\n</style>");
       div.append(($table = $("<table/>")));
       wiki.log('rollup', reference, reference.data, $table);
       rows = _.sortBy(reference.data, function(row) {
-        return asValue(row['Total Score']);
+        return -asValue(row['Total Score']);
       });
       _results = [];
-      for (_j = 0, _len1 = rows.length; _j < _len1; _j++) {
-        row = rows[_j];
+      for (_i = 0, _len = rows.length; _i < _len; _i++) {
+        row = rows[_i];
         label = wiki.resolveLinks("[[" + row.Material + "]]");
         slug = wiki.asSlug(row.Material);
         $table.append(($row = $("<tr class=\"" + slug + "\">\n  <td class=\"material\">" + label + "</td>")));
-        _results.push((function() {
-          var _k, _len2, _ref1, _results1;
-          _ref1 = reference.columns;
-          _results1 = [];
-          for (_k = 0, _len2 = _ref1.length; _k < _len2; _k++) {
-            col = _ref1[_k];
-            if (col === 'Material') {
-              continue;
-            }
-            value = asValue(row[col]);
-            title = "" + row.Material + "\n" + col + "\n" + (value.toFixed(2));
-            _results1.push($row.append("<td class=\"score\" title=\"" + title + "\">" + (value.toFixed(0)) + "</td>"));
+        _ref = reference.columns;
+        for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
+          col = _ref[_j];
+          if (col === 'Material') {
+            continue;
           }
-          return _results1;
-        })());
+          value = asValue(row[col]);
+          title = "" + row.Material + "\n" + col + "\n" + (value.toFixed(2));
+          $row.append("<td class=\"score\" title=\"" + title + "\">" + (value.toFixed(0)) + "</td>");
+        }
+        _results.push(recalculate($row, slug));
       }
       return _results;
     }

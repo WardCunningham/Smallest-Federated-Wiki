@@ -21,10 +21,13 @@ window.plugins.rollup =
         throw new Error "can't find dataset with caption #{search}"
 
     reference = attach "Materials Summary"
-    materials ={}
-    for row in reference.data
-      $.getJSON "/#{wiki.asSlug row.Material}.json", (data) ->
-        materials[row.Material] = data
+    context = {foo: 0}
+
+    recalculate = ($row, slug) ->
+      wiki.getPlugin 'method', (plugin) ->
+        $.getJSON "/#{slug}.json", (data) ->
+          plugin.eval context, item, ->
+            $row.find("td:first").append(" ##{context.foo}")
 
     div.append """
       <style>
@@ -36,7 +39,7 @@ window.plugins.rollup =
     div.append ($table = $ """<table/>""")
     wiki.log 'rollup', reference, reference.data, $table
 
-    rows = _.sortBy reference.data, (row) -> asValue(row['Total Score'])
+    rows = _.sortBy reference.data, (row) -> -asValue(row['Total Score'])
     for row in rows
       label = wiki.resolveLinks "[[#{row.Material}]]"
       slug = wiki.asSlug row.Material
@@ -49,3 +52,4 @@ window.plugins.rollup =
         value = asValue row[col]
         title = "#{row.Material}\n#{col}\n#{value.toFixed 2}"
         $row.append """<td class="score" title="#{title}">#{value.toFixed 0}</td>"""
+      recalculate $row, slug
