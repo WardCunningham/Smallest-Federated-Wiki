@@ -429,6 +429,8 @@ require.define("/lib/util.coffee", function (require, module, exports, __dirname
     return name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase();
   };
 
+  wiki.asSlug = util.asSlug;
+
   util.emptyPage = function() {
     return {
       title: 'empty',

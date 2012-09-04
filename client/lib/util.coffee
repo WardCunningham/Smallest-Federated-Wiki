@@ -61,6 +61,8 @@ util.formatElapsedTime = (msSinceEpoch) ->
 util.asSlug = (name) ->
   name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase()
 
+wiki.asSlug = util.asSlug
+
 # DEFAULTS for required fields
 
 util.emptyPage = () ->
