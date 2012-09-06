@@ -4,10 +4,11 @@
   window.plugins.rollup = {
     emit: function(div, item) {},
     bind: function(div, item) {
-      var $row, $table, asValue, attach, col, context, label, recalculate, reference, row, rows, slug, title, value, _i, _j, _len, _len1, _ref, _results;
+      var $row, $table, asValue, attach, display, perform, recalculate, reference, row, rows, slug, _i, _len, _results;
       div.dblclick(function() {
         return wiki.textEditor(div, item);
       });
+      div.append("<style>\n  td.material {overflow:hidden;}\n  td.score {text-align:right; width:25px}\n</style>");
       asValue = function(obj) {
         if (obj == null) {
           return NaN;
@@ -39,19 +40,84 @@
         }
       };
       reference = attach("Materials Summary");
-      context = {
-        foo: 0
+      display = function($row, row, context) {
+        var col, color, k, label, now, old, title, v, _i, _len, _ref, _results;
+        _ref = reference.columns;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          col = _ref[_i];
+          if (col === 'Material') {
+            label = wiki.resolveLinks("[[" + row.Material + "]]");
+            if (context !== {}) {
+              title = ((function() {
+                var _results1;
+                _results1 = [];
+                for (k in context) {
+                  v = context[k];
+                  _results1.push("" + k + ": " + (asValue(v).toString().replace(/0000*\d$/, '')));
+                }
+                return _results1;
+              })()).join("\n");
+              _results.push($row.append("<td class=\"material\">" + label + " <span title=\"" + title + "\">✔</span></td>"));
+            } else {
+              _results.push($row.append("<td class=\"material\">" + label + "</td>"));
+            }
+          } else {
+            old = asValue(row[col]);
+            if ((now = context[col])) {
+              color = old.toFixed(4) === now.toFixed(4) ? 'green' : 'red';
+              title = "" + row.Material + "\n" + col + "\nold " + (old.toFixed(2)) + "\nnow " + (now.toFixed(2));
+              _results.push($row.append("<td class=\"score\" title=\"" + title + "\" data-thumb=\"" + col + "\" style=\"color:" + color + ";\">" + (old.toFixed(0)) + "</td>"));
+            } else {
+              title = "" + row.Material + "\n" + col + "\n" + (old.toFixed(2));
+              _results.push($row.append("<td class=\"score\" title=\"" + title + "\" data-thumb=\"" + col + "\">" + (old.toFixed(0)) + "</td>"));
+            }
+          }
+        }
+        return _results;
       };
-      recalculate = function($row, slug) {
+      perform = function($row, row, context, plugin, methods, done) {
+        if (methods.length > 0) {
+          return plugin["eval"](div, methods.shift(), context, function(output) {
+            var k, v;
+            wiki.log('output', ((function() {
+              var _results;
+              _results = [];
+              for (k in output) {
+                v = output[k];
+                _results.push("" + k + ": " + v);
+              }
+              return _results;
+            })()).join(", "));
+            _.extend(context, output);
+            wiki.log('context', ((function() {
+              var _results;
+              _results = [];
+              for (k in output) {
+                v = output[k];
+                _results.push("" + k + ": " + v);
+              }
+              return _results;
+            })()).join(", "));
+            return perform($row, row, context, plugin, methods, done);
+          });
+        } else {
+          return done($row, row, context);
+        }
+      };
+      recalculate = function($row, row, context, done) {
         return wiki.getPlugin('method', function(plugin) {
+          var slug;
+          slug = wiki.asSlug(row.Material);
           return $.getJSON("/" + slug + ".json", function(data) {
-            return plugin["eval"](context, item, function() {
-              return $row.find("td:first").append(" #" + context.foo);
+            var methods;
+            methods = _.filter(data.story, function(item) {
+              return item.type === 'method';
             });
+            return perform($row, row, context, plugin, methods, done);
           });
         });
       };
-      div.append("<style>\n  td.material {overflow:hidden;}\n  td.score {text-align:right; width:25px}\n</style>");
       div.append(($table = $("<table/>")));
       wiki.log('rollup', reference, reference.data, $table);
       rows = _.sortBy(reference.data, function(row) {
@@ -60,20 +126,16 @@
       _results = [];
       for (_i = 0, _len = rows.length; _i < _len; _i++) {
         row = rows[_i];
-        label = wiki.resolveLinks("[[" + row.Material + "]]");
         slug = wiki.asSlug(row.Material);
-        $table.append(($row = $("<tr class=\"" + slug + "\">\n  <td class=\"material\">" + label + "</td>")));
-        _ref = reference.columns;
-        for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
-          col = _ref[_j];
-          if (col === 'Material') {
-            continue;
-          }
-          value = asValue(row[col]);
-          title = "" + row.Material + "\n" + col + "\n" + (value.toFixed(2));
-          $row.append("<td class=\"score\" title=\"" + title + "\" data-thumb=\"" + col + "\">" + (value.toFixed(0)) + "</td>");
-        }
-        _results.push(recalculate($row, slug));
+        $table.append(($row = $("<tr class=\"" + slug + "\">")));
+        display($row, row, {});
+        _results.push(recalculate($row, row, {
+          foo: 0
+        }, function($row, row, context) {
+          wiki.log('rollup redisplay', wiki.asSlug(row.Material));
+          $row.empty();
+          return display($row, row, context);
+        }));
       }
       return _results;
     }
