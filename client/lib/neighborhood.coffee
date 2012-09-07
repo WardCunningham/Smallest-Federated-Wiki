@@ -1,3 +1,6 @@
+active = require('./active.coffee')
+util = require('./util.coffee')
+
 module.exports = neighborhood = {}
 
 wiki.neighborhood ?= {}
@@ -37,7 +40,7 @@ neighborhood.search = (searchQuery)->
   for own neighborSite,neighborInfo of wiki.neighborhood
     sitemap = neighborInfo.sitemap
     matchingPages = _.each sitemap, (page)->
-      return if page.title.indexOf( searchQuery ) == -1
+      return if page.title.toLowerCase().indexOf( searchQuery.toLowerCase() ) == -1
       matches.push
         page: page,
         site: neighborSite,
@@ -73,4 +76,28 @@ $ ->
     searchQuery = $(this).val()
     searchResults = neighborhood.search( searchQuery )
     console.log( 'search results:', searchResults )
+
+    explanatoryPara = {
+      type: 'paragraph'
+      id: util.randomBytes(8)
+      text: "These are the search results for '#{searchQuery}'."
+    }
+    searchResultReferences = for result in searchResults
+      {
+        "type": "reference"
+        "id": util.randomBytes(8)
+        "site": result.site
+        "slug": result.page.slug
+        "title": result.page.title
+        "text": ''
+      }
+    searchResultPageData = {
+      title: "Search Results"
+      story: [explanatoryPara].concat(searchResultReferences)
+    }
+    $searchResultPage = wiki.createPage('search-results')
+    wiki.buildPage( searchResultPageData, 'local', $searchResultPage )
+    $searchResultPage.appendTo($('.main'))
+    active.set($('.page').last())
+
 
