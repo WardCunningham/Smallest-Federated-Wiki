@@ -95,8 +95,8 @@ $ ->
       title: "Search Results"
       story: [explanatoryPara].concat(searchResultReferences)
     }
-    $searchResultPage = wiki.createPage('search-results')
-    wiki.buildPage( searchResultPageData, 'local', $searchResultPage )
+    $searchResultPage = wiki.createPage('search-results').addClass('ghost')
+    wiki.buildPage( searchResultPageData, null, $searchResultPage )
     $searchResultPage.appendTo($('.main'))
     active.set($('.page').last())
 

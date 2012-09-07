@@ -277,8 +277,9 @@ $ ->
       $page.removeClass 'ghost'
       page = $page.data('data')
       page.story = []
-      pageHandler.put $page, {type: 'create', id: page.id, item: page}
-      wiki.log "create", title
+      pageHandler.put $page, {type: 'create', id: page.id, item: {title:page.title}}
+      wiki.log "create", page.title
+      $page.find('.story').empty()
 
     .delegate '.ghost', 'rev', (e) ->
       wiki.log 'rev', e

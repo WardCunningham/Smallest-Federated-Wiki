@@ -89,9 +89,7 @@ emitHeader = (pageElement, page) ->
       </h2>
     """
 
-
-
-buildPage = wiki.buildPage = (data,siteFound,pageElement) ->
+wiki.buildPage = (data,siteFound,pageElement) ->
 
   if siteFound == 'local'
     pageElement.addClass('local') 
@@ -159,11 +157,12 @@ module.exports = refresh = wiki.refresh = ->
     wasServerGenerated: pageElement.attr('data-server-generated') == 'true'
   }
 
-  createPage = ->
-    title = $("""a[href="/#{slug}.html"]:last""").text()
-    title or= slug
-    pageHandler.put $(pageElement), {type: 'create', id: util.randomBytes(8), item: {title}}
-    buildPage( {title}, undefined, pageElement )
+  # No longer used, now that we create ghost pages for unknown pages
+  #createPage = ->
+    #title = $("""a[href="/#{slug}.html"]:last""").text()
+    #title or= slug
+    #pageHandler.put $(pageElement), {type: 'create', id: util.randomBytes(8), item: {title}}
+    #wiki.buildPage( {title}, undefined, pageElement )
 
   createGhostPage = ->
     title = $("""a[href="/#{slug}.html"]:last""").text() or slug
@@ -175,7 +174,7 @@ module.exports = refresh = wiki.refresh = ->
         'text': 'We could not find this page.'
         'title': title
       ]
-    buildPage( page, undefined, pageElement ).addClass('ghost')
+    wiki.buildPage( page, undefined, pageElement ).addClass('ghost')
 
   registerNeighbors = (data, site) ->
     if _.include ['local', 'origin', 'view', null, undefined], site
@@ -188,12 +187,11 @@ module.exports = refresh = wiki.refresh = ->
       neighborhood.registerNeighbor action.site if action.site?
       
   whenGotten = (data,siteFound) ->
-    buildPage( data, siteFound, pageElement )
+    wiki.buildPage( data, siteFound, pageElement )
     registerNeighbors( data, siteFound )
 
   pageHandler.get
     whenGotten: whenGotten
-    whenNotGotten: createPage
-    # whenNotGotten: createGhostPage
+    whenNotGotten: createGhostPage
     pageInformation: pageInformation
 
