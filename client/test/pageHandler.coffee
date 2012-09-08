@@ -1,4 +1,5 @@
 pageHandler = require '../lib/pageHandler.coffee'
+mockServer = require './mockServer.coffee'
 
 # Fakes for things still stuck in legacy.coffee
 # TODO: Remove these ASAP
@@ -22,17 +23,10 @@ describe 'pageHandler.get', ->
     journal: []
   }
 
-  simulatePageNotFound = ->
-    xhrFor404 = {
-      status: 404
-    }
-    sinon.stub(jQuery, "ajax").yieldsTo('error',xhrFor404)
-
-
   describe 'ajax fails', ->
 
     before ->
-      simulatePageNotFound()
+      mockServer.simulatePageNotFound()
 
     after ->
       jQuery.ajax.restore()
@@ -82,7 +76,7 @@ describe 'pageHandler.get', ->
 
   describe 'ajax, search', ->
     before ->
-      simulatePageNotFound()
+      mockServer.simulatePageNotFound()
       pageHandler.context = ['view', 'example.com', 'asdf.test', 'foo.bar']
 
     it 'should search through the context for a page', ->

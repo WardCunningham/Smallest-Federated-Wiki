@@ -4,7 +4,6 @@ describe 'neighborhood', ->
 
   describe 'no neighbors', ->
     it 'should return an empty array for our search', ->
-      debugger
       searchResult = neighborhood.search( "query string" )
       expect(searchResult).to.eql( [] )
 

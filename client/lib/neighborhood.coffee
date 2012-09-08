@@ -1,5 +1,6 @@
 active = require('./active.coffee')
 util = require('./util.coffee')
+createSearch = require('./search.coffee')
 
 module.exports = neighborhood = {}
 
@@ -71,33 +72,11 @@ $ ->
     .delegate '.neighbor img', 'click', (e) ->
       wiki.doInternalLink 'welcome-visitors', null, @.title
 
+
+  debugger
+  search = createSearch({neighborhood})
+
   $('input.search').on 'keypress', (e)->
     return if e.keyCode != 13 # 13 == return
     searchQuery = $(this).val()
-    searchResults = neighborhood.search( searchQuery )
-    console.log( 'search results:', searchResults )
-
-    explanatoryPara = {
-      type: 'paragraph'
-      id: util.randomBytes(8)
-      text: "These are the search results for '#{searchQuery}'."
-    }
-    searchResultReferences = for result in searchResults
-      {
-        "type": "reference"
-        "id": util.randomBytes(8)
-        "site": result.site
-        "slug": result.page.slug
-        "title": result.page.title
-        "text": ''
-      }
-    searchResultPageData = {
-      title: "Search Results"
-      story: [explanatoryPara].concat(searchResultReferences)
-    }
-    $searchResultPage = wiki.createPage('search-results').addClass('ghost')
-    wiki.buildPage( searchResultPageData, null, $searchResultPage )
-    $searchResultPage.appendTo($('.main'))
-    active.set($('.page').last())
-
-
+    search.performSearch( searchQuery )

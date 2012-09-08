@@ -16,6 +16,7 @@ require('./test/refresh.coffee')
 require('./test/plugin.coffee')
 require('./test/revision.coffee')
 require('./test/neighborhood.coffee')
+require('./test/search.coffee')
 
 $ ->
   $('<hr><h2> Testing artifacts:</h2>').appendTo('body')
