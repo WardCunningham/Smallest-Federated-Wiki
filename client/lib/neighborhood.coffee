@@ -4,33 +4,44 @@ createSearch = require('./search.coffee')
 
 module.exports = neighborhood = {}
 
+
 wiki.neighborhood ?= {}
+nextAvailableFetch = 0
+nextFetchInterval = 2000
 
 populateSiteInfoFor = (site,neighborInfo)->
   return if neighborInfo.sitemapRequestInflight
-
   neighborInfo.sitemapRequestInflight = true
-  
-  sitemapUrl = "http://#{site}/system/sitemap.json"
-  request = $.ajax
-    type: 'GET'
-    dataType: 'json'
-    url: sitemapUrl
 
-  request
-    .always( -> neighborInfo.sitemapRequestInflight = false )
-    .done (data)-> 
-      neighborInfo.sitemap = data
-    .fail (data)->
-      wiki.log( "failed to retrieve sitemap for ", site, data )
+  fetchMap = ->
+    sitemapUrl = "http://#{site}/system/sitemap.json"
+    wiki.log 'fetchMap', site
+    request = $.ajax
+      type: 'GET'
+      dataType: 'json'
+      url: sitemapUrl
+    request
+      .always( -> neighborInfo.sitemapRequestInflight = false )
+      .done (data)->
+        neighborInfo.sitemap = data
+      .fail (data)->
+        wiki.log( "fetchMap failed", site, data )
+
+  now = Date.now()
+  if now > nextAvailableFetch
+    nextAvailableFetch = now + nextFetchInterval
+    fetchMap()
+  else
+    wiki.log 'fetchMap delayed', site, nextAvailableFetch - now
+    setTimeout fetchMap, nextAvailableFetch - now
+    nextAvailableFetch += nextFetchInterval
+
 
 neighborhood.registerNeighbor = (site)->
-  neighborInfo = {} # nothing to record for now
-
-  populateSiteInfoFor( site, neighborInfo )
-
   return if wiki.neighborhood[site]?
+  neighborInfo = {}
   wiki.neighborhood[site] = neighborInfo
+  populateSiteInfoFor( site, neighborInfo )
   $('body').trigger 'new-neighbor', site
 
 neighborhood.listNeighbors = ()->
@@ -73,7 +84,6 @@ $ ->
       wiki.doInternalLink 'welcome-visitors', null, @.title
 
 
-  debugger
   search = createSearch({neighborhood})
 
   $('input.search').on 'keypress', (e)->
