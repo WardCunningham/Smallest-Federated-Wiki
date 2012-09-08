@@ -31,13 +31,13 @@ window.plugins.rollup =
 
     reference = attach "Materials Summary"
 
-    display = (state) ->
+    display = (calculated, state) ->
       row = state.row
       $row = state.$row
       for col in reference.columns
         if col == 'Material'
           label = wiki.resolveLinks "[[#{row.Material}]]"
-          if state.count != 0
+          if calculated
             if state.errors.length > 0
               title = (e.message.replace(/"/g,"'") for e in state.errors).join "\n"
               $row.append """<td class="material">#{label} <span style="color:red;" title="#{title}">✔</span></td>"""
@@ -49,7 +49,7 @@ window.plugins.rollup =
         else
           old = asValue row[col]
           now = asValue state.input[col]
-          if now?
+          if calculated && now?
             color = if old.toFixed(4) == now.toFixed(4)
               'green'
             else if old.toFixed(0) == now.toFixed(0)
@@ -71,13 +71,17 @@ window.plugins.rollup =
       else
         return done state
 
-    recalculate = (state, done) ->
-      wiki.getPlugin 'method', (plugin) ->
-        $.getJSON "/#{state.slug}.json", (data) ->
-          state.methods = _.filter data.story, (item) -> item.type == 'method'
-          perform state, plugin, done
+    timeout = (delay, done) ->
+      setTimeout done, delay
 
-    radar = (input) ->
+    recalculate = (delay, state, done) ->
+      timeout delay, ->
+        wiki.getPlugin 'method', (plugin) ->
+          $.getJSON "/#{state.slug}.json", (data) ->
+            state.methods = _.filter data.story, (item) -> item.type == 'method'
+            perform state, plugin, done
+
+    radar = (input={}) ->
       candidates = $(".item:lt(#{$('.item').index(div)})")
       output = _.extend {}, input
       for elem in candidates
@@ -90,12 +94,13 @@ window.plugins.rollup =
 
     div.append ($table = $ """<table/>""")
     rows = _.sortBy reference.data, (row) -> -asValue(row['Total Score'])
+    delay = 0
     for row in rows
       slug = wiki.asSlug row.Material
       $table.append ($row = $ """<tr class="#{slug}">""")
-      state = {$row: $row, row: row, slug: slug, input: radar({count: 0}), errors: []}
-      display state
-      recalculate state, (state)->
+      state = {$row: $row, row: row, slug: slug, input: radar(), errors: []}
+      display false, state
+      delay += 200
+      recalculate delay, state, (state)->
         state.$row.empty()
-        state.input.count = 1
-        display state
+        display true, state

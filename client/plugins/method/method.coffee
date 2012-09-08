@@ -104,12 +104,10 @@ dispatch = (state, done) ->
       color = '#ddd'
       hover = "#{args[1]} of #{count} numbers\n= #{value}"
       line = args[2]
-      wiki.log 'apply', "#{args[1]} #{line} => #{value}"
       if (output[line]? or input[line]?) and !state.item.silent
         previous = asValue(output[line]||input[line])
         if Math.abs(change = value/previous-1) > 0.0001
           comment = "previously #{previous}\nΔ #{round(change*100)}%"
-          # wiki.log 'method', args[0], value, '!=', previous
       output[line] = value
     else if args = line.match /^([A-Z]+)$/
       [value, list, count] = [apply(args[1], list), [], list.length]
@@ -134,12 +132,10 @@ dispatch = (state, done) ->
     value = null
     comment = err.message
 
-  wiki.log "#{comment} " if color == '#edd'
   if state.caller? and color == '#edd'
     state.caller.errors.push({message: comment})
   state.list = list
   state.list.push +value if value? and ! isNaN +value
-  # state.output[comment] = (state.output[comment]||0) + 1 if color == '#edd'
   print state.report, value, hover, line, comment, color
   dispatch state, done
 
@@ -170,14 +166,11 @@ window.plugins.method =
 
     state = {div: div, item: item, input: input, output: output, report:[]}
     dispatch state, (state, output) ->
-      wiki.log 'displatch complete', state, output
       text = state.report.join "\n"
       table = $('<table style="width:100%; background:#eee; padding:.8em; margin-bottom:5px;"/>').html text
       state.div.append table
 
   eval: (caller, item, input, done) ->
     state = {caller: caller, item: item, input: input, output: {}}
-    state.output.count = state.input.count + 1
     dispatch state, (state, input) ->
-      wiki.log 'eval', caller.slug, state.output.count, state.output
       done state.caller, state.output

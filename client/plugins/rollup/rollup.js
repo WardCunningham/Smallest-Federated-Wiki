@@ -4,7 +4,7 @@
   window.plugins.rollup = {
     emit: function(div, item) {},
     bind: function(div, item) {
-      var $row, $table, asValue, attach, display, perform, radar, recalculate, reference, row, rows, slug, state, _i, _len, _results;
+      var $row, $table, asValue, attach, delay, display, perform, radar, recalculate, reference, row, rows, slug, state, timeout, _i, _len, _results;
       div.dblclick(function() {
         return wiki.textEditor(div, item);
       });
@@ -42,7 +42,7 @@
         throw new Error("can't find dataset with caption " + search);
       };
       reference = attach("Materials Summary");
-      display = function(state) {
+      display = function(calculated, state) {
         var $row, col, color, e, k, label, now, old, row, title, v, _i, _len, _ref, _results;
         row = state.row;
         $row = state.$row;
@@ -52,7 +52,7 @@
           col = _ref[_i];
           if (col === 'Material') {
             label = wiki.resolveLinks("[[" + row.Material + "]]");
-            if (state.count !== 0) {
+            if (calculated) {
               if (state.errors.length > 0) {
                 title = ((function() {
                   var _j, _len1, _ref1, _results1;
@@ -84,7 +84,7 @@
           } else {
             old = asValue(row[col]);
             now = asValue(state.input[col]);
-            if (now != null) {
+            if (calculated && (now != null)) {
               color = old.toFixed(4) === now.toFixed(4) ? 'green' : old.toFixed(0) === now.toFixed(0) ? 'orange' : 'red';
               title = "" + row.Material + "\n" + col + "\nold " + (old.toFixed(2)) + "\nnow " + (now.toFixed(2));
               _results.push($row.append("<td class=\"score\" title=\"" + title + "\" data-thumb=\"" + col + "\" style=\"color:" + color + ";\">" + (old.toFixed(0)) + "</td>"));
@@ -107,18 +107,26 @@
           return done(state);
         }
       };
-      recalculate = function(state, done) {
-        return wiki.getPlugin('method', function(plugin) {
-          return $.getJSON("/" + state.slug + ".json", function(data) {
-            state.methods = _.filter(data.story, function(item) {
-              return item.type === 'method';
+      timeout = function(delay, done) {
+        return setTimeout(done, delay);
+      };
+      recalculate = function(delay, state, done) {
+        return timeout(delay, function() {
+          return wiki.getPlugin('method', function(plugin) {
+            return $.getJSON("/" + state.slug + ".json", function(data) {
+              state.methods = _.filter(data.story, function(item) {
+                return item.type === 'method';
+              });
+              return perform(state, plugin, done);
             });
-            return perform(state, plugin, done);
           });
         });
       };
       radar = function(input) {
         var candidates, elem, output, _i, _len;
+        if (input == null) {
+          input = {};
+        }
         candidates = $(".item:lt(" + ($('.item').index(div)) + ")");
         output = _.extend({}, input);
         for (_i = 0, _len = candidates.length; _i < _len; _i++) {
@@ -136,6 +144,7 @@
       rows = _.sortBy(reference.data, function(row) {
         return -asValue(row['Total Score']);
       });
+      delay = 0;
       _results = [];
       for (_i = 0, _len = rows.length; _i < _len; _i++) {
         row = rows[_i];
@@ -145,16 +154,14 @@
           $row: $row,
           row: row,
           slug: slug,
-          input: radar({
-            count: 0
-          }),
+          input: radar(),
           errors: []
         };
-        display(state);
-        _results.push(recalculate(state, function(state) {
+        display(false, state);
+        delay += 200;
+        _results.push(recalculate(delay, state, function(state) {
           state.$row.empty();
-          state.input.count = 1;
-          return display(state);
+          return display(true, state);
         }));
       }
       return _results;

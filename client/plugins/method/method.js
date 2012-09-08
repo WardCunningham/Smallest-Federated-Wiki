@@ -157,7 +157,6 @@
         color = '#ddd';
         hover = "" + args[1] + " of " + count + " numbers\n= " + value;
         line = args[2];
-        wiki.log('apply', "" + args[1] + " " + line + " => " + value);
         if (((output[line] != null) || (input[line] != null)) && !state.item.silent) {
           previous = asValue(output[line] || input[line]);
           if (Math.abs(change = value / previous - 1) > 0.0001) {
@@ -189,9 +188,6 @@
       color = '#edd';
       value = null;
       comment = err.message;
-    }
-    if (color === '#edd') {
-      wiki.log("" + comment + " ");
     }
     if ((state.caller != null) && color === '#edd') {
       state.caller.errors.push({
@@ -245,7 +241,6 @@
       };
       return dispatch(state, function(state, output) {
         var table, text;
-        wiki.log('displatch complete', state, output);
         text = state.report.join("\n");
         table = $('<table style="width:100%; background:#eee; padding:.8em; margin-bottom:5px;"/>').html(text);
         return state.div.append(table);
@@ -259,9 +254,7 @@
         input: input,
         output: {}
       };
-      state.output.count = state.input.count + 1;
       return dispatch(state, function(state, input) {
-        wiki.log('eval', caller.slug, state.output.count, state.output);
         return done(state.caller, state.output);
       });
     }
