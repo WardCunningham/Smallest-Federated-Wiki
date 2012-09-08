@@ -5,6 +5,7 @@ plugin = require('./plugin.coffee')
 state = require('./state.coffee')
 active = require('./active.coffee')
 refresh = require('./refresh.coffee')
+require ('./dom.coffee')
 
 resolveLinks = wiki.resolveLinks = util.resolveLinks
 
@@ -171,7 +172,7 @@ $ ->
   doInternalLink = wiki.doInternalLink = (name, page, site=null) ->
     name = util.asSlug(name)
     $(page).nextAll().remove() if page?
-    createPage(name,site)
+    wiki.createPage(name,site)
       .appendTo($('.main'))
       .each refresh
     active.set($('.page').last())
@@ -188,15 +189,6 @@ $ ->
       newIndex = pages.index($('.active')) + direction
       if 0 <= newIndex < pages.length
         active.set(pages.eq(newIndex))
-
-# FUNCTIONS sensing extant and desired page configurations
-
-
-  createPage = wiki.createPage = (name, loc) ->
-    if loc and loc isnt 'view'
-      $("<div/>").attr('id', name).attr('data-site', loc).addClass("page")
-    else
-      $("<div/>").attr('id', name).addClass("page")
 
 # HANDLERS for jQuery events
 
@@ -253,7 +245,7 @@ $ ->
         slug = util.asSlug($page.data('data').title)
         rev = $(this).parent().children().index($action)
         $page.nextAll().remove() unless e.shiftKey
-        createPage("#{slug}_rev#{rev}", $page.data('site'))
+        wiki.createPage("#{slug}_rev#{rev}", $page.data('site'))
           .appendTo($('.main'))
           .each refresh
         active.set($('.page').last())
@@ -277,8 +269,9 @@ $ ->
       $page.removeClass 'ghost'
       page = $page.data('data')
       page.story = []
-      pageHandler.put $page, {type: 'create', id: page.id, item: page}
-      wiki.log "create", title
+      pageHandler.put $page, {type: 'create', id: page.id, item: {title:page.title}}
+      wiki.log "create", page.title
+      $page.find('.story').empty()
 
     .delegate '.ghost', 'rev', (e) ->
       wiki.log 'rev', e

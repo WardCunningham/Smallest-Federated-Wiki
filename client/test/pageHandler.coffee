@@ -1,4 +1,5 @@
 pageHandler = require '../lib/pageHandler.coffee'
+mockServer = require './mockServer.coffee'
 
 # Fakes for things still stuck in legacy.coffee
 # TODO: Remove these ASAP
@@ -25,7 +26,7 @@ describe 'pageHandler.get', ->
   describe 'ajax fails', ->
 
     before ->
-      sinon.stub(jQuery, "ajax").yieldsTo('error')
+      mockServer.simulatePageNotFound()
 
     after ->
       jQuery.ajax.restore()
@@ -68,14 +69,14 @@ describe 'pageHandler.get', ->
       expect(whenGotten.calledOnce).to.be.true
       expect(jQuery.ajax.calledOnce).to.be.true
       expect(jQuery.ajax.args[0][0]).to.have.property('type', 'GET')
-      expect(jQuery.ajax.args[0][0].url).to.match(///^/remote/siteName/slugName\.json\?random=[a-z0-9]{8}$///)
+      expect(jQuery.ajax.args[0][0].url).to.match(///^http://siteName/slugName\.json\?random=[a-z0-9]{8}$///)
 
     after ->
       jQuery.ajax.restore()
 
   describe 'ajax, search', ->
     before ->
-      sinon.stub(jQuery, "ajax").yieldsTo('error')
+      mockServer.simulatePageNotFound()
       pageHandler.context = ['view', 'example.com', 'asdf.test', 'foo.bar']
 
     it 'should search through the context for a page', ->
@@ -85,9 +86,9 @@ describe 'pageHandler.get', ->
         whenNotGotten: sinon.stub()
 
       expect(jQuery.ajax.args[0][0].url).to.match(///^/slugName\.json\?random=[a-z0-9]{8}$///)
-      expect(jQuery.ajax.args[1][0].url).to.match(///^/remote/example.com/slugName\.json\?random=[a-z0-9]{8}$///)
-      expect(jQuery.ajax.args[2][0].url).to.match(///^/remote/asdf.test/slugName\.json\?random=[a-z0-9]{8}$///)
-      expect(jQuery.ajax.args[3][0].url).to.match(///^/remote/foo.bar/slugName\.json\?random=[a-z0-9]{8}$///)
+      expect(jQuery.ajax.args[1][0].url).to.match(///^http://example.com/slugName\.json\?random=[a-z0-9]{8}$///)
+      expect(jQuery.ajax.args[2][0].url).to.match(///^http://asdf.test/slugName\.json\?random=[a-z0-9]{8}$///)
+      expect(jQuery.ajax.args[3][0].url).to.match(///^http://foo.bar/slugName\.json\?random=[a-z0-9]{8}$///)
 
     after ->
       jQuery.ajax.restore()
