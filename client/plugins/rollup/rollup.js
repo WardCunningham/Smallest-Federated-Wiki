@@ -4,7 +4,7 @@
   window.plugins.rollup = {
     emit: function(div, item) {},
     bind: function(div, item) {
-      var $row, $table, asValue, attach, display, perform, recalculate, reference, row, rows, slug, _i, _len, _results;
+      var $row, $table, asValue, attach, display, perform, radar, recalculate, reference, row, rows, slug, state, _i, _len, _results;
       div.dblclick(function() {
         return wiki.textEditor(div, item);
       });
@@ -30,42 +30,62 @@
       };
       attach = function(search) {
         var elem, source, _i, _len, _ref;
+        wiki.log('attach', wiki.getDataNodes(div));
         _ref = wiki.getDataNodes(div);
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           elem = _ref[_i];
+          wiki.log('attach loop', $(elem).data('item').text);
           if ((source = $(elem).data('item')).text.indexOf(search) >= 0) {
             return source;
           }
-          throw new Error("can't find dataset with caption " + search);
         }
+        throw new Error("can't find dataset with caption " + search);
       };
       reference = attach("Materials Summary");
-      display = function($row, row, context) {
-        var col, color, k, label, now, old, title, v, _i, _len, _ref, _results;
+      display = function(state) {
+        var $row, col, color, e, k, label, now, old, row, title, v, _i, _len, _ref, _results;
+        row = state.row;
+        $row = state.$row;
         _ref = reference.columns;
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           col = _ref[_i];
           if (col === 'Material') {
             label = wiki.resolveLinks("[[" + row.Material + "]]");
-            if (context !== {}) {
-              title = ((function() {
-                var _results1;
-                _results1 = [];
-                for (k in context) {
-                  v = context[k];
-                  _results1.push("" + k + ": " + (asValue(v).toString().replace(/0000*\d$/, '')));
-                }
-                return _results1;
-              })()).join("\n");
-              _results.push($row.append("<td class=\"material\">" + label + " <span title=\"" + title + "\">✔</span></td>"));
+            if (state.count !== 0) {
+              if (state.errors.length > 0) {
+                title = ((function() {
+                  var _j, _len1, _ref1, _results1;
+                  _ref1 = state.errors;
+                  _results1 = [];
+                  for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+                    e = _ref1[_j];
+                    _results1.push(e.message.replace(/"/g, "'"));
+                  }
+                  return _results1;
+                })()).join("\n");
+                _results.push($row.append("<td class=\"material\">" + label + " <span style=\"color:red;\" title=\"" + title + "\">✔</span></td>"));
+              } else {
+                title = ((function() {
+                  var _ref1, _results1;
+                  _ref1 = state.input;
+                  _results1 = [];
+                  for (k in _ref1) {
+                    v = _ref1[k];
+                    _results1.push("" + k + ": " + (asValue(v).toString().replace(/0000*\d$/, '')));
+                  }
+                  return _results1;
+                })()).join("\n");
+                _results.push($row.append("<td class=\"material\">" + label + " <span title=\"" + title + "\">✔</span></td>"));
+              }
             } else {
               _results.push($row.append("<td class=\"material\">" + label + "</td>"));
             }
           } else {
             old = asValue(row[col]);
-            if ((now = context[col])) {
-              color = old.toFixed(4) === now.toFixed(4) ? 'green' : 'red';
+            now = asValue(state.input[col]);
+            if (now != null) {
+              color = old.toFixed(4) === now.toFixed(4) ? 'green' : old.toFixed(0) === now.toFixed(0) ? 'orange' : 'red';
               title = "" + row.Material + "\n" + col + "\nold " + (old.toFixed(2)) + "\nnow " + (now.toFixed(2));
               _results.push($row.append("<td class=\"score\" title=\"" + title + "\" data-thumb=\"" + col + "\" style=\"color:" + color + ";\">" + (old.toFixed(0)) + "</td>"));
             } else {
@@ -76,50 +96,43 @@
         }
         return _results;
       };
-      perform = function($row, row, context, plugin, methods, done) {
-        if (methods.length > 0) {
-          return plugin["eval"](div, methods.shift(), context, function(output) {
-            var k, v;
-            wiki.log('output', ((function() {
-              var _results;
-              _results = [];
-              for (k in output) {
-                v = output[k];
-                _results.push("" + k + ": " + v);
-              }
-              return _results;
-            })()).join(", "));
-            _.extend(context, output);
-            wiki.log('context', ((function() {
-              var _results;
-              _results = [];
-              for (k in output) {
-                v = output[k];
-                _results.push("" + k + ": " + v);
-              }
-              return _results;
-            })()).join(", "));
-            return perform($row, row, context, plugin, methods, done);
+      perform = function(state, plugin, done) {
+        if (state.methods.length > 0) {
+          return plugin["eval"](state, state.methods.shift(), state.input, function(state, output) {
+            state.output = output;
+            _.extend(state.input, output);
+            return perform(state, plugin, done);
           });
         } else {
-          return done($row, row, context);
+          return done(state);
         }
       };
-      recalculate = function($row, row, context, done) {
+      recalculate = function(state, done) {
         return wiki.getPlugin('method', function(plugin) {
-          var slug;
-          slug = wiki.asSlug(row.Material);
-          return $.getJSON("/" + slug + ".json", function(data) {
-            var methods;
-            methods = _.filter(data.story, function(item) {
+          return $.getJSON("/" + state.slug + ".json", function(data) {
+            state.methods = _.filter(data.story, function(item) {
               return item.type === 'method';
             });
-            return perform($row, row, context, plugin, methods, done);
+            return perform(state, plugin, done);
           });
         });
       };
+      radar = function(input) {
+        var candidates, elem, output, _i, _len;
+        candidates = $(".item:lt(" + ($('.item').index(div)) + ")");
+        output = _.extend({}, input);
+        for (_i = 0, _len = candidates.length; _i < _len; _i++) {
+          elem = candidates[_i];
+          elem = $(elem);
+          if (elem.hasClass('radar-source')) {
+            _.extend(output, elem.get(0).radarData());
+          } else if (elem.hasClass('data')) {
+            _.extend(output, elem.data('item').data[0]);
+          }
+        }
+        return output;
+      };
       div.append(($table = $("<table/>")));
-      wiki.log('rollup', reference, reference.data, $table);
       rows = _.sortBy(reference.data, function(row) {
         return -asValue(row['Total Score']);
       });
@@ -128,13 +141,20 @@
         row = rows[_i];
         slug = wiki.asSlug(row.Material);
         $table.append(($row = $("<tr class=\"" + slug + "\">")));
-        display($row, row, {});
-        _results.push(recalculate($row, row, {
-          foo: 0
-        }, function($row, row, context) {
-          wiki.log('rollup redisplay', wiki.asSlug(row.Material));
-          $row.empty();
-          return display($row, row, context);
+        state = {
+          $row: $row,
+          row: row,
+          slug: slug,
+          input: radar({
+            count: 0
+          }),
+          errors: []
+        };
+        display(state);
+        _results.push(recalculate(state, function(state) {
+          state.$row.empty();
+          state.input.count = 1;
+          return display(state);
         }));
       }
       return _results;

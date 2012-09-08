@@ -28,6 +28,7 @@ annotate = (text) ->
   " <span title=\"#{text}\">*</span>"
 
 print = (report, value, hover, line, comment, color) ->
+  return unless report?
   long = ''
   if line.length > 40
     long = line
@@ -39,10 +40,14 @@ print = (report, value, hover, line, comment, color) ->
       <td title="#{long}">#{line}#{annotate comment}
     """
 
-perform = (div, item, input, output, report, done) ->
+dispatch = (state, done) ->
+  state.list ||= []
+  state.lines ||= state.item.text.split "\n"
+  line = state.lines.shift()
+  return done state unless line?
 
   attach = (search) ->
-    for elem in wiki.getDataNodes div
+    for elem in wiki.getDataNodes state.div
       if (source = $(elem).data('item')).text.indexOf(search) >= 0
         return source.data
     throw new Error "can't find dataset with caption #{search}"
@@ -71,86 +76,72 @@ perform = (div, item, input, output, report, done) ->
     else
       result
 
-  calculate = (item, report, done) ->
+  apply = (name, list, label) ->
+    switch name
+      when 'SUM' then sum list
+      when 'AVG', 'AVERAGE' then avg list
+      when 'MIN', 'MINIMUM' then _.min list
+      when 'MAX', 'MAXIMUM' then _.max list
+      when 'FIRST' then list[0]
+      when 'PRODUCT' then _.reduce list, (p,n) -> p *= n
+      when 'LOOKUP' then lookup list
+      when 'POLYNOMIAL' then polynomial list[0], label
+      else throw new Error "don't know how to #{name}"
 
-    list = []
-    lines = item.text.split "\n"
+  color = '#eee'
+  value = comment = hover = null
+  input = state.input
+  output = state.output
+  list = state.list
 
-    dispatch = (list, lines, report, done) ->
-      color = '#eee'
-      value = comment = hover = null
-      line = lines.shift()
-      return done report unless line?
-
-      next_dispatch = ->
-        list.push +value if value? and ! isNaN +value
-        print report, value, hover, line, comment, color if report?
-        dispatch list, lines, report, done
-
-      apply = (name, list, label) ->
-        color = '#ddd'
-        switch name
-          when 'SUM' then sum list
-          when 'AVG', 'AVERAGE' then avg list
-          when 'MIN', 'MINIMUM' then _.min list
-          when 'MAX', 'MAXIMUM' then _.max list
-          when 'FIRST' then list[0]
-          when 'PRODUCT' then _.reduce list, (p,n) -> p *= n
-          when 'LOOKUP' then lookup list
-          when 'POLYNOMIAL' then polynomial list[0], label
-          else throw new Error "don't know how to #{name}"
-
-      try
-        if args = line.match /^([0-9.eE-]+) +([\w \/%(){},&-]+)$/
-          result = +args[1]
-          line = args[2]
-          output[line] = value = result
-        else if args = line.match /^([A-Z]+) +([\w \/%(){},&-]+)$/
-          [value, list, count] = [apply(args[1], list, args[2]), [], list.length]
-          hover = "#{args[1]} of #{count} numbers\n= #{value}"
-          line = args[2]
-          if (output[line]? or input[line]?) and !item.silent
-            previous = asValue(output[line]||input[line])
-            if Math.abs(change = value/previous-1) > 0.0001
-              comment = "previously #{previous}\nΔ #{round(change*100)}%"
-              # wiki.log 'method', args[0], value, '!=', previous
-          output[line] = value
-        else if args = line.match /^([A-Z]+)$/
-          [value, list, count] = [apply(args[1], list), [], list.length]
-          hover = "#{args[1]} of #{count} numbers\n= #{value}"
-        else if line.match /^[0-9\.eE-]+$/
-          value = +line
-          line = ''
-        else if args = line.match /^ *([\w \/%(){},&-]+)$/
-          if output[args[1]]?
-            value = output[args[1]]
-          else if input[args[1]]?
-            value = asValue(input[args[1]])
-          else
-            color = '#edd'
-            comment = "can't find value of '#{line}'"
-        else
-          color = '#edd'
-          comment = "can't parse '#{line}'"
-      catch err
+  try
+    if args = line.match /^([0-9.eE-]+) +([\w \/%(){},&-]+)$/
+      result = +args[1]
+      line = args[2]
+      output[line] = value = result
+    else if args = line.match /^([A-Z]+) +([\w \/%(){},&-]+)$/
+      [value, list, count] = [apply(args[1], list, args[2]), [], list.length]
+      color = '#ddd'
+      hover = "#{args[1]} of #{count} numbers\n= #{value}"
+      line = args[2]
+      wiki.log 'apply', "#{args[1]} #{line} => #{value}"
+      if (output[line]? or input[line]?) and !state.item.silent
+        previous = asValue(output[line]||input[line])
+        if Math.abs(change = value/previous-1) > 0.0001
+          comment = "previously #{previous}\nΔ #{round(change*100)}%"
+          # wiki.log 'method', args[0], value, '!=', previous
+      output[line] = value
+    else if args = line.match /^([A-Z]+)$/
+      [value, list, count] = [apply(args[1], list), [], list.length]
+      color = '#ddd'
+      hover = "#{args[1]} of #{count} numbers\n= #{value}"
+    else if line.match /^[0-9\.eE-]+$/
+      value = +line
+      line = ''
+    else if args = line.match /^ *([\w \/%(){},&-]+)$/
+      if output[args[1]]?
+        value = output[args[1]]
+      else if input[args[1]]?
+        value = asValue(input[args[1]])
+      else
         color = '#edd'
-        value = null
-        comment = err.message
-      return next_dispatch()
+        comment = "can't find value of '#{line}'"
+    else
+      color = '#edd'
+      comment = "can't parse '#{line}'"
+  catch err
+    color = '#edd'
+    value = null
+    comment = err.message
 
-    dispatch list, lines, report, (report) ->
-      if report
-        text = report.join "\n"
-        table = $('<table style="width:100%; background:#eee; padding:.8em; margin-bottom:5px;"/>').html text
-        div.append table
-        div.dblclick (e) ->
-          if e.shiftKey
-            wiki.dialog "JSON for Method plugin",  $('<pre/>').text(JSON.stringify(item, null, 2))
-          else
-            wiki.textEditor div, item
-      return done output
-
-  calculate item, report, done
+  wiki.log "#{comment} " if color == '#edd'
+  if state.caller? and color == '#edd'
+    state.caller.errors.push({message: comment})
+  state.list = list
+  state.list.push +value if value? and ! isNaN +value
+  # state.output[comment] = (state.output[comment]||0) + 1 if color == '#edd'
+  print state.report, value, hover, line, comment, color
+  dispatch state, done
 
 window.plugins.method =
   emit: (div, item) ->
@@ -169,12 +160,24 @@ window.plugins.method =
 
     div.addClass 'radar-source'
     div.get(0).radarData = -> output
+
     div.mousemove (e) -> $(div).triggerHandler('thumb', $(e.target).text())
+    div.dblclick (e) ->
+      if e.shiftKey
+        wiki.dialog "JSON for Method plugin",  $('<pre/>').text(JSON.stringify(item, null, 2))
+      else
+        wiki.textEditor state.div, state.item
 
-    perform div, item, input, output, [], ->
+    state = {div: div, item: item, input: input, output: output, report:[]}
+    dispatch state, (state, output) ->
+      wiki.log 'displatch complete', state, output
+      text = state.report.join "\n"
+      table = $('<table style="width:100%; background:#eee; padding:.8em; margin-bottom:5px;"/>').html text
+      state.div.append table
 
-  eval: (div, item, input, done) ->
-    output = {}
-    output.foo = input.foo + 1
-    perform div, item, input, output, null, ->
-      done output
+  eval: (caller, item, input, done) ->
+    state = {caller: caller, item: item, input: input, output: {}}
+    state.output.count = state.input.count + 1
+    dispatch state, (state, input) ->
+      wiki.log 'eval', caller.slug, state.output.count, state.output
+      done state.caller, state.output

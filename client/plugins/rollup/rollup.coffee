@@ -22,60 +22,80 @@ window.plugins.rollup =
         else NaN
 
     attach = (search) ->
+      wiki.log 'attach', wiki.getDataNodes div
       for elem in wiki.getDataNodes div
+        wiki.log 'attach loop', $(elem).data('item').text
         if (source = $(elem).data('item')).text.indexOf(search) >= 0
           return source
-        throw new Error "can't find dataset with caption #{search}"
+      throw new Error "can't find dataset with caption #{search}"
 
     reference = attach "Materials Summary"
 
-    display = ($row, row, context) ->
+    display = (state) ->
+      row = state.row
+      $row = state.$row
       for col in reference.columns
         if col == 'Material'
           label = wiki.resolveLinks "[[#{row.Material}]]"
-          if context != {}
-            title = ("#{k}: #{asValue(v).toString().replace /0000*\d$/, ''}" for k,v of context).join "\n"
-            $row.append """<td class="material">#{label} <span title="#{title}">✔</span></td>"""
+          if state.count != 0
+            if state.errors.length > 0
+              title = (e.message.replace(/"/g,"'") for e in state.errors).join "\n"
+              $row.append """<td class="material">#{label} <span style="color:red;" title="#{title}">✔</span></td>"""
+            else
+              title = ("#{k}: #{asValue(v).toString().replace /0000*\d$/, ''}" for k,v of state.input).join "\n"
+              $row.append """<td class="material">#{label} <span title="#{title}">✔</span></td>"""
           else
             $row.append """<td class="material">#{label}</td>"""
         else
           old = asValue row[col]
-          if (now = context[col])
-            color = if old.toFixed(4) == now.toFixed(4) then 'green' else 'red'
+          now = asValue state.input[col]
+          if now?
+            color = if old.toFixed(4) == now.toFixed(4)
+              'green'
+            else if old.toFixed(0) == now.toFixed(0)
+              'orange'
+            else
+              'red'
             title = "#{row.Material}\n#{col}\nold #{old.toFixed 2}\nnow #{now.toFixed 2}"
             $row.append """<td class="score" title="#{title}" data-thumb="#{col}" style="color:#{color};">#{old.toFixed 0}</td>"""
           else
             title = "#{row.Material}\n#{col}\n#{old.toFixed 2}"
             $row.append """<td class="score" title="#{title}" data-thumb="#{col}">#{old.toFixed 0}</td>"""
 
-    perform = ($row, row, context, plugin, methods, done) ->
-      if methods.length > 0
-        plugin.eval div, methods.shift(), context, (output) ->
-          wiki.log 'output', ("#{k}: #{v}" for k,v of output).join ", "
-          _.extend context, output
-          wiki.log 'context', ("#{k}: #{v}" for k,v of output).join ", "
-          perform $row, row, context, plugin, methods, done
+    perform = (state, plugin, done) ->
+      if state.methods.length > 0
+        plugin.eval state, state.methods.shift(), state.input, (state, output) ->
+           state.output = output
+           _.extend state.input, output
+           perform state, plugin, done
       else
-        # title = ("#{k}: #{asValue(v).toString().replace /0000*\d$/, ''}" for k,v of context).join "\n"
-        # $row.find("td:first").append(""" <span title="#{title}"">##{context.foo}""")
-        return done $row, row, context
+        return done state
 
-    recalculate = ($row, row, context, done) ->
+    recalculate = (state, done) ->
       wiki.getPlugin 'method', (plugin) ->
-        slug = wiki.asSlug row.Material
-        $.getJSON "/#{slug}.json", (data) ->
-          methods = _.filter data.story, (item) -> item.type == 'method'
-          perform $row, row, context, plugin, methods, done
+        $.getJSON "/#{state.slug}.json", (data) ->
+          state.methods = _.filter data.story, (item) -> item.type == 'method'
+          perform state, plugin, done
+
+    radar = (input) ->
+      candidates = $(".item:lt(#{$('.item').index(div)})")
+      output = _.extend {}, input
+      for elem in candidates
+        elem = $(elem)
+        if elem.hasClass 'radar-source'
+          _.extend output, elem.get(0).radarData()
+        else if elem.hasClass 'data'
+          _.extend output, elem.data('item').data[0]
+      return output
 
     div.append ($table = $ """<table/>""")
-    wiki.log 'rollup', reference, reference.data, $table
-
     rows = _.sortBy reference.data, (row) -> -asValue(row['Total Score'])
     for row in rows
       slug = wiki.asSlug row.Material
       $table.append ($row = $ """<tr class="#{slug}">""")
-      display $row, row, {}
-      recalculate $row, row, {foo: 0}, ($row, row, context)->
-        wiki.log 'rollup redisplay', wiki.asSlug row.Material
-        $row.empty()
-        display $row, row, context
+      state = {$row: $row, row: row, slug: slug, input: radar({count: 0}), errors: []}
+      display state
+      recalculate state, (state)->
+        state.$row.empty()
+        state.input.count = 1
+        display state
