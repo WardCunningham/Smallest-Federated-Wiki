@@ -13,9 +13,16 @@ populateSiteInfoFor = (site,neighborInfo)->
   return if neighborInfo.sitemapRequestInflight
   neighborInfo.sitemapRequestInflight = true
 
+  transition = (site, from, to) ->
+    $(""".neighbor[data-site="#{site}"]""")
+      .find('div')
+      .removeClass(from)
+      .addClass(to)
+
   fetchMap = ->
     sitemapUrl = "http://#{site}/system/sitemap.json"
     wiki.log 'fetchMap', site
+    transition site, 'wait', 'fetch'
     request = $.ajax
       type: 'GET'
       dataType: 'json'
@@ -24,13 +31,15 @@ populateSiteInfoFor = (site,neighborInfo)->
       .always( -> neighborInfo.sitemapRequestInflight = false )
       .done (data)->
         neighborInfo.sitemap = data
+        transition site, 'fetch', 'done'
       .fail (data)->
+        transition site, 'fetch', 'fail'
         wiki.log( "fetchMap failed", site, data )
 
   now = Date.now()
   if now > nextAvailableFetch
     nextAvailableFetch = now + nextFetchInterval
-    fetchMap()
+    setTimeout fetchMap, 100
   else
     wiki.log 'fetchMap delayed', site, nextAvailableFetch - now
     setTimeout fetchMap, nextAvailableFetch - now
@@ -64,9 +73,12 @@ $ ->
   $neighborhood = $('.neighborhood')
 
   flag = (site) ->
+    # status class progression: .wait, .fetch, .fail or .done
     """
-      <span class="neighbor">
-        <img src="http://#{site}/favicon.png" title="#{site}">
+      <span class="neighbor" data-site="#{site}">
+        <div class="wait">
+          <img src="http://#{site}/favicon.png" title="#{site}">
+        </div>
       </span>
     """
 

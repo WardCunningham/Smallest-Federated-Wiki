@@ -1567,13 +1567,17 @@ require.define("/lib/neighborhood.coffee", function (require, module, exports, _
   nextFetchInterval = 2000;
 
   populateSiteInfoFor = function(site, neighborInfo) {
-    var fetchMap, now;
+    var fetchMap, now, transition;
     if (neighborInfo.sitemapRequestInflight) return;
     neighborInfo.sitemapRequestInflight = true;
+    transition = function(site, from, to) {
+      return $(".neighbor[data-site=\"" + site + "\"]").find('div').removeClass(from).addClass(to);
+    };
     fetchMap = function() {
       var request, sitemapUrl;
       sitemapUrl = "http://" + site + "/system/sitemap.json";
       wiki.log('fetchMap', site);
+      transition(site, 'wait', 'fetch');
       request = $.ajax({
         type: 'GET',
         dataType: 'json',
@@ -1582,15 +1586,17 @@ require.define("/lib/neighborhood.coffee", function (require, module, exports, _
       return request.always(function() {
         return neighborInfo.sitemapRequestInflight = false;
       }).done(function(data) {
-        return neighborInfo.sitemap = data;
+        neighborInfo.sitemap = data;
+        return transition(site, 'fetch', 'done');
       }).fail(function(data) {
+        transition(site, 'fetch', 'fail');
         return wiki.log("fetchMap failed", site, data);
       });
     };
     now = Date.now();
     if (now > nextAvailableFetch) {
       nextAvailableFetch = now + nextFetchInterval;
-      return fetchMap();
+      return setTimeout(fetchMap, 100);
     } else {
       wiki.log('fetchMap delayed', site, nextAvailableFetch - now);
       setTimeout(fetchMap, nextAvailableFetch - now);
@@ -1637,7 +1643,7 @@ require.define("/lib/neighborhood.coffee", function (require, module, exports, _
     var $neighborhood, flag, search;
     $neighborhood = $('.neighborhood');
     flag = function(site) {
-      return "<span class=\"neighbor\">\n  <img src=\"http://" + site + "/favicon.png\" title=\"" + site + "\">\n</span>";
+      return "<span class=\"neighbor\" data-site=\"" + site + "\">\n  <div class=\"wait\">\n    <img src=\"http://" + site + "/favicon.png\" title=\"" + site + "\">\n  </div>\n</span>";
     };
     $('body').on('neighborhood-change', function() {
       $neighborhood.empty();
