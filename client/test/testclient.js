@@ -1663,7 +1663,8 @@ require.define("/lib/neighborhood.coffee", function (require, module, exports, _
       var searchQuery;
       if (e.keyCode !== 13) return;
       searchQuery = $(this).val();
-      return search.performSearch(searchQuery);
+      search.performSearch(searchQuery);
+      return $(this).val("");
     });
   });
 
