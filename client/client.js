@@ -1663,28 +1663,47 @@ require.define("/lib/neighborhood.coffee", function (require, module, exports, _
   };
 
   neighborhood.search = function(searchQuery) {
-    var match, matches, matchingPages, neighborInfo, neighborSite, sitemap, _ref2;
-    matches = [];
-    match = function(text) {
-      return (text != null) && text.toLowerCase().indexOf(searchQuery.toLowerCase()) >= 0;
+    var finds, match, matchingPages, neighborInfo, neighborSite, sitemap, start, tally, tick, _ref2;
+    finds = [];
+    tally = {};
+    tick = function(key) {
+      if (tally[key] != null) {
+        return tally[key]++;
+      } else {
+        return tally[key] = 1;
+      }
     };
+    match = function(key, text) {
+      var hit;
+      hit = (text != null) && text.toLowerCase().indexOf(searchQuery.toLowerCase()) >= 0;
+      if (hit) tick(key);
+      return hit;
+    };
+    start = Date.now();
     _ref2 = wiki.neighborhood;
     for (neighborSite in _ref2) {
       if (!__hasProp.call(_ref2, neighborSite)) continue;
       neighborInfo = _ref2[neighborSite];
       sitemap = neighborInfo.sitemap;
+      if (sitemap != null) tick('sites');
       matchingPages = _.each(sitemap, function(page) {
-        if (!(match(page.title) || match(page.synopsis) || match(page.slug))) {
+        tick('pages');
+        if (!(match('title', page.title) || match('text', page.synopsis) || match('slug', page.slug))) {
           return;
         }
-        return matches.push({
+        tick('finds');
+        return finds.push({
           page: page,
           site: neighborSite,
           rank: 1
         });
       });
     }
-    return matches;
+    tally['msec'] = Date.now() - start;
+    return {
+      finds: finds,
+      tally: tally
+    };
   };
 
   $(function() {
@@ -1728,18 +1747,20 @@ require.define("/lib/search.coffee", function (require, module, exports, __dirna
     var neighborhood, performSearch;
     neighborhood = _arg.neighborhood;
     performSearch = function(searchQuery) {
-      var $searchResultPage, explanatoryPara, result, searchResultPageData, searchResultReferences, searchResults;
+      var $searchResultPage, explanatoryPara, result, searchResultPageData, searchResultReferences, searchResults, tally;
       searchResults = neighborhood.search(searchQuery);
+      tally = searchResults.tally;
       explanatoryPara = {
         type: 'paragraph',
         id: util.randomBytes(8),
-        text: "These are the search results for '" + searchQuery + "'."
+        text: "String '" + searchQuery + "' found on " + (tally.finds || 'none') + " of " + (tally.pages || 'no') + " pages from " + (tally.sites || 'no') + " sites.\nText matched on " + (tally.title || 'no') + " titles, " + (tally.text || 'no') + " paragraphs, and " + (tally.slug || 'no') + " slugs.\nElapsed time " + tally.msec + " milliseconds."
       };
       searchResultReferences = (function() {
-        var _i, _len, _results;
+        var _i, _len, _ref, _results;
+        _ref = searchResults.finds;
         _results = [];
-        for (_i = 0, _len = searchResults.length; _i < _len; _i++) {
-          result = searchResults[_i];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          result = _ref[_i];
           _results.push({
             "type": "reference",
             "id": util.randomBytes(8),

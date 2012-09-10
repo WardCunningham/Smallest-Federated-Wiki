@@ -5,7 +5,7 @@ describe 'neighborhood', ->
   describe 'no neighbors', ->
     it 'should return an empty array for our search', ->
       searchResult = neighborhood.search( "query string" )
-      expect(searchResult).to.eql( [] )
+      expect(searchResult.finds).to.eql( [] )
 
 
   describe 'a single neighbor with a few pages', ->
@@ -25,11 +25,11 @@ describe 'neighborhood', ->
 
     it 'returns all pages that match the query', ->
       searchResult = neighborhood.search( "Page" )
-      expect( searchResult ).to.have.length(3)
+      expect( searchResult.finds ).to.have.length(3)
 
     it 'returns only pages that match the query', ->
       searchResult = neighborhood.search( "Page T" )
-      expect( searchResult ).to.have.length(2)
+      expect( searchResult.finds ).to.have.length(2)
 
     it 'should package the results in the correct format', ->
       expectedResult = [
@@ -40,7 +40,7 @@ describe 'neighborhood', ->
         }
       ]
       searchResult = neighborhood.search( "Page Two" )
-      expect( searchResult ).to.eql( expectedResult )
+      expect( searchResult.finds ).to.eql( expectedResult )
 
 
     it 'searches both the slug and the title'
@@ -66,8 +66,8 @@ describe 'neighborhood', ->
 
     it 'returns matching pages from every neighbor', ->
       searchResult = neighborhood.search( "Page Two" )
-      expect( searchResult ).to.have.length(2)
-      sites = _.pluck( searchResult, 'site' )
+      expect( searchResult.finds ).to.have.length(2)
+      sites = _.pluck( searchResult.finds, 'site' )
       expect( sites.sort() ).to.eql( ['site-one','site-two'].sort() )
 
 
@@ -78,6 +78,6 @@ describe 'neighborhood', ->
 
     it 'gracefully ignores unpopulated neighbors', ->
       searchResult = neighborhood.search( "some search query" )
-      expect( searchResult ).to.be.empty()
+      expect( searchResult.finds ).to.be.empty()
 
     it 'should re-populate the neighbor'

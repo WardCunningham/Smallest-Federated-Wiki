@@ -1615,28 +1615,47 @@ require.define("/lib/neighborhood.coffee", function (require, module, exports, _
   };
 
   neighborhood.search = function(searchQuery) {
-    var match, matches, matchingPages, neighborInfo, neighborSite, sitemap, _ref2;
-    matches = [];
-    match = function(text) {
-      return (text != null) && text.toLowerCase().indexOf(searchQuery.toLowerCase()) >= 0;
+    var finds, match, matchingPages, neighborInfo, neighborSite, sitemap, start, tally, tick, _ref2;
+    finds = [];
+    tally = {};
+    tick = function(key) {
+      if (tally[key] != null) {
+        return tally[key]++;
+      } else {
+        return tally[key] = 1;
+      }
     };
+    match = function(key, text) {
+      var hit;
+      hit = (text != null) && text.toLowerCase().indexOf(searchQuery.toLowerCase()) >= 0;
+      if (hit) tick(key);
+      return hit;
+    };
+    start = Date.now();
     _ref2 = wiki.neighborhood;
     for (neighborSite in _ref2) {
       if (!__hasProp.call(_ref2, neighborSite)) continue;
       neighborInfo = _ref2[neighborSite];
       sitemap = neighborInfo.sitemap;
+      if (sitemap != null) tick('sites');
       matchingPages = _.each(sitemap, function(page) {
-        if (!(match(page.title) || match(page.synopsis) || match(page.slug))) {
+        tick('pages');
+        if (!(match('title', page.title) || match('text', page.synopsis) || match('slug', page.slug))) {
           return;
         }
-        return matches.push({
+        tick('finds');
+        return finds.push({
           page: page,
           site: neighborSite,
           rank: 1
         });
       });
     }
-    return matches;
+    tally['msec'] = Date.now() - start;
+    return {
+      finds: finds,
+      tally: tally
+    };
   };
 
   $(function() {
@@ -1680,18 +1699,20 @@ require.define("/lib/search.coffee", function (require, module, exports, __dirna
     var neighborhood, performSearch;
     neighborhood = _arg.neighborhood;
     performSearch = function(searchQuery) {
-      var $searchResultPage, explanatoryPara, result, searchResultPageData, searchResultReferences, searchResults;
+      var $searchResultPage, explanatoryPara, result, searchResultPageData, searchResultReferences, searchResults, tally;
       searchResults = neighborhood.search(searchQuery);
+      tally = searchResults.tally;
       explanatoryPara = {
         type: 'paragraph',
         id: util.randomBytes(8),
-        text: "These are the search results for '" + searchQuery + "'."
+        text: "String '" + searchQuery + "' found on " + (tally.finds || 'none') + " of " + (tally.pages || 'no') + " pages from " + (tally.sites || 'no') + " sites.\nText matched on " + (tally.title || 'no') + " titles, " + (tally.text || 'no') + " paragraphs, and " + (tally.slug || 'no') + " slugs.\nElapsed time " + tally.msec + " milliseconds."
       };
       searchResultReferences = (function() {
-        var _i, _len, _results;
+        var _i, _len, _ref, _results;
+        _ref = searchResults.finds;
         _results = [];
-        for (_i = 0, _len = searchResults.length; _i < _len; _i++) {
-          result = searchResults[_i];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          result = _ref[_i];
           _results.push({
             "type": "reference",
             "id": util.randomBytes(8),
@@ -2043,7 +2064,7 @@ require.define("/test/neighborhood.coffee", function (require, module, exports, 
       return it('should return an empty array for our search', function() {
         var searchResult;
         searchResult = neighborhood.search("query string");
-        return expect(searchResult).to.eql([]);
+        return expect(searchResult.finds).to.eql([]);
       });
     });
     describe('a single neighbor with a few pages', function() {
@@ -2071,12 +2092,12 @@ require.define("/test/neighborhood.coffee", function (require, module, exports, 
       it('returns all pages that match the query', function() {
         var searchResult;
         searchResult = neighborhood.search("Page");
-        return expect(searchResult).to.have.length(3);
+        return expect(searchResult.finds).to.have.length(3);
       });
       it('returns only pages that match the query', function() {
         var searchResult;
         searchResult = neighborhood.search("Page T");
-        return expect(searchResult).to.have.length(2);
+        return expect(searchResult.finds).to.have.length(2);
       });
       it('should package the results in the correct format', function() {
         var expectedResult, searchResult;
@@ -2092,7 +2113,7 @@ require.define("/test/neighborhood.coffee", function (require, module, exports, 
           }
         ];
         searchResult = neighborhood.search("Page Two");
-        return expect(searchResult).to.eql(expectedResult);
+        return expect(searchResult.finds).to.eql(expectedResult);
       });
       return it('searches both the slug and the title');
     });
@@ -2125,8 +2146,8 @@ require.define("/test/neighborhood.coffee", function (require, module, exports, 
       return it('returns matching pages from every neighbor', function() {
         var searchResult, sites;
         searchResult = neighborhood.search("Page Two");
-        expect(searchResult).to.have.length(2);
-        sites = _.pluck(searchResult, 'site');
+        expect(searchResult.finds).to.have.length(2);
+        sites = _.pluck(searchResult.finds, 'site');
         return expect(sites.sort()).to.eql(['site-one', 'site-two'].sort());
       });
     });
@@ -2138,7 +2159,7 @@ require.define("/test/neighborhood.coffee", function (require, module, exports, 
       it('gracefully ignores unpopulated neighbors', function() {
         var searchResult;
         searchResult = neighborhood.search("some search query");
-        return expect(searchResult).to.be.empty();
+        return expect(searchResult.finds).to.be.empty();
       });
       return it('should re-populate the neighbor');
     });

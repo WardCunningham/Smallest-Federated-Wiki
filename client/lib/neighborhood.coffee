@@ -54,18 +54,31 @@ neighborhood.listNeighbors = ()->
   _.keys( wiki.neighborhood )
 
 neighborhood.search = (searchQuery)->
-  matches = []
-  match = (text) ->
-    text? and text.toLowerCase().indexOf( searchQuery.toLowerCase() ) >= 0
+  finds = []
+  tally = {}
+
+  tick = (key) ->
+    if tally[key]? then tally[key]++ else tally[key] = 1
+
+  match = (key, text) ->
+    hit = text? and text.toLowerCase().indexOf( searchQuery.toLowerCase() ) >= 0
+    tick key if hit
+    hit
+
+  start = Date.now()
   for own neighborSite,neighborInfo of wiki.neighborhood
     sitemap = neighborInfo.sitemap
+    tick 'sites' if sitemap?
     matchingPages = _.each sitemap, (page)->
-      return unless match(page.title) or match(page.synopsis) or match(page.slug)
-      matches.push
+      tick 'pages'
+      return unless match('title', page.title) or match('text', page.synopsis) or match('slug', page.slug)
+      tick 'finds'
+      finds.push
         page: page,
         site: neighborSite,
         rank: 1 # HARDCODED FOR NOW
-  matches
+  tally['msec'] = Date.now() - start
+  { finds, tally }
 
 
 $ ->
