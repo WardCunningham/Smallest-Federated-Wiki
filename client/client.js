@@ -1665,15 +1665,18 @@ require.define("/lib/neighborhood.coffee", function (require, module, exports, _
   };
 
   neighborhood.search = function(searchQuery) {
-    var matches, matchingPages, neighborInfo, neighborSite, sitemap, _ref2;
+    var match, matches, matchingPages, neighborInfo, neighborSite, sitemap, _ref2;
     matches = [];
+    match = function(text) {
+      return (text != null) && text.toLowerCase().indexOf(searchQuery.toLowerCase()) >= 0;
+    };
     _ref2 = wiki.neighborhood;
     for (neighborSite in _ref2) {
       if (!__hasProp.call(_ref2, neighborSite)) continue;
       neighborInfo = _ref2[neighborSite];
       sitemap = neighborInfo.sitemap;
       matchingPages = _.each(sitemap, function(page) {
-        if (page.title.toLowerCase().indexOf(searchQuery.toLowerCase()) === -1) {
+        if (!(match(page.title) || match(page.synopsis) || match(page.slug))) {
           return;
         }
         return matches.push({
@@ -1751,7 +1754,7 @@ require.define("/lib/search.coffee", function (require, module, exports, __dirna
             "site": result.site,
             "slug": result.page.slug,
             "title": result.page.title,
-            "text": ''
+            "text": result.page.synopsis || ''
           });
         }
         return _results;

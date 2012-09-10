@@ -58,10 +58,12 @@ neighborhood.listNeighbors = ()->
 
 neighborhood.search = (searchQuery)->
   matches = []
+  match = (text) ->
+    text? and text.toLowerCase().indexOf( searchQuery.toLowerCase() ) >= 0
   for own neighborSite,neighborInfo of wiki.neighborhood
     sitemap = neighborInfo.sitemap
     matchingPages = _.each sitemap, (page)->
-      return if page.title.toLowerCase().indexOf( searchQuery.toLowerCase() ) == -1
+      return unless match(page.title) or match(page.synopsis) or match(page.slug)
       matches.push
         page: page,
         site: neighborSite,

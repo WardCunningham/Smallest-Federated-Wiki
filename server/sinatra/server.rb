@@ -195,7 +195,7 @@ class Controller < Sinatra::Base
     content_type 'application/json'
     cross_origin
     pages = Store.annotated_pages farm_page.directory
-    sitemap = pages.collect {|p| {"slug" => p['name'], "title" => p['title'], "date" => p['updated_at'].to_i*1000}}
+    sitemap = pages.collect {|p| {"slug" => p['name'], "title" => p['title'], "date" => p['updated_at'].to_i*1000, "synopsis" => synopsis(p)}}
     JSON.pretty_generate sitemap
   end
 

@@ -52,5 +52,15 @@ module ServerHelpers
     JSON.pretty_generate farm_page(site).get(name)
   end
 
+  def synopsis page
+    text = page['synopsis']
+    p1 = page['story'] && page['story'][0]
+    p2 = page['story'] && page['story'][1]
+    text ||= p1 && p1['text'] if p1 && p1['type'] == 'paragraph'
+    text ||= p2 && p2['text'] if p2 && p2['type'] == 'paragraph'
+    text ||= p1 && p1['text'] || p2 && p2['text'] || page['story'] && "A page with #{page['story'].length} paragraphs." || "A page with no story."
+    return text
+  end
+
 end
 

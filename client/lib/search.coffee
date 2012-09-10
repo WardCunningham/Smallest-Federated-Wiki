@@ -18,7 +18,7 @@ createSearch = ({neighborhood})->
         "site": result.site
         "slug": result.page.slug
         "title": result.page.title
-        "text": ''
+        "text": result.page.synopsis || ''
       }
     searchResultPageData = {
       title: "Search Results"
