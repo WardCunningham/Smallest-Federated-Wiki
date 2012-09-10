@@ -1714,8 +1714,8 @@ require.define("/lib/search.coffee", function (require, module, exports, __dirna
         story: [explanatoryPara].concat(searchResultReferences)
       };
       $searchResultPage = wiki.createPage('search-results').addClass('ghost');
-      wiki.buildPage(searchResultPageData, null, $searchResultPage);
       $searchResultPage.appendTo($('.main'));
+      wiki.buildPage(searchResultPageData, null, $searchResultPage);
       return active.set($('.page').last());
     };
     return {

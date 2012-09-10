@@ -25,8 +25,8 @@ createSearch = ({neighborhood})->
       story: [explanatoryPara].concat(searchResultReferences)
     }
     $searchResultPage = wiki.createPage('search-results').addClass('ghost')
-    wiki.buildPage( searchResultPageData, null, $searchResultPage )
     $searchResultPage.appendTo($('.main'))
+    wiki.buildPage( searchResultPageData, null, $searchResultPage )
     active.set($('.page').last())
 
 
