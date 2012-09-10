@@ -197,6 +197,7 @@ $ ->
   $(document)
     .ajaxError (event, request, settings) ->
       wiki.log 'ajax error', event, request, settings
+      return if request.status == 0
       msg = "<li class='error'>Error on #{settings.url}: #{request.responseText}</li>"
       $('.main').prepend msg unless request.status == 404
 

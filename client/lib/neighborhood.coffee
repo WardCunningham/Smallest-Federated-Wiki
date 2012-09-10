@@ -21,7 +21,6 @@ populateSiteInfoFor = (site,neighborInfo)->
 
   fetchMap = ->
     sitemapUrl = "http://#{site}/system/sitemap.json"
-    wiki.log 'fetchMap', site
     transition site, 'wait', 'fetch'
     request = $.ajax
       type: 'GET'
@@ -34,14 +33,12 @@ populateSiteInfoFor = (site,neighborInfo)->
         transition site, 'fetch', 'done'
       .fail (data)->
         transition site, 'fetch', 'fail'
-        wiki.log( "fetchMap failed", site, data )
 
   now = Date.now()
   if now > nextAvailableFetch
     nextAvailableFetch = now + nextFetchInterval
     setTimeout fetchMap, 100
   else
-    wiki.log 'fetchMap delayed', site, nextAvailableFetch - now
     setTimeout fetchMap, nextAvailableFetch - now
     nextAvailableFetch += nextFetchInterval
 
@@ -85,18 +82,10 @@ $ ->
     """
 
   $('body')
-    .on 'neighborhood-change', ()->
-      $neighborhood.empty()
-      _.each neighborhood.listNeighbors(), (site)->
-        $neighborhood.append flag site
-
     .on 'new-neighbor', (e, site) ->
-      wiki.log 'new-neighbor', site
       $neighborhood.append flag site
-
     .delegate '.neighbor img', 'click', (e) ->
       wiki.doInternalLink 'welcome-visitors', null, @.title
-
 
   search = createSearch({neighborhood})
 

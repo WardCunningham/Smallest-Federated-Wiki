@@ -1576,7 +1576,6 @@ require.define("/lib/neighborhood.coffee", function (require, module, exports, _
     fetchMap = function() {
       var request, sitemapUrl;
       sitemapUrl = "http://" + site + "/system/sitemap.json";
-      wiki.log('fetchMap', site);
       transition(site, 'wait', 'fetch');
       request = $.ajax({
         type: 'GET',
@@ -1589,8 +1588,7 @@ require.define("/lib/neighborhood.coffee", function (require, module, exports, _
         neighborInfo.sitemap = data;
         return transition(site, 'fetch', 'done');
       }).fail(function(data) {
-        transition(site, 'fetch', 'fail');
-        return wiki.log("fetchMap failed", site, data);
+        return transition(site, 'fetch', 'fail');
       });
     };
     now = Date.now();
@@ -1598,7 +1596,6 @@ require.define("/lib/neighborhood.coffee", function (require, module, exports, _
       nextAvailableFetch = now + nextFetchInterval;
       return setTimeout(fetchMap, 100);
     } else {
-      wiki.log('fetchMap delayed', site, nextAvailableFetch - now);
       setTimeout(fetchMap, nextAvailableFetch - now);
       return nextAvailableFetch += nextFetchInterval;
     }
@@ -1648,13 +1645,7 @@ require.define("/lib/neighborhood.coffee", function (require, module, exports, _
     flag = function(site) {
       return "<span class=\"neighbor\" data-site=\"" + site + "\">\n  <div class=\"wait\">\n    <img src=\"http://" + site + "/favicon.png\" title=\"" + site + "\">\n  </div>\n</span>";
     };
-    $('body').on('neighborhood-change', function() {
-      $neighborhood.empty();
-      return _.each(neighborhood.listNeighbors(), function(site) {
-        return $neighborhood.append(flag(site));
-      });
-    }).on('new-neighbor', function(e, site) {
-      wiki.log('new-neighbor', site);
+    $('body').on('new-neighbor', function(e, site) {
       return $neighborhood.append(flag(site));
     }).delegate('.neighbor img', 'click', function(e) {
       return wiki.doInternalLink('welcome-visitors', null, this.title);
