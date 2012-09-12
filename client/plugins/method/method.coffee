@@ -54,6 +54,8 @@ dispatch = (state, done) ->
 
   lookup = (v) ->
     table = attach 'Tier3ExposurePercentages'
+    return NaN if isNaN v[0]
+    return NaN if isNaN v[1]
     row = _.find table, (row) ->
       asValue(row.Exposure)==v[0] and asValue(row.Raw)==v[1]
     throw new Error "can't find exposure #{v[0]} and raw #{v[1]}" unless row?
