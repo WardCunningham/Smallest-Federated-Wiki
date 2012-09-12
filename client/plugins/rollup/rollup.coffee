@@ -56,10 +56,10 @@ window.plugins.rollup =
               'orange'
             else
               'red'
-            title = "#{row.Material}\n#{col}\nold #{old.toFixed 2}\nnow #{now.toFixed 2}"
+            title = "#{row.Material}\n#{col}\nold #{old.toFixed 4}\nnow #{now.toFixed 4}"
             $row.append """<td class="score" title="#{title}" data-thumb="#{col}" style="color:#{color};">#{old.toFixed 0}</td>"""
           else
-            title = "#{row.Material}\n#{col}\n#{old.toFixed 2}"
+            title = "#{row.Material}\n#{col}\n#{old.toFixed 4}"
             $row.append """<td class="score" title="#{title}" data-thumb="#{col}">#{old.toFixed 0}</td>"""
 
     perform = (state, plugin, done) ->
