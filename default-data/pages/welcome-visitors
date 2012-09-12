@@ -55,10 +55,6 @@
       }
     },
     {
-      "type": "fork",
-      "site": "fed.wiki.org"
-    },
-    {
       "type": "edit",
       "id": "7b56f22a4b9ee974",
       "item": {
