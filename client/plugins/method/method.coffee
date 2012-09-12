@@ -73,10 +73,8 @@ dispatch = (state, done) ->
     result += asValue(row.C4) * Math.pow(v,4)
     result += asValue(row.C5) * Math.pow(v,5)
     result += asValue(row.C6) * Math.pow(v,6)
-    if asValue(row['One minus'])
-      1 - result
-    else
-      result
+    result = 1 - result if asValue(row['One minus'])
+    Math.min(1, Math.max(0, result))
 
   apply = (name, list, label) ->
     switch name

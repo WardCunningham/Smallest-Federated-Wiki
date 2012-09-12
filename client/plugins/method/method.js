@@ -85,6 +85,12 @@
     lookup = function(v) {
       var row, table;
       table = attach('Tier3ExposurePercentages');
+      if (isNaN(v[0])) {
+        return NaN;
+      }
+      if (isNaN(v[1])) {
+        return NaN;
+      }
       row = _.find(table, function(row) {
         return asValue(row.Exposure) === v[0] && asValue(row.Raw) === v[1];
       });
@@ -110,10 +116,9 @@
       result += asValue(row.C5) * Math.pow(v, 5);
       result += asValue(row.C6) * Math.pow(v, 6);
       if (asValue(row['One minus'])) {
-        return 1 - result;
-      } else {
-        return result;
+        result = 1 - result;
       }
+      return Math.min(1, Math.max(0, result));
     };
     apply = function(name, list, label) {
       switch (name) {
