@@ -58,7 +58,7 @@ $ ->
     prev = journalElement.find(".edit[data-id=#{action.id || 0}]") if action.type == 'edit'
     actionTitle = action.type
     actionTitle += " #{util.formatElapsedTime(action.date)}" if action.date?
-    actionElement = $("<a href=\"\#\" /> ").addClass("action").addClass(action.type)
+    actionElement = $("""<a href="#" /> """).addClass("action").addClass(action.type)
       .text(util.symbols[action.type])
       .attr('title',actionTitle)
       .attr('data-id', action.id || "0")
