@@ -4,7 +4,7 @@
   window.plugins.rollup = {
     emit: function(div, item) {},
     bind: function(div, item) {
-      var $row, $table, asValue, attach, delay, display, perform, radar, recalculate, reference, row, rows, slug, state, timeout, _i, _len, _results;
+      var $row, $table, asValue, attach, delay, display, perform, radar, recalculate, reference, reindex, remaining, results, row, rows, slug, state, timeout, _i, _len, _results;
       div.dblclick(function() {
         return wiki.textEditor(div, item);
       });
@@ -43,7 +43,7 @@
       };
       reference = attach("Materials Summary");
       display = function(calculated, state) {
-        var $row, col, color, e, k, label, now, old, row, title, v, _i, _len, _ref, _results;
+        var $row, col, color, e, errors, k, label, now, old, row, title, v, _i, _len, _ref, _results;
         row = state.row;
         $row = state.$row;
         _ref = reference.columns;
@@ -53,8 +53,18 @@
           if (col === 'Material') {
             label = wiki.resolveLinks("[[" + row.Material + "]]");
             if (calculated) {
+              title = ((function() {
+                var _ref1, _results1;
+                _ref1 = state.input;
+                _results1 = [];
+                for (k in _ref1) {
+                  v = _ref1[k];
+                  _results1.push("" + k + ": " + (asValue(v).toString().replace(/0000*\d$/, '')));
+                }
+                return _results1;
+              })()).join("\n");
               if (state.errors.length > 0) {
-                title = ((function() {
+                errors = ((function() {
                   var _j, _len1, _ref1, _results1;
                   _ref1 = state.errors;
                   _results1 = [];
@@ -64,19 +74,9 @@
                   }
                   return _results1;
                 })()).join("\n");
-                _results.push($row.append("<td class=\"material\">" + label + " <span style=\"color:red;\" title=\"" + title + "\">✔</span></td>"));
+                _results.push($row.append("<td class=\"material\" title=\"" + title + "\">" + label + " <span style=\"color:red;\" title=\"" + errors + "\">✘</span></td>"));
               } else {
-                title = ((function() {
-                  var _ref1, _results1;
-                  _ref1 = state.input;
-                  _results1 = [];
-                  for (k in _ref1) {
-                    v = _ref1[k];
-                    _results1.push("" + k + ": " + (asValue(v).toString().replace(/0000*\d$/, '')));
-                  }
-                  return _results1;
-                })()).join("\n");
-                _results.push($row.append("<td class=\"material\">" + label + " <span title=\"" + title + "\">✔</span></td>"));
+                _results.push($row.append("<td class=\"material\" title=\"" + title + "\">" + label + "</td>"));
               }
             } else {
               _results.push($row.append("<td class=\"material\">" + label + "</td>"));
@@ -140,11 +140,31 @@
         }
         return output;
       };
+      reindex = function(results) {
+        var index, sorted, state, _i, _j, _len, _len1, _results;
+        wiki.log('reindex', results);
+        sorted = _.sortBy(results, function(state) {
+          return -asValue(state.input['Total Score']);
+        });
+        for (index = _i = 0, _len = sorted.length; _i < _len; index = ++_i) {
+          state = sorted[index];
+          state.input.Rank = "" + (index + 1);
+        }
+        _results = [];
+        for (_j = 0, _len1 = results.length; _j < _len1; _j++) {
+          state = results[_j];
+          state.$row.empty();
+          _results.push(display(true, state));
+        }
+        return _results;
+      };
       div.append(($table = $("<table/>")));
       rows = _.sortBy(reference.data, function(row) {
         return -asValue(row['Total Score']);
       });
       delay = 0;
+      results = [];
+      remaining = rows.length;
       _results = [];
       for (_i = 0, _len = rows.length; _i < _len; _i++) {
         row = rows[_i];
@@ -161,7 +181,13 @@
         delay += 200;
         _results.push(recalculate(delay, state, function(state) {
           state.$row.empty();
-          return display(true, state);
+          state.input.Rank = state.row.Rank;
+          display(true, state);
+          results.push(state);
+          remaining -= 1;
+          if (!remaining) {
+            return reindex(results);
+          }
         }));
       }
       return _results;

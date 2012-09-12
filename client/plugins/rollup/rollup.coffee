@@ -38,12 +38,12 @@ window.plugins.rollup =
         if col == 'Material'
           label = wiki.resolveLinks "[[#{row.Material}]]"
           if calculated
+            title = ("#{k}: #{asValue(v).toString().replace /0000*\d$/, ''}" for k,v of state.input).join "\n"
             if state.errors.length > 0
-              title = (e.message.replace(/"/g,"'") for e in state.errors).join "\n"
-              $row.append """<td class="material">#{label} <span style="color:red;" title="#{title}">✔</span></td>"""
+              errors = (e.message.replace(/"/g,"'") for e in state.errors).join "\n"
+              $row.append """<td class="material" title="#{title}">#{label} <span style="color:red;" title="#{errors}">✘</span></td>"""
             else
-              title = ("#{k}: #{asValue(v).toString().replace /0000*\d$/, ''}" for k,v of state.input).join "\n"
-              $row.append """<td class="material">#{label} <span title="#{title}">✔</span></td>"""
+              $row.append """<td class="material" title="#{title}">#{label}</td>"""
           else
             $row.append """<td class="material">#{label}</td>"""
         else
@@ -92,9 +92,20 @@ window.plugins.rollup =
           _.extend output, elem.data('item').data[0]
       return output
 
+    reindex = (results) ->
+      wiki.log 'reindex', results
+      sorted = _.sortBy results, (state) -> -asValue(state.input['Total Score'])
+      for state, index in sorted
+        state.input.Rank = "#{index+1}"
+      for state in results
+        state.$row.empty()
+        display true, state
+
     div.append ($table = $ """<table/>""")
     rows = _.sortBy reference.data, (row) -> -asValue(row['Total Score'])
     delay = 0
+    results = []
+    remaining = rows.length
     for row in rows
       slug = wiki.asSlug row.Material
       $table.append ($row = $ """<tr class="#{slug}">""")
@@ -103,4 +114,8 @@ window.plugins.rollup =
       delay += 200
       recalculate delay, state, (state)->
         state.$row.empty()
+        state.input.Rank = state.row.Rank
         display true, state
+        results.push state
+        remaining -= 1
+        reindex(results) unless remaining
