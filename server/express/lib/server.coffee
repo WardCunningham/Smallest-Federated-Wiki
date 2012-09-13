@@ -20,6 +20,8 @@ random = require('./random_id')
 passportImport = require('passport')
 OpenIDstrat = require('passport-openid').Strategy
 defargs = require('./defaultargs')
+sockjs  = require('sockjs')
+
 
 # pageFactory can be easily replaced here by requiring your own page handler
 # factory, which gets called with the argv object, and then has get and put
@@ -35,8 +37,20 @@ gitVersion = child_process.exec('git log -10 --oneline || echo no git log', (err
 
 # Set export objects for node and coffee to a function that generates a sfw server.
 module.exports = exports = (argv) ->
+  # Echo sockjs server
+  sockjs_opts = {sockjs_url: "http://cdn.sockjs.org/sockjs-0.3.min.js"}
+
+  sockjs_echo = sockjs.createServer(sockjs_opts)
+  sockjs_echo.on('connection', (conn) ->
+    conn.on('data', (message) ->
+        conn.write(message)
+    )
+  )
+
   # Create the main application object, app.
   app = express.createServer()
+  sockjs_echo.installHandlers(app, {prefix:'/echo'})
+
   # defaultargs.coffee exports a function that takes the argv object
   # that is passed in and then does its
   # best to supply sane defaults for any arguments that are missing.
@@ -224,6 +238,7 @@ module.exports = exports = (argv) ->
   app.get('/style.css', (req, res) ->
     res.sendfile("#{argv.r}/server/express/views/style.css")
   )
+
 
   # Main route for initial contact.  Allows us to
   # link into a specific set of pages, local and remote.
