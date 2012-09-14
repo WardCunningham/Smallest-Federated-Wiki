@@ -109,6 +109,11 @@ dispatch = (state, done) ->
         if Math.abs(change = value/previous-1) > 0.0001
           comment = "previously #{previous}\nΔ #{round(change*100)}%"
       output[line] = value
+      if (s = state.item.checks) && (v = s[line]) != undefined
+        if asValue(v).toFixed(4) != value.toFixed(4)
+          color = '#faa'
+          line += " != #{asValue(v).toFixed(4)}"
+          state.caller.errors.push({message: line}) if state.caller
     else if args = line.match /^([A-Z]+)$/
       [value, list, count] = [apply(args[1], list), [], list.length]
       color = '#ddd'

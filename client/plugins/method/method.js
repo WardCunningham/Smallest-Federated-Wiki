@@ -64,7 +64,7 @@
   };
 
   dispatch = function(state, done) {
-    var apply, args, attach, change, color, comment, count, hover, input, line, list, lookup, output, polynomial, previous, result, value, _ref, _ref1;
+    var apply, args, attach, change, color, comment, count, hover, input, line, list, lookup, output, polynomial, previous, result, s, v, value, _ref, _ref1;
     state.list || (state.list = []);
     state.lines || (state.lines = state.item.text.split("\n"));
     line = state.lines.shift();
@@ -169,6 +169,17 @@
           }
         }
         output[line] = value;
+        if ((s = state.item.checks) && (v = s[line]) !== void 0) {
+          if (asValue(v).toFixed(4) !== value.toFixed(4)) {
+            color = '#faa';
+            line += " != " + (asValue(v).toFixed(4));
+            if (state.caller) {
+              state.caller.errors.push({
+                message: line
+              });
+            }
+          }
+        }
       } else if (args = line.match(/^([A-Z]+)$/)) {
         _ref1 = [apply(args[1], list), [], list.length], value = _ref1[0], list = _ref1[1], count = _ref1[2];
         color = '#ddd';
