@@ -586,7 +586,8 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       var page;
       e.preventDefault();
       if (!e.shiftKey) page = $(e.target).parents('.page');
-      return doInternalLink(name, page, $(e.target).data('site'));
+      doInternalLink(name, page, $(e.target).data('site'));
+      return false;
     };
     $('.main').delegate('.show-page-source', 'click', function(e) {
       var json, pageElement;

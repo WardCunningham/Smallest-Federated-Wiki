@@ -205,6 +205,7 @@ $ ->
     e.preventDefault()
     page = $(e.target).parents('.page') unless e.shiftKey
     doInternalLink name, page, $(e.target).data('site')
+    return false
 
   $('.main')
     .delegate '.show-page-source', 'click', (e) ->
