@@ -38,12 +38,11 @@ window.plugins.rollup =
         if col == 'Material'
           label = wiki.resolveLinks "[[#{row.Material}]]"
           if calculated
-            title = ("#{k}: #{asValue(v).toString().replace /0000*\d$/, ''}" for k,v of state.input).join "\n"
             if state.errors.length > 0
               errors = (e.message.replace(/"/g,"'") for e in state.errors).join "\n"
-              $row.append """<td class="material" title="#{title}">#{label} <span style="color:red;" title="#{errors}">✘</span></td>"""
+              $row.append """<td class="material">#{label} <span style="color:red;" title="#{errors}">✘</span></td>"""
             else
-              $row.append """<td class="material" title="#{title}">#{label}</td>"""
+              $row.append """<td class="material">#{label}</td>"""
           else
             $row.append """<td class="material">#{label}</td>"""
         else

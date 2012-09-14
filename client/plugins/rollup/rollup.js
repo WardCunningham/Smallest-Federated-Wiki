@@ -43,7 +43,7 @@
       };
       reference = attach("Materials Summary");
       display = function(calculated, state) {
-        var $row, col, color, e, errors, k, label, now, old, row, title, v, _i, _len, _ref, _results;
+        var $row, col, color, e, errors, label, now, old, row, title, _i, _len, _ref, _results;
         row = state.row;
         $row = state.$row;
         _ref = reference.columns;
@@ -53,16 +53,6 @@
           if (col === 'Material') {
             label = wiki.resolveLinks("[[" + row.Material + "]]");
             if (calculated) {
-              title = ((function() {
-                var _ref1, _results1;
-                _ref1 = state.input;
-                _results1 = [];
-                for (k in _ref1) {
-                  v = _ref1[k];
-                  _results1.push("" + k + ": " + (asValue(v).toString().replace(/0000*\d$/, '')));
-                }
-                return _results1;
-              })()).join("\n");
               if (state.errors.length > 0) {
                 errors = ((function() {
                   var _j, _len1, _ref1, _results1;
@@ -74,9 +64,9 @@
                   }
                   return _results1;
                 })()).join("\n");
-                _results.push($row.append("<td class=\"material\" title=\"" + title + "\">" + label + " <span style=\"color:red;\" title=\"" + errors + "\">✘</span></td>"));
+                _results.push($row.append("<td class=\"material\">" + label + " <span style=\"color:red;\" title=\"" + errors + "\">✘</span></td>"));
               } else {
-                _results.push($row.append("<td class=\"material\" title=\"" + title + "\">" + label + "</td>"));
+                _results.push($row.append("<td class=\"material\">" + label + "</td>"));
               }
             } else {
               _results.push($row.append("<td class=\"material\">" + label + "</td>"));
