@@ -6,8 +6,8 @@
     emit: function(div, item) {
       return wiki.getScript('http://cdn.sockjs.org/sockjs-0.3.min.js', function() {
         var form, inp, print, sockjs, sockjs_url;
-        div.append("<style>\n  .socktest .box {\n      width: 300px;\n      float: left;\n      margin: 0 20px 0 20px;\n  }\n  .socktest .box div, .socktest .box input {\n      border: 1px solid;\n      -moz-border-radius: 4px;\n      border-radius: 4px;\n      width: 100%;\n      padding: 0px;\n      margin: 5px;\n  }\n  .socktest .box div {\n      border-color: grey;\n      height: 300px;\n      overflow: auto;\n  }\n  .socktest .box input {\n      height: 30px;\n  }\n  .socktest h1 {\n      margin-left: 30px;\n  }\n  .socktest body {\n      background-color: #F0F0F0;\n      font-family: \"Arial\";\n  }\n</style>\n\n<h1>SockJS Express example</h1>\n\n<div id=\"first\" class=\"box\">\n  <div></div>\n  <form><input autocomplete=\"off\" value=\"Type here...\"></input></form>\n</div>                  ");
-        sockjs_url = "/echo";
+        div.append("<style>\n  .socktest .box {\n      width: 300px;\n      float: left;\n      margin: 0 20px 0 20px;\n  }\n  .socktest .box div, .socktest .box input {\n      border: 1px solid;\n      -moz-border-radius: 4px;\n      border-radius: 4px;\n      width: 100%;\n      padding: 0px;\n      margin: 5px;\n  }\n  .socktest .box div {\n      border-color: grey;\n      height: 300px;\n      overflow: auto;\n  }\n  .socktest .box input {\n      height: 30px;\n  }\n</style>\n\n<div id=\"first\" class=\"box\">\n  <div></div>\n  <form><input autocomplete=\"off\" value=\"Type here...\"></input></form>\n</div>                  ");
+        sockjs_url = "/system/echo";
         sockjs = new SockJS(sockjs_url);
         $("#first input").focus();
         div = $("#first div");
