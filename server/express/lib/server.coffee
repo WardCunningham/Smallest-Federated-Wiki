@@ -20,6 +20,8 @@ random = require('./random_id')
 passportImport = require('passport')
 OpenIDstrat = require('passport-openid').Strategy
 defargs = require('./defaultargs')
+sockjs  = require('sockjs')
+
 
 # pageFactory can be easily replaced here by requiring your own page handler
 # factory, which gets called with the argv object, and then has get and put
@@ -35,8 +37,35 @@ gitVersion = child_process.exec('git log -10 --oneline || echo no git log', (err
 
 # Set export objects for node and coffee to a function that generates a sfw server.
 module.exports = exports = (argv) ->
+  # Echo sockjs server
+  sockjs_opts = {sockjs_url: "http://cdn.sockjs.org/sockjs-0.3.min.js"}
+
+  sockjs_echo = sockjs.createServer(sockjs_opts)
+  sockjs_echo.on('connection', (conn) ->
+    sockjs_echo.on('swfServed', (name) ->
+      conn.write(name)
+    )
+    conn.on('data', (message) ->
+        conn.write(message)
+    )
+  )
+  logWatchSocket = sockjs.createServer({sockjs_url: "http://cdn.sockjs.org/sockjs-0.3.min.js"})
+  logWatchSocket.on('connection', (conn) ->
+    logWatchSocket.on('fetch', (page) ->
+      reference =
+        title: page.title
+      conn.write(JSON.stringify reference)
+    )
+    conn.on('data', (message) ->
+        # conn.write(message)
+    )
+  )
+
   # Create the main application object, app.
   app = express.createServer()
+  sockjs_echo.installHandlers(app, {prefix:'/system/echo'})
+  logWatchSocket.installHandlers(app, {prefix:'/system/logwatch'})
+
   # defaultargs.coffee exports a function that takes the argv object
   # that is passed in and then does its
   # best to supply sane defaults for any arguments that are missing.
@@ -225,6 +254,7 @@ module.exports = exports = (argv) ->
     res.sendfile("#{argv.r}/server/express/views/style.css")
   )
 
+
   # Main route for initial contact.  Allows us to
   # link into a specific set of pages, local and remote.
   # Can also be handled by the client, but it also sets up
@@ -273,8 +303,12 @@ module.exports = exports = (argv) ->
   # Local pages are handled by the pagehandler module.
   app.get(///^/([a-z0-9-]+)\.json$///, cors, (req, res) ->
     file = req.params[0]
+    #-- send a page served event with file as argument
+    sockjs_echo.emit('swfServed', file)
+
     pagehandler.get(file, (e, page, status) ->
       if e then throw e
+      logWatchSocket.emit('fetch', page)
       res.json(page, status)
     )
   )
