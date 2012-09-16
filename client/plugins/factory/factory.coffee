@@ -10,6 +10,11 @@ window.plugins.factory =
       else
         for name, info of window.catalog # deprecated
           menu.append "<li><a href='#' title='#{info.menu}'>#{name}</a></li>"
+      menu.find('a').click (evt)->
+        div.removeClass('factory').addClass(item.type=evt.target.text.toLowerCase())
+        div.unbind()
+        wiki.textEditor div, item
+
     if window.catalog?
       wiki.log 'have menu', window.catalog
       show_menu()
@@ -39,11 +44,6 @@ window.plugins.factory =
 
     div.dblclick ->
       div.removeClass('factory').addClass(item.type='paragraph')
-      div.unbind()
-      wiki.textEditor div, item
-
-    div.find('a').click (evt)->
-      div.removeClass('factory').addClass(item.type=evt.target.text.toLowerCase())
       div.unbind()
       wiki.textEditor div, item
 

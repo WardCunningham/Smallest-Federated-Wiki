@@ -8,26 +8,27 @@
       var show_menu;
       div.append('<p>Double-Click to Edit<br>Drop Text or Image to Insert</p>');
       show_menu = function() {
-        var info, menu, name, _i, _len, _ref, _ref1, _results, _results1;
+        var info, menu, name, _i, _len, _ref, _ref1;
         menu = div.find('p').append("<br>Or Choose a Plugin");
         wiki.log('show menu', div, item, menu);
         if (Array.isArray(window.catalog)) {
           _ref = window.catalog;
-          _results = [];
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             info = _ref[_i];
-            _results.push(menu.append("<li><a href='#' title='" + info.title + "'>" + info.name + "</a></li>"));
+            menu.append("<li><a href='#' title='" + info.title + "'>" + info.name + "</a></li>");
           }
-          return _results;
         } else {
           _ref1 = window.catalog;
-          _results1 = [];
           for (name in _ref1) {
             info = _ref1[name];
-            _results1.push(menu.append("<li><a href='#' title='" + info.menu + "'>" + name + "</a></li>"));
+            menu.append("<li><a href='#' title='" + info.menu + "'>" + name + "</a></li>");
           }
-          return _results1;
         }
+        return menu.find('a').click(function(evt) {
+          div.removeClass('factory').addClass(item.type = evt.target.text.toLowerCase());
+          div.unbind();
+          return wiki.textEditor(div, item);
+        });
       };
       if (window.catalog != null) {
         wiki.log('have menu', window.catalog);
@@ -67,11 +68,6 @@
       };
       div.dblclick(function() {
         div.removeClass('factory').addClass(item.type = 'paragraph');
-        div.unbind();
-        return wiki.textEditor(div, item);
-      });
-      div.find('a').click(function(evt) {
-        div.removeClass('factory').addClass(item.type = evt.target.text.toLowerCase());
         div.unbind();
         return wiki.textEditor(div, item);
       });
