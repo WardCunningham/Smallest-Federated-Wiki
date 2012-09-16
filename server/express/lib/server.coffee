@@ -342,7 +342,7 @@ module.exports = exports = (argv) ->
           res.send('Favicon Saved')
         )
       else
-        mkdirp(argv.status, 0o0777, ->
+        mkdirp(argv.status,   0777, ->
           fs.writeFile(favLoc, buf, (e) ->
             if e then throw e
             res.send('Favicon Saved')
@@ -360,6 +360,12 @@ module.exports = exports = (argv) ->
   # Send an array of pages in the database via json
   app.get('/system/slugs.json', cors, (req, res) ->
     fs.readdir(argv.db, (err, files) ->
+      res.send(files)
+    )
+  )
+
+  app.get('/system/plugins.json', cors, (req, res) ->
+    fs.readdir(path.join(argv.c, 'plugins'), (err, files) ->
       res.send(files)
     )
   )
