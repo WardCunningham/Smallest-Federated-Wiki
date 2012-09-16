@@ -342,7 +342,7 @@ module.exports = exports = (argv) ->
           res.send('Favicon Saved')
         )
       else
-        mkdirp(argv.status, 0777, ->
+        mkdirp(argv.status, 0o0777, ->
           fs.writeFile(favLoc, buf, (e) ->
             if e then throw e
             res.send('Favicon Saved')
@@ -363,6 +363,40 @@ module.exports = exports = (argv) ->
       res.send(files)
     )
   )
+
+  app.get('/system/sitemap.json', cors, (req, res) ->
+    fs.readdir(argv.db, (err, files) ->
+      sitemap = []
+      # used to make sure all of the files are read 
+      # and processesed in the site map before responding
+      numFiles = files.length 
+      for file in files
+        pagehandler.get(file, (e, page, status) ->
+          if e then throw e
+          
+          # create synopsis
+          if (page.synopsis?)
+            synopsis = page.synopsis
+          else
+            synopsis = 'This page has no story.'
+          for item in page.story
+            if item.type == 'paragraph'
+              synopsis = item.text
+              break
+
+          sitemap.push({
+            slug     : page.title.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase(),
+            title    : page.title,
+            date     : page.journal.pop().date,
+            synopsis : synopsis
+          })
+          numFiles--
+          if numFiles == 0
+            res.json(sitemap)
+        ) 
+    )    
+  ) 
+
 
   ##### Put routes #####
 
