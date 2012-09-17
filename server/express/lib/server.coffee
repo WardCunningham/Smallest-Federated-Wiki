@@ -395,7 +395,7 @@ module.exports = exports = (argv) ->
           sitemap.push({
             slug     : page.title.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase(),
             title    : page.title,
-            date     : page.journal.pop().date,
+            date     : page.journal and page.journal and page.journal.length >0 and page.journal.pop().date,
             synopsis : synopsis
           })
           numFiles--
