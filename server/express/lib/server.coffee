@@ -38,7 +38,7 @@ gitVersion = child_process.exec('git log -10 --oneline || echo no git log', (err
 # Set export objects for node and coffee to a function that generates a sfw server.
 module.exports = exports = (argv) ->
   # Echo sockjs server
-  sockjs_opts = {sockjs_url: "http://cdn.sockjs.org/sockjs-0.3.min.js"}
+  sockjs_opts = {sockjs_url: "/js/sockjs-0.3.min.js"}
 
   sockjs_echo = sockjs.createServer(sockjs_opts)
   sockjs_echo.on('connection', (conn) ->
@@ -49,7 +49,7 @@ module.exports = exports = (argv) ->
         conn.write(message)
     )
   )
-  logWatchSocket = sockjs.createServer({sockjs_url: "http://cdn.sockjs.org/sockjs-0.3.min.js"})
+  logWatchSocket = sockjs.createServer({sockjs_url: "/js/sockjs-0.3.min.js"})
   logWatchSocket.on('connection', (conn) ->
     logWatchSocket.on('fetch', (page) ->
       reference =
@@ -379,18 +379,19 @@ module.exports = exports = (argv) ->
       for file in files
         pagehandler.get(file, (e, page, status) ->
           if e 
+            numFiles--
             console.log(['pagehandler exception', e])
             return
           
           # create synopsis
-          if (page.synopsis?)
-            synopsis = page.synopsis
-          else
-            synopsis = 'This page has no story.'
-          for item in page.story
-            if item.type == 'paragraph'
-              synopsis = item.text
-              break
+          synopsis = page.synopsis
+          p1 = page.story[0]
+          p2 = page.story[1]
+          synopsis ||= p1.text if p1 && p1.type == 'paragraph'
+          synopsis ||= p2.text if p2 && p2.type == 'paragraph'
+          synopsis ||= p1.text? if p1
+          synopsis ||= p2.text? if p2
+          synopsis ||= page.story? && "A page with #{page.story.length} items." || "A page with no story."
 
           sitemap.push({
             slug     : page.title.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase(),
