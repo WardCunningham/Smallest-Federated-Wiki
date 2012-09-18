@@ -38,7 +38,7 @@ gitVersion = child_process.exec('git log -10 --oneline || echo no git log', (err
 # Set export objects for node and coffee to a function that generates a sfw server.
 module.exports = exports = (argv) ->
   # Echo sockjs server
-  sockjs_opts = {sockjs_url: "http://cdn.sockjs.org/sockjs-0.3.min.js"}
+  sockjs_opts = {sockjs_url: "/js/sockjs-0.3.min.js"}
 
   sockjs_echo = sockjs.createServer(sockjs_opts)
   sockjs_echo.on('connection', (conn) ->
@@ -49,7 +49,7 @@ module.exports = exports = (argv) ->
         conn.write(message)
     )
   )
-  logWatchSocket = sockjs.createServer({sockjs_url: "http://cdn.sockjs.org/sockjs-0.3.min.js"})
+  logWatchSocket = sockjs.createServer({sockjs_url: "/js/sockjs-0.3.min.js"})
   logWatchSocket.on('connection', (conn) ->
     logWatchSocket.on('fetch', (page) ->
       reference =
