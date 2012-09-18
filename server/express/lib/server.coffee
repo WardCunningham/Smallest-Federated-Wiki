@@ -342,7 +342,7 @@ module.exports = exports = (argv) ->
           res.send('Favicon Saved')
         )
       else
-        mkdirp(argv.status,   0777, ->
+        mkdirp(argv.status, 0777, ->
           fs.writeFile(favLoc, buf, (e) ->
             if e then throw e
             res.send('Favicon Saved')
@@ -378,7 +378,9 @@ module.exports = exports = (argv) ->
       numFiles = files.length 
       for file in files
         pagehandler.get(file, (e, page, status) ->
-          if e then throw e
+          if e 
+            console.log(['pagehandler exception', e])
+            return
           
           # create synopsis
           if (page.synopsis?)
