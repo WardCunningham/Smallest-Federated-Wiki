@@ -379,18 +379,19 @@ module.exports = exports = (argv) ->
       for file in files
         pagehandler.get(file, (e, page, status) ->
           if e 
+            numFiles--
             console.log(['pagehandler exception', e])
             return
           
           # create synopsis
-          if (page.synopsis?)
-            synopsis = page.synopsis
-          else
-            synopsis = 'This page has no story.'
-          for item in page.story
-            if item.type == 'paragraph'
-              synopsis = item.text
-              break
+          synopsis = page.synopsis
+          p1 = page.story[0]
+          p2 = page.story[1]
+          synopsis ||= p1.text if p1 && p1.type == 'paragraph'
+          synopsis ||= p2.text if p2 && p2.type == 'paragraph'
+          synopsis ||= p1.text? if p1
+          synopsis ||= p2.text? if p2
+          synopsis ||= page.story? && "A page with #{page.story.length} items." || "A page with no story."
 
           sitemap.push({
             slug     : page.title.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase(),
