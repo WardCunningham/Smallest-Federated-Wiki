@@ -801,7 +801,7 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
         if (localPage = pageFromLocalStorage(pageInformation.slug)) {
           return whenGotten(localPage, 'local');
         } else {
-
+          return whenNotGotten();
         }
       } else {
         if (site === 'origin') {

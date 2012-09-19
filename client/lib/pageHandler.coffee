@@ -25,6 +25,7 @@ recursiveGet = ({pageInformation, whenGotten, whenNotGotten, localContext}) ->
       if localPage = pageFromLocalStorage(pageInformation.slug)
         return whenGotten( localPage, 'local' )
       else
+        return whenNotGotten()
     else
       if site == 'origin'
         url = "/#{slug}.json"
