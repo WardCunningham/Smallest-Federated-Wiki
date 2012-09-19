@@ -154,7 +154,10 @@
                   item.text || (item.text = p2.text);
                 }
                 item.text || (item.text = p1.text || p2.text || 'A recently found page.');
-                return syncEditAction();
+                syncEditAction();
+                if (item.site != null) {
+                  return wiki.registerNeighbor(item.site);
+                }
               });
             } else {
               return punt({

@@ -112,6 +112,7 @@ window.plugins.factory =
               item.text ||= p2.text if p2.type == 'paragraph'
               item.text ||= p1.text || p2.text || 'A recently found page.'
               syncEditAction()
+              wiki.registerNeighbor item.site if item.site?
           else
             punt
               number: 4

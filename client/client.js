@@ -1650,7 +1650,7 @@ require.define("/lib/neighborhood.coffee", function (require, module, exports, _
     }
   };
 
-  neighborhood.registerNeighbor = function(site) {
+  wiki.registerNeighbor = neighborhood.registerNeighbor = function(site) {
     var neighborInfo;
     if (wiki.neighborhood[site] != null) return;
     neighborInfo = {};

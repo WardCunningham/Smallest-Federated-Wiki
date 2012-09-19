@@ -43,7 +43,7 @@ populateSiteInfoFor = (site,neighborInfo)->
     nextAvailableFetch += nextFetchInterval
 
 
-neighborhood.registerNeighbor = (site)->
+wiki.registerNeighbor = neighborhood.registerNeighbor = (site)->
   return if wiki.neighborhood[site]?
   neighborInfo = {}
   wiki.neighborhood[site] = neighborInfo
