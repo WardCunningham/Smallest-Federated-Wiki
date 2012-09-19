@@ -69,7 +69,7 @@ module.exports = exports = (argv) ->
                     pluginloc = path.join(plugindir, plugin, 'pages', file)
                     path.exists(pluginloc, (exists) ->
                       if exists
-                        load_parse_copy(pluginloc, file, cb)
+                        load_parse(pluginloc, cb)
                       else
                         giveUp()
                     )
