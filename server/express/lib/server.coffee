@@ -389,8 +389,8 @@ module.exports = exports = (argv) ->
           p2 = page.story[1]
           synopsis ||= p1.text if p1 && p1.type == 'paragraph'
           synopsis ||= p2.text if p2 && p2.type == 'paragraph'
-          synopsis ||= p1.text? if p1
-          synopsis ||= p2.text? if p2
+          synopsis ||= p1.text if p1
+          synopsis ||= p2.text if p2
           synopsis ||= page.story? && "A page with #{page.story.length} items." || "A page with no story."
 
           sitemap.push({
