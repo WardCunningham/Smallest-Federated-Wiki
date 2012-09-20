@@ -219,8 +219,8 @@
   };
 
   window.plugins.method = {
-    emit: function(div, item) {},
-    bind: function(div, item) {
+    bind: function(div, item) {},
+    emit: function(div, item, done) {
       var candidates, elem, input, output, state, _i, _len;
       input = {};
       output = {};
@@ -259,7 +259,8 @@
         var table, text;
         text = state.report.join("\n");
         table = $('<table style="width:100%; background:#eee; padding:.8em; margin-bottom:5px;"/>').html(text);
-        return state.div.append(table);
+        state.div.append(table);
+        return setTimeout(done, 10);
       });
     },
     "eval": function(caller, item, input, done) {

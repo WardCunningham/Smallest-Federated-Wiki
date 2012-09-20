@@ -119,11 +119,14 @@ wiki.buildPage = (data,siteFound,pageElement) ->
     [storyElement, journalElement, footerElement] = ['story', 'journal', 'footer'].map (className) ->
       $("<div />").addClass(className).appendTo(pageElement)
 
-    $.each page.story, (i, item) ->
+    doItem = (i) ->
+      return if i >= page.story.length
+      item = page.story[i]
       item = item[0] if $.isArray item # unwrap accidentally wrapped items
       div = $("<div />").addClass("item").addClass(item.type).attr("data-id", item.id)
       storyElement.append div
-      plugin.do div, item
+      plugin.do div, item, -> doItem i+1
+    doItem 0
 
     $.each page.journal, (i, action) ->
       wiki.addToJournal journalElement, action
