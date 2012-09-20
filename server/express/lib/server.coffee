@@ -21,6 +21,7 @@ passportImport = require('passport')
 OpenIDstrat = require('passport-openid').Strategy
 defargs = require('./defaultargs')
 sockjs  = require('sockjs')
+util = require('../../../client/lib/util')
 
 
 # pageFactory can be easily replaced here by requiring your own page handler
@@ -382,22 +383,11 @@ module.exports = exports = (argv) ->
             numFiles--
             console.log(['pagehandler exception', e])
             return
-          
-          # create synopsis
-          synopsis = page.synopsis
-          p1 = page.story[0]
-          p2 = page.story[1]
-          synopsis ||= p1.text if p1 && p1.type == 'paragraph'
-          synopsis ||= p2.text if p2 && p2.type == 'paragraph'
-          synopsis ||= p1.text if p1
-          synopsis ||= p2.text if p2
-          synopsis ||= page.story? && "A page with #{page.story.length} items." || "A page with no story."
-
           sitemap.push({
             slug     : page.title.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase(),
             title    : page.title,
             date     : page.journal and page.journal.length > 0 and page.journal.pop().date,
-            synopsis : synopsis
+            synopsis : util.createSynopsis(page)
           })
           numFiles--
           if numFiles == 0
