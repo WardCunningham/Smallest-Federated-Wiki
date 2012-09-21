@@ -20,8 +20,8 @@ random = require('./random_id')
 passportImport = require('passport')
 OpenIDstrat = require('passport-openid').Strategy
 defargs = require('./defaultargs')
-sockjs  = require('sockjs')
 util = require('../../../client/lib/util')
+WebSocketServer = require('ws').Server
 
 
 # pageFactory can be easily replaced here by requiring your own page handler
@@ -38,34 +38,28 @@ gitVersion = child_process.exec('git log -10 --oneline || echo no git log', (err
 
 # Set export objects for node and coffee to a function that generates a sfw server.
 module.exports = exports = (argv) ->
-  # Echo sockjs server
-  sockjs_opts = {sockjs_url: "/js/sockjs-0.3.min.js"}
+  # Create the main application object, app.
+  app = express.createServer()
 
-  sockjs_echo = sockjs.createServer(sockjs_opts)
-  sockjs_echo.on('connection', (conn) ->
-    sockjs_echo.on('swfServed', (name) ->
-      conn.write(name)
-    )
-    conn.on('data', (message) ->
-        conn.write(message)
+  # General, gloabl use sockets
+  echoSocket     = new WebSocketServer({server: app, path: '/system/echo'})
+  logWatchSocket = new WebSocketServer({server: app, path: '/system/logwatch'})
+  echoSocket.on('connection', (ws) ->
+    ws.on('message', (message) ->
+      console.log ['socktest message from client: ', message]
+      ws.send(message)
     )
   )
-  logWatchSocket = sockjs.createServer({sockjs_url: "/js/sockjs-0.3.min.js"})
-  logWatchSocket.on('connection', (conn) ->
+  logWatchSocket.on('connection', (ws) ->
     logWatchSocket.on('fetch', (page) ->
       reference =
         title: page.title
-      conn.write(JSON.stringify reference)
+      ws.send(JSON.stringify reference)
     )
-    conn.on('data', (message) ->
-        # conn.write(message)
+    ws.on('message', (message) ->
+      console.log ['logWatch message from client: ', message]
     )
   )
-
-  # Create the main application object, app.
-  app = express.createServer()
-  sockjs_echo.installHandlers(app, {prefix:'/system/echo'})
-  logWatchSocket.installHandlers(app, {prefix:'/system/logwatch'})
 
   # defaultargs.coffee exports a function that takes the argv object
   # that is passed in and then does its
@@ -304,9 +298,6 @@ module.exports = exports = (argv) ->
   # Local pages are handled by the pagehandler module.
   app.get(///^/([a-z0-9-]+)\.json$///, cors, (req, res) ->
     file = req.params[0]
-    #-- send a page served event with file as argument
-    sockjs_echo.emit('swfServed', file)
-
     pagehandler.get(file, (e, page, status) ->
       if e then throw e
       logWatchSocket.emit('fetch', page)

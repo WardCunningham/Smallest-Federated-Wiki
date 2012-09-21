@@ -1,0 +1,27 @@
+{
+  "title": "About Logwatch Plugin",
+  "story": [
+    {
+      "type": "logwatch",
+      "id": "82a1af1d9512e2a8"
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "item": {
+        "title": "About Logwatch Plugin"
+      },
+      "date": 1347744926946
+    },
+    {
+      "item": {
+        "type": "logwatch",
+        "id": "82a1af1d9512e2a8"
+      },
+      "id": "82a1af1d9512e2a8",
+      "type": "add",
+      "date": 1347744929226
+    }
+  ]
+}
