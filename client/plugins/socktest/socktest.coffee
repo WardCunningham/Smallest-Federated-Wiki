@@ -43,13 +43,13 @@ window.plugins.socktest =
       div.scrollTop div.scrollTop() + 10000
 
     socket.onopen = ->
-      print "socket connection opened"
+      print "WebSocket Connection Opened."
 
     socket.onmessage = (e) ->
-      print "message from server: ", e.data
+      print "Message from Server: ", e.data
 
     socket.onclose = ->
-      print "socket connection closed"
+      print "Socket Connection Closed."
 
     form.submit ->
       print "sending: ", inp.val()

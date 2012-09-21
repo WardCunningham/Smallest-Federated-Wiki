@@ -47,14 +47,20 @@ module.exports = exports = (argv) ->
   echoSocket.on('connection', (ws) ->
     ws.on('message', (message) ->
       console.log ['socktest message from client: ', message]
-      ws.send(message)
+      try
+        ws.send(message)
+      catch e
+        console.log ['unable to send ws message: ', e]
     )
   )
   logWatchSocket.on('connection', (ws) ->
     logWatchSocket.on('fetch', (page) ->
       reference =
         title: page.title
-      ws.send(JSON.stringify reference)
+      try
+        ws.send(JSON.stringify reference)
+      catch e
+        console.log ['unable to send ws message: ', e]
     )
     ws.on('message', (message) ->
       console.log ['logWatch message from client: ', message]

@@ -18,13 +18,13 @@
         return div.scrollTop(div.scrollTop() + 10000);
       };
       socket.onopen = function() {
-        return print("socket connection opened");
+        return print("WebSocket Connection Opened.");
       };
       socket.onmessage = function(e) {
-        return print("message from server: ", e.data);
+        return print("Message from Server: ", e.data);
       };
       socket.onclose = function() {
-        return print("socket connection closed");
+        return print("Socket Connection Closed.");
       };
       return form.submit(function() {
         print("sending: ", inp.val());
