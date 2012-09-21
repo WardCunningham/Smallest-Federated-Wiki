@@ -859,7 +859,9 @@ require.define("/lib/util.coffee",function(require,module,exports,__dirname,__fi
     return name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase();
   };
 
-  wiki.asSlug = util.asSlug;
+  if (typeof wiki !== "undefined" && wiki !== null) {
+    wiki.asSlug = util.asSlug;
+  }
 
   util.emptyPage = function() {
     return {
@@ -1433,8 +1435,11 @@ require.define("/lib/plugin.coffee",function(require,module,exports,__dirname,__
     });
   };
 
-  plugin["do"] = wiki.doPlugin = function(div, item) {
+  plugin["do"] = wiki.doPlugin = function(div, item, done) {
     var error;
+    if (done == null) {
+      done = function() {};
+    }
     error = function(ex) {
       var errorElement;
       errorElement = $("<div />").addClass('error');
@@ -1448,10 +1453,20 @@ require.define("/lib/plugin.coffee",function(require,module,exports,__dirname,__
         if (script == null) {
           throw TypeError("Can't find plugin for '" + item.type + "'");
         }
-        script.emit(div, item);
-        return script.bind(div, item);
+        if (script.emit.length > 2) {
+          return script.emit(div, item, function() {
+            script.bind(div, item);
+            return done();
+          });
+        } else {
+          script.emit(div, item);
+          script.bind(div, item);
+          return done();
+        }
       } catch (err) {
-        return error(err);
+        wiki.log('plugin error', err);
+        error(err);
+        return done();
       }
     });
   };
@@ -1603,7 +1618,7 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
   };
 
   wiki.buildPage = function(data, siteFound, pageElement) {
-    var action, addContext, context, footerElement, journalElement, page, site, slug, storyElement, _i, _len, _ref, _ref1;
+    var action, addContext, context, doItem, footerElement, journalElement, page, site, slug, storyElement, _i, _len, _ref, _ref1;
     if (siteFound === 'local') {
       pageElement.addClass('local');
     } else {
@@ -1642,15 +1657,22 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
       _ref1 = ['story', 'journal', 'footer'].map(function(className) {
         return $("<div />").addClass(className).appendTo(pageElement);
       }), storyElement = _ref1[0], journalElement = _ref1[1], footerElement = _ref1[2];
-      $.each(page.story, function(i, item) {
-        var div;
+      doItem = function(i) {
+        var div, item;
+        if (i >= page.story.length) {
+          return;
+        }
+        item = page.story[i];
         if ($.isArray(item)) {
           item = item[0];
         }
         div = $("<div />").addClass("item").addClass(item.type).attr("data-id", item.id);
         storyElement.append(div);
-        return plugin["do"](div, item);
-      });
+        return plugin["do"](div, item, function() {
+          return doItem(i + 1);
+        });
+      };
+      doItem(0);
       $.each(page.journal, function(i, action) {
         return wiki.addToJournal(journalElement, action);
       });

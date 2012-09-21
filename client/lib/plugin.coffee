@@ -23,7 +23,7 @@ plugin.get = wiki.getPlugin = (name, callback) ->
     getScript "/plugins/#{name}.js", () ->
       callback(window.plugins[name])
 
-plugin.do = wiki.doPlugin = (div, item) ->
+plugin.do = wiki.doPlugin = (div, item, done=->) ->
   error = (ex) ->
     errorElement = $("<div />").addClass('error')
     errorElement.text(ex.toString())
@@ -34,10 +34,18 @@ plugin.do = wiki.doPlugin = (div, item) ->
   plugin.get item.type, (script) ->
     try
       throw TypeError("Can't find plugin for '#{item.type}'") unless script?
-      script.emit div, item
-      script.bind div, item
+      if script.emit.length > 2
+        script.emit div, item, ->
+          script.bind div, item
+          done()
+      else
+        script.emit div, item
+        script.bind div, item
+        done()
     catch err
+      wiki.log 'plugin error', err
       error(err)
+      done()
 
 wiki.registerPlugin = (pluginName,pluginFn)->
   window.plugins[pluginName] = pluginFn($)

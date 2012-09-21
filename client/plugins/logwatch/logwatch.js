@@ -4,22 +4,18 @@
   window.plugins.logwatch = {
     bind: function(div, item) {},
     emit: function(div, item) {
-      var form, print, socket;
-      div.append("<style>\n  .logwatch .box {\n      width: 300px;\n      float: left;\n      margin: 0 20px 0 20px;\n  }\n  .logwatch .box div, .logwatch .box input {\n      border: 1px solid;\n      -moz-border-radius: 4px;\n      border-radius: 4px;\n      width: 100%;\n      padding: 0px;\n      margin: 5px;\n  }\n  .logwatch .box div {\n      border-color: grey;\n      height: 300px;\n      overflow: auto;\n  }\n</style>\n\n<div id=\"first\" class=\"box\">\n  <div></div>\n</div>                  ");
+      var print, socket;
       socket = new WebSocket('ws://' + window.document.location.host + '/system/logwatch');
-      div = $("#first div");
-      form = $("#first form");
-      print = function(m, p) {
-        p = (p === undefined ? "" : JSON.stringify(p));
-        div.append($("<p>").html(m + " " + p));
-        div.append($("</p>"));
-        return div.scrollTop(div.scrollTop() + 10000);
+      print = function(m) {
+        return div.append($("<li>").html(m));
       };
       socket.onopen = function() {
         return print("WebSocket Connection Opened.");
       };
       socket.onmessage = function(e) {
-        return print(wiki.resolveLinks("Page Viewed: [[" + (JSON.parse(e.data).title) + "]]"));
+        var msg;
+        msg = JSON.parse(e.data);
+        return print(wiki.resolveLinks("[[" + msg.title + "]]"));
       };
       return socket.onclose = function() {
         return print("WebSocket Connection Closed.");

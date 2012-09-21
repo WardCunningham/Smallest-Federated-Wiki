@@ -145,8 +145,8 @@ dispatch = (state, done) ->
   dispatch state, done
 
 window.plugins.method =
-  emit: (div, item) ->
   bind: (div, item) ->
+  emit: (div, item, done) ->
 
     input = {}
     output = {}
@@ -174,6 +174,7 @@ window.plugins.method =
       text = state.report.join "\n"
       table = $('<table style="width:100%; background:#eee; padding:.8em; margin-bottom:5px;"/>').html text
       state.div.append table
+      setTimeout done, 10  # slower is better for firefox
 
   eval: (caller, item, input, done) ->
     state = {caller: caller, item: item, input: input, output: {}}

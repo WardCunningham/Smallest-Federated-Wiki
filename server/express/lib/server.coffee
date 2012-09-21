@@ -306,7 +306,7 @@ module.exports = exports = (argv) ->
     file = req.params[0]
     pagehandler.get(file, (e, page, status) ->
       if e then throw e
-      logWatchSocket.emit('fetch', page)
+      logWatchSocket.emit 'fetch', page unless status
       res.json(page, status)
     )
   )
@@ -503,3 +503,4 @@ module.exports = exports = (argv) ->
   )
   # Return app when called, so that it can be watched for events and shutdown with .close() externally.
   app
+

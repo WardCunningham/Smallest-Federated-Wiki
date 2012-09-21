@@ -25,14 +25,12 @@ class FileStore < Store
     ### COLLECTIONS
 
     def annotated_pages(pages_dir)
-      Dir.chdir(pages_dir) do
-        Dir.glob("*").collect do |name|
-          page = get_page(File.join pages_dir, name)
-          page.merge!({
-            'name' => name,
-            'updated_at' => File.new(name).mtime
-          })
-        end
+      Dir.foreach(pages_dir).reject{|name|name =~ /^\./}.collect do |name|
+        page = get_page(File.join pages_dir, name)
+        page.merge!({
+          'name' => name,
+          'updated_at' => File.new("#{pages_dir}/#{name}").mtime
+        })
       end
     end
 
