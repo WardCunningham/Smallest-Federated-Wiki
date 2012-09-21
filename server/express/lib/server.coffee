@@ -49,17 +49,15 @@ module.exports = exports = (argv) ->
         conn.write(message)
     )
   )
-  logWatchSocket = sockjs.createServer({sockjs_url: "/js/sockjs-0.3.min.js"})
-  logWatchSocket.on('connection', (conn) ->
-    logWatchSocket.on('fetch', (page) ->
-      reference =
-        title: page.title
-      conn.write(JSON.stringify reference)
-    )
-    conn.on('data', (message) ->
-        # conn.write(message)
-    )
-  )
+
+  logWatchSocket = sockjs.createServer
+    sockjs_url: "/js/sockjs-0.3.min.js"
+
+  logWatchSocket.on 'connection', (conn) ->
+    logWatchSocket.on 'fetch', (page) ->
+      conn.write JSON.stringify
+        title: page.title || page.slug
+    conn.on 'data', (message) ->
 
   # Create the main application object, app.
   app = express.createServer()
@@ -308,7 +306,7 @@ module.exports = exports = (argv) ->
 
     pagehandler.get(file, (e, page, status) ->
       if e then throw e
-      logWatchSocket.emit('fetch', page)
+      logWatchSocket.emit 'fetch', page unless status
       res.json(page, status)
     )
   )
