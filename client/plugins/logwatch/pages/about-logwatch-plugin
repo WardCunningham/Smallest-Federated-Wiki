@@ -1,7 +1,7 @@
 {
   "title": "About Logwatch Plugin",
   "story": [
-    {
+  	{
       "type": "paragraph",
       "id": "370089e1e1e9dd85",
       "text": "Some servers share the names of pages they serve. We listen to a stream of them and report them here. "
@@ -23,7 +23,7 @@
     {
       "type": "paragraph",
       "id": "8cd18ffbeccd028c",
-      "text": "<li> Connection Opened — we're listening (how)\n<li> Connection Closed — lost or never had a stream.\n<li> [[About Logwatch Plugin]] — a page has been served\n"
+      "text": "<li>WebSocket Connection Opened. — we're listening (how)\n<li> WebSocket Connection Closed. — lost or never had a stream.\n<li> [[About Logwatch Plugin]] — a page has been served\n"
     }
   ],
   "journal": [
@@ -32,6 +32,15 @@
       "item": {
         "title": "About Logwatch Plugin"
       },
+      "date": 1347744926946
+    },
+    {
+      "item": {
+        "type": "logwatch",
+        "id": "82a1af1d9512e2a8"
+      },
+      "id": "82a1af1d9512e2a8",
+      "type": "add",
       "date": 1348073990663
     },
     {
