@@ -15,7 +15,7 @@ util.resolveLinks = (string) ->
     "<a class=\"internal\" href=\"/#{slug}.html\" data-page-name=\"#{slug}\" title=\"#{wiki.resolutionContext.join(' => ')}\">#{name}</a>"
   string
     .replace(/\[\[([^\]]+)\]\]/gi, renderInternalLink)
-    .replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" target=\"_blank\" href=\"$1\">$2</a>")
+    .replace(/\[(http.*?) (.*?)\]/gi, """<a class="external" target="_blank" href="$1">$2<img src="/images/external-link-ltr-icon.png"></a>""")
 
 util.randomByte = ->
   (((1+Math.random())*0x100)|0).toString(16).substring(1)
