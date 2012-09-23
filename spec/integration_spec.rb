@@ -208,6 +208,52 @@ describe "moving paragraphs" do
 
 end
 
+describe "moving paragraphs between pages on different servers" do
+  before do
+    use_fixture_pages "simple-page", "multiple-paragraphs"
+    remote = "localhost:#{Capybara.server_port}"
+    visit "/view/simple-page/#{remote}/multiple-paragraphs"
+  end
+
+  def drag_item_to(item, destination)
+    page.driver.browser.execute_script "(function(p, d) {
+      var paragraph = $(p);
+      var destination = $(d);
+
+      var source = paragraph.parents('.story');
+
+      paragraph.appendTo(destination);
+
+      var ui = {item: paragraph};
+      destination.trigger('sortupdate', [ui]);
+      source.trigger('sortupdate', [ui]);
+    }).apply(this, arguments);", item.native, destination.find(".story").native
+  end
+
+  def journal_for(page)
+    JSON.parse(Net::HTTP.get(URI.parse("http://localhost:#{Capybara.server_port}/#{page}.json")))['journal']
+  end
+
+  it "should move the paragraph and add provenance to the journal" do
+    local_page, remote_page = page.all(".page")
+
+    paragraph_to_copy = remote_page.find(".item")
+
+    drag_item_to paragraph_to_copy, local_page
+
+    journal_entry = journal_for("simple-page").last
+
+    journal_entry['type'].should == "add"
+    journal_entry['item']['text'] == paragraph_to_copy.text
+    journal_entry['origin'].should == {
+      'site' => "localhost:#{Capybara.server_port}",
+      'slug' => 'multiple-paragraphs'
+    }
+  end
+
+
+end
+
 describe "navigating between pages" do
   before do
     visit("/")
