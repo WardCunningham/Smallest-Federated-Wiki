@@ -120,17 +120,45 @@ describe "GET /welcome-visitors.json" do
 end
 
 describe "GET /recent-changes.json" do
-  def create_sample_page
-    page = { "title" => "A Page", "story" => [ { "type" => "paragraph", "text" => "Hello test" } ] }
+  def create_sample_pages
+    page = {
+      "title" => "A Page",
+      "story" => [ { "type" => "paragraph", "text" => "Hello test" } ],
+      "journal" => [ { "type" => "add", "date" => Time.now - 10000 } ]
+    }
+
+    page_without_journal = {
+      "title" => "No Journal Here",
+      "story" => [ { "type" => "paragraph", "text" => "Hello test" } ],
+    }
+
+    page_without_date_in_journal = {
+      "title" => "Old journal",
+      "story" => [ { "type" => "paragraph", "text" => "Hello test" } ],
+      "journal" => [ {"type" => "add"} ]
+    }
+
+    pages = {
+      "a-page" => page,
+      "page-without-journal" => page_without_journal,
+      "page-without-date-in-journal" => page_without_date_in_journal
+    }
+
+    # ====
+
     pages_path = File.join TestDirs::TEST_DATA_DIR, 'pages'
     FileUtils.rm_f    pages_path
     FileUtils.mkdir_p pages_path
-    page_path = File.join pages_path, 'a-page'
-    File.open(page_path, 'w'){|file| file.write(page.to_json)}
+
+    pages.each do |name, content|
+      page_path = File.join(pages_path, name)
+      File.open(page_path, 'w'){|file| file.write(content.to_json)}
+    end
+
   end
 
   before(:all) do
-    create_sample_page
+    create_sample_pages
     get "/recent-changes.json"
     @response = last_response
     @body = last_response.body
@@ -157,6 +185,15 @@ describe "GET /recent-changes.json" do
       @json['story'][1]['slug'].should == "a-page"
       @json['story'][1]['title'].should == "A Page"
       @json['story'][1]['type'].should == 'reference'
+    end
+
+    it "does not show page without journal" do
+      @json['story'].map {|s| s['slug'] }.should_not include("page-without-journal")
+    end
+
+    it "does not show page with journal but without date" do
+      pending
+      @json['story'].map {|s| s['slug'] }.should_not include("page-without-date-in-journal")
     end
   end
 end
