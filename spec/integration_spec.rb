@@ -236,7 +236,6 @@ describe "moving paragraphs between pages on different servers" do
 
   it "should move the paragraph and add provenance to the journal" do
     local_page, remote_page = page.all(".page")
-
     paragraph_to_copy = remote_page.find(".item")
 
     drag_item_to paragraph_to_copy, local_page
@@ -251,6 +250,16 @@ describe "moving paragraphs between pages on different servers" do
     }
   end
 
+  it "should move the paragraph from one to another" do
+    pending
+    local_page, remote_page = page.all(".page")
+    paragraph_to_copy = remote_page.find(".item")
+
+    drag_item_to paragraph_to_copy, local_page
+
+    journal_for("multiple-paragraphs").each {|j| p j }
+    journal_for("multiple-paragraphs").last['type'].should == 'remove'
+  end
 
 end
 
