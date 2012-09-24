@@ -6,9 +6,12 @@ neighborhood = require('./neighborhood.coffee')
 
 handleDragging = (evt, ui) ->
   itemElement = ui.item
+
   item = wiki.getItem(itemElement)
   thisPageElement = $(this).parents('.page:first')
   sourcePageElement = itemElement.data('pageElement')
+  sourceSite = sourcePageElement.data('site')
+
   destinationPageElement = itemElement.parents('.page:first')
   journalElement = thisPageElement.find('.journal')
   equals = (a, b) -> a and b and a.get(0) == b.get(0)
@@ -20,7 +23,7 @@ handleDragging = (evt, ui) ->
   if moveFromPage
     if sourcePageElement.hasClass('ghost') or
       sourcePageElement.attr('id') == destinationPageElement.attr('id')
-        # stem the damage, better ideas here: 
+        # stem the damage, better ideas here:
         # http://stackoverflow.com/questions/3916089/jquery-ui-sortables-connect-lists-copy-items
         return
 
@@ -34,15 +37,19 @@ handleDragging = (evt, ui) ->
     itemElement.data 'pageElement', thisPageElement
     beforeElement = itemElement.prev('.item')
     before = wiki.getItem(beforeElement)
-    {type: 'add', item: item, after: before?.id}
+    {
+      type: 'add',
+      item: item,
+      after: before?.id,
+      origin: {slug: sourcePageElement.attr("id"), site: sourceSite}
+    }
   action.id = item.id
   pageHandler.put thisPageElement, action
 
 initDragging = (pageElement) ->
   storyElement = pageElement.find('.story')
-  storyElement.sortable
-    update: handleDragging
-    connectWith: '.page .story'
+  storyElement.sortable(connectWith: '.page .story').on("sortupdate", handleDragging)
+
 
 initAddButton = (pageElement) ->
   pageElement.find(".add-factory").live "click", (evt) ->
@@ -59,7 +66,7 @@ createFactory = (pageElement) ->
   plugin.do itemElement, item
   beforeElement = itemElement.prev('.item')
   before = wiki.getItem(beforeElement)
-  pageHandler.put pageElement, {item: item, id: item.id, type: "add", after: before?.id} 
+  pageHandler.put pageElement, {item: item, id: item.id, type: "add", after: before?.id}
 
 emitHeader = (pageElement, page) ->
   site = $(pageElement).data('site')
@@ -92,7 +99,7 @@ emitHeader = (pageElement, page) ->
 wiki.buildPage = (data,siteFound,pageElement) ->
 
   if siteFound == 'local'
-    pageElement.addClass('local') 
+    pageElement.addClass('local')
   else
     pageElement.data('site', siteFound)
 
@@ -188,7 +195,7 @@ module.exports = refresh = wiki.refresh = ->
       neighborhood.registerNeighbor item.site if item.site?
     for action in (data.journal || [])
       neighborhood.registerNeighbor action.site if action.site?
-      
+
   whenGotten = (data,siteFound) ->
     wiki.buildPage( data, siteFound, pageElement )
     registerNeighbors( data, siteFound )
