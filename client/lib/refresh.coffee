@@ -37,12 +37,7 @@ handleDragging = (evt, ui) ->
     itemElement.data 'pageElement', thisPageElement
     beforeElement = itemElement.prev('.item')
     before = wiki.getItem(beforeElement)
-    {
-      type: 'add',
-      item: item,
-      after: before?.id,
-      origin: {slug: sourcePageElement.attr("id"), site: sourceSite}
-    }
+    {type: 'add', item: item, after: before?.id}
   action.id = item.id
   pageHandler.put thisPageElement, action
 
