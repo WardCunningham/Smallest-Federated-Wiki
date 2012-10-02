@@ -6,27 +6,20 @@
     emit: function(div, item) {
       return wiki.getScript('/js/d3/d3.js', function() {
         return wiki.getScript('/js/d3/d3.time.js', function() {
-          var angle, c, candidates, centerXPos, centerYPos, circleAxes, circleConstraint, colorSelector, comments, d, data, dimension, fill, h, heightCircleConstraint, hours, keys, lastThumb, limit, limitsFromData, lineAxes, m, maxVal, minVal, o, percents, radialTicks, radius, radiusLength, rotate, ruleColor, series, translate, value, viz, vizBody, vizPadding, w, who, widthCircleConstraint, _i, _j, _k, _ref, _ref1, _ref2, _results;
+          var angle, c, candidates, centerXPos, centerYPos, circleAxes, circleConstraint, colorSelector, comments, d, data, dimension, fill, h, heightCircleConstraint, hours, keys, lastThumb, limit, limitsFromData, limitsFromText, lineAxes, m, maxVal, minVal, o, percents, radialTicks, radius, radiusLength, rotate, ruleColor, series, translate, value, viz, vizBody, vizPadding, w, who, widthCircleConstraint, _i, _j, _k, _ref, _ref1, _ref2, _results;
           div.append(' <style>\n svg { font: 10px sans-serif; }\n</style>');
-          limit = {
-            "Carcinogenicity": 7,
-            "Acute Toxicity": 7,
-            "Chronic Toxicity": 7,
-            "Reproductive / Endocrine Disrupter Toxicity": 4,
-            "Chemistry Total": 25,
-            "Energy Intensity": 10,
-            "GHG Emissions Intensity": 15,
-            "Energy / GHG Emissions Total": 25,
-            "Water Intensity": 18,
-            "Land Use Intensity": 7,
-            "Water / Land Use Total": 25,
-            "Hazardous Waste": 10,
-            "MSW": 6.25,
-            "Industrial Waste": 5,
-            "Recyclable / Compostable Waste": 2.5,
-            "Mineral Waste": 1.25,
-            "Physical Waste Total": 25,
-            "Total Score": 100
+          limit = {};
+          limitsFromText = function(text) {
+            var args, line, _i, _len, _ref;
+            limit = {};
+            _ref = text.split("\n");
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              line = _ref[_i];
+              if (args = line.match(/^([0-9.eE-]+) +([\w \/%(){},&-]+)$/)) {
+                limit[args[2]] = +args[1];
+              }
+            }
+            return wiki.log('radar limitsFromText', limit);
           };
           limitsFromData = function(data) {
             var d, k, keys, max, v, _i, _len, _results;
@@ -50,7 +43,7 @@
           };
           candidates = $(".item:lt(" + ($('.item').index(div)) + ")");
           if ((who = candidates.filter(".radar-source")).size()) {
-            limitsFromData((data = (function() {
+            data = (function() {
               var _i, _len, _results;
               _results = [];
               for (_i = 0, _len = who.length; _i < _len; _i++) {
@@ -58,7 +51,7 @@
                 _results.push(d.radarData());
               }
               return _results;
-            })()));
+            })();
           } else if ((who = candidates.filter(".data")).size()) {
             who = who.filter(function(d) {
               return $(this).data('item').data.length === 1;
@@ -75,6 +68,13 @@
           } else {
             throw "Can't find suitable data";
           }
+          wiki.log('radar data', data);
+          if (item.text != null) {
+            limitsFromText(item.text);
+          } else {
+            limitsFromData(data);
+          }
+          wiki.log('radar limit', limit);
           keys = Object.keys(limit);
           value = function(obj) {
             if (obj == null) {
@@ -96,15 +96,40 @@
             }
           };
           percents = function(obj) {
-            var k, _i, _len, _ref, _results;
+            var k, _i, _j, _len, _len1, _ref, _results;
+            for (_i = 0, _len = keys.length; _i < _len; _i++) {
+              k = keys[_i];
+              if (!obj[k]) {
+                throw "Missing value for '" + k + "'";
+              }
+            }
             _ref = keys.concat(keys[0]);
             _results = [];
-            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-              k = _ref[_i];
+            for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
+              k = _ref[_j];
               _results.push(100.0 * value(obj[k]) / limit[k]);
             }
             return _results;
           };
+          div.dblclick(function(e) {
+            var k;
+            if (e.shiftKey) {
+              return wiki.dialog("JSON for Radar plugin", $('<pre/>').text(JSON.stringify(item, null, 2)));
+            } else {
+              if (!item.text) {
+                item.text = ((function() {
+                  var _i, _len, _results;
+                  _results = [];
+                  for (_i = 0, _len = keys.length; _i < _len; _i++) {
+                    k = keys[_i];
+                    _results.push("" + limit[k] + " " + k);
+                  }
+                  return _results;
+                })()).join("\n");
+              }
+              return wiki.textEditor(div, item);
+            }
+          });
           w = 400;
           h = 400;
           vizPadding = {
@@ -133,6 +158,7 @@
             }
             return _results;
           })();
+          wiki.log('radar series', series);
           comments = [];
           for (m = _i = 0, _ref = data.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; m = 0 <= _ref ? ++_i : --_i) {
             for (d = _j = 0, _ref1 = dimension - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; d = 0 <= _ref1 ? ++_j : --_j) {
