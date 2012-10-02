@@ -37,7 +37,7 @@ print = (report, value, hover, line, comment, color) ->
     <tr style="background:#{color};">
       <td style="width: 20%; text-align: right;" title="#{hover||''}">
         <b>#{round value}</b>
-      <td title="#{long}">#{line}#{annotate comment}
+      <td title="#{long}">#{line}#{annotate comment}</td>
     """
 
 dispatch = (state, done) ->
@@ -162,7 +162,9 @@ window.plugins.method =
     div.addClass 'radar-source'
     div.get(0).radarData = -> output
 
-    div.mousemove (e) -> $(div).triggerHandler('thumb', $(e.target).text())
+    div.mousemove (e) ->
+      if $(e.target).is('td')
+        $(div).triggerHandler('thumb', $(e.target).text())
     div.dblclick (e) ->
       if e.shiftKey
         wiki.dialog "JSON for Method plugin",  $('<pre/>').text(JSON.stringify(item, null, 2))

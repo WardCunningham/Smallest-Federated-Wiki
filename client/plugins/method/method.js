@@ -60,7 +60,7 @@
       long = line;
       line = "" + (line.substr(0, 20)) + " ... " + (line.substr(-15));
     }
-    return report.push("<tr style=\"background:" + color + ";\">\n  <td style=\"width: 20%; text-align: right;\" title=\"" + (hover || '') + "\">\n    <b>" + (round(value)) + "</b>\n  <td title=\"" + long + "\">" + line + (annotate(comment)));
+    return report.push("<tr style=\"background:" + color + ";\">\n  <td style=\"width: 20%; text-align: right;\" title=\"" + (hover || '') + "\">\n    <b>" + (round(value)) + "</b>\n  <td title=\"" + long + "\">" + line + (annotate(comment)) + "</td>");
   };
 
   dispatch = function(state, done) {
@@ -239,7 +239,9 @@
         return output;
       };
       div.mousemove(function(e) {
-        return $(div).triggerHandler('thumb', $(e.target).text());
+        if ($(e.target).is('td')) {
+          return $(div).triggerHandler('thumb', $(e.target).text());
+        }
       });
       div.dblclick(function(e) {
         if (e.shiftKey) {
