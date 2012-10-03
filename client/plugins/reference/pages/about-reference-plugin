@@ -1,0 +1,294 @@
+{
+  "title": "About Reference Plugin",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "05c9ab4e344b347c",
+      "text": "References are paragraphs that are used as bibliographic references to pages elsewhere in the federation. References can bypass the usual link resolution process to go straight to a remote site."
+    },
+    {
+      "type": "reference",
+      "id": "39a5cbca0bd2c1d9",
+      "site": "fed.wiki.org",
+      "slug": "example-reference",
+      "title": "Example Reference",
+      "text": "You can add references to other Federated Wiki sites. Here we show what a reference looks like."
+    },
+    {
+      "type": "paragraph",
+      "id": "8e0a03dd6d1d76e1",
+      "text": "<h3>How They Works"
+    },
+    {
+      "type": "paragraph",
+      "id": "ea7869e956912f8e",
+      "text": "A reference consists of three parts.\n<li> Remote flag (favicon), retrieved when viewed.\n<li> Page name as it would appear in a url.\n<li> First paragraph of cited page, retrieved once."
+    },
+    {
+      "type": "paragraph",
+      "id": "5d8053fd7a3afcd9",
+      "text": "Click the flag to see the remote page."
+    },
+    {
+      "type": "paragraph",
+      "id": "48446871b82033d5",
+      "text": "The remote pages show up side by side with pages from the origin wiki site. You can click on a remote pages flag (the larger icon) to go to the remote site and make it the origin. "
+    },
+    {
+      "type": "paragraph",
+      "id": "860cc080f953f9a4",
+      "text": "<h3> How to Make Them"
+    },
+    {
+      "type": "paragraph",
+      "id": "28a96402934ce84a",
+      "text": "Drag the browser url of another Federated Wiki site to the factory to create a bibliographic reference of that page. This takes some dexterity and may not work in all browsers and operating systems."
+    },
+    {
+      "type": "paragraph",
+      "id": "4ee937c67029d8ea",
+      "text": "Wiki mechanisms like Search or [[Recent Changes]] make pages full of references. You can drag these references to your own reference collections. "
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "item": {
+        "title": "About Reference Plugin"
+      },
+      "date": 1349292753931
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "05c9ab4e344b347c"
+      },
+      "id": "05c9ab4e344b347c",
+      "type": "add",
+      "date": 1349292779953
+    },
+    {
+      "type": "edit",
+      "id": "05c9ab4e344b347c",
+      "item": {
+        "type": "paragraph",
+        "id": "05c9ab4e344b347c",
+        "text": "References are paragraphs that are used as bibliographic references to pages elsewhere in the federation. References can bypass the usual link resolution process to go straight to a remote site."
+      },
+      "date": 1349293044277
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "791354914cf26aa2",
+        "text": ""
+      },
+      "id": "791354914cf26aa2",
+      "type": "add",
+      "after": "05c9ab4e344b347c",
+      "date": 1349293044783
+    },
+    {
+      "type": "remove",
+      "id": "791354914cf26aa2",
+      "date": 1349293119547
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "39a5cbca0bd2c1d9"
+      },
+      "id": "39a5cbca0bd2c1d9",
+      "type": "add",
+      "after": "05c9ab4e344b347c",
+      "date": 1349293270153
+    },
+    {
+      "type": "edit",
+      "id": "39a5cbca0bd2c1d9",
+      "item": {
+        "type": "reference",
+        "id": "39a5cbca0bd2c1d9",
+        "site": "fed.wiki.org",
+        "slug": "example-reference",
+        "title": "Example Reference",
+        "text": "You can add references to other Federated Wiki sites. Here we show what a reference looks like."
+      },
+      "date": 1349293284307
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "8e0a03dd6d1d76e1",
+        "text": "<h3>Example References Explained"
+      },
+      "after": "39a5cbca0bd2c1d9",
+      "id": "8e0a03dd6d1d76e1",
+      "date": 1349293359218
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "ea7869e956912f8e",
+        "text": "A reference consists of three parts.\n<li> Remote flag (favicon), retrieved when viewed.\n<li> Page name as it would appear in a url.\n<li> First paragraph of cited page, retrieved once."
+      },
+      "after": "39a5cbca0bd2c1d9",
+      "id": "ea7869e956912f8e",
+      "date": 1349293372168
+    },
+    {
+      "type": "move",
+      "order": [
+        "05c9ab4e344b347c",
+        "39a5cbca0bd2c1d9",
+        "8e0a03dd6d1d76e1",
+        "ea7869e956912f8e"
+      ],
+      "id": "8e0a03dd6d1d76e1",
+      "date": 1349293391236
+    },
+    {
+      "type": "edit",
+      "id": "8e0a03dd6d1d76e1",
+      "item": {
+        "type": "paragraph",
+        "id": "8e0a03dd6d1d76e1",
+        "text": "<h3>How it Works"
+      },
+      "date": 1349293420898
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "5d8053fd7a3afcd9",
+        "text": "Click the flag to see the remote page."
+      },
+      "after": "ea7869e956912f8e",
+      "id": "5d8053fd7a3afcd9",
+      "date": 1349293443677
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "48446871b82033d5",
+        "text": "The remote pages show up side by side with pages from the origin wiki site. You can click on a remote pages flag (the larger icon) to go to the remote site and make it the origin. "
+      },
+      "after": "5d8053fd7a3afcd9",
+      "id": "48446871b82033d5",
+      "date": 1349293449157
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "5192dc7eac81976f",
+        "text": "References are made by drag-and-drop of a federated wiki url as explained in [[Add Paragraphs]]."
+      },
+      "after": "48446871b82033d5",
+      "id": "5192dc7eac81976f",
+      "date": 1349293561324
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "28a96402934ce84a",
+        "text": "Drag the url of another Federated Wiki site to the factory to create a bibliographic reference of that page."
+      },
+      "after": "48446871b82033d5",
+      "id": "28a96402934ce84a",
+      "date": 1349293767075
+    },
+    {
+      "type": "remove",
+      "id": "5192dc7eac81976f",
+      "date": 1349293776983
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "4ee937c67029d8ea",
+        "text": ""
+      },
+      "id": "4ee937c67029d8ea",
+      "type": "add",
+      "after": "28a96402934ce84a",
+      "date": 1349293784904
+    },
+    {
+      "type": "edit",
+      "id": "4ee937c67029d8ea",
+      "item": {
+        "type": "paragraph",
+        "id": "4ee937c67029d8ea",
+        "text": "Wiki mechanisms like Search or [[Recent Changes]] make pages full of references. You can drag these references to your own reference collections. "
+      },
+      "date": 1349293896365
+    },
+    {
+      "type": "edit",
+      "id": "28a96402934ce84a",
+      "item": {
+        "type": "paragraph",
+        "id": "28a96402934ce84a",
+        "text": "Drag the browser url of another Federated Wiki site to the factory to create a bibliographic reference of that page. This takes some dexterity and may not work in all browsers and operating systems."
+      },
+      "date": 1349293968899
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "860cc080f953f9a4",
+        "text": ""
+      },
+      "id": "860cc080f953f9a4",
+      "type": "add",
+      "after": "48446871b82033d5",
+      "date": 1349293984795
+    },
+    {
+      "type": "edit",
+      "id": "860cc080f953f9a4",
+      "item": {
+        "type": "paragraph",
+        "id": "860cc080f953f9a4",
+        "text": "<h3> Where to Get Them"
+      },
+      "date": 1349294000690
+    },
+    {
+      "type": "edit",
+      "id": "860cc080f953f9a4",
+      "item": {
+        "type": "paragraph",
+        "id": "860cc080f953f9a4",
+        "text": "<h3> Where to Find Them"
+      },
+      "date": 1349294024593
+    },
+    {
+      "type": "edit",
+      "id": "860cc080f953f9a4",
+      "item": {
+        "type": "paragraph",
+        "id": "860cc080f953f9a4",
+        "text": "<h3> How to Make Them"
+      },
+      "date": 1349294045784
+    },
+    {
+      "type": "edit",
+      "id": "8e0a03dd6d1d76e1",
+      "item": {
+        "type": "paragraph",
+        "id": "8e0a03dd6d1d76e1",
+        "text": "<h3>How They Works"
+      },
+      "date": 1349294059240
+    }
+  ]
+}
