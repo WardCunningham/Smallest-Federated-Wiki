@@ -6,40 +6,68 @@
     emit: function(div, item) {
       return wiki.getScript('/js/d3/d3.js', function() {
         return wiki.getScript('/js/d3/d3.time.js', function() {
-          var angle, c, candidates, centerXPos, centerYPos, circleAxes, circleConstraint, colorSelector, comments, d, data, dimension, fill, h, heightCircleConstraint, hours, keys, lastThumb, limit, limitsFromData, limitsFromText, lineAxes, m, maxVal, minVal, o, percents, radialTicks, radius, radiusLength, rotate, ruleColor, series, translate, value, viz, vizBody, vizPadding, w, who, widthCircleConstraint, _i, _j, _k, _ref, _ref1, _ref2, _results;
+          var angle, c, candidates, centerXPos, centerYPos, circleAxes, circleConstraint, colorSelector, comments, d, data, dimension, fill, h, heightCircleConstraint, hours, keys, lastThumb, limit, limitsFromData, lineAxes, m, max, maxVal, minVal, o, parseText, percents, radialTicks, radius, radiusLength, rotate, ruleColor, series, translate, value, viz, vizBody, vizPadding, w, who, widthCircleConstraint, _i, _j, _k, _ref, _ref1, _ref2, _results;
           div.append(' <style>\n svg { font: 10px sans-serif; }\n</style>');
           limit = {};
-          limitsFromText = function(text) {
+          keys = [];
+          max = -Infinity;
+          value = function(obj) {
+            if (obj == null) {
+              return NaN;
+            }
+            switch (obj.constructor) {
+              case Number:
+                return obj;
+              case String:
+                return +obj;
+              case Array:
+                return value(obj[0]);
+              case Object:
+                return value(obj.value);
+              case Function:
+                return obj();
+              default:
+                return NaN;
+            }
+          };
+          parseText = function(text) {
             var args, line, _i, _len, _ref;
-            limit = {};
             _ref = text.split("\n");
             for (_i = 0, _len = _ref.length; _i < _len; _i++) {
               line = _ref[_i];
               if (args = line.match(/^([0-9.eE-]+) +([\w \/%(){},&-]+)$/)) {
+                keys.push(args[2]);
                 limit[args[2]] = +args[1];
+              } else if (args = line.match(/^ *([\w \/%(){},&-]+)$/)) {
+                keys.push(args[1]);
+              } else if (args = line.match(/^[0-9\.eE-]+$/)) {
+                max = +args[1];
               }
             }
             return wiki.log('radar limitsFromText', limit);
           };
           limitsFromData = function(data) {
-            var d, k, keys, max, v, _i, _len, _results;
-            max = -Infinity;
-            keys = {};
+            var d, k, v, vv, _i, _len;
+            limit = {};
             for (_i = 0, _len = data.length; _i < _len; _i++) {
               d = data[_i];
               for (k in d) {
                 v = d[k];
-                keys[k] = 1;
-                max = v > max ? v : max;
+                vv = value(v);
+                if (!isNaN(vv)) {
+                  wiki.log('limits from data keys', k, v, vv);
+                  if (limit[k]) {
+                    if (vv > limit[k]) {
+                      limit[k] = vv;
+                    }
+                  } else {
+                    limit[k] = vv;
+                  }
+                }
               }
             }
-            limit = {};
-            _results = [];
-            for (k in keys) {
-              v = keys[k];
-              _results.push(limit[k] = max);
-            }
-            return _results;
+            wiki.log('limits from data', limit);
+            return keys = Object.keys(limit);
           };
           candidates = $(".item:lt(" + ($('.item').index(div)) + ")");
           if ((who = candidates.filter(".radar-source")).size()) {
@@ -70,31 +98,11 @@
           }
           wiki.log('radar data', data);
           if (item.text != null) {
-            limitsFromText(item.text);
+            parseText(item.text);
           } else {
             limitsFromData(data);
           }
           wiki.log('radar limit', limit);
-          keys = Object.keys(limit);
-          value = function(obj) {
-            if (obj == null) {
-              return NaN;
-            }
-            switch (obj.constructor) {
-              case Number:
-                return obj;
-              case String:
-                return +obj;
-              case Array:
-                return value(obj[0]);
-              case Object:
-                return value(obj.value);
-              case Function:
-                return obj();
-              default:
-                return NaN;
-            }
-          };
           percents = function(obj) {
             var k, _i, _j, _len, _len1, _ref, _results;
             for (_i = 0, _len = keys.length; _i < _len; _i++) {

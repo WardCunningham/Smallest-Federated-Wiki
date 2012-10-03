@@ -10,24 +10,43 @@ window.plugins.radar =
         '''
 
         limit = {}
+        keys = []
+        max = -Infinity
 
-        limitsFromText = (text) ->
-          limit = {}
+        value = (obj) ->
+          return NaN unless obj?
+          switch obj.constructor
+            when Number then obj
+            when String then +obj
+            when Array then value(obj[0])
+            when Object then value(obj.value)
+            when Function then obj()
+            else NaN
+
+        parseText = (text) ->
           for line in text.split "\n"
             if args = line.match /^([0-9.eE-]+) +([\w \/%(){},&-]+)$/
+              keys.push args[2]
               limit[args[2]] = +args[1]
+            else if args = line.match /^ *([\w \/%(){},&-]+)$/
+              keys.push args[1]
+            else if args = line.match /^[0-9\.eE-]+$/
+              max = +args[1]
           wiki.log 'radar limitsFromText', limit
 
         limitsFromData = (data) ->
-          max = -Infinity
-          keys = {}
+          limit = {}
           for d in data
             for k,v of d
-              keys[k] = 1
-              max = if v>max then v else max
-          limit = {}
-          for k,v of keys
-            limit[k] = max
+              vv = value v
+              unless isNaN vv
+                wiki.log 'limits from data keys', k, v, vv
+                if limit[k]
+                  limit[k] = vv if vv > limit[k]
+                else
+                  limit[k] = vv
+          wiki.log 'limits from data', limit
+          keys = Object.keys limit
 
         candidates = $(".item:lt(#{$('.item').index(div)})")
         if (who = candidates.filter ".radar-source").size()
@@ -39,22 +58,10 @@ window.plugins.radar =
         wiki.log 'radar data', data
 
         if item.text?
-          limitsFromText item.text
+          parseText item.text
         else
           limitsFromData data
         wiki.log 'radar limit', limit
-
-        keys = Object.keys(limit)
-
-        value = (obj) ->
-          return NaN unless obj?
-          switch obj.constructor
-            when Number then obj
-            when String then +obj
-            when Array then value(obj[0])
-            when Object then value(obj.value)
-            when Function then obj()
-            else NaN
 
         percents = (obj) ->
           for k in keys
@@ -69,6 +76,9 @@ window.plugins.radar =
             unless item.text
               item.text = ("#{limit[k]} #{k}" for k in keys).join "\n"
             wiki.textEditor div, item
+
+        # div.append "<p>#{JSON.stringify(keys)}</p>"
+        # div.append "<p>#{JSON.stringify(limit)}</p>"
 
         # Adapted from https://gist.github.com/1630683
 
