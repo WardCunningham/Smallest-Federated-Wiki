@@ -201,6 +201,14 @@ $ ->
       msg = "<li class='error'>Error on #{settings.url}: #{request.responseText}</li>"
       $('.main').prepend msg unless request.status == 404
 
+  getTemplate = (slug, done) ->
+    return done(null) unless slug
+    wiki.log 'getTemplate', slug
+    pageHandler.get
+      whenGotten: (data,siteFound) -> done(data.story)
+      whenNotGotten: -> done(null)
+      pageInformation: {slug: slug}
+
   finishClick = (e, name) ->
     e.preventDefault()
     page = $(e.target).parents('.page') unless e.shiftKey
@@ -267,13 +275,13 @@ $ ->
       $(".action[data-id=#{id}]").toggleClass('target')
 
     .delegate 'button.create', 'click', (e) ->
-      $page = $(e.target).parents('.page:first')
-      $page.removeClass 'ghost'
-      page = $page.data('data')
-      page.story = []
-      pageHandler.put $page, {type: 'create', id: page.id, item: {title:page.title}}
-      wiki.log "create", page.title
-      $page.find('.story').empty()
+      getTemplate $(e.target).data('slug'), (story) ->
+        $page = $(e.target).parents('.page:first')
+        $page.removeClass 'ghost'
+        page = $page.data('data')
+        page.story = story||[]
+        pageHandler.put $page, {type: 'create', id: page.id, item: {title:page.title, story: story||undefined}}
+        wiki.buildPage page, null, $page.empty()
 
     .delegate '.ghost', 'rev', (e) ->
       wiki.log 'rev', e

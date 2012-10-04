@@ -372,7 +372,7 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
   };
 
   $(function() {
-    var LEFTARROW, RIGHTARROW, addToJournal, createTextElement, doInternalLink, finishClick, getItem, resolveFrom, textEditor, useLocalStorage;
+    var LEFTARROW, RIGHTARROW, addToJournal, createTextElement, doInternalLink, finishClick, getItem, getTemplate, resolveFrom, textEditor, useLocalStorage;
     window.dialog = $('<div></div>').html('This dialog will show every time!').dialog({
       autoOpen: false,
       title: 'Basic Dialog',
@@ -582,6 +582,21 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       msg = "<li class='error'>Error on " + settings.url + ": " + request.responseText + "</li>";
       if (request.status !== 404) return $('.main').prepend(msg);
     });
+    getTemplate = function(slug, done) {
+      if (!slug) return done(null);
+      wiki.log('getTemplate', slug);
+      return pageHandler.get({
+        whenGotten: function(data, siteFound) {
+          return done(data.story);
+        },
+        whenNotGotten: function() {
+          return done(null);
+        },
+        pageInformation: {
+          slug: slug
+        }
+      });
+    };
     finishClick = function(e, name) {
       var page;
       e.preventDefault();
@@ -649,20 +664,22 @@ require.define("/lib/legacy.coffee", function (require, module, exports, __dirna
       id = $(this).attr('data-id');
       return $(".action[data-id=" + id + "]").toggleClass('target');
     }).delegate('button.create', 'click', function(e) {
-      var $page, page;
-      $page = $(e.target).parents('.page:first');
-      $page.removeClass('ghost');
-      page = $page.data('data');
-      page.story = [];
-      pageHandler.put($page, {
-        type: 'create',
-        id: page.id,
-        item: {
-          title: page.title
-        }
+      return getTemplate($(e.target).data('slug'), function(story) {
+        var $page, page;
+        $page = $(e.target).parents('.page:first');
+        $page.removeClass('ghost');
+        page = $page.data('data');
+        page.story = story || [];
+        pageHandler.put($page, {
+          type: 'create',
+          id: page.id,
+          item: {
+            title: page.title,
+            story: story || void 0
+          }
+        });
+        return wiki.buildPage(page, null, $page.empty());
       });
-      wiki.log("create", page.title);
-      return $page.find('.story').empty();
     }).delegate('.ghost', 'rev', function(e) {
       var $item, $page, position;
       wiki.log('rev', e);
@@ -1389,7 +1406,21 @@ require.define("/lib/plugin.coffee", function (require, module, exports, __dirna
     },
     future: {
       emit: function(div, item) {
-        return div.append("<p>" + item.text + "<br><button class=\"create\">create</button>");
+        var info, _i, _len, _ref, _results;
+        div.append("" + item.text + "<br><br><button class=\"create\">create</button> new blank page");
+        if (((info = wiki.neighborhood[location.host]) != null) && (info.sitemap != null)) {
+          _ref = info.sitemap;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            item = _ref[_i];
+            if (item.slug.match(/-template$/)) {
+              _results.push(div.append("<br><button class=\"create\" data-slug=" + item.slug + ">create</button> from " + (wiki.resolveLinks("[[" + item.title + "]]"))));
+            } else {
+              _results.push(void 0);
+            }
+          }
+          return _results;
+        }
       },
       bind: function(div, item) {}
     }
