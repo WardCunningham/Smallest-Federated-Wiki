@@ -6,7 +6,7 @@
     emit: function(div, item) {
       return wiki.getScript('/js/d3/d3.js', function() {
         return wiki.getScript('/js/d3/d3.time.js', function() {
-          var angle, c, candidates, centerXPos, centerYPos, circleAxes, circleConstraint, colorSelector, comments, d, data, dimension, fill, h, heightCircleConstraint, hours, keys, lastThumb, limit, limitsFromData, lineAxes, m, max, maxVal, minVal, o, parseText, percents, radialTicks, radius, radiusLength, rotate, ruleColor, series, translate, value, viz, vizBody, vizPadding, w, who, widthCircleConstraint, _i, _j, _k, _ref, _ref1, _ref2, _results;
+          var angle, c, candidates, centerXPos, centerYPos, circleAxes, circleConstraint, colorSelector, comments, d, data, dimension, fill, h, heightCircleConstraint, hours, keys, lastThumb, limit, limitsFromData, lineAxes, m, max, maxVal, minVal, o, parseText, percents, radialTicks, radius, radiusLength, rotate, rows, ruleColor, series, translate, value, viz, vizBody, vizPadding, w, who, widthCircleConstraint, _i, _j, _k, _ref, _ref1, _ref2, _results;
           div.append(' <style>\n svg { font: 10px sans-serif; }\n</style>');
           limit = {};
           keys = [];
@@ -81,18 +81,22 @@
               return _results;
             })();
           } else if ((who = candidates.filter(".data")).size()) {
-            who = who.filter(function(d) {
+            rows = who.filter(function(d) {
               return $(this).data('item').data.length === 1;
             });
-            data = (function() {
-              var _i, _len, _results;
-              _results = [];
-              for (_i = 0, _len = who.length; _i < _len; _i++) {
-                d = who[_i];
-                _results.push($(d).data('item').data[0]);
-              }
-              return _results;
-            })();
+            if (rows.length > 0) {
+              data = (function() {
+                var _i, _len, _results;
+                _results = [];
+                for (_i = 0, _len = rows.length; _i < _len; _i++) {
+                  d = rows[_i];
+                  _results.push($(d).data('item').data[0]);
+                }
+                return _results;
+              })();
+            } else {
+              data = who.last().data('item').data;
+            }
           } else {
             throw "Can't find suitable data";
           }

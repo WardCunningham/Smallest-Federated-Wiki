@@ -52,8 +52,11 @@ window.plugins.radar =
         if (who = candidates.filter ".radar-source").size()
           data = (d.radarData() for d in who)
         else if (who = candidates.filter ".data").size()
-          who = who.filter (d) -> $(this).data('item').data.length == 1
-          data = ($(d).data('item').data[0] for d in who)
+          rows = who.filter (d) -> $(this).data('item').data.length == 1
+          if rows.length > 0
+            data = ($(d).data('item').data[0] for d in rows)
+          else
+            data = who.last().data('item').data
         else throw "Can't find suitable data"
         wiki.log 'radar data', data
 
