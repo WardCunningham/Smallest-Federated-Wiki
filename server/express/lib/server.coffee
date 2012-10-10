@@ -9,20 +9,28 @@
 # anything not in the standard library is included in the repo, or
 # can be installed with an:
 #     npm install
-mkdirp = require('mkdirp')
-express = require('express')
+
+# Standard lib
 fs = require('fs')
 path = require('path')
 http = require('http')
-hbs = require('hbs')
 child_process = require('child_process')
-random = require('./random_id')
+
+# From npm
+mkdirp = require('mkdirp')
+express = require('express')
+hbs = require('hbs')
 passportImport = require('passport')
 OpenIDstrat = require('passport-openid').Strategy
+WebSocketServer = require('ws').Server
+glob = require 'glob'
+es = require 'event-stream'
+JSONStream = require 'JSONStream'
+
+# Local files
+random = require('./random_id')
 defargs = require('./defaultargs')
 util = require('../../../client/lib/util')
-WebSocketServer = require('ws').Server
-
 
 # pageFactory can be easily replaced here by requiring your own page handler
 # factory, which gets called with the argv object, and then has get and put
@@ -35,6 +43,16 @@ gitlog = ''
 gitVersion = child_process.exec('git log -10 --oneline || echo no git log', (err, stdout, stderr) ->
   gitlog = stdout
   )
+
+errorHandler = (res) ->
+    fired = false
+    return (error) ->
+      if !fired
+        fired = true
+        res.statusCode = 500
+        res.end 'Server ' + error
+      else
+        console.log "Allready fired " + error
 
 # Set export objects for node and coffee to a function that generates a sfw server.
 module.exports = exports = (argv) ->
@@ -283,21 +301,24 @@ module.exports = exports = (argv) ->
     res.render('static.html', info)
   )
 
-  app.get('/plugins/factory.js', (req, res) ->
-    catalog = """
-              window.catalog = {
-                "ByteBeat": {"menu": "8-bit Music by Formula"},
-                "MathJax": {"menu": "TeX Formatted Equations"},
-                "Calculator": {"menu": "Running Sums for Expenses"}
-              };
+  app.get ////plugins/(factory/)?factory.js///, (req, res) ->
+    onerr = errorHandler(res)
+    cb = (e, catalog) ->
+      if e then return onerr(e)
+      res.write('window.catalog = ' + JSON.stringify(catalog) + ';')
+      fs.createReadStream(argv.c + '/plugins/meta-factory.js').pipe(res)
 
-              """
-    fs.readFile("#{argv.r}/client/plugins/meta-factory.js", (err, data) =>
-      if err then throw err
-      res.header('Content-Type', 'application/javascript')
-      res.send(catalog + data)
-    )
-  )
+    glob argv.c + '/**/factory.json', (e, files) ->
+      if e then return cb(e)
+      files = files.map (file) ->
+        return fs.createReadStream(file).on('error', onerr).pipe(
+          JSONStream.parse([false]).on 'root', (el) ->
+            @.emit 'data', el
+        )
+
+      es.concat.apply(null, files)
+        .on('error', onerr)
+        .pipe(es.writeArray(cb))
 
   ###### Json Routes ######
   # Handle fetching local and remote json pages.

@@ -15,7 +15,10 @@
     "passport-openid": "~0.1.1",
     "hbs": "~1.0.1",
     "bouncy": "~1.1",
-    "ws": "*"
+    "ws": "*",
+    "event-stream": "*",
+    "JSONStream": "*",
+    "glob": "*"
   },
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha",
