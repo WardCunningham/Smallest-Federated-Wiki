@@ -44,16 +44,6 @@ gitVersion = child_process.exec('git log -10 --oneline || echo no git log', (err
   gitlog = stdout
   )
 
-errorHandler = (res) ->
-    fired = false
-    return (error) ->
-      if !fired
-        fired = true
-        res.statusCode = 500
-        res.end 'Server ' + error
-      else
-        console.log "Allready fired " + error
-
 # Set export objects for node and coffee to a function that generates a sfw server.
 module.exports = exports = (argv) ->
   # Create the main application object, app.
@@ -89,6 +79,18 @@ module.exports = exports = (argv) ->
   # that is passed in and then does its
   # best to supply sane defaults for any arguments that are missing.
   argv = defargs(argv)
+  errorHandler = (req, res, next) ->
+    fired = false
+    res.e = (error, status) ->
+      if !fired
+        fired = true
+        res.statusCode = status or 500
+        res.end 'Server ' + error
+        console.log("Res sent: " + res.statusCode + ' ' + error) if argv.debug
+      else
+        console.log "Allready fired " + error
+    next()
+
   app.startOpts = do ->
     options = {}
     for own k, v of argv
@@ -112,12 +114,12 @@ module.exports = exports = (argv) ->
     path.exists(argv.id, (exists) ->
       if exists
         fs.readFile(argv.id, (err, data) ->
-          if err then throw err
+          if err then return cb err
           owner += data
           cb())
       else if id
         fs.writeFile(argv.id, id, (err) ->
-          if err then throw err
+          if err then return cb err
           console.log("Claimed by #{id}")
           owner = id
           cb())
@@ -167,7 +169,8 @@ module.exports = exports = (argv) ->
         else
           done(null, false)
       else
-        setOwner id, ->
+        setOwner id, (e) ->
+          if e then return done(e)
           done(null, {id})
     )
   )))
@@ -226,6 +229,7 @@ module.exports = exports = (argv) ->
     app.use(express.session({ secret: 'notsecret'}))
     app.use(passport.initialize())
     app.use(passport.session())
+    app.use(errorHandler)
     app.use(app.router)
     app.use(express.static(argv.c))
     app.use(openIDErr)
@@ -302,22 +306,21 @@ module.exports = exports = (argv) ->
   )
 
   app.get ////plugins/(factory/)?factory.js///, (req, res) ->
-    onerr = errorHandler(res)
     cb = (e, catalog) ->
-      if e then return onerr(e)
+      if e then return res.e(e)
       res.write('window.catalog = ' + JSON.stringify(catalog) + ';')
       fs.createReadStream(argv.c + '/plugins/meta-factory.js').pipe(res)
 
     glob argv.c + '/**/factory.json', (e, files) ->
       if e then return cb(e)
       files = files.map (file) ->
-        return fs.createReadStream(file).on('error', onerr).pipe(
+        return fs.createReadStream(file).on('error', res.e).pipe(
           JSONStream.parse([false]).on 'root', (el) ->
             @.emit 'data', el
         )
 
       es.concat.apply(null, files)
-        .on('error', onerr)
+        .on('error', res.e)
         .pipe(es.writeArray(cb))
 
   ###### Json Routes ######
@@ -326,7 +329,7 @@ module.exports = exports = (argv) ->
   app.get(///^/([a-z0-9-]+)\.json$///, cors, (req, res) ->
     file = req.params[0]
     pagehandler.get(file, (e, page, status) ->
-      if e then throw e
+      if e then return res.e e
       logWatchSocket.emit 'fetch', page unless status
       res.json(page, status)
     )
@@ -357,13 +360,13 @@ module.exports = exports = (argv) ->
     path.exists(argv.status, (exists) ->
       if exists
         fs.writeFile(favLoc, buf, (e) ->
-          if e then throw e
+          if e then return res.e e
           res.send('Favicon Saved')
         )
       else
         mkdirp(argv.status, 0777, ->
           fs.writeFile(favLoc, buf, (e) ->
-            if e then throw e
+            if e then return res.e e
             res.send('Favicon Saved')
           )
         )
@@ -421,7 +424,7 @@ module.exports = exports = (argv) ->
     action = JSON.parse(req.body.action)
     # Handle all of the possible actions to be taken on a page,
     actionCB = (e, page, status) ->
-      if e then throw e
+      if e then return res.e e
       if status is 404
         res.send(page, status)
       console.log page if argv.debug
@@ -462,7 +465,7 @@ module.exports = exports = (argv) ->
       page.journal.push(action)
       console.log page
       pagehandler.put(req.params[0], page, (e) ->
-        if e then throw e
+        if e then return res.e e
         res.send('ok')
         console.log 'saved' if argv.debug
       )
@@ -518,7 +521,9 @@ module.exports = exports = (argv) ->
 
   #### Start the server ####
   # Wait to make sure owner is known before listening.
-  setOwner( null, ->
+  setOwner( null, (e) ->
+    # Throw if you can't find the initial owner
+    if e then return throw e
     app.listen(argv.p, argv.o if argv.o)
     console.log("Smallest Federated Wiki server listening on #{app.address().port} in mode: #{app.settings.env}")
   )
