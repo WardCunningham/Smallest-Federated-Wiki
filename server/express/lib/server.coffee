@@ -9,20 +9,28 @@
 # anything not in the standard library is included in the repo, or
 # can be installed with an:
 #     npm install
-mkdirp = require('mkdirp')
-express = require('express')
+
+# Standard lib
 fs = require('fs')
 path = require('path')
 http = require('http')
-hbs = require('hbs')
 child_process = require('child_process')
-random = require('./random_id')
+
+# From npm
+mkdirp = require('mkdirp')
+express = require('express')
+hbs = require('hbs')
 passportImport = require('passport')
 OpenIDstrat = require('passport-openid').Strategy
+WebSocketServer = require('ws').Server
+glob = require 'glob'
+es = require 'event-stream'
+JSONStream = require 'JSONStream'
+
+# Local files
+random = require('./random_id')
 defargs = require('./defaultargs')
 util = require('../../../client/lib/util')
-WebSocketServer = require('ws').Server
-
 
 # pageFactory can be easily replaced here by requiring your own page handler
 # factory, which gets called with the argv object, and then has get and put
@@ -71,6 +79,18 @@ module.exports = exports = (argv) ->
   # that is passed in and then does its
   # best to supply sane defaults for any arguments that are missing.
   argv = defargs(argv)
+  errorHandler = (req, res, next) ->
+    fired = false
+    res.e = (error, status) ->
+      if !fired
+        fired = true
+        res.statusCode = status or 500
+        res.end 'Server ' + error
+        console.log("Res sent: " + res.statusCode + ' ' + error) if argv.debug
+      else
+        console.log "Allready fired " + error
+    next()
+
   app.startOpts = do ->
     options = {}
     for own k, v of argv
@@ -94,12 +114,12 @@ module.exports = exports = (argv) ->
     path.exists(argv.id, (exists) ->
       if exists
         fs.readFile(argv.id, (err, data) ->
-          if err then throw err
+          if err then return cb err
           owner += data
           cb())
       else if id
         fs.writeFile(argv.id, id, (err) ->
-          if err then throw err
+          if err then return cb err
           console.log("Claimed by #{id}")
           owner = id
           cb())
@@ -149,7 +169,8 @@ module.exports = exports = (argv) ->
         else
           done(null, false)
       else
-        setOwner id, ->
+        setOwner id, (e) ->
+          if e then return done(e)
           done(null, {id})
     )
   )))
@@ -208,6 +229,7 @@ module.exports = exports = (argv) ->
     app.use(express.session({ secret: 'notsecret'}))
     app.use(passport.initialize())
     app.use(passport.session())
+    app.use(errorHandler)
     app.use(app.router)
     app.use(express.static(argv.c))
     app.use(openIDErr)
@@ -283,21 +305,23 @@ module.exports = exports = (argv) ->
     res.render('static.html', info)
   )
 
-  app.get('/plugins/factory.js', (req, res) ->
-    catalog = """
-              window.catalog = {
-                "ByteBeat": {"menu": "8-bit Music by Formula"},
-                "MathJax": {"menu": "TeX Formatted Equations"},
-                "Calculator": {"menu": "Running Sums for Expenses"}
-              };
+  app.get ////plugins/(factory/)?factory.js///, (req, res) ->
+    cb = (e, catalog) ->
+      if e then return res.e(e)
+      res.write('window.catalog = ' + JSON.stringify(catalog) + ';')
+      fs.createReadStream(argv.c + '/plugins/meta-factory.js').pipe(res)
 
-              """
-    fs.readFile("#{argv.r}/client/plugins/meta-factory.js", (err, data) =>
-      if err then throw err
-      res.header('Content-Type', 'application/javascript')
-      res.send(catalog + data)
-    )
-  )
+    glob argv.c + '/**/factory.json', (e, files) ->
+      if e then return cb(e)
+      files = files.map (file) ->
+        return fs.createReadStream(file).on('error', res.e).pipe(
+          JSONStream.parse([false]).on 'root', (el) ->
+            @.emit 'data', el
+        )
+
+      es.concat.apply(null, files)
+        .on('error', res.e)
+        .pipe(es.writeArray(cb))
 
   ###### Json Routes ######
   # Handle fetching local and remote json pages.
@@ -305,7 +329,7 @@ module.exports = exports = (argv) ->
   app.get(///^/([a-z0-9-]+)\.json$///, cors, (req, res) ->
     file = req.params[0]
     pagehandler.get(file, (e, page, status) ->
-      if e then throw e
+      if e then return res.e e
       logWatchSocket.emit 'fetch', page unless status
       res.json(page, status)
     )
@@ -336,13 +360,13 @@ module.exports = exports = (argv) ->
     path.exists(argv.status, (exists) ->
       if exists
         fs.writeFile(favLoc, buf, (e) ->
-          if e then throw e
+          if e then return res.e e
           res.send('Favicon Saved')
         )
       else
         mkdirp(argv.status, 0777, ->
           fs.writeFile(favLoc, buf, (e) ->
-            if e then throw e
+            if e then return res.e e
             res.send('Favicon Saved')
           )
         )
@@ -400,7 +424,7 @@ module.exports = exports = (argv) ->
     action = JSON.parse(req.body.action)
     # Handle all of the possible actions to be taken on a page,
     actionCB = (e, page, status) ->
-      if e then throw e
+      if e then return res.e e
       if status is 404
         res.send(page, status)
       console.log page if argv.debug
@@ -441,7 +465,7 @@ module.exports = exports = (argv) ->
       page.journal.push(action)
       console.log page
       pagehandler.put(req.params[0], page, (e) ->
-        if e then throw e
+        if e then return res.e e
         res.send('ok')
         console.log 'saved' if argv.debug
       )
@@ -497,7 +521,9 @@ module.exports = exports = (argv) ->
 
   #### Start the server ####
   # Wait to make sure owner is known before listening.
-  setOwner( null, ->
+  setOwner( null, (e) ->
+    # Throw if you can't find the initial owner
+    if e then return throw e
     app.listen(argv.p, argv.o if argv.o)
     console.log("Smallest Federated Wiki server listening on #{app.address().port} in mode: #{app.settings.env}")
   )
