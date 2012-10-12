@@ -23,6 +23,8 @@ hbs = require('hbs')
 passportImport = require('passport')
 OpenIDstrat = require('passport-openid').Strategy
 WebSocketServer = require('ws').Server
+spawn = require('child_process').spawn
+path = require 'path'
 glob = require 'glob'
 es = require 'event-stream'
 JSONStream = require 'JSONStream'
@@ -52,6 +54,7 @@ module.exports = exports = (argv) ->
   # General, gloabl use sockets
   echoSocket     = new WebSocketServer({server: app, path: '/system/echo'})
   logWatchSocket = new WebSocketServer({server: app, path: '/system/logwatch'})
+  counterSocket  = new WebSocketServer({server: app, path: '/system/counter'})
   echoSocket.on('connection', (ws) ->
     ws.on('message', (message) ->
       console.log ['socktest message from client: ', message]
@@ -72,6 +75,30 @@ module.exports = exports = (argv) ->
     )
     ws.on('message', (message) ->
       console.log ['logWatch message from client: ', message]
+    )
+  )
+  counterSocket.on('connection', (ws) ->
+    counter = spawn( path.join(__dirname, '..', 'plugins', 'counter', 'counter.js') )
+    counter.stdout.on('data', (data) ->
+      try
+        ws.send( data )
+      catch e
+        console.log('client disconnected, killing child counter proc...')
+        counter.kill('SIGHUP')
+    )
+    counter.stderr.on('data', (data) ->
+      try
+        ws.send('stderr: ' + data)
+      catch e
+        console.log('client disconnected, killing child counter proc...')
+        counter.kill('SIGHUP')
+    )
+    counter.on('exit', (code) ->
+      try
+        ws.send('child process exited with code: ' + code)
+      catch e
+        console.log('client disconnected, killing child counter proc...')
+        counter.kill('SIGHUP')
     )
   )
 
@@ -276,7 +303,6 @@ module.exports = exports = (argv) ->
   app.get('/style.css', (req, res) ->
     res.sendfile("#{argv.r}/server/express/views/style.css")
   )
-
 
   # Main route for initial contact.  Allows us to
   # link into a specific set of pages, local and remote.
