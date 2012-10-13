@@ -82,10 +82,21 @@ To install rvm:
 
 	curl -L https://get.rvm.io | bash -s stable --ruby
 
-Then run: 
+Then install Ruby, from one of the following versions:
+
+	Mac-Specific note: On the latest OS X versions, you first need the gcc compiler. 
+	One way is to install XCode from Apple Store. (Free)
+	The Command Line Tools must be installed. See the Downloads section of Xcode's preferences.
 
 	rvm install 1.9.2
 	rvm use 1.9.2
+	
+	Mac-Specific note: If you see an error message such as the following on latest versions of OS X,
+		"The provided compiler '/usr/bin/gcc' is LLVM based, it is not yet
+		fully supported by ruby and gems, please read `rvm requirements`."
+		try:
+			rvm install 1.9.2 --with-gcc=clang
+			rvm use 1.9.2
 
 The software has been known to run trouble-free under version 1.8.5 so long as appropriate gem versions are installed. The latest releases of OSX work better with 1.9.3.
 
