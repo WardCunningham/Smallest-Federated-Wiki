@@ -11,7 +11,7 @@
     bind: function(div, item) {
       var average, label, lastThumb, readout, refresh, value;
       lastThumb = null;
-      div.find('p:first').mousemove(function(e) {
+      div.find('.readout').mousemove(function(e) {
         var thumb;
         thumb = thumbs(item)[Math.floor(thumbs(item).length * e.offsetX / e.target.offsetWidth)];
         if (thumb === lastThumb || null === (lastThumb = thumb)) {
@@ -22,7 +22,7 @@
       }).dblclick(function(e) {
         return wiki.dialog("JSON for " + item.text, $('<pre/>').text(JSON.stringify(item, null, 2)));
       });
-      div.find('p:last').dblclick(function() {
+      div.find('.label').dblclick(function() {
         return wiki.textEditor(div, item);
       });
       $(".main").on('thumb', function(evt, thumb) {

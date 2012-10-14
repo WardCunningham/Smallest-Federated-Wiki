@@ -7,7 +7,7 @@ window.plugins.data =
     $('<p />').addClass('label').appendTo(div).html(wiki.resolveLinks(item.text||'data'))
   bind: (div, item) ->
     lastThumb = null
-    div.find('p:first')
+    div.find('.readout')
       .mousemove (e) ->
         thumb = thumbs(item)[Math.floor(thumbs(item).length * e.offsetX / e.target.offsetWidth)]
         return if thumb == lastThumb || null == (lastThumb = thumb)
@@ -15,7 +15,7 @@ window.plugins.data =
         $(div).trigger('thumb', thumb)
       .dblclick (e) ->
         wiki.dialog "JSON for #{item.text}",  $('<pre/>').text(JSON.stringify(item, null, 2))
-    div.find('p:last')
+    div.find('.label')
       .dblclick ->
         wiki.textEditor div, item
     $(".main").on 'thumb', (evt, thumb) ->
