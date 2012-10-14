@@ -1623,7 +1623,7 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
       heading = {
         'type': 'paragraph',
         'id': util.randomBytes(8),
-        'text': "We did find pages in your current neighborhood."
+        'text': "We did find the page in your current neighborhood."
       };
       hits = [];
       _ref2 = wiki.neighborhood;

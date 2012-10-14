@@ -182,7 +182,7 @@ module.exports = refresh = wiki.refresh = ->
     heading =
       'type': 'paragraph'
       'id': util.randomBytes(8)
-      'text': "We did find pages in your current neighborhood."
+      'text': "We did find the page in your current neighborhood."
     hits = []
     for site, info of wiki.neighborhood
       if info.sitemap?
