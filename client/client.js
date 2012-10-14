@@ -1433,6 +1433,7 @@ require.define("/lib/plugin.coffee", function (require, module, exports, __dirna
 require.define("/lib/refresh.coffee", function (require, module, exports, __dirname, __filename) {
 (function() {
   var createFactory, emitHeader, handleDragging, initAddButton, initDragging, neighborhood, pageHandler, plugin, refresh, state, util;
+  var __slice = Array.prototype.slice;
 
   util = require('./util.coffee');
 
@@ -1606,7 +1607,7 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
       wasServerGenerated: pageElement.attr('data-server-generated') === 'true'
     };
     createGhostPage = function() {
-      var page, title;
+      var heading, hits, info, page, result, site, title, _ref2, _ref3;
       title = $("a[href=\"/" + slug + ".html\"]:last").text() || slug;
       page = {
         'title': title,
@@ -1619,6 +1620,35 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
           }
         ]
       };
+      heading = {
+        'type': 'paragraph',
+        'id': util.randomBytes(8),
+        'text': "We did find pages in your current neighborhood."
+      };
+      hits = [];
+      _ref2 = wiki.neighborhood;
+      for (site in _ref2) {
+        info = _ref2[site];
+        if (info.sitemap != null) {
+          result = _.find(info.sitemap, function(each) {
+            return each.slug === slug;
+          });
+          if (result != null) {
+            hits.push({
+              "type": "reference",
+              "id": util.randomBytes(8),
+              "site": site,
+              "slug": slug,
+              "title": result.title || slug,
+              "text": result.synopsis || ''
+            });
+          }
+        }
+      }
+      if (hits.length > 0) {
+        (_ref3 = page.story).push.apply(_ref3, [heading].concat(__slice.call(hits)));
+        page.story[0].text = 'We could not find this page in the expected context.';
+      }
       return wiki.buildPage(page, void 0, pageElement).addClass('ghost');
     };
     registerNeighbors = function(data, site) {
