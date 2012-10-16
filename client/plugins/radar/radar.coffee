@@ -28,10 +28,10 @@ window.plugins.radar =
             if args = line.match /^([0-9.eE-]+) +([\w \/%(){},&-]+)$/
               keys.push args[2]
               limit[args[2]] = +args[1]
+            else if args = line.match /^([0-9\.eE-]+)$/
+              max = +args[1]
             else if args = line.match /^ *([\w \/%(){},&-]+)$/
               keys.push args[1]
-            else if args = line.match /^[0-9\.eE-]+$/
-              max = +args[1]
           wiki.log 'radar parseText', keys, limit, max
 
         limitsFromData = (data) ->
@@ -62,7 +62,13 @@ window.plugins.radar =
         if item.text? and item.text.match(/\S/)
           parseText item.text
           if _.isEmpty limit
-            limitsFromData data
+            if max == -Infinity
+              limitsFromData data
+            else
+              if _.isEmpty keys
+                limitsFromData data
+                keys = Object.keys limit
+              limit[k] = max for k in keys
         else
           limitsFromData data
           keys = Object.keys limit

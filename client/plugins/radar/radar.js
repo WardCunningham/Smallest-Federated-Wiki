@@ -6,7 +6,7 @@
     emit: function(div, item) {
       return wiki.getScript('/js/d3/d3.js', function() {
         return wiki.getScript('/js/d3/d3.time.js', function() {
-          var angle, c, candidates, centerXPos, centerYPos, circleAxes, circleConstraint, colorSelector, comments, d, data, dimension, fill, h, heightCircleConstraint, hours, keys, lastThumb, limit, limitsFromData, lineAxes, m, max, maxVal, minVal, o, parseText, percents, radialTicks, radius, radiusLength, rotate, rows, ruleColor, series, translate, value, viz, vizBody, vizPadding, w, who, widthCircleConstraint, _i, _j, _k, _ref, _ref1, _ref2, _results;
+          var angle, c, candidates, centerXPos, centerYPos, circleAxes, circleConstraint, colorSelector, comments, d, data, dimension, fill, h, heightCircleConstraint, hours, k, keys, lastThumb, limit, limitsFromData, lineAxes, m, max, maxVal, minVal, o, parseText, percents, radialTicks, radius, radiusLength, rotate, rows, ruleColor, series, translate, value, viz, vizBody, vizPadding, w, who, widthCircleConstraint, _i, _j, _k, _l, _len, _ref, _ref1, _ref2, _results;
           div.append(' <style>\n svg { font: 10px sans-serif; }\n</style>');
           limit = {};
           keys = [];
@@ -38,10 +38,10 @@
               if (args = line.match(/^([0-9.eE-]+) +([\w \/%(){},&-]+)$/)) {
                 keys.push(args[2]);
                 limit[args[2]] = +args[1];
+              } else if (args = line.match(/^([0-9\.eE-]+)$/)) {
+                max = +args[1];
               } else if (args = line.match(/^ *([\w \/%(){},&-]+)$/)) {
                 keys.push(args[1]);
-              } else if (args = line.match(/^[0-9\.eE-]+$/)) {
-                max = +args[1];
               }
             }
             return wiki.log('radar parseText', keys, limit, max);
@@ -103,7 +103,18 @@
           if ((item.text != null) && item.text.match(/\S/)) {
             parseText(item.text);
             if (_.isEmpty(limit)) {
-              limitsFromData(data);
+              if (max === -Infinity) {
+                limitsFromData(data);
+              } else {
+                if (_.isEmpty(keys)) {
+                  limitsFromData(data);
+                  keys = Object.keys(limit);
+                }
+                for (_i = 0, _len = keys.length; _i < _len; _i++) {
+                  k = keys[_i];
+                  limit[k] = max;
+                }
+              }
             }
           } else {
             limitsFromData(data);
@@ -111,32 +122,31 @@
           }
           wiki.log('radar limit', limit);
           percents = function(obj) {
-            var k, _i, _j, _len, _len1, _ref, _results;
-            for (_i = 0, _len = keys.length; _i < _len; _i++) {
-              k = keys[_i];
+            var _j, _k, _len1, _len2, _ref, _results;
+            for (_j = 0, _len1 = keys.length; _j < _len1; _j++) {
+              k = keys[_j];
               if (!obj[k]) {
                 throw "Missing value for '" + k + "'";
               }
             }
             _ref = keys.concat(keys[0]);
             _results = [];
-            for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
-              k = _ref[_j];
+            for (_k = 0, _len2 = _ref.length; _k < _len2; _k++) {
+              k = _ref[_k];
               _results.push(100.0 * value(obj[k]) / limit[k]);
             }
             return _results;
           };
           div.dblclick(function(e) {
-            var k;
             if (e.shiftKey) {
               return wiki.dialog("JSON for Radar plugin", $('<pre/>').text(JSON.stringify(item, null, 2)));
             } else {
               if (!((item.text != null) && item.text.match(/\S/))) {
                 item.text = ((function() {
-                  var _i, _len, _results;
+                  var _j, _len1, _results;
                   _results = [];
-                  for (_i = 0, _len = keys.length; _i < _len; _i++) {
-                    k = keys[_i];
+                  for (_j = 0, _len1 = keys.length; _j < _len1; _j++) {
+                    k = keys[_j];
                     _results.push("" + limit[k] + " " + k);
                   }
                   return _results;
@@ -165,18 +175,18 @@
             return "translate(" + (radius(maxVal * percent / 100)) + ")";
           };
           series = (function() {
-            var _i, _len, _results;
+            var _j, _len1, _results;
             _results = [];
-            for (_i = 0, _len = data.length; _i < _len; _i++) {
-              d = data[_i];
+            for (_j = 0, _len1 = data.length; _j < _len1; _j++) {
+              d = data[_j];
               _results.push(percents(d));
             }
             return _results;
           })();
           wiki.log('radar series', series);
           comments = [];
-          for (m = _i = 0, _ref = data.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; m = 0 <= _ref ? ++_i : --_i) {
-            for (d = _j = 0, _ref1 = dimension - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; d = 0 <= _ref1 ? ++_j : --_j) {
+          for (m = _j = 0, _ref = data.length - 1; 0 <= _ref ? _j <= _ref : _j >= _ref; m = 0 <= _ref ? ++_j : --_j) {
+            for (d = _k = 0, _ref1 = dimension - 1; 0 <= _ref1 ? _k <= _ref1 : _k >= _ref1; d = 0 <= _ref1 ? ++_k : --_k) {
               if ((o = data[m][keys[d]]) != null) {
                 if ((c = o.comment) != null) {
                   comments.push({
@@ -190,7 +200,7 @@
           }
           hours = (function() {
             _results = [];
-            for (var _k = 0, _ref2 = dimension - 1; 0 <= _ref2 ? _k <= _ref2 : _k >= _ref2; 0 <= _ref2 ? _k++ : _k--){ _results.push(_k); }
+            for (var _l = 0, _ref2 = dimension - 1; 0 <= _ref2 ? _l <= _ref2 : _l >= _ref2; 0 <= _ref2 ? _l++ : _l--){ _results.push(_l); }
             return _results;
           }).apply(this);
           minVal = 0;
