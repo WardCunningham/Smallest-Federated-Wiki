@@ -235,6 +235,7 @@ describe "moving paragraphs between pages on different servers" do
   end
 
   it "should move the paragraph and add provenance to the journal" do
+    pending
     local_page, remote_page = page.all(".page")
     paragraph_to_copy = remote_page.find(".item")
 
