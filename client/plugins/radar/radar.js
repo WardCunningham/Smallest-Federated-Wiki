@@ -6,7 +6,7 @@
     emit: function(div, item) {
       return wiki.getScript('/js/d3/d3.js', function() {
         return wiki.getScript('/js/d3/d3.time.js', function() {
-          var angle, c, candidates, centerXPos, centerYPos, circleAxes, circleConstraint, colorSelector, comments, d, data, dimension, fill, h, heightCircleConstraint, hours, k, keys, lastThumb, limit, limitsFromData, lineAxes, m, max, maxVal, minVal, o, parseText, percents, radialTicks, radius, radiusLength, rotate, rows, ruleColor, series, translate, value, viz, vizBody, vizPadding, w, who, widthCircleConstraint, _i, _j, _k, _l, _len, _ref, _ref1, _ref2, _results;
+          var angle, c, candidates, centerXPos, centerYPos, circleAxes, circleConstraint, colorSelector, comments, complete, d, data, dimension, each, fill, h, heightCircleConstraint, hours, k, keys, lastThumb, limit, limitsFromData, lineAxes, m, max, maxVal, merged, merging, minVal, o, parseText, percents, radialTicks, radius, radiusLength, rotate, rows, ruleColor, series, translate, value, viz, vizBody, vizPadding, w, who, widthCircleConstraint, _i, _j, _k, _l, _len, _len1, _m, _ref, _ref1, _ref2, _results;
           div.append(' <style>\n svg { font: 10px sans-serif; }\n</style>');
           limit = {};
           keys = [];
@@ -121,18 +121,39 @@
             keys = Object.keys(limit);
           }
           wiki.log('radar limit', limit);
-          percents = function(obj) {
-            var _j, _k, _len1, _len2, _ref, _results;
+          complete = function(object) {
+            var key, _j, _len1;
             for (_j = 0, _len1 = keys.length; _j < _len1; _j++) {
-              k = keys[_j];
+              key = keys[_j];
+              if (object[key] == null) {
+                return false;
+              }
+            }
+            return true;
+          };
+          merged = [];
+          merging = {};
+          for (_j = 0, _len1 = data.length; _j < _len1; _j++) {
+            each = data[_j];
+            _.extend(merging, each);
+            if (complete(merging)) {
+              merged.push(merging);
+              merging = {};
+            }
+          }
+          data = merged;
+          percents = function(obj) {
+            var _k, _l, _len2, _len3, _ref, _results;
+            for (_k = 0, _len2 = keys.length; _k < _len2; _k++) {
+              k = keys[_k];
               if (obj[k] == null) {
                 throw "Missing value for '" + k + "'";
               }
             }
             _ref = keys.concat(keys[0]);
             _results = [];
-            for (_k = 0, _len2 = _ref.length; _k < _len2; _k++) {
-              k = _ref[_k];
+            for (_l = 0, _len3 = _ref.length; _l < _len3; _l++) {
+              k = _ref[_l];
               _results.push(100.0 * value(obj[k]) / limit[k]);
             }
             return _results;
@@ -143,10 +164,10 @@
             } else {
               if (!((item.text != null) && item.text.match(/\S/))) {
                 item.text = ((function() {
-                  var _j, _len1, _results;
+                  var _k, _len2, _results;
                   _results = [];
-                  for (_j = 0, _len1 = keys.length; _j < _len1; _j++) {
-                    k = keys[_j];
+                  for (_k = 0, _len2 = keys.length; _k < _len2; _k++) {
+                    k = keys[_k];
                     _results.push("" + limit[k] + " " + k);
                   }
                   return _results;
@@ -175,18 +196,18 @@
             return "translate(" + (radius(maxVal * percent / 100)) + ")";
           };
           series = (function() {
-            var _j, _len1, _results;
+            var _k, _len2, _results;
             _results = [];
-            for (_j = 0, _len1 = data.length; _j < _len1; _j++) {
-              d = data[_j];
+            for (_k = 0, _len2 = data.length; _k < _len2; _k++) {
+              d = data[_k];
               _results.push(percents(d));
             }
             return _results;
           })();
           wiki.log('radar series', series);
           comments = [];
-          for (m = _j = 0, _ref = data.length - 1; 0 <= _ref ? _j <= _ref : _j >= _ref; m = 0 <= _ref ? ++_j : --_j) {
-            for (d = _k = 0, _ref1 = dimension - 1; 0 <= _ref1 ? _k <= _ref1 : _k >= _ref1; d = 0 <= _ref1 ? ++_k : --_k) {
+          for (m = _k = 0, _ref = data.length - 1; 0 <= _ref ? _k <= _ref : _k >= _ref; m = 0 <= _ref ? ++_k : --_k) {
+            for (d = _l = 0, _ref1 = dimension - 1; 0 <= _ref1 ? _l <= _ref1 : _l >= _ref1; d = 0 <= _ref1 ? ++_l : --_l) {
               if ((o = data[m][keys[d]]) != null) {
                 if ((c = o.comment) != null) {
                   comments.push({
@@ -200,7 +221,7 @@
           }
           hours = (function() {
             _results = [];
-            for (var _l = 0, _ref2 = dimension - 1; 0 <= _ref2 ? _l <= _ref2 : _l >= _ref2; 0 <= _ref2 ? _l++ : _l--){ _results.push(_l); }
+            for (var _m = 0, _ref2 = dimension - 1; 0 <= _ref2 ? _m <= _ref2 : _m >= _ref2; 0 <= _ref2 ? _m++ : _m--){ _results.push(_m); }
             return _results;
           }).apply(this);
           minVal = 0;

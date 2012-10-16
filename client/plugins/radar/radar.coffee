@@ -74,6 +74,20 @@ window.plugins.radar =
           keys = Object.keys limit
         wiki.log 'radar limit', limit
 
+        complete = (object) ->
+          for key in keys
+            return false unless object[key]?
+          true
+
+        merged = []
+        merging = {}
+        for each in data
+          _.extend merging, each
+          if complete(merging)
+            merged.push merging
+            merging = {}
+        data = merged
+
         percents = (obj) ->
           for k in keys
             unless obj[k]?
