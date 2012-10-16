@@ -32,7 +32,7 @@ window.plugins.radar =
               keys.push args[1]
             else if args = line.match /^[0-9\.eE-]+$/
               max = +args[1]
-          wiki.log 'radar limitsFromText', limit
+          wiki.log 'radar parseText', keys, limit, max
 
         limitsFromData = (data) ->
           limit = {}
@@ -46,7 +46,6 @@ window.plugins.radar =
                 else
                   limit[k] = vv
           wiki.log 'limits from data', limit
-          keys = Object.keys limit
 
         candidates = $(".item:lt(#{$('.item').index(div)})")
         if (who = candidates.filter ".radar-source").size()
@@ -60,10 +59,13 @@ window.plugins.radar =
         else throw "Can't find suitable data"
         wiki.log 'radar data', data
 
-        if item.text?
+        if item.text? and item.text.match(/\S/)
           parseText item.text
+          if _.isEmpty limit
+            limitsFromData data
         else
           limitsFromData data
+          keys = Object.keys limit
         wiki.log 'radar limit', limit
 
         percents = (obj) ->
@@ -76,7 +78,7 @@ window.plugins.radar =
           if e.shiftKey
             wiki.dialog "JSON for Radar plugin",  $('<pre/>').text(JSON.stringify(item, null, 2))
           else
-            unless item.text
+            unless item.text? and item.text.match(/\S/)
               item.text = ("#{limit[k]} #{k}" for k in keys).join "\n"
             wiki.textEditor div, item
 

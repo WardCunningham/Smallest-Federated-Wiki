@@ -44,7 +44,7 @@
                 max = +args[1];
               }
             }
-            return wiki.log('radar limitsFromText', limit);
+            return wiki.log('radar parseText', keys, limit, max);
           };
           limitsFromData = function(data) {
             var d, k, v, vv, _i, _len;
@@ -66,8 +66,7 @@
                 }
               }
             }
-            wiki.log('limits from data', limit);
-            return keys = Object.keys(limit);
+            return wiki.log('limits from data', limit);
           };
           candidates = $(".item:lt(" + ($('.item').index(div)) + ")");
           if ((who = candidates.filter(".radar-source")).size()) {
@@ -101,10 +100,14 @@
             throw "Can't find suitable data";
           }
           wiki.log('radar data', data);
-          if (item.text != null) {
+          if ((item.text != null) && item.text.match(/\S/)) {
             parseText(item.text);
+            if (_.isEmpty(limit)) {
+              limitsFromData(data);
+            }
           } else {
             limitsFromData(data);
+            keys = Object.keys(limit);
           }
           wiki.log('radar limit', limit);
           percents = function(obj) {
@@ -128,7 +131,7 @@
             if (e.shiftKey) {
               return wiki.dialog("JSON for Radar plugin", $('<pre/>').text(JSON.stringify(item, null, 2)));
             } else {
-              if (!item.text) {
+              if (!((item.text != null) && item.text.match(/\S/))) {
                 item.text = ((function() {
                   var _i, _len, _results;
                   _results = [];
