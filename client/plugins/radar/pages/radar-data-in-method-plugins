@@ -1,0 +1,465 @@
+{
+  "title": "Radar Data in Method Plugins",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "d8c8276353fe0800",
+      "text": "The radar plugin will look to its left for data plugins. Try using this sample material data to compare various radar plugin configurations."
+    },
+    {
+      "type": "paragraph",
+      "id": "6aa11505f4408f76",
+      "text": "<h3> Example Charts"
+    },
+    {
+      "type": "paragraph",
+      "id": "82ff6afe3ef2df2f",
+      "text": "Choose an example configuration. Shift-click these links to see multiple configurations side-by-side."
+    },
+    {
+      "type": "paragraph",
+      "id": "60ae4780ef914a70",
+      "text": "[[Specify both Dimensions and Limits]] — names & numbers."
+    },
+    {
+      "type": "paragraph",
+      "id": "0934a9dc832dbbe4",
+      "text": "[[Specify Dimensions and Discover Limits]] — names"
+    },
+    {
+      "type": "paragraph",
+      "id": "21ed455cba16230c",
+      "text": "[[Discover Dimensions but Specify Limits]] — number"
+    },
+    {
+      "type": "paragraph",
+      "id": "7c08bcef30c44a51",
+      "text": "[[Discover both Dimensions and Limits]] — blank"
+    },
+    {
+      "type": "paragraph",
+      "id": "097d0caf9f3feb1e",
+      "text": "<h3> Sample Data"
+    },
+    {
+      "type": "paragraph",
+      "id": "46d34a0ea25f0569",
+      "text": "The example radar charts expect to find this sample data. To use these charts with different datasets you may need to revise the specified dimensions or limits."
+    },
+    {
+      "type": "paragraph",
+      "id": "66a05ed03d05b7a1",
+      "text": "Methods for specifying values and computing subtotals."
+    },
+    {
+      "type": "method",
+      "id": "b7173ce7ee018bd2",
+      "text": "3.0 Carcinogenicity\n2.1 Acute Toxicity\n2.1 Chronic Toxicity\n2.2 Reproductive/Endocrine Disrupter Toxicity\nSUM Chemistry Total"
+    },
+    {
+      "type": "method",
+      "id": "504ce8bed646dc5d",
+      "text": "2.5 Energy Intensity\n3.8 GHG Emissions Intensity\nSUM Energy/GHG Emissions Total"
+    },
+    {
+      "type": "method",
+      "id": "26ebdf58101f4949",
+      "text": "0.0 Water Intensity\n5.3 Land Use Intensity\nSUM Water/ Land Use Total"
+    },
+    {
+      "type": "method",
+      "id": "155dbc655a048961",
+      "text": "10.0 Hazardous Waste\n5.0 MSW\n4.0 Industrial waste\n0.0 Recyclable/ Compostable waste\n1.3 Mineral waste\nSUM Physical Waste Total"
+    },
+    {
+      "type": "paragraph",
+      "id": "0501bf704e43edc8",
+      "text": "Method for computing total score from previous subtotals."
+    },
+    {
+      "type": "method",
+      "id": "2d40e59379434eb9",
+      "text": "Chemistry Total\nEnergy/GHG Emissions Total\nWater/ Land Use Total\nPhysical Waste Total\nSUM Total score"
+    },
+    {
+      "type": "paragraph",
+      "id": "0b2632f7a4bbc93a",
+      "text": "<i>Data from [http://www.apparelcoalition.org/storage/Nike_MSI_2012_0724b.pdf Nike MSI] material sustainability index."
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "item": {
+        "title": "Radar Data in Method Plugins"
+      },
+      "date": 1349300803939
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "d8c8276353fe0800",
+        "text": "The radar plugin will look to its left for data plugins. Try using this sample material data to compare various radar plugin configurations."
+      },
+      "id": "d8c8276353fe0800",
+      "date": 1349300818411
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "6aa11505f4408f76",
+        "text": "<h3> Example Charts"
+      },
+      "after": "d8c8276353fe0800",
+      "id": "6aa11505f4408f76",
+      "date": 1349300822867
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "82ff6afe3ef2df2f",
+        "text": "Choose an example configuration. Shift-click these links to see multiple configurations side-by-side."
+      },
+      "after": "6aa11505f4408f76",
+      "id": "82ff6afe3ef2df2f",
+      "date": 1349300826425
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "60ae4780ef914a70",
+        "text": "[[Specify both Dimensions and Limits]] — names & numbers."
+      },
+      "after": "82ff6afe3ef2df2f",
+      "id": "60ae4780ef914a70",
+      "date": 1349300831300
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "0934a9dc832dbbe4",
+        "text": "[[Specify Dimensions and Discover Limits]] — names"
+      },
+      "after": "60ae4780ef914a70",
+      "id": "0934a9dc832dbbe4",
+      "date": 1349300836245
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "21ed455cba16230c",
+        "text": "[[Discover Dimensions but Specify Limits]] — number"
+      },
+      "after": "0934a9dc832dbbe4",
+      "id": "21ed455cba16230c",
+      "date": 1349300840874
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "7c08bcef30c44a51",
+        "text": "[[Discover both Dimensions and Limits]] — blank"
+      },
+      "after": "21ed455cba16230c",
+      "id": "7c08bcef30c44a51",
+      "date": 1349300847683
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "097d0caf9f3feb1e",
+        "text": "<h3> Sample Data"
+      },
+      "after": "7c08bcef30c44a51",
+      "id": "097d0caf9f3feb1e",
+      "date": 1349300853006
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "46d34a0ea25f0569",
+        "text": "The example radar charts expect to find this sample data. To use these charts with different datasets you may need to revise the specified dimensions or limits."
+      },
+      "after": "097d0caf9f3feb1e",
+      "id": "46d34a0ea25f0569",
+      "date": 1349300857240
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "0b2632f7a4bbc93a",
+        "text": "<i>Data from [http://www.apparelcoalition.org/storage/Nike_MSI_2012_0724b.pdf Nike MSI] material sustainability index."
+      },
+      "after": "46d34a0ea25f0569",
+      "id": "0b2632f7a4bbc93a",
+      "date": 1349300863674
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "b7173ce7ee018bd2"
+      },
+      "id": "b7173ce7ee018bd2",
+      "type": "add",
+      "after": "0b2632f7a4bbc93a",
+      "date": 1349301142950
+    },
+    {
+      "type": "edit",
+      "id": "b7173ce7ee018bd2",
+      "item": {
+        "type": "method",
+        "id": "b7173ce7ee018bd2",
+        "text": "3.0 Carcinogenicity\n2.1 Acute Toxicity\n2.1 Chronic Toxicity\n2.2 Reproductive/Endocrine Disrupter Toxicity\n      Chemistry Total"
+      },
+      "date": 1349301155552
+    },
+    {
+      "type": "edit",
+      "id": "b7173ce7ee018bd2",
+      "item": {
+        "type": "method",
+        "id": "b7173ce7ee018bd2",
+        "text": "3.0 Carcinogenicity\n2.1 Acute Toxicity\n2.1 Chronic Toxicity\n2.2 Reproductive/Endocrine Disrupter Toxicity\nSUM Chemistry Total"
+      },
+      "date": 1349301168627
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "0242802300b78cb7"
+      },
+      "id": "0242802300b78cb7",
+      "type": "add",
+      "after": "b7173ce7ee018bd2",
+      "date": 1349301179055
+    },
+    {
+      "type": "remove",
+      "id": "0242802300b78cb7",
+      "date": 1349301197929
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "504ce8bed646dc5d"
+      },
+      "id": "504ce8bed646dc5d",
+      "type": "add",
+      "after": "b7173ce7ee018bd2",
+      "date": 1349301209166
+    },
+    {
+      "type": "edit",
+      "id": "504ce8bed646dc5d",
+      "item": {
+        "type": "method",
+        "id": "504ce8bed646dc5d",
+        "text": "2.5 Energy Intensity\n3.8 GHG Emissions Intensity\nSUM Energy/GHG Emissions Total"
+      },
+      "date": 1349301219406
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "26ebdf58101f4949"
+      },
+      "id": "26ebdf58101f4949",
+      "type": "add",
+      "after": "504ce8bed646dc5d",
+      "date": 1349301236981
+    },
+    {
+      "type": "edit",
+      "id": "26ebdf58101f4949",
+      "item": {
+        "type": "method",
+        "id": "26ebdf58101f4949",
+        "text": "0.0 Water Intensity\n5.3 Land Use Intensity\nSUM Water/ Land Use Total"
+      },
+      "date": 1349301249910
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "155dbc655a048961"
+      },
+      "id": "155dbc655a048961",
+      "type": "add",
+      "after": "26ebdf58101f4949",
+      "date": 1349301268291
+    },
+    {
+      "type": "edit",
+      "id": "155dbc655a048961",
+      "item": {
+        "type": "method",
+        "id": "155dbc655a048961",
+        "text": "10.0 Hazardous Waste\n5.0 MSW\n4.0 Industrial waste\n0.0 Recyclable/ Compostable waste\n1.3 Mineral waste\nSUM Physical Waste Total"
+      },
+      "date": 1349301279381
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "2d40e59379434eb9"
+      },
+      "id": "2d40e59379434eb9",
+      "type": "add",
+      "after": "155dbc655a048961",
+      "date": 1349301365879
+    },
+    {
+      "type": "edit",
+      "id": "2d40e59379434eb9",
+      "item": {
+        "type": "method",
+        "id": "2d40e59379434eb9",
+        "text": "Chemistry Total\nEnergy/GHG Emissions Total\nWater/ Land Use Total\nPhysical Waste Total\nSUM Total score\n"
+      },
+      "date": 1349301377732
+    },
+    {
+      "type": "edit",
+      "id": "2d40e59379434eb9",
+      "item": {
+        "type": "method",
+        "id": "2d40e59379434eb9",
+        "text": "Chemistry Total\nEnergy/GHG Emissions Total\nWater/ Land Use Total\nPhysical Waste Total\nSUM Total score"
+      },
+      "date": 1349301383235
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "66a05ed03d05b7a1",
+        "text": ""
+      },
+      "id": "66a05ed03d05b7a1",
+      "type": "add",
+      "after": "0b2632f7a4bbc93a",
+      "date": 1349301795229
+    },
+    {
+      "type": "edit",
+      "id": "66a05ed03d05b7a1",
+      "item": {
+        "type": "paragraph",
+        "id": "66a05ed03d05b7a1",
+        "text": "Methods for computing subtotals."
+      },
+      "date": 1349301830426
+    },
+    {
+      "type": "move",
+      "order": [
+        "d8c8276353fe0800",
+        "6aa11505f4408f76",
+        "82ff6afe3ef2df2f",
+        "60ae4780ef914a70",
+        "0934a9dc832dbbe4",
+        "21ed455cba16230c",
+        "7c08bcef30c44a51",
+        "097d0caf9f3feb1e",
+        "46d34a0ea25f0569",
+        "66a05ed03d05b7a1",
+        "b7173ce7ee018bd2",
+        "504ce8bed646dc5d",
+        "26ebdf58101f4949",
+        "0b2632f7a4bbc93a",
+        "155dbc655a048961",
+        "2d40e59379434eb9"
+      ],
+      "id": "0b2632f7a4bbc93a",
+      "date": 1349301839570
+    },
+    {
+      "type": "move",
+      "order": [
+        "d8c8276353fe0800",
+        "6aa11505f4408f76",
+        "82ff6afe3ef2df2f",
+        "60ae4780ef914a70",
+        "0934a9dc832dbbe4",
+        "21ed455cba16230c",
+        "7c08bcef30c44a51",
+        "097d0caf9f3feb1e",
+        "46d34a0ea25f0569",
+        "66a05ed03d05b7a1",
+        "b7173ce7ee018bd2",
+        "504ce8bed646dc5d",
+        "26ebdf58101f4949",
+        "155dbc655a048961",
+        "0b2632f7a4bbc93a",
+        "2d40e59379434eb9"
+      ],
+      "id": "0b2632f7a4bbc93a",
+      "date": 1349301848645
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "0501bf704e43edc8",
+        "text": ""
+      },
+      "id": "0501bf704e43edc8",
+      "type": "add",
+      "after": "0b2632f7a4bbc93a",
+      "date": 1349301852983
+    },
+    {
+      "type": "edit",
+      "id": "0501bf704e43edc8",
+      "item": {
+        "type": "paragraph",
+        "id": "0501bf704e43edc8",
+        "text": "Method for computing total score from previous subtotals."
+      },
+      "date": 1349301880129
+    },
+    {
+      "type": "move",
+      "order": [
+        "d8c8276353fe0800",
+        "6aa11505f4408f76",
+        "82ff6afe3ef2df2f",
+        "60ae4780ef914a70",
+        "0934a9dc832dbbe4",
+        "21ed455cba16230c",
+        "7c08bcef30c44a51",
+        "097d0caf9f3feb1e",
+        "46d34a0ea25f0569",
+        "66a05ed03d05b7a1",
+        "b7173ce7ee018bd2",
+        "504ce8bed646dc5d",
+        "26ebdf58101f4949",
+        "155dbc655a048961",
+        "0501bf704e43edc8",
+        "2d40e59379434eb9",
+        "0b2632f7a4bbc93a"
+      ],
+      "id": "0b2632f7a4bbc93a",
+      "date": 1349301886064
+    },
+    {
+      "type": "edit",
+      "id": "66a05ed03d05b7a1",
+      "item": {
+        "type": "paragraph",
+        "id": "66a05ed03d05b7a1",
+        "text": "Methods for specifying values and computing subtotals."
+      },
+      "date": 1349302227071
+    }
+  ]
+}

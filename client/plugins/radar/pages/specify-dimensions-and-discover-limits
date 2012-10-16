@@ -1,0 +1,98 @@
+{
+  "title": "Specify Dimensions and Discover Limits",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "72936f6e805c624c",
+      "text": "An example radar chart where dimensions are specified but limits are discovered from available data. See [[About Radar Plugin]] for more options."
+    },
+    {
+      "type": "radar",
+      "id": "3c94e369418c1cf2",
+      "text": "Carcinogenicity\nAcute Toxicity\nChronic Toxicity\nReproductive/Endocrine Disrupter Toxicity\nEnergy Intensity\nGHG Emissions Intensity\nWater Intensity\nLand Use Intensity\nHazardous Waste\nMSW\nIndustrial waste\nRecyclable/ Compostable waste\nMineral waste"
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "item": {
+        "title": "Specify Dimensions and Discover Limits"
+      },
+      "date": 1349296547420
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "72936f6e805c624c",
+        "text": "Discovering both dimensions and limits."
+      },
+      "id": "72936f6e805c624c",
+      "date": 1349296551809
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "radar",
+        "id": "4aac7cfc961ec911"
+      },
+      "after": "72936f6e805c624c",
+      "id": "4aac7cfc961ec911",
+      "date": 1349296555064
+    },
+    {
+      "type": "edit",
+      "id": "72936f6e805c624c",
+      "item": {
+        "type": "paragraph",
+        "id": "72936f6e805c624c",
+        "text": "An example radar chart discovering both dimensions and limits. See [[About Radar Plugin]]."
+      },
+      "date": 1349296612262
+    },
+    {
+      "type": "remove",
+      "id": "4aac7cfc961ec911",
+      "date": 1349296737049
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "radar",
+        "id": "3c94e369418c1cf2",
+        "text": "Carcinogenicity\nAcute Toxicity\nChronic Toxicity\nReproductive/Endocrine Disrupter Toxicity\nEnergy Intensity\nGHG Emissions Intensity\nWater Intensity\nLand Use Intensity\nHazardous Waste\nMSW\nIndustrial waste\nRecyclable/ Compostable waste\nMineral waste"
+      },
+      "id": "3c94e369418c1cf2",
+      "date": 1349296762019
+    },
+    {
+      "type": "move",
+      "order": [
+        "72936f6e805c624c",
+        "3c94e369418c1cf2"
+      ],
+      "id": "72936f6e805c624c",
+      "date": 1349296780436
+    },
+    {
+      "type": "edit",
+      "id": "72936f6e805c624c",
+      "item": {
+        "type": "paragraph",
+        "id": "72936f6e805c624c",
+        "text": "An example radar chart where dimensions are specified but limits are discovered. See [[About Radar Plugin]]."
+      },
+      "date": 1349296843431
+    },
+    {
+      "type": "edit",
+      "id": "72936f6e805c624c",
+      "item": {
+        "type": "paragraph",
+        "id": "72936f6e805c624c",
+        "text": "An example radar chart where dimensions are specified but limits are discovered from available data. See [[About Radar Plugin]] for more options."
+      },
+      "date": 1349297015713
+    }
+  ]
+}

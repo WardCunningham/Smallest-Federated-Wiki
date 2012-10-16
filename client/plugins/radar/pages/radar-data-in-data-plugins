@@ -1,0 +1,880 @@
+{
+  "title": "Radar Data in Data Plugins",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "d8c8276353fe0800",
+      "text": "The radar plugin will look to its left for data plugins. Try using this sample material data to compare various radar plugin configurations."
+    },
+    {
+      "type": "paragraph",
+      "id": "6aa11505f4408f76",
+      "text": "<h3> Example Charts"
+    },
+    {
+      "type": "paragraph",
+      "id": "82ff6afe3ef2df2f",
+      "text": "Choose an example configuration. Shift-click these links to see multiple configurations side-by-side."
+    },
+    {
+      "type": "paragraph",
+      "id": "60ae4780ef914a70",
+      "text": "[[Specify both Dimensions and Limits]] — names & numbers."
+    },
+    {
+      "type": "paragraph",
+      "id": "0934a9dc832dbbe4",
+      "text": "[[Specify Dimensions and Discover Limits]] — names"
+    },
+    {
+      "type": "paragraph",
+      "id": "21ed455cba16230c",
+      "text": "[[Discover Dimensions but Specify Limits]] — number"
+    },
+    {
+      "type": "paragraph",
+      "id": "7c08bcef30c44a51",
+      "text": "[[Discover both Dimensions and Limits]] — blank"
+    },
+    {
+      "type": "paragraph",
+      "id": "097d0caf9f3feb1e",
+      "text": "<h3> Sample Data"
+    },
+    {
+      "type": "paragraph",
+      "id": "46d34a0ea25f0569",
+      "text": "The example radar charts expect to find this sample data. To use these charts with different datasets you may need to revise the specified dimensions or limits."
+    },
+    {
+      "type": "data",
+      "id": "1f29981d66cb8216",
+      "columns": [
+        "Material name",
+        "Carcinogenicity",
+        "Acute Toxicity",
+        "Chronic Toxicity",
+        "Reproductive/Endocrine Disrupter Toxicity",
+        "Chemistry Total",
+        "Energy Intensity",
+        "GHG Emissions Intensity",
+        "Energy/GHG Emissions Total",
+        "Water Intensity",
+        "Land Use Intensity",
+        "Water/ Land Use Total",
+        "Hazardous Waste",
+        "MSW",
+        "Industrial waste",
+        "Recyclable/ Compostable waste",
+        "Mineral waste",
+        "Physical Waste Total",
+        "Total score"
+      ],
+      "data": [
+        {
+          "Material name": "Polyester fabric",
+          "Carcinogenicity": "2.7",
+          "Acute Toxicity": "2.5",
+          "Chronic Toxicity": "1.6",
+          "Reproductive/Endocrine Disrupter Toxicity": "2.0",
+          "Chemistry Total": "8.8",
+          "Energy Intensity": "5.0",
+          "GHG Emissions Intensity": "3.8",
+          "Energy/GHG Emissions Total": "8.8",
+          "Water Intensity": "9.0",
+          "Land Use Intensity": "0.0",
+          "Water/ Land Use Total": "9.0",
+          "Hazardous Waste": "8.0",
+          "MSW": "3.8",
+          "Industrial waste": "4.0",
+          "Recyclable/ Compostable waste": "2.0",
+          "Mineral waste": "0.8",
+          "Physical Waste Total": "18.5",
+          "Total score": "45.1"
+        }
+      ],
+      "text": "Polyester-Fabric-Tier2.csv"
+    },
+    {
+      "type": "data",
+      "id": "13701169f593cf48",
+      "columns": [
+        "Material name",
+        "Carcinogenicity",
+        "Acute Toxicity",
+        "Chronic Toxicity",
+        "Reproductive/Endocrine Disrupter Toxicity",
+        "Chemistry Total",
+        "Energy Intensity",
+        "GHG Emissions Intensity",
+        "Energy/GHG Emissions Total",
+        "Water Intensity",
+        "Land Use Intensity",
+        "Water/ Land Use Total",
+        "Hazardous Waste",
+        "MSW",
+        "Industrial waste",
+        "Recyclable/ Compostable waste",
+        "Mineral waste",
+        "Physical Waste Total",
+        "Total score"
+      ],
+      "data": [
+        {
+          "Material name": "Cotton fabric",
+          "Carcinogenicity": "3.0",
+          "Acute Toxicity": "2.1",
+          "Chronic Toxicity": "2.1",
+          "Reproductive/Endocrine Disrupter Toxicity": "2.2",
+          "Chemistry Total": "9.4",
+          "Energy Intensity": "2.5",
+          "GHG Emissions Intensity": "3.8",
+          "Energy/GHG Emissions Total": "6.3",
+          "Water Intensity": "0.0",
+          "Land Use Intensity": "5.3",
+          "Water/ Land Use Total": "5.3",
+          "Hazardous Waste": "10.0",
+          "MSW": "5.0",
+          "Industrial waste": "4.0",
+          "Recyclable/ Compostable waste": "0.0",
+          "Mineral waste": "1.3",
+          "Physical Waste Total": "20.3",
+          "Total score": "41.2"
+        }
+      ],
+      "text": "Cotton-Fabric-Tier2.csv"
+    },
+    {
+      "type": "paragraph",
+      "id": "0b2632f7a4bbc93a",
+      "text": "<i>Data from [http://www.apparelcoalition.org/storage/Nike_MSI_2012_0724b.pdf Nike MSI] material sustainability index."
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "item": {
+        "title": "Radar Data in Data Plugins"
+      },
+      "date": 1349213827591
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "d8c8276353fe0800"
+      },
+      "id": "d8c8276353fe0800",
+      "type": "add",
+      "date": 1349213843110
+    },
+    {
+      "type": "edit",
+      "id": "d8c8276353fe0800",
+      "item": {
+        "type": "paragraph",
+        "id": "d8c8276353fe0800",
+        "text": "The radar plugin will look to it's left for data plugins. Try using this sample material to compare various radar plugin configurations."
+      },
+      "date": 1349213920093
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "ef61b4bf5c052d1c",
+        "text": ""
+      },
+      "id": "ef61b4bf5c052d1c",
+      "type": "add",
+      "after": "d8c8276353fe0800",
+      "date": 1349213920602
+    },
+    {
+      "type": "remove",
+      "id": "ef61b4bf5c052d1c",
+      "date": 1349213929582
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "data",
+        "id": "1f29981d66cb8216",
+        "columns": [
+          "Material name",
+          "Carcinogenicity",
+          "Acute Toxicity",
+          "Chronic Toxicity",
+          "Reproductive/Endocrine Disrupter Toxicity",
+          "Chemistry Total",
+          "Energy Intensity",
+          "GHG Emissions Intensity",
+          "Energy/GHG Emissions Total",
+          "Water Intensity",
+          "Land Use Intensity",
+          "Water/ Land Use Total",
+          "Hazardous Waste",
+          "MSW",
+          "Industrial waste",
+          "Recyclable/ Compostable waste",
+          "Mineral waste",
+          "Physical Waste Total",
+          "Total score"
+        ],
+        "data": [
+          {
+            "Material name": "Polyester fabric",
+            "Carcinogenicity": "2.7",
+            "Acute Toxicity": "2.5",
+            "Chronic Toxicity": "1.6",
+            "Reproductive/Endocrine Disrupter Toxicity": "2.0",
+            "Chemistry Total": "8.8",
+            "Energy Intensity": "5.0",
+            "GHG Emissions Intensity": "3.8",
+            "Energy/GHG Emissions Total": "8.8",
+            "Water Intensity": "9.0",
+            "Land Use Intensity": "0.0",
+            "Water/ Land Use Total": "9.0",
+            "Hazardous Waste": "8.0",
+            "MSW": "3.8",
+            "Industrial waste": "4.0",
+            "Recyclable/ Compostable waste": "2.0",
+            "Mineral waste": "0.8",
+            "Physical Waste Total": "18.5",
+            "Total score": "45.1"
+          }
+        ],
+        "text": "Polyester-Fabric-Tier2.csv"
+      },
+      "after": "d8c8276353fe0800",
+      "id": "1f29981d66cb8216",
+      "date": 1349213932914
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "data",
+        "id": "13701169f593cf48",
+        "columns": [
+          "Material name",
+          "Carcinogenicity",
+          "Acute Toxicity",
+          "Chronic Toxicity",
+          "Reproductive/Endocrine Disrupter Toxicity",
+          "Chemistry Total",
+          "Energy Intensity",
+          "GHG Emissions Intensity",
+          "Energy/GHG Emissions Total",
+          "Water Intensity",
+          "Land Use Intensity",
+          "Water/ Land Use Total",
+          "Hazardous Waste",
+          "MSW",
+          "Industrial waste",
+          "Recyclable/ Compostable waste",
+          "Mineral waste",
+          "Physical Waste Total",
+          "Total score"
+        ],
+        "data": [
+          {
+            "Material name": "Cotton fabric",
+            "Carcinogenicity": "3.0",
+            "Acute Toxicity": "2.1",
+            "Chronic Toxicity": "2.1",
+            "Reproductive/Endocrine Disrupter Toxicity": "2.2",
+            "Chemistry Total": "9.4",
+            "Energy Intensity": "2.5",
+            "GHG Emissions Intensity": "3.8",
+            "Energy/GHG Emissions Total": "6.3",
+            "Water Intensity": "0.0",
+            "Land Use Intensity": "5.3",
+            "Water/ Land Use Total": "5.3",
+            "Hazardous Waste": "10.0",
+            "MSW": "5.0",
+            "Industrial waste": "4.0",
+            "Recyclable/ Compostable waste": "0.0",
+            "Mineral waste": "1.3",
+            "Physical Waste Total": "20.3",
+            "Total score": "41.2"
+          }
+        ],
+        "text": "Cotton-Fabric-Tier2.csv"
+      },
+      "after": "d8c8276353fe0800",
+      "id": "13701169f593cf48",
+      "date": 1349213939054
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "60ae4780ef914a70",
+        "text": ""
+      },
+      "id": "60ae4780ef914a70",
+      "type": "add",
+      "after": "d8c8276353fe0800",
+      "date": 1349213983287
+    },
+    {
+      "type": "edit",
+      "id": "60ae4780ef914a70",
+      "item": {
+        "type": "paragraph",
+        "id": "60ae4780ef914a70",
+        "text": "[[Radar Chart Specifying Dimensions and Limits]]"
+      },
+      "date": 1349214022151
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "46d34a0ea25f0569",
+        "text": ""
+      },
+      "id": "46d34a0ea25f0569",
+      "type": "add",
+      "after": "60ae4780ef914a70",
+      "date": 1349214022659
+    },
+    {
+      "type": "edit",
+      "id": "46d34a0ea25f0569",
+      "item": {
+        "type": "paragraph",
+        "id": "46d34a0ea25f0569",
+        "text": "[[Foo7]] [[Foo 8]] [[Foo9]]"
+      },
+      "date": 1349214067396
+    },
+    {
+      "type": "edit",
+      "id": "46d34a0ea25f0569",
+      "item": {
+        "type": "paragraph",
+        "id": "46d34a0ea25f0569",
+        "text": "[[Foo7]] [[Foo8]] [[Foo9]]"
+      },
+      "date": 1349214081739
+    },
+    {
+      "type": "remove",
+      "id": "13701169f593cf48",
+      "date": 1349225087419
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "data",
+        "id": "13701169f593cf48",
+        "columns": [
+          "Material name",
+          "Carcinogenicity",
+          "Acute Toxicity",
+          "Chronic Toxicity",
+          "Reproductive/Endocrine Disrupter Toxicity",
+          "Chemistry Total",
+          "Energy Intensity",
+          "GHG Emissions Intensity",
+          "Energy/GHG Emissions Total",
+          "Water Intensity",
+          "Land Use Intensity",
+          "Water/ Land Use Total",
+          "Hazardous Waste",
+          "MSW",
+          "Industrial waste",
+          "Recyclable/ Compostable waste",
+          "Mineral waste",
+          "Physical Waste Total",
+          "Total score"
+        ],
+        "data": [
+          {
+            "Material name": "Cotton fabric",
+            "Carcinogenicity": "3.0",
+            "Acute Toxicity": "2.1",
+            "Chronic Toxicity": "2.1",
+            "Reproductive/Endocrine Disrupter Toxicity": "2.2",
+            "Chemistry Total": "9.4",
+            "Energy Intensity": "2.5",
+            "GHG Emissions Intensity": "3.8",
+            "Energy/GHG Emissions Total": "6.3",
+            "Water Intensity": "0.0",
+            "Land Use Intensity": "5.3",
+            "Water/ Land Use Total": "5.3",
+            "Hazardous Waste": "10.0",
+            "MSW": "5.0",
+            "Industrial waste": "4.0",
+            "Recyclable/ Compostable waste": "0.0",
+            "Mineral waste": "1.3",
+            "Physical Waste Total": "20.3",
+            "Total score": "41.2"
+          }
+        ],
+        "text": "Cotton-Fabric-Tier2.csv"
+      },
+      "after": "d8c8276353fe0800",
+      "id": "13701169f593cf48",
+      "date": 1349225115351
+    },
+    {
+      "type": "move",
+      "order": [
+        "d8c8276353fe0800",
+        "60ae4780ef914a70",
+        "46d34a0ea25f0569",
+        "1f29981d66cb8216",
+        "13701169f593cf48"
+      ],
+      "id": "13701169f593cf48",
+      "date": 1349225121321
+    },
+    {
+      "type": "edit",
+      "id": "d8c8276353fe0800",
+      "item": {
+        "type": "paragraph",
+        "id": "d8c8276353fe0800",
+        "text": "The radar plugin will look to it's left for data plugins. Try using this sample [[material]] to compare various radar plugin configurations."
+      },
+      "date": 1349285966496
+    },
+    {
+      "type": "edit",
+      "id": "60ae4780ef914a70",
+      "item": {
+        "type": "paragraph",
+        "id": "60ae4780ef914a70",
+        "text": "[[Specify Dimensions and Limits for Radar Plugin]]"
+      },
+      "date": 1349295978489
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "0934a9dc832dbbe4",
+        "text": ""
+      },
+      "id": "0934a9dc832dbbe4",
+      "type": "add",
+      "after": "60ae4780ef914a70",
+      "date": 1349295978997
+    },
+    {
+      "type": "edit",
+      "id": "0934a9dc832dbbe4",
+      "item": {
+        "type": "paragraph",
+        "id": "0934a9dc832dbbe4",
+        "text": "[[Specify Dimensions and "
+      },
+      "date": 1349296011928
+    },
+    {
+      "type": "edit",
+      "id": "60ae4780ef914a70",
+      "item": {
+        "type": "paragraph",
+        "id": "60ae4780ef914a70",
+        "text": "[[Specify Both Dimensions and Limits for Radar Plugin]]"
+      },
+      "date": 1349296025990
+    },
+    {
+      "type": "edit",
+      "id": "0934a9dc832dbbe4",
+      "item": {
+        "type": "paragraph",
+        "id": "0934a9dc832dbbe4",
+        "text": "[[Specify Dimensions and Discover Limits for Radar Plugin]]"
+      },
+      "date": 1349296044919
+    },
+    {
+      "type": "edit",
+      "id": "60ae4780ef914a70",
+      "item": {
+        "type": "paragraph",
+        "id": "60ae4780ef914a70",
+        "text": "[[Specify Both Dimensions and Limits]]"
+      },
+      "date": 1349296077757
+    },
+    {
+      "type": "edit",
+      "id": "0934a9dc832dbbe4",
+      "item": {
+        "type": "paragraph",
+        "id": "0934a9dc832dbbe4",
+        "text": "[[Specify Dimensions and Discover Limits]]"
+      },
+      "date": 1349296091781
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "7c08bcef30c44a51",
+        "text": ""
+      },
+      "id": "7c08bcef30c44a51",
+      "type": "add",
+      "after": "0934a9dc832dbbe4",
+      "date": 1349296148572
+    },
+    {
+      "type": "edit",
+      "id": "7c08bcef30c44a51",
+      "item": {
+        "type": "paragraph",
+        "id": "7c08bcef30c44a51",
+        "text": "[[Discover both Dimensions and Limits]]"
+      },
+      "date": 1349296176474
+    },
+    {
+      "type": "edit",
+      "id": "d8c8276353fe0800",
+      "item": {
+        "type": "paragraph",
+        "id": "d8c8276353fe0800",
+        "text": "The radar plugin will look to it's left for data plugins. Try using this sample material data to compare various radar plugin configurations."
+      },
+      "date": 1349296216361
+    },
+    {
+      "type": "edit",
+      "id": "60ae4780ef914a70",
+      "item": {
+        "type": "paragraph",
+        "id": "60ae4780ef914a70",
+        "text": "[[Specify both Dimensions and Limits]]"
+      },
+      "date": 1349296294749
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "21ed455cba16230c",
+        "text": ""
+      },
+      "id": "21ed455cba16230c",
+      "type": "add",
+      "after": "7c08bcef30c44a51",
+      "date": 1349296308952
+    },
+    {
+      "type": "edit",
+      "id": "21ed455cba16230c",
+      "item": {
+        "type": "paragraph",
+        "id": "21ed455cba16230c",
+        "text": "[[Discover Dimensions but Specify Limits"
+      },
+      "date": 1349296339542
+    },
+    {
+      "type": "edit",
+      "id": "21ed455cba16230c",
+      "item": {
+        "type": "paragraph",
+        "id": "21ed455cba16230c",
+        "text": "[[Discover Dimensions but Specify Limits]]"
+      },
+      "date": 1349296345781
+    },
+    {
+      "type": "edit",
+      "id": "d8c8276353fe0800",
+      "item": {
+        "type": "paragraph",
+        "id": "d8c8276353fe0800",
+        "text": "The radar plugin will look to its left for data plugins. Try using this sample material data to compare various radar plugin configurations."
+      },
+      "date": 1349296373020
+    },
+    {
+      "type": "edit",
+      "id": "46d34a0ea25f0569",
+      "item": {
+        "type": "paragraph",
+        "id": "46d34a0ea25f0569",
+        "text": "Expect the example radar charts to find this sample data."
+      },
+      "date": 1349297254940
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "82ff6afe3ef2df2f",
+        "text": ""
+      },
+      "id": "82ff6afe3ef2df2f",
+      "type": "add",
+      "after": "d8c8276353fe0800",
+      "date": 1349297267996
+    },
+    {
+      "type": "edit",
+      "id": "82ff6afe3ef2df2f",
+      "item": {
+        "type": "paragraph",
+        "id": "82ff6afe3ef2df2f",
+        "text": "Choose a configuration. Shift-click these links to see multiple configurations side-by-side."
+      },
+      "date": 1349297298578
+    },
+    {
+      "type": "edit",
+      "id": "46d34a0ea25f0569",
+      "item": {
+        "type": "paragraph",
+        "id": "46d34a0ea25f0569",
+        "text": "The example radar charts expect to find this sample data. To use these charts with different datasets you may need to revise the specified dimensions or limits."
+      },
+      "date": 1349297415814
+    },
+    {
+      "type": "move",
+      "order": [
+        "d8c8276353fe0800",
+        "82ff6afe3ef2df2f",
+        "60ae4780ef914a70",
+        "0934a9dc832dbbe4",
+        "21ed455cba16230c",
+        "7c08bcef30c44a51",
+        "46d34a0ea25f0569",
+        "1f29981d66cb8216",
+        "13701169f593cf48"
+      ],
+      "id": "21ed455cba16230c",
+      "date": 1349297470452
+    },
+    {
+      "type": "move",
+      "order": [
+        "d8c8276353fe0800",
+        "82ff6afe3ef2df2f",
+        "60ae4780ef914a70",
+        "0934a9dc832dbbe4",
+        "7c08bcef30c44a51",
+        "21ed455cba16230c",
+        "46d34a0ea25f0569",
+        "1f29981d66cb8216",
+        "13701169f593cf48"
+      ],
+      "id": "21ed455cba16230c",
+      "date": 1349297477354
+    },
+    {
+      "type": "edit",
+      "id": "82ff6afe3ef2df2f",
+      "item": {
+        "type": "paragraph",
+        "id": "82ff6afe3ef2df2f",
+        "text": "Choose an example configuration. Shift-click these links to see multiple configurations side-by-side."
+      },
+      "date": 1349297804602
+    },
+    {
+      "type": "edit",
+      "id": "60ae4780ef914a70",
+      "item": {
+        "type": "paragraph",
+        "id": "60ae4780ef914a70",
+        "text": "[[Specify both Dimensions and Limits]] using names."
+      },
+      "date": 1349298074514
+    },
+    {
+      "type": "edit",
+      "id": "60ae4780ef914a70",
+      "item": {
+        "type": "paragraph",
+        "id": "60ae4780ef914a70",
+        "text": "[[Specify both Dimensions and Limits]] using names and numbers."
+      },
+      "date": 1349298085362
+    },
+    {
+      "type": "edit",
+      "id": "0934a9dc832dbbe4",
+      "item": {
+        "type": "paragraph",
+        "id": "0934a9dc832dbbe4",
+        "text": "[[Specify Dimensions and Discover Limits]] — names"
+      },
+      "date": 1349298122560
+    },
+    {
+      "type": "edit",
+      "id": "60ae4780ef914a70",
+      "item": {
+        "type": "paragraph",
+        "id": "60ae4780ef914a70",
+        "text": "[[Specify both Dimensions and Limits]] — names & numbers."
+      },
+      "date": 1349298154944
+    },
+    {
+      "type": "edit",
+      "id": "21ed455cba16230c",
+      "item": {
+        "type": "paragraph",
+        "id": "21ed455cba16230c",
+        "text": "[[Discover Dimensions but Specify Limits]] — number"
+      },
+      "date": 1349298166879
+    },
+    {
+      "type": "edit",
+      "id": "7c08bcef30c44a51",
+      "item": {
+        "type": "paragraph",
+        "id": "7c08bcef30c44a51",
+        "text": "[[Discover both Dimensions and Limits]] — blank"
+      },
+      "date": 1349298174159
+    },
+    {
+      "type": "move",
+      "order": [
+        "d8c8276353fe0800",
+        "82ff6afe3ef2df2f",
+        "60ae4780ef914a70",
+        "0934a9dc832dbbe4",
+        "21ed455cba16230c",
+        "7c08bcef30c44a51",
+        "46d34a0ea25f0569",
+        "1f29981d66cb8216",
+        "13701169f593cf48"
+      ],
+      "id": "21ed455cba16230c",
+      "date": 1349298210261
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "0b2632f7a4bbc93a"
+      },
+      "id": "0b2632f7a4bbc93a",
+      "type": "add",
+      "after": "13701169f593cf48",
+      "date": 1349298623087
+    },
+    {
+      "type": "edit",
+      "id": "0b2632f7a4bbc93a",
+      "item": {
+        "type": "paragraph",
+        "id": "0b2632f7a4bbc93a",
+        "text": "Sample data from [http://www.apparelcoalition.org/storage/Nike_MSI_2012_0724b.pdf Nike MSI] (material sustainability index)."
+      },
+      "date": 1349298664408
+    },
+    {
+      "type": "edit",
+      "id": "0b2632f7a4bbc93a",
+      "item": {
+        "type": "paragraph",
+        "id": "0b2632f7a4bbc93a",
+        "text": "Sample data from [http://www.apparelcoalition.org/storage/Nike_MSI_2012_0724b.pdf Nike MSI] material sustainability index."
+      },
+      "date": 1349298677984
+    },
+    {
+      "type": "edit",
+      "id": "0b2632f7a4bbc93a",
+      "item": {
+        "type": "paragraph",
+        "id": "0b2632f7a4bbc93a",
+        "text": "Data from [http://www.apparelcoalition.org/storage/Nike_MSI_2012_0724b.pdf Nike MSI] material sustainability index."
+      },
+      "date": 1349298706103
+    },
+    {
+      "type": "edit",
+      "id": "0b2632f7a4bbc93a",
+      "item": {
+        "type": "paragraph",
+        "id": "0b2632f7a4bbc93a",
+        "text": "<i>Data from [http://www.apparelcoalition.org/storage/Nike_MSI_2012_0724b.pdf Nike MSI] material sustainability index."
+      },
+      "date": 1349298720831
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "6aa11505f4408f76"
+      },
+      "id": "6aa11505f4408f76",
+      "type": "add",
+      "after": "0b2632f7a4bbc93a",
+      "date": 1349299819746
+    },
+    {
+      "type": "edit",
+      "id": "6aa11505f4408f76",
+      "item": {
+        "type": "paragraph",
+        "id": "6aa11505f4408f76",
+        "text": "<h3> Example Charts"
+      },
+      "date": 1349299840222
+    },
+    {
+      "type": "move",
+      "order": [
+        "d8c8276353fe0800",
+        "6aa11505f4408f76",
+        "82ff6afe3ef2df2f",
+        "60ae4780ef914a70",
+        "0934a9dc832dbbe4",
+        "21ed455cba16230c",
+        "7c08bcef30c44a51",
+        "46d34a0ea25f0569",
+        "1f29981d66cb8216",
+        "13701169f593cf48",
+        "0b2632f7a4bbc93a"
+      ],
+      "id": "6aa11505f4408f76",
+      "date": 1349299843950
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "097d0caf9f3feb1e"
+      },
+      "id": "097d0caf9f3feb1e",
+      "type": "add",
+      "after": "0b2632f7a4bbc93a",
+      "date": 1349299850647
+    },
+    {
+      "type": "edit",
+      "id": "097d0caf9f3feb1e",
+      "item": {
+        "type": "paragraph",
+        "id": "097d0caf9f3feb1e",
+        "text": "<h3> Sample Data"
+      },
+      "date": 1349299859134
+    },
+    {
+      "type": "move",
+      "order": [
+        "d8c8276353fe0800",
+        "6aa11505f4408f76",
+        "82ff6afe3ef2df2f",
+        "60ae4780ef914a70",
+        "0934a9dc832dbbe4",
+        "21ed455cba16230c",
+        "7c08bcef30c44a51",
+        "097d0caf9f3feb1e",
+        "46d34a0ea25f0569",
+        "1f29981d66cb8216",
+        "13701169f593cf48",
+        "0b2632f7a4bbc93a"
+      ],
+      "id": "097d0caf9f3feb1e",
+      "date": 1349299863039
+    }
+  ]
+}

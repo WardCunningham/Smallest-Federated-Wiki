@@ -1,0 +1,72 @@
+{
+  "title": "Discover Dimensions but Specify Limits",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "93db3b55e0a77a2b",
+      "text": "An example radar chart were the dimensions  are discovered from available data but a single limit is specified for all dimensions. See [[About Radar Plugin]] for more options."
+    },
+    {
+      "type": "radar",
+      "id": "d6a39a28e6d11bd9",
+      "text": "50"
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "item": {
+        "title": "Discover Dimensions but Specify Limits"
+      },
+      "date": 1349297565835
+    },
+    {
+      "item": {
+        "type": "radar",
+        "id": "d6a39a28e6d11bd9"
+      },
+      "id": "d6a39a28e6d11bd9",
+      "type": "add",
+      "date": 1349297570475
+    },
+    {
+      "type": "edit",
+      "id": "d6a39a28e6d11bd9",
+      "item": {
+        "type": "radar",
+        "id": "d6a39a28e6d11bd9",
+        "text": "50"
+      },
+      "date": 1349297618146
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "93db3b55e0a77a2b"
+      },
+      "id": "93db3b55e0a77a2b",
+      "type": "add",
+      "after": "d6a39a28e6d11bd9",
+      "date": 1349297912010
+    },
+    {
+      "type": "edit",
+      "id": "93db3b55e0a77a2b",
+      "item": {
+        "type": "paragraph",
+        "id": "93db3b55e0a77a2b",
+        "text": "An example radar chart were the dimensions  are discovered from available data but a single limit is specified for all dimensions. See [[About Radar Plugin]] for more options."
+      },
+      "date": 1349297968765
+    },
+    {
+      "type": "move",
+      "order": [
+        "93db3b55e0a77a2b",
+        "d6a39a28e6d11bd9"
+      ],
+      "id": "93db3b55e0a77a2b",
+      "date": 1349297972181
+    }
+  ]
+}

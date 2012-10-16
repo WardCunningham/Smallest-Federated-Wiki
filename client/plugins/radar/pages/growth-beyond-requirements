@@ -1,0 +1,748 @@
+{
+  "title": "Growth Beyond Requirements",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "668685b9d3fde407",
+      "text": "Estimated Percentage of Total Growth from Initial Requirements Until Retirement by Size and Type of Application"
+    },
+    {
+      "type": "data",
+      "id": "6ec5e7600a33225a",
+      "columns": [
+        "Function Points",
+        "MIS",
+        "Web",
+        "Outsource",
+        "Embedded",
+        "Commercial",
+        "Government",
+        "Military"
+      ],
+      "data": [
+        {
+          "Function Points": "1",
+          "MIS": "4.215",
+          "Web": "6.0125",
+          "Outsource": "4.5135",
+          "Embedded": "12.0135",
+          "Commercial": "12.018",
+          "Government": "10.021875",
+          "Military": "15.026"
+        },
+        {
+          "Function Points": "10",
+          "MIS": "10.18375",
+          "Web": "14.1625",
+          "Outsource": "9.165",
+          "Embedded": "16.3",
+          "Commercial": "21.525",
+          "Government": "20.54",
+          "Military": "24.675"
+        },
+        {
+          "Function Points": "100",
+          "MIS": "22.3",
+          "Web": "29.25",
+          "Outsource": "19.8375",
+          "Embedded": "24.975",
+          "Commercial": "35.6",
+          "Government": "36.575",
+          "Military": "44.9"
+        },
+        {
+          "Function Points": "1000",
+          "MIS": "47.2",
+          "Web": "43.25",
+          "Outsource": "31.05",
+          "Embedded": "44.4",
+          "Commercial": "63",
+          "Government": "76.75",
+          "Military": "97.2"
+        },
+        {
+          "Function Points": "10000",
+          "MIS": "156.8",
+          "Web": "122.375",
+          "Outsource": "111.3",
+          "Embedded": "93.7",
+          "Commercial": "117.75",
+          "Government": "244",
+          "Military": "220"
+        },
+        {
+          "Function Points": "100000",
+          "MIS": "107.2",
+          "Web": "92",
+          "Outsource": "81.45",
+          "Embedded": "105.6",
+          "Commercial": "141.5",
+          "Government": "239.25",
+          "Military": "270.45"
+        },
+        {
+          "Function Points": "1000000",
+          "MIS": "90.7",
+          "Web": "72.5",
+          "Outsource": "80.5",
+          "Embedded": "99.9",
+          "Commercial": "114.85",
+          "Government": "159.6",
+          "Military": "160"
+        }
+      ],
+      "text": "Table 60"
+    },
+    {
+      "type": "paragraph",
+      "id": "d03a46eab3cded75",
+      "text": "From <i>Overview of United States Software Industry Results Circa 2012\t\t\n"
+    },
+    {
+      "type": "paragraph",
+      "id": "5227ce0f0b8d59b5",
+      "text": "Version 8.1.  July 27, 2012\t\t\n"
+    },
+    {
+      "type": "paragraph",
+      "id": "791e17f48700c89b",
+      "text": "Copyright © 2008-2012 by Capers Jones.  All rights reserved.\t\t"
+    },
+    {
+      "type": "radar",
+      "id": "4aac7cfc961ec911"
+    },
+    {
+      "type": "paragraph",
+      "id": "3d3b0e08924cea4f",
+      "text": "This chart discovered both the dimensions and the limits from the rows of the single data plugin above. "
+    },
+    {
+      "type": "radar",
+      "id": "4aac7cfc961ec912",
+      "text": "156.8 MIS\n122.375 Web\n111.3 Outsource\n105.6 Embedded\n141.5 Commercial\n244 Government\n270.45 Military"
+    },
+    {
+      "type": "paragraph",
+      "id": "00858b1386f3688c",
+      "text": "Discovered values were then edited by double-clicking the chart to remove one undesired dimension."
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "item": {
+        "title": "Growth Beyond Requirements"
+      },
+      "date": 1349381992720
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "cb375bc6281e01a3"
+      },
+      "id": "cb375bc6281e01a3",
+      "type": "add",
+      "date": 1349381999727
+    },
+    {
+      "type": "remove",
+      "id": "cb375bc6281e01a3",
+      "date": 1349382040625
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "668685b9d3fde407"
+      },
+      "id": "668685b9d3fde407",
+      "type": "add",
+      "date": 1349382074691
+    },
+    {
+      "type": "edit",
+      "id": "668685b9d3fde407",
+      "item": {
+        "type": "paragraph",
+        "id": "668685b9d3fde407",
+        "text": "Estimated Percentage of Total Growth from Initial Requirements Until Retirement by Size and Type of Application"
+      },
+      "date": 1349382084484
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "6ec5e7600a33225a"
+      },
+      "id": "6ec5e7600a33225a",
+      "type": "add",
+      "after": "668685b9d3fde407",
+      "date": 1349382101163
+    },
+    {
+      "type": "edit",
+      "id": "6ec5e7600a33225a",
+      "item": {
+        "type": "data",
+        "id": "6ec5e7600a33225a",
+        "columns": [
+          "Function Points",
+          "MIS",
+          "Web",
+          "Outsource",
+          "Embedded",
+          "Commercial",
+          "Government",
+          "Military"
+        ],
+        "data": [
+          {
+            "Function Points": "1",
+            "MIS": "4.215",
+            "Web": "6.0125",
+            "Outsource": "4.5135",
+            "Embedded": "12.0135",
+            "Commercial": "12.018",
+            "Government": "10.021875",
+            "Military": "15.026"
+          },
+          {
+            "Function Points": "10",
+            "MIS": "10.18375",
+            "Web": "14.1625",
+            "Outsource": "9.165",
+            "Embedded": "16.3",
+            "Commercial": "21.525",
+            "Government": "20.54",
+            "Military": "24.675"
+          },
+          {
+            "Function Points": "100",
+            "MIS": "22.3",
+            "Web": "29.25",
+            "Outsource": "19.8375",
+            "Embedded": "24.975",
+            "Commercial": "35.6",
+            "Government": "36.575",
+            "Military": "44.9"
+          },
+          {
+            "Function Points": "1000",
+            "MIS": "47.2",
+            "Web": "43.25",
+            "Outsource": "31.05",
+            "Embedded": "44.4",
+            "Commercial": "63",
+            "Government": "76.75",
+            "Military": "97.2"
+          },
+          {
+            "Function Points": "10000",
+            "MIS": "156.8",
+            "Web": "122.375",
+            "Outsource": "111.3",
+            "Embedded": "93.7",
+            "Commercial": "117.75",
+            "Government": "244",
+            "Military": "220"
+          },
+          {
+            "Function Points": "100000",
+            "MIS": "107.2",
+            "Web": "92",
+            "Outsource": "81.45",
+            "Embedded": "105.6",
+            "Commercial": "141.5",
+            "Government": "239.25",
+            "Military": "270.45"
+          },
+          {
+            "Function Points": "1000000",
+            "MIS": "90.7",
+            "Web": "72.5",
+            "Outsource": "80.5",
+            "Embedded": "99.9",
+            "Commercial": "114.85",
+            "Government": "159.6",
+            "Military": "160"
+          }
+        ]
+      },
+      "date": 1349382135177
+    },
+    {
+      "type": "move",
+      "order": [
+        "6ec5e7600a33225a",
+        "668685b9d3fde407"
+      ],
+      "id": "6ec5e7600a33225a",
+      "date": 1349382423517
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "d03a46eab3cded75"
+      },
+      "id": "d03a46eab3cded75",
+      "type": "add",
+      "after": "668685b9d3fde407",
+      "date": 1349382475924
+    },
+    {
+      "type": "edit",
+      "id": "d03a46eab3cded75",
+      "item": {
+        "type": "paragraph",
+        "id": "d03a46eab3cded75",
+        "text": "From OVERVIEW OF UNITED STATES SOFTWARE INDUSTRY RESULTS CIRCA 2012\t\t\nVersion 8.1.  July 27, 2012\t\t\n"
+      },
+      "date": 1349382491323
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "791e17f48700c89b",
+        "text": "\t\t\nCopyright © 2008-2012 by Capers Jones.  All rights reserved.\t\t"
+      },
+      "id": "791e17f48700c89b",
+      "type": "add",
+      "after": "d03a46eab3cded75",
+      "date": 1349382491831
+    },
+    {
+      "type": "edit",
+      "id": "791e17f48700c89b",
+      "item": {
+        "type": "paragraph",
+        "id": "791e17f48700c89b",
+        "text": "Copyright © 2008-2012 by Capers Jones.  All rights reserved.\t\t"
+      },
+      "date": 1349382501731
+    },
+    {
+      "type": "edit",
+      "id": "d03a46eab3cded75",
+      "item": {
+        "type": "paragraph",
+        "id": "d03a46eab3cded75",
+        "text": "From OVERVIEW OF UNITED STATES SOFTWARE INDUSTRY RESULTS CIRCA 2012\t\t\n"
+      },
+      "date": 1349382519611
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "5227ce0f0b8d59b5",
+        "text": "Version 8.1.  July 27, 2012\t\t\n"
+      },
+      "id": "5227ce0f0b8d59b5",
+      "type": "add",
+      "after": "d03a46eab3cded75",
+      "date": 1349382520116
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "radar",
+        "id": "4aac7cfc961ec911"
+      },
+      "after": "668685b9d3fde407",
+      "id": "4aac7cfc961ec911",
+      "date": 1349382598953
+    },
+    {
+      "type": "move",
+      "order": [
+        "6ec5e7600a33225a",
+        "668685b9d3fde407",
+        "d03a46eab3cded75",
+        "5227ce0f0b8d59b5",
+        "791e17f48700c89b",
+        "4aac7cfc961ec911"
+      ],
+      "id": "4aac7cfc961ec911",
+      "date": 1349382664414
+    },
+    {
+      "type": "move",
+      "order": [
+        "668685b9d3fde407",
+        "6ec5e7600a33225a",
+        "d03a46eab3cded75",
+        "5227ce0f0b8d59b5",
+        "791e17f48700c89b",
+        "4aac7cfc961ec911"
+      ],
+      "id": "6ec5e7600a33225a",
+      "date": 1349382667941
+    },
+    {
+      "type": "edit",
+      "id": "d03a46eab3cded75",
+      "item": {
+        "type": "paragraph",
+        "id": "d03a46eab3cded75",
+        "text": "OVERVIEW OF UNITED STATES SOFTWARE INDUSTRY RESULTS CIRCA 2012\t\t\n"
+      },
+      "date": 1349382686391
+    },
+    {
+      "type": "edit",
+      "id": "d03a46eab3cded75",
+      "item": {
+        "type": "paragraph",
+        "id": "d03a46eab3cded75",
+        "text": "From OVERVIEW OF UNITED STATES SOFTWARE INDUSTRY RESULTS CIRCA 2012\t\t\n"
+      },
+      "date": 1349382698537
+    },
+    {
+      "type": "edit",
+      "id": "d03a46eab3cded75",
+      "item": {
+        "type": "paragraph",
+        "id": "d03a46eab3cded75",
+        "text": "From Overview of United States Software Industry Results Circa 2012\t\t\n"
+      },
+      "date": 1349382751222
+    },
+    {
+      "type": "edit",
+      "id": "d03a46eab3cded75",
+      "item": {
+        "type": "paragraph",
+        "id": "d03a46eab3cded75",
+        "text": "From <b>Overview of United States Software Industry Results Circa 2012\t\t\n"
+      },
+      "date": 1349382767711
+    },
+    {
+      "type": "edit",
+      "id": "d03a46eab3cded75",
+      "item": {
+        "type": "paragraph",
+        "id": "d03a46eab3cded75",
+        "text": "From <i>Overview of United States Software Industry Results Circa 2012\t\t\n"
+      },
+      "date": 1349382788532
+    },
+    {
+      "type": "edit",
+      "id": "6ec5e7600a33225a",
+      "item": {
+        "type": "data",
+        "id": "6ec5e7600a33225a",
+        "columns": [
+          "Function Points",
+          "MIS",
+          "Web",
+          "Outsource",
+          "Embedded",
+          "Commercial",
+          "Government",
+          "Military"
+        ],
+        "data": [
+          {
+            "Function Points": "1",
+            "MIS": "4.215",
+            "Web": "6.0125",
+            "Outsource": "4.5135",
+            "Embedded": "12.0135",
+            "Commercial": "12.018",
+            "Government": "10.021875",
+            "Military": "15.026"
+          },
+          {
+            "Function Points": "10",
+            "MIS": "10.18375",
+            "Web": "14.1625",
+            "Outsource": "9.165",
+            "Embedded": "16.3",
+            "Commercial": "21.525",
+            "Government": "20.54",
+            "Military": "24.675"
+          },
+          {
+            "Function Points": "100",
+            "MIS": "22.3",
+            "Web": "29.25",
+            "Outsource": "19.8375",
+            "Embedded": "24.975",
+            "Commercial": "35.6",
+            "Government": "36.575",
+            "Military": "44.9"
+          },
+          {
+            "Function Points": "1000",
+            "MIS": "47.2",
+            "Web": "43.25",
+            "Outsource": "31.05",
+            "Embedded": "44.4",
+            "Commercial": "63",
+            "Government": "76.75",
+            "Military": "97.2"
+          },
+          {
+            "Function Points": "10000",
+            "MIS": "156.8",
+            "Web": "122.375",
+            "Outsource": "111.3",
+            "Embedded": "93.7",
+            "Commercial": "117.75",
+            "Government": "244",
+            "Military": "220"
+          },
+          {
+            "Function Points": "100000",
+            "MIS": "107.2",
+            "Web": "92",
+            "Outsource": "81.45",
+            "Embedded": "105.6",
+            "Commercial": "141.5",
+            "Government": "239.25",
+            "Military": "270.45"
+          },
+          {
+            "Function Points": "1000000",
+            "MIS": "90.7",
+            "Web": "72.5",
+            "Outsource": "80.5",
+            "Embedded": "99.9",
+            "Commercial": "114.85",
+            "Government": "159.6",
+            "Military": "160"
+          }
+        ],
+        "text": "Table 60"
+      },
+      "date": 1349382814263
+    },
+    {
+      "type": "remove",
+      "id": "4aac7cfc961ec911",
+      "date": 1349384387662
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "d4140e15d30e74f1"
+      },
+      "id": "d4140e15d30e74f1",
+      "type": "add",
+      "after": "791e17f48700c89b",
+      "date": 1349384394003
+    },
+    {
+      "type": "edit",
+      "id": "d4140e15d30e74f1",
+      "item": {
+        "type": "paragraph",
+        "id": "d4140e15d30e74f1",
+        "text": "[[Discover both Dimensions and Limits]]"
+      },
+      "date": 1349384400056
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "radar",
+        "id": "4aac7cfc961ec911"
+      },
+      "after": "5227ce0f0b8d59b5",
+      "id": "4aac7cfc961ec911",
+      "date": 1349385803048
+    },
+    {
+      "type": "edit",
+      "id": "4aac7cfc961ec911",
+      "item": {
+        "type": "radar",
+        "id": "4aac7cfc961ec911",
+        "text": "MIS\nWeb\n111.3 Outsource\n105.6 Embedded\n141.5 Commercial\n244 Government\n270.45 Military"
+      },
+      "date": 1349385837919
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "radar",
+        "id": "4aac7cfc961ec911"
+      },
+      "after": "4aac7cfc961ec911",
+      "id": "4aac7cfc961ec911",
+      "date": 1349385888229
+    },
+    {
+      "type": "remove",
+      "id": "4aac7cfc961ec911",
+      "date": 1349385894839
+    },
+    {
+      "type": "edit",
+      "id": "4aac7cfc961ec911",
+      "item": {
+        "type": "radar",
+        "id": "4aac7cfc961ec911",
+        "text": "156.8 MIS\n122.375 Web\n111.3 Outsource\n105.6 Embedded\n141.5 Commercial\n244 Government\n270.45 Military"
+      },
+      "date": 1349385902063
+    },
+    {
+      "type": "move",
+      "order": [
+        "668685b9d3fde407",
+        "6ec5e7600a33225a",
+        "d03a46eab3cded75",
+        "5227ce0f0b8d59b5",
+        "791e17f48700c89b",
+        "4aac7cfc961ec911",
+        "d4140e15d30e74f1"
+      ],
+      "id": "791e17f48700c89b",
+      "date": 1349386026230
+    },
+    {
+      "type": "remove",
+      "id": "d4140e15d30e74f1",
+      "date": 1349386038848
+    },
+    {
+      "type": "edit",
+      "id": "4aac7cfc961ec911",
+      "item": {
+        "type": "radar",
+        "id": "4aac7cfc961ec911",
+        "text": "156.8 MIS\n152.375 Web\n151.3 Outsource\n155.6 Embedded\n141.5 Commercial\n244 Government\n270.45 Military"
+      },
+      "date": 1349893844944
+    },
+    {
+      "type": "move",
+      "order": [
+        "668685b9d3fde407",
+        "6ec5e7600a33225a",
+        "d03a46eab3cded75",
+        "4aac7cfc961ec911",
+        "5227ce0f0b8d59b5",
+        "791e17f48700c89b"
+      ],
+      "id": "4aac7cfc961ec911",
+      "date": 1350236406546
+    },
+    {
+      "type": "move",
+      "order": [
+        "668685b9d3fde407",
+        "6ec5e7600a33225a",
+        "d03a46eab3cded75",
+        "5227ce0f0b8d59b5",
+        "4aac7cfc961ec911",
+        "791e17f48700c89b"
+      ],
+      "id": "5227ce0f0b8d59b5",
+      "date": 1350337115156
+    },
+    {
+      "type": "move",
+      "order": [
+        "668685b9d3fde407",
+        "6ec5e7600a33225a",
+        "d03a46eab3cded75",
+        "5227ce0f0b8d59b5",
+        "791e17f48700c89b",
+        "4aac7cfc961ec911"
+      ],
+      "id": "791e17f48700c89b",
+      "date": 1350337119984
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "3d3b0e08924cea4f"
+      },
+      "id": "3d3b0e08924cea4f",
+      "type": "add",
+      "after": "4aac7cfc961ec911",
+      "date": 1350417505078
+    },
+    {
+      "type": "edit",
+      "id": "3d3b0e08924cea4f",
+      "item": {
+        "type": "paragraph",
+        "id": "3d3b0e08924cea4f",
+        "text": "This chart discovered both the dimensions and the limits from the rows of the single data plugin above. These discovered values were then edited by double-clicking the chart to remove one undesired dimension."
+      },
+      "date": 1350417637126
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "radar",
+        "id": "4aac7cfc961ec912"
+      },
+      "after": "791e17f48700c89b",
+      "id": "4aac7cfc961ec912",
+      "date": 1350419140672
+    },
+    {
+      "type": "edit",
+      "id": "3d3b0e08924cea4f",
+      "item": {
+        "type": "paragraph",
+        "id": "3d3b0e08924cea4f",
+        "text": "This chart discovered both the dimensions and the limits from the rows of the single data plugin above. Discovered values were then edited by double-clicking the chart to remove one undesired dimension."
+      },
+      "date": 1350419159113
+    },
+    {
+      "type": "edit",
+      "id": "3d3b0e08924cea4f",
+      "item": {
+        "type": "paragraph",
+        "id": "3d3b0e08924cea4f",
+        "text": "This chart discovered both the dimensions and the limits from the rows of the single data plugin above. "
+      },
+      "date": 1350419164706
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "00858b1386f3688c",
+        "text": "Discovered values were then edited by double-clicking the chart to remove one undesired dimension."
+      },
+      "id": "00858b1386f3688c",
+      "type": "add",
+      "after": "3d3b0e08924cea4f",
+      "date": 1350419165214
+    },
+    {
+      "type": "move",
+      "order": [
+        "668685b9d3fde407",
+        "6ec5e7600a33225a",
+        "d03a46eab3cded75",
+        "5227ce0f0b8d59b5",
+        "791e17f48700c89b",
+        "4aac7cfc961ec912",
+        "3d3b0e08924cea4f",
+        "4aac7cfc961ec911",
+        "00858b1386f3688c"
+      ],
+      "id": "3d3b0e08924cea4f",
+      "date": 1350419168957
+    },
+    {
+      "type": "edit",
+      "id": "4aac7cfc961ec912",
+      "item": {
+        "type": "radar",
+        "id": "4aac7cfc961ec912",
+        "text": "156.8 MIS\n122.375 Web\n111.3 Outsource\n105.6 Embedded\n141.5 Commercial\n244 Government\n270.45 Military"
+      },
+      "date": 1350419945540
+    }
+  ]
+}

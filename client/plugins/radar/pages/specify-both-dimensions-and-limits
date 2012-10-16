@@ -1,0 +1,105 @@
+{
+  "title": "Specify both Dimensions and Limits",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "19047a993379ce04",
+      "text": "An example radar chart where both dimensions and limits are specified. See [[About Radar Plugin]] for more options."
+    },
+    {
+      "type": "radar",
+      "id": "720359e507ebf8a0",
+      "text": "7 Carcinogenicity\n7 Acute Toxicity\n7 Chronic Toxicity\n4 Reproductive/Endocrine Disrupter Toxicity\n25 Chemistry Total\n10 Energy Intensity\n15 GHG Emissions Intensity\n25 Energy/GHG Emissions Total\n18 Water Intensity\n7 Land Use Intensity\n25 Water/ Land Use Total\n10 Hazardous Waste\n6.25 MSW\n5 Industrial waste\n2.5 Recyclable/ Compostable waste\n1.25 Mineral waste\n25 Physical Waste Total\n100 Total score"
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "item": {
+        "title": "Specify both Dimensions and Limits"
+      },
+      "date": 1349296450507
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "19047a993379ce04",
+        "text": "Specifying both dimensions and limits."
+      },
+      "id": "19047a993379ce04",
+      "date": 1349296470730
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "radar",
+        "id": "720359e507ebf8a0",
+        "text": "7 Carcinogenicity\n7 Acute Toxicity\n7 Chronic Toxicity\n4 Reproductive/Endocrine Disrupter Toxicity\n25 Chemistry Total\n10 Energy Intensity\n15 GHG Emissions Intensity\n25 Energy/GHG Emissions Total\n18 Water Intensity\n7 Land Use Intensity\n25 Water/ Land Use Total\n10 Hazardous Waste\n6.25 MSW\n5 Industrial waste\n2.5 Recyclable/ Compostable waste\n1.25 Mineral waste\n25 Physical Waste Total\n100 Total score"
+      },
+      "after": "19047a993379ce04",
+      "id": "720359e507ebf8a0",
+      "date": 1349296474974
+    },
+    {
+      "type": "edit",
+      "id": "19047a993379ce04",
+      "item": {
+        "type": "paragraph",
+        "id": "19047a993379ce04",
+        "text": "An example radar chart specifying both dimensions and limits."
+      },
+      "date": 1349296500889
+    },
+    {
+      "type": "edit",
+      "id": "19047a993379ce04",
+      "item": {
+        "type": "paragraph",
+        "id": "19047a993379ce04",
+        "text": "An example radar chart specifying both dimensions and limits. See [[About Radar Plugin]]."
+      },
+      "date": 1349296530120
+    },
+    {
+      "type": "edit",
+      "id": "19047a993379ce04",
+      "item": {
+        "type": "paragraph",
+        "id": "19047a993379ce04",
+        "text": "An example radar chart specifying both dimensions and limits. See [[About Radar Plugin]] for more options."
+      },
+      "date": 1349297063056
+    },
+    {
+      "type": "edit",
+      "id": "19047a993379ce04",
+      "item": {
+        "type": "paragraph",
+        "id": "19047a993379ce04",
+        "text": "An example radar chart where both dimensions and limits are specified. See [[About Radar Plugin]] for more options."
+      },
+      "date": 1349297095734
+    },
+    {
+      "type": "edit",
+      "id": "720359e507ebf8a0",
+      "item": {
+        "type": "radar",
+        "id": "720359e507ebf8a0",
+        "text": "17 Carcinogenicity\n7 Acute Toxicity\n7 Chronic Toxicity\n4 Reproductive/Endocrine Disrupter Toxicity\n25 Chemistry Total\n10 Energy Intensity\n15 GHG Emissions Intensity\n25 Energy/GHG Emissions Total\n18 Water Intensity\n7 Land Use Intensity\n25 Water/ Land Use Total\n10 Hazardous Waste\n6.25 MSW\n5 Industrial waste\n2.5 Recyclable/ Compostable waste\n1.25 Mineral waste\n25 Physical Waste Total\n100 Total score"
+      },
+      "date": 1349893205920
+    },
+    {
+      "type": "edit",
+      "id": "720359e507ebf8a0",
+      "item": {
+        "type": "radar",
+        "id": "720359e507ebf8a0",
+        "text": "7 Carcinogenicity\n7 Acute Toxicity\n7 Chronic Toxicity\n4 Reproductive/Endocrine Disrupter Toxicity\n25 Chemistry Total\n10 Energy Intensity\n15 GHG Emissions Intensity\n25 Energy/GHG Emissions Total\n18 Water Intensity\n7 Land Use Intensity\n25 Water/ Land Use Total\n10 Hazardous Waste\n6.25 MSW\n5 Industrial waste\n2.5 Recyclable/ Compostable waste\n1.25 Mineral waste\n25 Physical Waste Total\n100 Total score"
+      },
+      "date": 1349893218662
+    }
+  ]
+}

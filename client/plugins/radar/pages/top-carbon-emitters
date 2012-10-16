@@ -1,0 +1,240 @@
+{
+  "title": "Top Carbon Emitters",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "7e58ecea74c94ec2",
+      "text": "Top Carbon Dioxide Emitters in Thousands of metric tonnes per year. Source: [http://en.wikipedia.org/wiki/List_of_countries_by_carbon_dioxide_emissions Wikipedia]"
+    },
+    {
+      "type": "paragraph",
+      "id": "34963baa7580b564",
+      "text": "2008 emissions"
+    },
+    {
+      "type": "method",
+      "id": "1c48d6716a52599f",
+      "text": "544091 Canada\n7031916 China\n786660 Germany\n1742698 India\n538404 Iran\n1208163 Japan\n1708653 Russia\n522856 United Kingdom\n5461014 United States"
+    },
+    {
+      "type": "paragraph",
+      "id": "0ddea7c846b50271",
+      "text": "2010 emissions estimates"
+    },
+    {
+      "type": "method",
+      "id": "e7a0d5250ad3e09e",
+      "text": "518475 Canada\n8240958 China\n762543 Germany\n2069738 India\n574667 Iran\n1138432 Japan\n1688688 Russia\n493158 United Kingdom\n5492170 United States"
+    },
+    {
+      "type": "radar",
+      "id": "d4041124d849e461"
+    },
+    {
+      "type": "paragraph",
+      "id": "2cf7c1d8506be51d",
+      "text": "This chart discovers both the dimensions and the limits (full scale value) for each dimension from the values entered into method plugins above it."
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "item": {
+        "title": "Top Carbon Emitters"
+      },
+      "date": 1349313694938
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "7e58ecea74c94ec2",
+        "text": "Top Carbon Dioxide Emitters in Thousands of metric tonnes per year. Source: [http://en.wikipedia.org/wiki/List_of_countries_by_carbon_dioxide_emissions Wikipedia]"
+      },
+      "id": "7e58ecea74c94ec2",
+      "date": 1349313699190
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "34963baa7580b564",
+        "text": "2008 emissions"
+      },
+      "after": "7e58ecea74c94ec2",
+      "id": "34963baa7580b564",
+      "date": 1349313702703
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "method",
+        "id": "1c48d6716a52599f",
+        "text": "544091 Canada\n7031916 China\n786660 Germany\n1742698 India\n538404 Iran\n1208163 Japan\n1708653 Russia\n522856 United Kingdom\n5461014 United States"
+      },
+      "after": "7e58ecea74c94ec2",
+      "id": "1c48d6716a52599f",
+      "date": 1349313712131
+    },
+    {
+      "type": "move",
+      "order": [
+        "7e58ecea74c94ec2",
+        "34963baa7580b564",
+        "1c48d6716a52599f"
+      ],
+      "id": "34963baa7580b564",
+      "date": 1349313715316
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "0ddea7c846b50271",
+        "text": "2010 emissions estimates"
+      },
+      "after": "1c48d6716a52599f",
+      "id": "0ddea7c846b50271",
+      "date": 1349313720493
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "method",
+        "id": "e7a0d5250ad3e09e",
+        "text": "518475 Canada\n8240958 China\n762543 Germany\n2069738 India\n574667 Iran\n1138432 Japan\n1688688 Russia\n493158 United Kingdom\n5492170 United States"
+      },
+      "after": "0ddea7c846b50271",
+      "id": "e7a0d5250ad3e09e",
+      "date": 1349313723881
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "radar",
+        "id": "d4041124d849e461"
+      },
+      "after": "e7a0d5250ad3e09e",
+      "id": "d4041124d849e461",
+      "date": 1349313727261
+    },
+    {
+      "type": "move",
+      "order": [
+        "7e58ecea74c94ec2",
+        "d4041124d849e461",
+        "34963baa7580b564",
+        "1c48d6716a52599f",
+        "0ddea7c846b50271",
+        "e7a0d5250ad3e09e"
+      ],
+      "id": "d4041124d849e461",
+      "date": 1349313737731
+    },
+    {
+      "type": "move",
+      "order": [
+        "7e58ecea74c94ec2",
+        "34963baa7580b564",
+        "d4041124d849e461",
+        "1c48d6716a52599f",
+        "0ddea7c846b50271",
+        "e7a0d5250ad3e09e"
+      ],
+      "id": "34963baa7580b564",
+      "date": 1349313775741
+    },
+    {
+      "type": "move",
+      "order": [
+        "1c48d6716a52599f",
+        "7e58ecea74c94ec2",
+        "34963baa7580b564",
+        "d4041124d849e461",
+        "0ddea7c846b50271",
+        "e7a0d5250ad3e09e"
+      ],
+      "id": "1c48d6716a52599f",
+      "date": 1349313778985
+    },
+    {
+      "type": "move",
+      "order": [
+        "7e58ecea74c94ec2",
+        "34963baa7580b564",
+        "1c48d6716a52599f",
+        "d4041124d849e461",
+        "0ddea7c846b50271",
+        "e7a0d5250ad3e09e"
+      ],
+      "id": "1c48d6716a52599f",
+      "date": 1349313802168
+    },
+    {
+      "type": "move",
+      "order": [
+        "7e58ecea74c94ec2",
+        "34963baa7580b564",
+        "1c48d6716a52599f",
+        "0ddea7c846b50271",
+        "d4041124d849e461",
+        "e7a0d5250ad3e09e"
+      ],
+      "id": "0ddea7c846b50271",
+      "date": 1349313808898
+    },
+    {
+      "type": "move",
+      "order": [
+        "7e58ecea74c94ec2",
+        "34963baa7580b564",
+        "1c48d6716a52599f",
+        "0ddea7c846b50271",
+        "e7a0d5250ad3e09e",
+        "d4041124d849e461"
+      ],
+      "id": "e7a0d5250ad3e09e",
+      "date": 1349313812229
+    },
+    {
+      "type": "edit",
+      "id": "e7a0d5250ad3e09e",
+      "item": {
+        "type": "method",
+        "id": "e7a0d5250ad3e09e",
+        "text": "518475 Canada\n8240958 China\n762543 Germany\n2069738 India\n57466 Iran\n1138432 Japan\n1688688 Russia\n493158 United Kingdom\n5492170 United States"
+      },
+      "date": 1349333397168
+    },
+    {
+      "type": "edit",
+      "id": "e7a0d5250ad3e09e",
+      "item": {
+        "type": "method",
+        "id": "e7a0d5250ad3e09e",
+        "text": "518475 Canada\n8240958 China\n762543 Germany\n2069738 India\n574667 Iran\n1138432 Japan\n1688688 Russia\n493158 United Kingdom\n5492170 United States"
+      },
+      "date": 1349333412401
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "2cf7c1d8506be51d"
+      },
+      "id": "2cf7c1d8506be51d",
+      "type": "add",
+      "after": "d4041124d849e461",
+      "date": 1350417313960
+    },
+    {
+      "type": "edit",
+      "id": "2cf7c1d8506be51d",
+      "item": {
+        "type": "paragraph",
+        "id": "2cf7c1d8506be51d",
+        "text": "This chart discovers both the dimensions and the limits (full scale value) for each dimension from the values entered into method plugins above it."
+      },
+      "date": 1350417467307
+    }
+  ]
+}

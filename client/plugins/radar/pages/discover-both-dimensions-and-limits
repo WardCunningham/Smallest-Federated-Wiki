@@ -1,0 +1,150 @@
+{
+  "title": "Discover both Dimensions and Limits",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "44e408971a80c2cb",
+      "text": "An example radar chart were both dimensions and their limits are discovered from available data. See [[About Radar Plugin]] for more options."
+    },
+    {
+      "type": "radar",
+      "id": "4aac7cfc961ec911",
+      "text": "\n"
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "item": {
+        "title": "Discover both Dimensions and Limits"
+      },
+      "date": 1349296694896
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "radar",
+        "id": "4aac7cfc961ec911"
+      },
+      "id": "4aac7cfc961ec911",
+      "date": 1349296737052
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "44e408971a80c2cb"
+      },
+      "id": "44e408971a80c2cb",
+      "type": "add",
+      "after": "4aac7cfc961ec911",
+      "date": 1349296889515
+    },
+    {
+      "type": "edit",
+      "id": "44e408971a80c2cb",
+      "item": {
+        "type": "paragraph",
+        "id": "44e408971a80c2cb",
+        "text": "An example radar chart were both dimensions and their limits are discovered from available data. See [[About Radar Plugin]] for more options."
+      },
+      "date": 1349296976395
+    },
+    {
+      "type": "move",
+      "order": [
+        "44e408971a80c2cb",
+        "4aac7cfc961ec911"
+      ],
+      "id": "44e408971a80c2cb",
+      "date": 1349296981545
+    },
+    {
+      "type": "edit",
+      "id": "4aac7cfc961ec911",
+      "item": {
+        "type": "radar",
+        "id": "4aac7cfc961ec911",
+        "text": "156.8 MIS\n122.375 Web\n111.3 Outsource\n105.6 Embedded\n141.5 Commercial\n244 Government\n270.45 Military"
+      },
+      "date": 1349385571813
+    },
+    {
+      "type": "edit",
+      "id": "4aac7cfc961ec911",
+      "item": {
+        "type": "radar",
+        "id": "4aac7cfc961ec911"
+      },
+      "date": 1349385702531
+    },
+    {
+      "type": "remove",
+      "id": "4aac7cfc961ec911",
+      "date": 1350236784922
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "radar",
+        "id": "4aac7cfc961ec911"
+      },
+      "id": "4aac7cfc961ec911",
+      "date": 1350236807041
+    },
+    {
+      "type": "edit",
+      "id": "4aac7cfc961ec911",
+      "item": {
+        "type": "radar",
+        "id": "4aac7cfc961ec911",
+        "text": "\n"
+      },
+      "date": 1350236818930
+    },
+    {
+      "type": "edit",
+      "id": "4aac7cfc961ec911",
+      "item": {
+        "type": "radar",
+        "id": "4aac7cfc961ec911",
+        "text": "156.8 MIS\n122.375 Web\n111.3 Outsource\n105.6 Embedded\n141.5 Commercial\n244 Government\n270.45 Military"
+      },
+      "date": 1350237038554
+    },
+    {
+      "type": "move",
+      "order": [
+        "44e408971a80c2cb",
+        "4aac7cfc961ec911"
+      ],
+      "id": "44e408971a80c2cb",
+      "date": 1350336185213
+    },
+    {
+      "type": "edit",
+      "id": "4aac7cfc961ec911",
+      "item": {
+        "type": "radar",
+        "id": "4aac7cfc961ec911",
+        "text": "\n"
+      },
+      "date": 1350412165964
+    },
+    {
+      "type": "remove",
+      "id": "4aac7cfc961ec911",
+      "date": 1350419140668
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "radar",
+        "id": "4aac7cfc961ec911",
+        "text": "\n"
+      },
+      "after": "44e408971a80c2cb",
+      "id": "4aac7cfc961ec911",
+      "date": 1350419218753
+    }
+  ]
+}
