@@ -76,7 +76,7 @@ window.plugins.radar =
 
         percents = (obj) ->
           for k in keys
-            unless obj[k]
+            unless obj[k]?
               throw "Missing value for '#{k}'"
           (100.0*value(obj[k])/limit[k] for k in keys.concat(keys[0]))
 

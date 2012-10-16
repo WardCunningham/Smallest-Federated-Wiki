@@ -125,7 +125,7 @@
             var _j, _k, _len1, _len2, _ref, _results;
             for (_j = 0, _len1 = keys.length; _j < _len1; _j++) {
               k = keys[_j];
-              if (!obj[k]) {
+              if (obj[k] == null) {
                 throw "Missing value for '" + k + "'";
               }
             }
