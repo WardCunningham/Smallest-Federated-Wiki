@@ -15,6 +15,11 @@
     },
     {
       "type": "paragraph",
+      "id": "b5f2a8b73fa6bf0a",
+      "text": "See [https://github.com/WardCunningham/Smallest-Federated-Wiki/tree/master/client/plugins/radar GitHub] for plugin source."
+    },
+    {
+      "type": "paragraph",
       "id": "239efa2f95c4f4fc",
       "text": "<h3> Examples"
     },
@@ -883,6 +888,27 @@
       "type": "remove",
       "id": "6cb6e9663092e19d",
       "date": 1350425662617
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "b5f2a8b73fa6bf0a",
+        "text": ""
+      },
+      "id": "b5f2a8b73fa6bf0a",
+      "type": "add",
+      "after": "db5dad329e49fcd0",
+      "date": 1350500281702
+    },
+    {
+      "type": "edit",
+      "id": "b5f2a8b73fa6bf0a",
+      "item": {
+        "type": "paragraph",
+        "id": "b5f2a8b73fa6bf0a",
+        "text": "See [https://github.com/WardCunningham/Smallest-Federated-Wiki/tree/master/client/plugins/radar GitHub] for plugin source."
+      },
+      "date": 1350500293644
     }
   ]
 }
