@@ -1,0 +1,1064 @@
+{
+	"CHINA": {
+		"name": "China",
+		"code": "CN",
+		"location": {
+			"lat": 23,
+			"lng": 113
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 53.56097399999999,
+				"lng": 134.77281
+			},
+			"southwest": {
+				"lat": 18.1535216,
+				"lng": 73.49941369999999
+			}
+		}
+	},
+	"INDIA": {
+		"name": "India",
+		"code": "IN",
+		"location": {
+			"lat": 20.593684,
+			"lng": 78.96288
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 35.5071565,
+				"lng": 97.395555
+			},
+			"southwest": {
+				"lat": 6.747139,
+				"lng": 68.162386
+			}
+		}
+	},
+	"BRAZIL": {
+		"name": "Brazil",
+		"code": "BR",
+		"location": {
+			"lat": -14.235004,
+			"lng": -51.92528
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 5.271602,
+				"lng": -34.792908
+			},
+			"southwest": {
+				"lat": -33.7509913,
+				"lng": -73.982817
+			}
+		}
+	},
+	"ITALY": {
+		"name": "Italy",
+		"code": "IT",
+		"location": {
+			"lat": 41.87194,
+			"lng": 12.56738
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 47.092,
+				"lng": 18.5203619
+			},
+			"southwest": {
+				"lat": 36.64417359999999,
+				"lng": 6.62672
+			}
+		}
+	},
+	"UK": {
+		"name": "United Kingdom",
+		"code": "GB",
+		"location": {
+			"lat": 55.378051,
+			"lng": -3.435973
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 60.86070149999999,
+				"lng": 33.916555
+			},
+			"southwest": {
+				"lat": 34.564129,
+				"lng": -8.6493573
+			}
+		}
+	},
+	"CANADA": {
+		"name": "Canada",
+		"code": "CA",
+		"location": {
+			"lat": 56.130366,
+			"lng": -106.346771
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 83.115061,
+				"lng": -52.62040200000001
+			},
+			"southwest": {
+				"lat": 41.676556,
+				"lng": -141.00187
+			}
+		}
+	},
+	"BULGARIA": {
+		"name": "Bulgaria",
+		"code": "BG",
+		"location": {
+			"lat": 42.733883,
+			"lng": 25.48583
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 44.2151673,
+				"lng": 28.6075897
+			},
+			"southwest": {
+				"lat": 41.2358638,
+				"lng": 22.3559007
+			}
+		}
+	},
+	"HONG KONG": {
+		"name": "Hong Kong",
+		"code": "HK",
+		"location": {
+			"lat": 22.396428,
+			"lng": 114.109497
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 22.561968,
+				"lng": 114.406445
+			},
+			"southwest": {
+				"lat": 22.153415,
+				"lng": 113.835078
+			}
+		}
+	},
+	"INDONESIA": {
+		"name": "Indonesia",
+		"code": "ID",
+		"location": {
+			"lat": -0.789275,
+			"lng": 113.921327
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 5.906884,
+				"lng": 141.019562
+			},
+			"southwest": {
+				"lat": -10.997112,
+				"lng": 95.004677
+			}
+		}
+	},
+	"JAPAN": {
+		"name": "Japan",
+		"code": "JP",
+		"location": {
+			"lat": 36.204824,
+			"lng": 138.252924
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 45.5568654,
+				"lng": 148.8952914
+			},
+			"southwest": {
+				"lat": 24.0459986,
+				"lng": 122.9337847
+			}
+		}
+	},
+	"MEXICO": {
+		"name": "Mexico",
+		"code": "MX",
+		"location": {
+			"lat": 23.634501,
+			"lng": -102.552784
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 32.718763,
+				"lng": -86.710453
+			},
+			"southwest": {
+				"lat": 14.534548,
+				"lng": -118.383462
+			}
+		}
+	},
+	"PAKISTAN": {
+		"name": "Pakistan",
+		"code": "PK",
+		"location": {
+			"lat": 30.375321,
+			"lng": 69.34511599999999
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 37.084107,
+				"lng": 77.8344316
+			},
+			"southwest": {
+				"lat": 23.6946945,
+				"lng": 60.872972
+			}
+		}
+	},
+	"PORTUGAL": {
+		"name": "Portugal",
+		"code": "PT",
+		"location": {
+			"lat": 39.39987199999999,
+			"lng": -8.224454
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 42.1542048,
+				"lng": -6.1902091
+			},
+			"southwest": {
+				"lat": 32.4038862,
+				"lng": -31.2754101
+			}
+		}
+	},
+	"SOUTH AFRICA": {
+		"name": "South Africa",
+		"code": "ZA",
+		"location": {
+			"lat": -30.559482,
+			"lng": 22.937506
+		},
+		"bounds": {
+			"northeast": {
+				"lat": -22.1253869,
+				"lng": 32.8909911
+			},
+			"southwest": {
+				"lat": -34.8329772,
+				"lng": 16.4545436
+			}
+		}
+	},
+	"SRI LANKA": {
+		"name": "Sri Lanka",
+		"code": "LK",
+		"location": {
+			"lat": 7.873053999999999,
+			"lng": 80.77179699999999
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 9.835850299999999,
+				"lng": 81.87921519999999
+			},
+			"southwest": {
+				"lat": 5.9168334,
+				"lng": 79.6289063
+			}
+		}
+	},
+	"TAIWAN": {
+		"name": "Taiwan",
+		"code": "TW",
+		"location": {
+			"lat": 23.69781,
+			"lng": 120.960515
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 26.3873532,
+				"lng": 122.006905
+			},
+			"southwest": {
+				"lat": 20.5637908,
+				"lng": 116.7118602
+			}
+		}
+	},
+	"THAILAND": {
+		"name": "Thailand",
+		"code": "TH",
+		"location": {
+			"lat": 15.870032,
+			"lng": 100.992541
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 20.465143,
+				"lng": 105.636812
+			},
+			"southwest": {
+				"lat": 5.612787,
+				"lng": 97.343396
+			}
+		}
+	},
+	"TUNISIA": {
+		"name": "Tunisia",
+		"code": "TN",
+		"location": {
+			"lat": 33.886917,
+			"lng": 9.537499
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 37.34713199999999,
+				"lng": 11.5992173
+			},
+			"southwest": {
+				"lat": 30.2277963,
+				"lng": 7.522313400000001
+			}
+		}
+	},
+	"TURKEY": {
+		"name": "Turkey",
+		"code": "TR",
+		"location": {
+			"lat": 38.963745,
+			"lng": 35.243322
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 42.106239,
+				"lng": 44.818128
+			},
+			"southwest": {
+				"lat": 35.8076804,
+				"lng": 25.663637
+			}
+		}
+	},
+	"ARGENTINA": {
+		"name": "Argentina",
+		"code": "AR",
+		"location": {
+			"lat": -38.416097,
+			"lng": -63.61667199999999
+		},
+		"bounds": {
+			"northeast": {
+				"lat": -21.7808136,
+				"lng": -53.6497164
+			},
+			"southwest": {
+				"lat": -55.0577146,
+				"lng": -73.6322
+			}
+		}
+	},
+	"AUSTRALIA": {
+		"name": "Australia",
+		"code": "AU",
+		"location": {
+			"lat": -25.274398,
+			"lng": 133.775136
+		},
+		"bounds": {
+			"northeast": {
+				"lat": -9.2210836,
+				"lng": 159.1054589
+			},
+			"southwest": {
+				"lat": -54.7772185,
+				"lng": 112.9214543
+			}
+		}
+	},
+	"BELGIUM": {
+		"name": "Belgium",
+		"code": "BE",
+		"location": {
+			"lat": 50.503887,
+			"lng": 4.469936
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 51.5051448,
+				"lng": 6.408124099999999
+			},
+			"southwest": {
+				"lat": 49.497013,
+				"lng": 2.5449406
+			}
+		}
+	},
+	"EGYPT": {
+		"name": "Egypt",
+		"code": "EG",
+		"location": {
+			"lat": 26.820553,
+			"lng": 30.802498
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 31.6715382,
+				"lng": 36.8945446
+			},
+			"southwest": {
+				"lat": 22,
+				"lng": 24.6954964
+			}
+		}
+	},
+	"EL SALVADOR": {
+		"name": "El Salvador",
+		"code": "SV",
+		"location": {
+			"lat": 13.794185,
+			"lng": -88.89653
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 14.4500015,
+				"lng": -87.68375160000001
+			},
+			"southwest": {
+				"lat": 13.1554312,
+				"lng": -90.1277454
+			}
+		}
+	},
+	"HONDURAS": {
+		"name": "Honduras",
+		"code": "HN",
+		"location": {
+			"lat": 15.199999,
+			"lng": -86.241905
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 17.4171037,
+				"lng": -83.13607689999999
+			},
+			"southwest": {
+				"lat": 12.9842246,
+				"lng": -89.355148
+			}
+		}
+	},
+	"ISRAEL": {
+		"name": "Israel",
+		"code": "IL",
+		"location": {
+			"lat": 31.046051,
+			"lng": 34.851612
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 33.33280500000001,
+				"lng": 35.89473
+			},
+			"southwest": {
+				"lat": 29.4906452,
+				"lng": 34.267387
+			}
+		}
+	},
+	"JORDAN": {
+		"name": "Jordan",
+		"code": "JO",
+		"location": {
+			"lat": 30.585164,
+			"lng": 36.238414
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 33.374735,
+				"lng": 39.301154
+			},
+			"southwest": {
+				"lat": 29.185036,
+				"lng": 34.9583368
+			}
+		}
+	},
+	"KOREA": {
+		"name": "South Korea",
+		"code": "KR",
+		"location": {
+			"lat": 35.907757,
+			"lng": 127.766922
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 38.6169312,
+				"lng": 130.9232178
+			},
+			"southwest": {
+				"lat": 33.1061096,
+				"lng": 124.608139
+			}
+		}
+	},
+	"MALAYSIA": {
+		"name": "Malaysia",
+		"code": "MY",
+		"location": {
+			"lat": 4.210484,
+			"lng": 101.975766
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 7.363468,
+				"lng": 119.2658119
+			},
+			"southwest": {
+				"lat": 0.8538209999999999,
+				"lng": 99.6405728
+			}
+		}
+	},
+	"PHILIPPINES": {
+		"name": "Philippines",
+		"code": "PH",
+		"location": {
+			"lat": 12.879721,
+			"lng": 121.774017
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 19.574024,
+				"lng": 126.6043837
+			},
+			"southwest": {
+				"lat": 4.613444299999999,
+				"lng": 116.7029193
+			}
+		}
+	},
+	"SPAIN": {
+		"name": "Spain",
+		"code": "ES",
+		"location": {
+			"lat": 40.46366700000001,
+			"lng": -3.74922
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 43.79036199999999,
+				"lng": 4.327985099999999
+			},
+			"southwest": {
+				"lat": 27.6378104,
+				"lng": -18.1606356
+			}
+		}
+	},
+	"SWITZERLAND": {
+		"name": "Switzerland",
+		"code": "CH",
+		"location": {
+			"lat": 46.818188,
+			"lng": 8.227511999999999
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 47.8084546,
+				"lng": 10.49234
+			},
+			"southwest": {
+				"lat": 45.81792,
+				"lng": 5.95608
+			}
+		}
+	},
+	"USA": {
+		"name": "United States",
+		"code": "US",
+		"location": {
+			"lat": 37.09024,
+			"lng": -95.712891
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 71.389888,
+				"lng": -66.94539480000002
+			},
+			"southwest": {
+				"lat": 18.9110643,
+				"lng": 172.4546967
+			}
+		}
+	},
+	"VIETNAM": {
+		"name": "Vietnam",
+		"code": "VN",
+		"location": {
+			"lat": 14.058324,
+			"lng": 108.277199
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 23.393395,
+				"lng": 109.4691896
+			},
+			"southwest": {
+				"lat": 8.4127296,
+				"lng": 102.14441
+			}
+		}
+	},
+	"FIJI": {
+		"name": "Fiji",
+		"code": "FJ",
+		"location": {
+			"lat": -17.713371,
+			"lng": 178.065032
+		},
+		"bounds": {
+			"northeast": {
+				"lat": -12.480116,
+				"lng": -178.2301068
+			},
+			"southwest": {
+				"lat": -20.67597,
+				"lng": 176.9094944
+			}
+		}
+	},
+	"FRANCE": {
+		"name": "France",
+		"code": "FR",
+		"location": {
+			"lat": 46.227638,
+			"lng": 2.213749
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 51.0889618,
+				"lng": 9.559956999999999
+			},
+			"southwest": {
+				"lat": 41.3423276,
+				"lng": -5.141228
+			}
+		}
+	},
+	"HOLLAND": {
+		"name": "The Netherlands",
+		"code": "NL",
+		"location": {
+			"lat": 52.132633,
+			"lng": 5.291265999999999
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 53.5560213,
+				"lng": 7.2275103
+			},
+			"southwest": {
+				"lat": 50.7503837,
+				"lng": 3.3579619
+			}
+		}
+	},
+	"BANGLADESH": {
+		"name": "Bangladesh",
+		"code": "BD",
+		"location": {
+			"lat": 23.684994,
+			"lng": 90.356331
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 26.6366921,
+				"lng": 92.6801154
+			},
+			"southwest": {
+				"lat": 20.7543803,
+				"lng": 88.03243049999999
+			}
+		}
+	},
+	"CAMBODIA": {
+		"name": "Cambodia",
+		"code": "KH",
+		"location": {
+			"lat": 12.565679,
+			"lng": 104.990963
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 14.690179,
+				"lng": 107.627687
+			},
+			"southwest": {
+				"lat": 9.2832499,
+				"lng": 102.333542
+			}
+		}
+	},
+	"CHILE": {
+		"name": "Chile",
+		"code": "CL",
+		"location": {
+			"lat": -35.675147,
+			"lng": -71.542969
+		},
+		"bounds": {
+			"northeast": {
+				"lat": -17.4983319,
+				"lng": -66.4148731
+			},
+			"southwest": {
+				"lat": -55.9797808,
+				"lng": -109.4548806
+			}
+		}
+	},
+	"COLOMBIA": {
+		"name": "Colombia",
+		"code": "CO",
+		"location": {
+			"lat": 4.570868,
+			"lng": -74.297333
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 13.39735,
+				"lng": -66.85031719999999
+			},
+			"southwest": {
+				"lat": -4.22711,
+				"lng": -81.73593
+			}
+		}
+	},
+	"ECUADOR": {
+		"name": "Ecuador",
+		"code": "EC",
+		"location": {
+			"lat": -1.831239,
+			"lng": -78.18340599999999
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 1.6647726,
+				"lng": -75.188794
+			},
+			"southwest": {
+				"lat": -5.014351,
+				"lng": -92.01077269999999
+			}
+		}
+	},
+	"LITHUANIA": {
+		"name": "Lithuania",
+		"code": "LT",
+		"location": {
+			"lat": 55.169438,
+			"lng": 23.881275
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 56.4503174,
+				"lng": 26.83565
+			},
+			"southwest": {
+				"lat": 53.898672,
+				"lng": 20.9493772
+			}
+		}
+	},
+	"MOROCCO": {
+		"name": "Morocco",
+		"code": "MA",
+		"location": {
+			"lat": 31.791702,
+			"lng": -7.092619999999999
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 35.9225072,
+				"lng": -0.9969758
+			},
+			"southwest": {
+				"lat": 27.6666665,
+				"lng": -13.1728913
+			}
+		}
+	},
+	"ALBANIA": {
+		"name": "Albania",
+		"code": "AL",
+		"location": {
+			"lat": 41.153332,
+			"lng": 20.168331
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 42.661082,
+				"lng": 21.057282
+			},
+			"southwest": {
+				"lat": 39.644482,
+				"lng": 19.2639041
+			}
+		}
+	},
+	"DOMINICAN REPUBLIC": {
+		"name": "Dominican Republic",
+		"code": "DO",
+		"location": {
+			"lat": 18.735693,
+			"lng": -70.162651
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 19.9317185,
+				"lng": -68.32340669999999
+			},
+			"southwest": {
+				"lat": 17.4700909,
+				"lng": -72.00751
+			}
+		}
+	},
+	"GREECE": {
+		"name": "Greece",
+		"code": "GR",
+		"location": {
+			"lat": 39.074208,
+			"lng": 21.824312
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 41.7485356,
+				"lng": 29.6447644
+			},
+			"southwest": {
+				"lat": 34.8020843,
+				"lng": 19.3729792
+			}
+		}
+	},
+	"GUATEMALA": {
+		"name": "Guatemala",
+		"code": "GT",
+		"location": {
+			"lat": 15.783471,
+			"lng": -90.23075899999999
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 17.8156972,
+				"lng": -88.2256152
+			},
+			"southwest": {
+				"lat": 13.7410784,
+				"lng": -92.2318359
+			}
+		}
+	},
+	"MACAU": {
+		"name": "Macau",
+		"code": "MO",
+		"location": {
+			"lat": 22.198745,
+			"lng": 113.543873
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 22.217159,
+				"lng": 113.5982805
+			},
+			"southwest": {
+				"lat": 22.1097736,
+				"lng": 113.5287322
+			}
+		}
+	},
+	"MACEDONIA": {
+		"name": "Macedonia (FYROM)",
+		"code": "MK",
+		"location": {
+			"lat": 41.608635,
+			"lng": 21.745275
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 42.373646,
+				"lng": 23.034093
+			},
+			"southwest": {
+				"lat": 40.855222,
+				"lng": 20.452423
+			}
+		}
+	},
+	"MOLDOVA": {
+		"name": "Moldova",
+		"code": "MD",
+		"location": {
+			"lat": 47.411631,
+			"lng": 28.369885
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 48.491944,
+				"lng": 30.162538
+			},
+			"southwest": {
+				"lat": 45.4689111,
+				"lng": 26.616856
+			}
+		}
+	},
+	"SINGAPORE": {
+		"name": "Singapore",
+		"code": "SG",
+		"location": {
+			"lat": 1.352083,
+			"lng": 103.819836
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 1.4707735,
+				"lng": 104.084381
+			},
+			"southwest": {
+				"lat": 1.1973707,
+				"lng": 103.6103609
+			}
+		}
+	},
+	"BOSNIA": {
+		"name": "Bosnia and Herzegovina",
+		"code": "BA",
+		"location": {
+			"lat": 43.915886,
+			"lng": 17.679076
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 45.276582,
+				"lng": 19.621935
+			},
+			"southwest": {
+				"lat": 42.5565375,
+				"lng": 15.729282
+			}
+		}
+	},
+	"POLAND": {
+		"name": "Poland",
+		"code": "PL",
+		"location": {
+			"lat": 51.919438,
+			"lng": 19.145136
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 54.83479,
+				"lng": 24.1458933
+			},
+			"southwest": {
+				"lat": 49.0020251,
+				"lng": 14.122864
+			}
+		}
+	},
+	"GERMANY": {
+		"name": "Germany",
+		"code": "DE",
+		"location": {
+			"lat": 51.165691,
+			"lng": 10.451526
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 55.058347,
+				"lng": 15.0418961
+			},
+			"southwest": {
+				"lat": 47.2701114,
+				"lng": 5.8663425
+			}
+		}
+	},
+	"HUNGARY": {
+		"name": "Hungary",
+		"code": "HU",
+		"location": {
+			"lat": 47.162494,
+			"lng": 19.503304
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 48.585233,
+				"lng": 22.8979924
+			},
+			"southwest": {
+				"lat": 45.737124,
+				"lng": 16.1136813
+			}
+		}
+	},
+	"PARAGUAY": {
+		"name": "Paraguay",
+		"code": "PY",
+		"location": {
+			"lat": -23.442503,
+			"lng": -58.443832
+		},
+		"bounds": {
+			"northeast": {
+				"lat": -19.2895602,
+				"lng": -54.24305529999999
+			},
+			"southwest": {
+				"lat": -27.5883342,
+				"lng": -62.638051
+			}
+		}
+	},
+	"PERU": {
+		"name": "Peru",
+		"code": "PE",
+		"location": {
+			"lat": -9.189967,
+			"lng": -75.015152
+		},
+		"bounds": {
+			"northeast": {
+				"lat": -0.038777,
+				"lng": -68.652329
+			},
+			"southwest": {
+				"lat": -18.3515802,
+				"lng": -81.32850409999999
+			}
+		}
+	},
+	"UKRAINE": {
+		"name": "Ukraine",
+		"code": "UA",
+		"location": {
+			"lat": 48.379433,
+			"lng": 31.16558
+		},
+		"bounds": {
+			"northeast": {
+				"lat": 52.37958099999999,
+				"lng": 40.228581
+			},
+			"southwest": {
+				"lat": 44.386463,
+				"lng": 22.1357201
+			}
+		}
+	}
+}
