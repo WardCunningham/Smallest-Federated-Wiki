@@ -65,7 +65,7 @@
 
   window.plugins.pushpin = {
     emit: function(div, item) {
-      return div.append("<style type=\"text/css\">\n	.pushpin path { fill: #ccc; stroke: #fff; }\n	      .pushpin svg { border: solid 1px #ccc; background: #eee; }\n</style>");
+      return div.append("<style type=\"text/css\">\n  .pushpin path { fill: #ccc; stroke: #fff; }\n  .pushpin svg { border: solid 1px #ccc; background: #eee; }\n</style>");
     },
     bind: function(div, item) {
       return wiki.getScript('/js/d3/d3.js', function() {
