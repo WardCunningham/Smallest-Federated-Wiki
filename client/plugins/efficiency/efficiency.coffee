@@ -25,12 +25,9 @@ window.plugins.efficiency =
       who.last()
 
     calculate = (div) ->
-      wiki.log 'div', div
       src = $(div).find('img').get(0).src
-      debugger
       c = $ '<canvas id="myCanvas" width="200" height="100" style="border:1px solid #c3c3c3;">'
       d = c.get(0).getContext("2d");
-      wiki.log 'width, height', [c.width(), c.height()]
       img=new Image()
       img.src=src
       d.drawImage(img,0,0);
