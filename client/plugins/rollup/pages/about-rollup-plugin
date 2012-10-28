@@ -1,0 +1,672 @@
+{
+  "title": "About Rollup Plugin",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "44c23832828707fb",
+      "text": "The Rollup plugin repeats computations spread over a number of wiki pages and compares the results to those stored in a previously computed rollup."
+    },
+    {
+      "type": "paragraph",
+      "id": "db05c121422ff9f6",
+      "text": "<h3> Input Datasets"
+    },
+    {
+      "type": "paragraph",
+      "id": "9d635b954d74f18b",
+      "text": "The rollup is guided by a dataset captioned \"Material Summary\". Each row corresponds to a wiki page that can recompute the quantities on that page. One column, titled <b>Material</b>, names those pages. The remaining columns provide quantities that are computed on those pages."
+    },
+    {
+      "type": "data",
+      "id": "ab1b5e4688d2e194",
+      "columns": [
+        "Material",
+        "Bottles of Beer on the Wall",
+        "Take One Down Pass it Around",
+        "Take a Few Down",
+        "Take a Bunch Down"
+      ],
+      "data": [
+        {
+          "Material": "Bottles of Beer Methods",
+          "Bottles of Beer on the Wall": "0",
+          "Take One Down Pass it Around": "-1",
+          "Take a Few Down": "-3",
+          "Take a Bunch Down": "-90"
+        },
+        {
+          "Material": "Bottles of Beer Methods",
+          "Bottles of Beer on the Wall": "0",
+          "Take One Down Pass it Around": "-1",
+          "Take a Few Down": "-3",
+          "Take a Bunch Down": "-90.1"
+        },
+        {
+          "Material": "Bottles of Beer Methods",
+          "Bottles of Beer on the Wall": "0",
+          "Take One Down Pass it Around": "-1",
+          "Take a Few Down": "-3",
+          "Take a Bunch Down": "-90"
+        },
+        {
+          "Material": "Bottles of Beer Methods",
+          "Bottles of Beer on the Wall": "0",
+          "Take One Down Pass it Around": "-1",
+          "Take a Few Down": "-4",
+          "Take a Bunch Down": "-90"
+        },
+        {
+          "Material": "Bottles of Beer Methods",
+          "Bottles of Beer on the Wall": "0",
+          "Take One Down Pass it Around": "-1",
+          "Take a Few Down": "-3",
+          "Take a Bunch Down": "-90"
+        }
+      ],
+      "text": "Materials Summary"
+    },
+    {
+      "type": "paragraph",
+      "id": "6b8890c70c240f7e",
+      "text": "In our example we will provide a Material Summary dataset that refers repeatedly to the same page, one used in the [[About Method Plugin]] example. This dataset has been constructed to show both data that agrees with that found in the example, and some rows that disagree. The example computes verses from the \"Bottles of Beer\" song. "
+    },
+    {
+      "type": "data",
+      "id": "4395242f5487cbac",
+      "columns": [
+        "Take a Few Down",
+        "Take a Bunch Down"
+      ],
+      "data": [
+        {
+          "Take a Few Down": "-3",
+          "Take a Bunch Down": "-90"
+        }
+      ],
+      "text": "Beer Constants"
+    },
+    {
+      "type": "paragraph",
+      "id": "f0245b644e2366f1",
+      "text": "The computations used by the beer song expect reference data to be provided somewhere nearby. When normally viewed, this data appears on the same page as the calculation. However, here we will provide reference data directly to the Rollup plugin as this is the context where rollup computations take place."
+    },
+    {
+      "type": "paragraph",
+      "id": "1863deeb06391981",
+      "text": "<h3> Rollup Results"
+    },
+    {
+      "type": "paragraph",
+      "id": "666fa52d5140fa15",
+      "text": "This is where we place the sample Rollup plugin. The plugin renders as a table of results to be recomputed. (In this example we are computing the same beer song verses over and over.)"
+    },
+    {
+      "type": "rollup",
+      "id": "0f95a67f804df66a",
+      "text": "Foo Bar"
+    },
+    {
+      "type": "paragraph",
+      "id": "fa53bdb5b5425dbf",
+      "text": "Computation commences immediately. Pages are fetched five per second. Results are displayed in a color code as they are completed. Details are available in hover text."
+    },
+    {
+      "type": "paragraph",
+      "id": "10fd27c938ff580a",
+      "text": "<b>green</b> means the new results agreed to four places to the right of the decimal."
+    },
+    {
+      "type": "paragraph",
+      "id": "40e9ce7310099fd6",
+      "text": "<b>yellow</b> means the new results agreed only to the left of the decimal, the whole number part."
+    },
+    {
+      "type": "paragraph",
+      "id": "37e6a40e250eafa3",
+      "text": "<b>red</b> means the new results disagreed in the whole number part when rounded to a whole number. This could still be a small difference as in 9.501 vs 9.499."
+    },
+    {
+      "type": "paragraph",
+      "id": "6dd745674af42517",
+      "text": "Page names appear as hyperlinks at the beginning of each row. A <b>red x</b> appears by the name if any problems are encountered calculating. Hover over the x for details. Click the link to investigate."
+    },
+    {
+      "type": "paragraph",
+      "id": "51f6f6a226f80455",
+      "text": "<h3> Rank Ordering"
+    },
+    {
+      "type": "paragraph",
+      "id": "3ac19aa4567730fe",
+      "text": "The Rollup plugin will assign a <b>Rank</b> to each result based on a <b>Total Score</b> reported by each calculation. The largest score has the lowest rank: 1. If the previous rollup has these columns then they will be displayed and colored using the same color code."
+    },
+    {
+      "type": "paragraph",
+      "id": "ca747b737e1d2d89",
+      "text": "Rank ordering waits until all computations are complete before it begins."
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "item": {
+        "title": "About Rollup Plugin"
+      },
+      "date": 1351462144956
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "44c23832828707fb"
+      },
+      "id": "44c23832828707fb",
+      "type": "add",
+      "date": 1351462156280
+    },
+    {
+      "type": "edit",
+      "id": "44c23832828707fb",
+      "item": {
+        "type": "paragraph",
+        "id": "44c23832828707fb",
+        "text": "The Rollup plugin repeats computations spread over a number of wiki pages and compares the results to those stored in a previously computed rollup."
+      },
+      "date": 1351462389509
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "9d635b954d74f18b",
+        "text": ""
+      },
+      "id": "9d635b954d74f18b",
+      "type": "add",
+      "after": "44c23832828707fb",
+      "date": 1351462390016
+    },
+    {
+      "type": "edit",
+      "id": "9d635b954d74f18b",
+      "item": {
+        "type": "paragraph",
+        "id": "9d635b954d74f18b",
+        "text": "The rollup is guided by a dataset captioned \"Material Summary\". "
+      },
+      "date": 1351462605762
+    },
+    {
+      "type": "edit",
+      "id": "9d635b954d74f18b",
+      "item": {
+        "type": "paragraph",
+        "id": "9d635b954d74f18b",
+        "text": "The rollup is guided by a dataset captioned \"Material Summary\". Each row corresponds to a wiki page that can recompute the quantities on that page. One column, \"Material\", names those pages. The remaining columns provide quantities that are computed on those pages."
+      },
+      "date": 1351462874541
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "6b8890c70c240f7e",
+        "text": ""
+      },
+      "id": "6b8890c70c240f7e",
+      "type": "add",
+      "after": "9d635b954d74f18b",
+      "date": 1351462875047
+    },
+    {
+      "type": "edit",
+      "id": "6b8890c70c240f7e",
+      "item": {
+        "type": "paragraph",
+        "id": "6b8890c70c240f7e",
+        "text": "In our example we will provide a Material Summary dataset that refers repeatedly to the same page, one used in the [[About Method Plugin]] example. This dataset has been constructed to show both data that agrees with that found in the example, and some rows that disagree."
+      },
+      "date": 1351463040072
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "bac9a7617123b585",
+        "text": ""
+      },
+      "id": "bac9a7617123b585",
+      "type": "add",
+      "after": "6b8890c70c240f7e",
+      "date": 1351463040577
+    },
+    {
+      "type": "remove",
+      "id": "bac9a7617123b585",
+      "date": 1351463049842
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "data",
+        "id": "ab1b5e4688d2e194",
+        "columns": [
+          "Material",
+          "Bottles of Beer on the Wall",
+          "Take One Down Pass it Around",
+          "Take a Few Down",
+          "Take a Bunch Down"
+        ],
+        "data": [
+          {
+            "Material": "Bottles of Beer Methods",
+            "Bottles of Beer on the Wall": "0",
+            "Take One Down Pass it Around": "-1",
+            "Take a Few Down": "-3",
+            "Take a Bunch Down": "-90"
+          },
+          {
+            "Material": "Bottles of Beer Methods",
+            "Bottles of Beer on the Wall": "0",
+            "Take One Down Pass it Around": "-1",
+            "Take a Few Down": "-3",
+            "Take a Bunch Down": "-90.1"
+          },
+          {
+            "Material": "Bottles of Beer Methods",
+            "Bottles of Beer on the Wall": "0",
+            "Take One Down Pass it Around": "-1",
+            "Take a Few Down": "-3",
+            "Take a Bunch Down": "-90"
+          },
+          {
+            "Material": "Bottles of Beer Methods",
+            "Bottles of Beer on the Wall": "0",
+            "Take One Down Pass it Around": "-1",
+            "Take a Few Down": "-4",
+            "Take a Bunch Down": "-90"
+          },
+          {
+            "Material": "Bottles of Beer Methods",
+            "Bottles of Beer on the Wall": "0",
+            "Take One Down Pass it Around": "-1",
+            "Take a Few Down": "-3",
+            "Take a Bunch Down": "-90"
+          }
+        ],
+        "text": "Materials Summary"
+      },
+      "after": "9d635b954d74f18b",
+      "id": "ab1b5e4688d2e194",
+      "date": 1351463072327
+    },
+    {
+      "type": "edit",
+      "id": "6b8890c70c240f7e",
+      "item": {
+        "type": "paragraph",
+        "id": "6b8890c70c240f7e",
+        "text": "In our example we will provide a Material Summary dataset that refers repeatedly to the same page, one used in the [[About Method Plugin]] example. This dataset has been constructed to show both data that agrees with that found in the example, and some rows that disagree. The example computes verses from the \"Bottles of Beer\" song. "
+      },
+      "date": 1351463288195
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "f0245b644e2366f1",
+        "text": ""
+      },
+      "id": "f0245b644e2366f1",
+      "type": "add",
+      "after": "6b8890c70c240f7e",
+      "date": 1351463288701
+    },
+    {
+      "type": "edit",
+      "id": "f0245b644e2366f1",
+      "item": {
+        "type": "paragraph",
+        "id": "f0245b644e2366f1",
+        "text": "The computations used by the beer song expect reference data to be provided somewhere nearby. When normally viewed, this data appears on the same page as the calculation. However, here we will provide reference data directly to the Rollup plugin as this is the context where rollup computations take place."
+      },
+      "date": 1351463523229
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "data",
+        "id": "4395242f5487cbac",
+        "columns": [
+          "Take a Few Down",
+          "Take a Bunch Down"
+        ],
+        "data": [
+          {
+            "Take a Few Down": "-3",
+            "Take a Bunch Down": "-90"
+          }
+        ],
+        "text": "Beer Constants"
+      },
+      "after": "6b8890c70c240f7e",
+      "id": "4395242f5487cbac",
+      "date": 1351463529302
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "db05c121422ff9f6",
+        "text": ""
+      },
+      "id": "db05c121422ff9f6",
+      "type": "add",
+      "after": "44c23832828707fb",
+      "date": 1351463550766
+    },
+    {
+      "type": "edit",
+      "id": "db05c121422ff9f6",
+      "item": {
+        "type": "paragraph",
+        "id": "db05c121422ff9f6",
+        "text": "<h3> Input Datasets"
+      },
+      "date": 1351463559501
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "1863deeb06391981",
+        "text": ""
+      },
+      "id": "1863deeb06391981",
+      "type": "add",
+      "after": "f0245b644e2366f1",
+      "date": 1351463579038
+    },
+    {
+      "type": "edit",
+      "id": "1863deeb06391981",
+      "item": {
+        "type": "paragraph",
+        "id": "1863deeb06391981",
+        "text": "<h3> Rollup Results"
+      },
+      "date": 1351463679532
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "666fa52d5140fa15",
+        "text": ""
+      },
+      "id": "666fa52d5140fa15",
+      "type": "add",
+      "after": "1863deeb06391981",
+      "date": 1351463680038
+    },
+    {
+      "type": "edit",
+      "id": "666fa52d5140fa15",
+      "item": {
+        "type": "paragraph",
+        "id": "666fa52d5140fa15",
+        "text": "This is where we place the sample Rollup plugin. The plugin renders as a table of results to be recomputed. (In this example we are computing the same beer song verses over and over.)"
+      },
+      "date": 1351463825262
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "fa53bdb5b5425dbf",
+        "text": ""
+      },
+      "id": "fa53bdb5b5425dbf",
+      "type": "add",
+      "after": "666fa52d5140fa15",
+      "date": 1351463825768
+    },
+    {
+      "type": "edit",
+      "id": "fa53bdb5b5425dbf",
+      "item": {
+        "type": "paragraph",
+        "id": "fa53bdb5b5425dbf",
+        "text": "Computation commences immediately. Pages are fetched five per second. Results are displayed in a color code as they are completed. Details are available in hover text."
+      },
+      "date": 1351464086553
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "10fd27c938ff580a",
+        "text": ""
+      },
+      "id": "10fd27c938ff580a",
+      "type": "add",
+      "after": "fa53bdb5b5425dbf",
+      "date": 1351464087059
+    },
+    {
+      "type": "edit",
+      "id": "10fd27c938ff580a",
+      "item": {
+        "type": "paragraph",
+        "id": "10fd27c938ff580a",
+        "text": "<b>Green</b> means the new results agreed to four places to the right of the decimal."
+      },
+      "date": 1351464158289
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "40e9ce7310099fd6",
+        "text": ""
+      },
+      "id": "40e9ce7310099fd6",
+      "type": "add",
+      "after": "10fd27c938ff580a",
+      "date": 1351464158794
+    },
+    {
+      "type": "edit",
+      "id": "40e9ce7310099fd6",
+      "item": {
+        "type": "paragraph",
+        "id": "40e9ce7310099fd6",
+        "text": "<b>yellow</b> means the new results agreed only to the left of the decimal, the whole number part."
+      },
+      "date": 1351464224830
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "37e6a40e250eafa3",
+        "text": ""
+      },
+      "id": "37e6a40e250eafa3",
+      "type": "add",
+      "after": "40e9ce7310099fd6",
+      "date": 1351464225336
+    },
+    {
+      "type": "edit",
+      "id": "37e6a40e250eafa3",
+      "item": {
+        "type": "paragraph",
+        "id": "37e6a40e250eafa3",
+        "text": "<b>red</b> means the new results disagreed in the whole number part when rounded to a whole number. This could still be a small difference as in 9.501 vs 9.499."
+      },
+      "date": 1351464387322
+    },
+    {
+      "type": "edit",
+      "id": "10fd27c938ff580a",
+      "item": {
+        "type": "paragraph",
+        "id": "10fd27c938ff580a",
+        "text": "<b>green</b> means the new results agreed to four places to the right of the decimal."
+      },
+      "date": 1351464398339
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "6dd745674af42517",
+        "text": ""
+      },
+      "id": "6dd745674af42517",
+      "type": "add",
+      "after": "37e6a40e250eafa3",
+      "date": 1351464411698
+    },
+    {
+      "type": "edit",
+      "id": "6dd745674af42517",
+      "item": {
+        "type": "paragraph",
+        "id": "6dd745674af42517",
+        "text": "Page names appear as hyperlinks at the beginning of each row. A <b>red x</b> appears by the name if any problems are encountered calculating. Hover over the x for details. Click the link to investigate."
+      },
+      "date": 1351464891441
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "eeee811a2ab8ec92",
+        "text": ""
+      },
+      "id": "eeee811a2ab8ec92",
+      "type": "add",
+      "after": "6dd745674af42517",
+      "date": 1351464891948
+    },
+    {
+      "type": "remove",
+      "id": "eeee811a2ab8ec92",
+      "date": 1351465065899
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "rollup",
+        "id": "0f95a67f804df66a",
+        "text": "Foo Bar"
+      },
+      "after": "666fa52d5140fa15",
+      "id": "0f95a67f804df66a",
+      "date": 1351465077151
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "51f6f6a226f80455",
+        "text": ""
+      },
+      "id": "51f6f6a226f80455",
+      "type": "add",
+      "after": "6dd745674af42517",
+      "date": 1351465230255
+    },
+    {
+      "type": "edit",
+      "id": "51f6f6a226f80455",
+      "item": {
+        "type": "paragraph",
+        "id": "51f6f6a226f80455",
+        "text": "<h3> Rank Ordering"
+      },
+      "date": 1351465250487
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "292ceac5ff8ef109",
+        "text": ""
+      },
+      "id": "292ceac5ff8ef109",
+      "type": "add",
+      "after": "51f6f6a226f80455",
+      "date": 1351465250993
+    },
+    {
+      "type": "remove",
+      "id": "292ceac5ff8ef109",
+      "date": 1351465268736
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "3ac19aa4567730fe",
+        "text": ""
+      },
+      "id": "3ac19aa4567730fe",
+      "type": "add",
+      "after": "51f6f6a226f80455",
+      "date": 1351465311384
+    },
+    {
+      "type": "edit",
+      "id": "3ac19aa4567730fe",
+      "item": {
+        "type": "paragraph",
+        "id": "3ac19aa4567730fe",
+        "text": "The Rollup plugin will assign a Rank to each result based on a Total Score reported by each calculation. The largest score has the lowest rank: 1. If the previous rollup has these columns then they will be displayed and colored using the same color code."
+      },
+      "date": 1351465529609
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "6506c03ca441832d",
+        "text": ""
+      },
+      "id": "6506c03ca441832d",
+      "type": "add",
+      "after": "3ac19aa4567730fe",
+      "date": 1351465530114
+    },
+    {
+      "type": "remove",
+      "id": "6506c03ca441832d",
+      "date": 1351465535128
+    },
+    {
+      "type": "edit",
+      "id": "3ac19aa4567730fe",
+      "item": {
+        "type": "paragraph",
+        "id": "3ac19aa4567730fe",
+        "text": "The Rollup plugin will assign a <b>Rank</b> to each result based on a <b>Total Score</b> reported by each calculation. The largest score has the lowest rank: 1. If the previous rollup has these columns then they will be displayed and colored using the same color code."
+      },
+      "date": 1351465556000
+    },
+    {
+      "type": "edit",
+      "id": "9d635b954d74f18b",
+      "item": {
+        "type": "paragraph",
+        "id": "9d635b954d74f18b",
+        "text": "The rollup is guided by a dataset captioned \"Material Summary\". Each row corresponds to a wiki page that can recompute the quantities on that page. One column, titled <b>Material</b>, names those pages. The remaining columns provide quantities that are computed on those pages."
+      },
+      "date": 1351465589854
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "ca747b737e1d2d89",
+        "text": ""
+      },
+      "id": "ca747b737e1d2d89",
+      "type": "add",
+      "after": "3ac19aa4567730fe",
+      "date": 1351465609839
+    },
+    {
+      "type": "edit",
+      "id": "ca747b737e1d2d89",
+      "item": {
+        "type": "paragraph",
+        "id": "ca747b737e1d2d89",
+        "text": "Rank ordering waits until all computations are complete before it begins."
+      },
+      "date": 1351465631622
+    }
+  ]
+}
