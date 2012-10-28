@@ -24,6 +24,11 @@
       "text": "<i>Notice: this is an under developed experimental feature. It takes some ingenuity to even see what it is doing. However, you will know you are seeing a locally stored page when it has a yellow border.",
       "id": "730888a4d784bc57",
       "type": "paragraph"
+    },
+    {
+      "type": "paragraph",
+      "id": "4b5fd698ca1b3ea1",
+      "text": "If you make local changes to another site, you may be able to offer those changes to the site owner using the [[Submit Changes]] mechanism."
     }
   ],
   "journal": [
@@ -217,6 +222,27 @@
         "type": "paragraph"
       },
       "date": 1344464362226
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "4b5fd698ca1b3ea1",
+        "text": ""
+      },
+      "id": "4b5fd698ca1b3ea1",
+      "type": "add",
+      "after": "730888a4d784bc57",
+      "date": 1351467057484
+    },
+    {
+      "type": "edit",
+      "id": "4b5fd698ca1b3ea1",
+      "item": {
+        "type": "paragraph",
+        "id": "4b5fd698ca1b3ea1",
+        "text": "If you make local changes to another site, you may be able to offer those changes to the site owner using the [[Submit Changes]] mechanism."
+      },
+      "date": 1351467124610
     }
   ]
 }
