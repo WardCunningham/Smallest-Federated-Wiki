@@ -11,7 +11,7 @@
       return $('<p />').html(wiki.resolveLinks(item.text || 'efficiency')).appendTo(div);
     },
     bind: function(div, item) {
-      var calculate, calculatePercentage, getImageData, lastThumb, locate, setEfficiencyReadoutValue,
+      var calculate, calculatePercentage, calculateStrategy_GrayBinary, getImageData, lastThumb, locate, setEfficiencyReadoutValue,
         _this = this;
       lastThumb = null;
       div.find('p:first').dblclick(function(e) {
@@ -44,7 +44,39 @@
         return imageData.data;
       };
       calculatePercentage = function(data) {
-        return 47;
+        return calculateStrategy_GrayBinary(data);
+      };
+      calculateStrategy_GrayBinary = function(data) {
+        var B, G, R, i, l, luma, lumaHighCount, lumaLowCount, lumaMax, lumaMid, lumaMin, lumas, numPix, percentage, _i, _j, _len;
+        numPix = data.length / 4;
+        lumaMin = 255;
+        lumaMax = 0;
+        lumas = [];
+        for (i = _i = 0; 0 <= numPix ? _i <= numPix : _i >= numPix; i = 0 <= numPix ? ++_i : --_i) {
+          R = data[i * 4 + 0];
+          G = data[i * 4 + 1];
+          B = data[i * 4 + 2];
+          luma = lumas[i] = 0.299 * R + 0.587 * G + 0.114 * B;
+          if (luma > lumaMax) {
+            lumaMax = luma;
+          }
+          if (luma < lumaMin) {
+            lumaMin = luma;
+          }
+        }
+        lumaMid = (lumaMax - lumaMin) / 2;
+        lumaLowCount = 0;
+        lumaHighCount = 0;
+        for (_j = 0, _len = lumas.length; _j < _len; _j++) {
+          l = lumas[_j];
+          if (l <= lumaMid) {
+            lumaLowCount++;
+          } else {
+            lumaHighCount++;
+          }
+        }
+        percentage = lumaHighCount / numPix;
+        return percentage;
       };
       setEfficiencyReadoutValue = function(value) {
         if (_this.efficiencyDIV) {

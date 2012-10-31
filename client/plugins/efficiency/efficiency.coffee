@@ -47,18 +47,44 @@ window.plugins.efficiency =
       imageData.data
 
     calculatePercentage = (data) ->
-      #wiki.log  'Efficiency calcPercentage  Start'
-      # TODO add real calcs here. Returning a constant now to work out the update issues.
+      # Call real calcs here. 
+      # By calling a strategy function here, we can try multiple strategy functions,
+      # keeping the algorithm code separate from the setup and reporting. (For now at least)
       # Data format info. CanvasPixelArray
       # https://developer.mozilla.org/en-US/docs/DOM/CanvasPixelArray
       # http://www.w3.org/TR/2011/WD-2dcontext-20110525/#canvaspixelarray
       # https://developer.mozilla.org/en-US/docs/HTML/Canvas/Pixel_manipulation_with_canvas
-      # Thinking of 4-Bins, to track the distribution of 8-bit data in 4D. RGB + Transparency.
-      # Find the bins is with greatest numbers of pixels, with a gap between bins. Calc percentage.
-      #wiki.log 'Efficiency calculatePercentage num Bytes of data (4 per pixel) ', data.length
-      #wiki.log 'Efficiency calculatePercentage some bytes doe 1st pixel. R, G, B, T ', data[0], data[1], data[2], data[3]
-      return 47
-      #wiki.log  'Efficiency calculatePercentage  End'
+      return calculateStrategy_GrayBinary(data)
+
+    calculateStrategy_GrayBinary = (data) ->
+	  # a very simple first attempt, using two bins of gray scale values.
+      numPix = data.length / 4    # bytes divided by four bytes per pixel. RGB + transparency
+	
+      lumaMin = 255
+      lumaMax = 0
+      lumas = []
+
+      for i in [0..numPix]
+        R = data[ i * 4 + 0 ]
+        G = data[ i * 4 + 1 ]
+        B = data[ i * 4 + 2 ]
+        # Get gray scale vaue, by weighting RGB values (various literature references on this)
+        luma = lumas[i] = 0.299 * R + 0.587 * G + 0.114 * B
+        if luma > lumaMax  then lumaMax = luma
+        if luma < lumaMin  then lumaMin = luma
+      
+      # count the values high and low
+      lumaMid = (lumaMax - lumaMin ) /2
+      lumaLowCount = 0
+      lumaHighCount = 0
+      for l in lumas
+        if (l <= lumaMid)
+          lumaLowCount++
+        else
+          lumaHighCount++
+		
+      percentage = lumaHighCount/numPix
+      return percentage
 
     setEfficiencyReadoutValue = (value) =>
       if this.efficiencyDIV
