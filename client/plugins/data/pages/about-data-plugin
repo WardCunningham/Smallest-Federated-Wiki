@@ -78,6 +78,11 @@
     },
     {
       "type": "paragraph",
+      "id": "99bb12f82e51b6c4",
+      "text": "See [https://github.com/WardCunningham/Smallest-Federated-Wiki/tree/master/client/plugins/data GitHub] for plugin source."
+    },
+    {
+      "type": "paragraph",
       "id": "342251c0abb4aa8b",
       "text": "Data items are rendered as a thumbnail with a large bold summary supplemented with an editable caption. "
     },
@@ -858,6 +863,63 @@
       ],
       "id": "0b72fe84b183a3be",
       "date": 1351650574204
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "99bb12f82e51b6c4",
+        "text": ""
+      },
+      "id": "99bb12f82e51b6c4",
+      "type": "add",
+      "after": "0511ac54566f3cdd",
+      "date": 1351651475627
+    },
+    {
+      "type": "edit",
+      "id": "99bb12f82e51b6c4",
+      "item": {
+        "type": "paragraph",
+        "id": "99bb12f82e51b6c4",
+        "text": "See [http://github.com/ GitHub] for plugin source."
+      },
+      "date": 1351651520520
+    },
+    {
+      "type": "edit",
+      "id": "99bb12f82e51b6c4",
+      "item": {
+        "type": "paragraph",
+        "id": "99bb12f82e51b6c4",
+        "text": "See [https://github.com/WardCunningham/Smallest-Federated-Wiki/tree/master/client/plugins/data GitHub] for plugin source."
+      },
+      "date": 1351651602198
+    },
+    {
+      "type": "move",
+      "order": [
+        "0511ac54566f3cdd",
+        "157e6139dfcb0c70",
+        "99bb12f82e51b6c4",
+        "342251c0abb4aa8b",
+        "4e1d58412045e477",
+        "faa7e6b7f91e5bee",
+        "97781e781985e869",
+        "338d4bf85119e03a",
+        "0b72fe84b183a3be",
+        "c7bb43a22f937a5a",
+        "ecf57d0fae6577bf",
+        "74ab1b135ab04178",
+        "800ae513a3335660",
+        "3f27885d8b7fa561",
+        "073586b4c98d80c4",
+        "1264fb6e63ac2e96",
+        "c208c67b1bbc2c80",
+        "91df6ecef6b068e7",
+        "91f0b8f226fd2bd0"
+      ],
+      "id": "157e6139dfcb0c70",
+      "date": 1351651608644
     }
   ]
 }
