@@ -124,9 +124,20 @@ Running specs
 
 The acceptance test suite is written using RSpec 2 and utilizes Selenium heavily. You must have a recent version of Firefox installed to run the test suite.
 
+The spec files are kept in the /spec folder.
+
 To run an individual spec, run
 
 	bundle exec rspec spec/[spec name].rb
+	
+Where the [spec name].rb can be
+
+    spec/favicon_spec.rb 
+    spec/integration_spec.rb 
+    spec/page_spec.rb 
+    spec/server_helpers_spec.rb 
+    spec/server_spec.rb 
+    spec/stores/couch_spec.rb
 
 To run all specs, run
 
