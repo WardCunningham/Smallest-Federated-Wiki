@@ -146,7 +146,11 @@ To run all specs, run
 Running coffeescript tests
 =============
 
-Client-side unit and integration tests are written using mocha. The test runner is an HTML page (runtests.html) which is self-served by the wiki server itself. If your server is running at http:///localhost:9292 then you can run your tests by going to http://localhost:9292/runtests.html. Note that that test runner page does need to be accessed via a server - loading the page in a browser directly from your filesystem will not work correctly.
+Client-side unit and integration tests are written using [mocha](http://visionmedia.github.com/mocha/). The test runner is an HTML page (runtests.html) which is self-served by the wiki server itself. 
+
+If your server is running at http:///localhost:9292 then you can run your tests by invoking http://localhost:9292/runtests.html. 
+
+**Note**: The test runner page must be accessed via a server. loading the page in a browser directly from your filesystem will not work correctly.
 
 Looking For Code Bloat
 ======================
