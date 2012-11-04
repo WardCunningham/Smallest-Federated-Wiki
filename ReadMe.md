@@ -124,9 +124,20 @@ Running specs
 
 The acceptance test suite is written using RSpec 2 and utilizes Selenium heavily. You must have a recent version of Firefox installed to run the test suite.
 
+The spec files are kept in the /spec folder.
+
 To run an individual spec, run
 
 	bundle exec rspec spec/[spec name].rb
+	
+Where the [spec name].rb can be
+
+    spec/favicon_spec.rb 
+    spec/integration_spec.rb 
+    spec/page_spec.rb 
+    spec/server_helpers_spec.rb 
+    spec/server_spec.rb 
+    spec/stores/couch_spec.rb
 
 To run all specs, run
 
@@ -135,7 +146,11 @@ To run all specs, run
 Running coffeescript tests
 =============
 
-Client-side unit and integration tests are written using mocha. The test runner is an HTML page (runtests.html) which is self-served by the wiki server itself. If your server is running at http:///localhost:9292 then you can run your tests by going to http://localhost:9292/runtests.html. Note that that test runner page does need to be accessed via a server - loading the page in a browser directly from your filesystem will not work correctly.
+Client-side unit and integration tests are written using [mocha](http://visionmedia.github.com/mocha/). The test runner is an HTML page (runtests.html) which is self-served by the wiki server itself. 
+
+If your server is running at http:///localhost:9292 then you can run your tests by invoking http://localhost:9292/runtests.html. 
+
+**Note**: The test runner page must be accessed via a server. loading the page in a browser directly from your filesystem will not work correctly.
 
 Looking For Code Bloat
 ======================
