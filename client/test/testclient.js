@@ -1,16 +1,18 @@
-var require = function (file, cwd) {
+(function(){var require = function (file, cwd) {
     var resolved = require.resolve(file, cwd || '/');
     var mod = require.modules[resolved];
     if (!mod) throw new Error(
         'Failed to resolve module ' + file + ', tried ' + resolved
     );
-    var res = mod._cached ? mod._cached : mod();
+    var cached = require.cache[resolved];
+    var res = cached? cached.exports : mod();
     return res;
-}
+};
 
 require.paths = [];
 require.modules = {};
-require.extensions = [".js",".coffee"];
+require.cache = {};
+require.extensions = [".js",".coffee",".json"];
 
 require._core = {
     'assert': true,
@@ -41,6 +43,7 @@ require.resolve = (function () {
         throw new Error("Cannot find module '" + x + "'");
         
         function loadAsFileSync (x) {
+            x = path.normalize(x);
             if (require.modules[x]) {
                 return x;
             }
@@ -53,7 +56,7 @@ require.resolve = (function () {
         
         function loadAsDirectorySync (x) {
             x = x.replace(/\/+$/, '');
-            var pkgfile = x + '/package.json';
+            var pkgfile = path.normalize(x + '/package.json');
             if (require.modules[pkgfile]) {
                 var pkg = require.modules[pkgfile]();
                 var b = pkg.browserify;
@@ -118,7 +121,7 @@ require.alias = function (from, to) {
     
     var keys = (Object.keys || function (obj) {
         var res = [];
-        for (var key in obj) res.push(key)
+        for (var key in obj) res.push(key);
         return res;
     })(require.modules);
     
@@ -134,80 +137,66 @@ require.alias = function (from, to) {
     }
 };
 
-require.define = function (filename, fn) {
-    var dirname = require._core[filename]
-        ? ''
-        : require.modules.path().dirname(filename)
-    ;
+(function () {
+    var process = {};
+    var global = typeof window !== 'undefined' ? window : {};
+    var definedProcess = false;
     
-    var require_ = function (file) {
-        return require(file, dirname)
-    };
-    require_.resolve = function (name) {
-        return require.resolve(name, dirname);
-    };
-    require_.modules = require.modules;
-    require_.define = require.define;
-    var module_ = { exports : {} };
-    
-    require.modules[filename] = function () {
-        require.modules[filename]._cached = module_.exports;
-        fn.call(
-            module_.exports,
-            require_,
-            module_,
-            module_.exports,
-            dirname,
-            filename
-        );
-        require.modules[filename]._cached = module_.exports;
-        return module_.exports;
-    };
-};
-
-if (typeof process === 'undefined') process = {};
-
-if (!process.nextTick) process.nextTick = (function () {
-    var queue = [];
-    var canPost = typeof window !== 'undefined'
-        && window.postMessage && window.addEventListener
-    ;
-    
-    if (canPost) {
-        window.addEventListener('message', function (ev) {
-            if (ev.source === window && ev.data === 'browserify-tick') {
-                ev.stopPropagation();
-                if (queue.length > 0) {
-                    var fn = queue.shift();
-                    fn();
-                }
-            }
-        }, true);
-    }
-    
-    return function (fn) {
-        if (canPost) {
-            queue.push(fn);
-            window.postMessage('browserify-tick', '*');
+    require.define = function (filename, fn) {
+        if (!definedProcess && require.modules.__browserify_process) {
+            process = require.modules.__browserify_process();
+            definedProcess = true;
         }
-        else setTimeout(fn, 0);
+        
+        var dirname = require._core[filename]
+            ? ''
+            : require.modules.path().dirname(filename)
+        ;
+        
+        var require_ = function (file) {
+            var requiredModule = require(file, dirname);
+            var cached = require.cache[require.resolve(file, dirname)];
+
+            if (cached && cached.parent === null) {
+                cached.parent = module_;
+            }
+
+            return requiredModule;
+        };
+        require_.resolve = function (name) {
+            return require.resolve(name, dirname);
+        };
+        require_.modules = require.modules;
+        require_.define = require.define;
+        require_.cache = require.cache;
+        var module_ = {
+            id : filename,
+            filename: filename,
+            exports : {},
+            loaded : false,
+            parent: null
+        };
+        
+        require.modules[filename] = function () {
+            require.cache[filename] = module_;
+            fn.call(
+                module_.exports,
+                require_,
+                module_,
+                module_.exports,
+                dirname,
+                filename,
+                process,
+                global
+            );
+            module_.loaded = true;
+            return module_.exports;
+        };
     };
 })();
 
-if (!process.title) process.title = 'browser';
 
-if (!process.binding) process.binding = function (name) {
-    if (name === 'evals') return require('vm')
-    else throw new Error('No such module')
-};
-
-if (!process.cwd) process.cwd = function () { return '.' };
-
-if (!process.env) process.env = {};
-if (!process.argv) process.argv = [];
-
-require.define("path", function (require, module, exports, __dirname, __filename) {
-function filter (xs, fn) {
+require.define("path",function(require,module,exports,__dirname,__filename,process,global){function filter (xs, fn) {
     var res = [];
     for (var i = 0; i < xs.length; i++) {
         if (fn(xs[i], i, xs)) res.push(xs[i]);
@@ -344,8 +333,65 @@ exports.extname = function(path) {
 
 });
 
-require.define("/lib/util.coffee", function (require, module, exports, __dirname, __filename) {
-(function() {
+require.define("__browserify_process",function(require,module,exports,__dirname,__filename,process,global){var process = module.exports = {};
+
+process.nextTick = (function () {
+    var canSetImmediate = typeof window !== 'undefined'
+        && window.setImmediate;
+    var canPost = typeof window !== 'undefined'
+        && window.postMessage && window.addEventListener
+    ;
+
+    if (canSetImmediate) {
+        return window.setImmediate;
+    }
+
+    if (canPost) {
+        var queue = [];
+        window.addEventListener('message', function (ev) {
+            if (ev.source === window && ev.data === 'browserify-tick') {
+                ev.stopPropagation();
+                if (queue.length > 0) {
+                    var fn = queue.shift();
+                    fn();
+                }
+            }
+        }, true);
+
+        return function nextTick(fn) {
+            queue.push(fn);
+            window.postMessage('browserify-tick', '*');
+        };
+    }
+
+    return function nextTick(fn) {
+        setTimeout(fn, 0);
+    };
+})();
+
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+
+process.binding = function (name) {
+    if (name === 'evals') return (require)('vm')
+    else throw new Error('No such module. (Possibly not yet loaded)')
+};
+
+(function () {
+    var cwd = '/';
+    var path;
+    process.cwd = function () { return cwd };
+    process.chdir = function (dir) {
+        if (!path) path = require('path');
+        cwd = path.resolve(dir, cwd);
+    };
+})();
+
+});
+
+require.define("/lib/util.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
   var util;
 
   module.exports = util = {};
@@ -416,12 +462,24 @@ require.define("/lib/util.coffee", function (require, module, exports, __dirname
     if ((secs = msecs / 1000) < 2) {
       return "" + (Math.floor(msecs)) + " milliseconds ago";
     }
-    if ((mins = secs / 60) < 2) return "" + (Math.floor(secs)) + " seconds ago";
-    if ((hrs = mins / 60) < 2) return "" + (Math.floor(mins)) + " minutes ago";
-    if ((days = hrs / 24) < 2) return "" + (Math.floor(hrs)) + " hours ago";
-    if ((weeks = days / 7) < 2) return "" + (Math.floor(days)) + " days ago";
-    if ((months = days / 31) < 2) return "" + (Math.floor(weeks)) + " weeks ago";
-    if ((years = days / 365) < 2) return "" + (Math.floor(months)) + " months ago";
+    if ((mins = secs / 60) < 2) {
+      return "" + (Math.floor(secs)) + " seconds ago";
+    }
+    if ((hrs = mins / 60) < 2) {
+      return "" + (Math.floor(mins)) + " minutes ago";
+    }
+    if ((days = hrs / 24) < 2) {
+      return "" + (Math.floor(hrs)) + " hours ago";
+    }
+    if ((weeks = days / 7) < 2) {
+      return "" + (Math.floor(days)) + " days ago";
+    }
+    if ((months = days / 31) < 2) {
+      return "" + (Math.floor(weeks)) + " weeks ago";
+    }
+    if ((years = days / 365) < 2) {
+      return "" + (Math.floor(months)) + " months ago";
+    }
     return "" + (Math.floor(years)) + " years ago";
   };
 
@@ -429,7 +487,9 @@ require.define("/lib/util.coffee", function (require, module, exports, __dirname
     return name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase();
   };
 
-  if (typeof wiki !== "undefined" && wiki !== null) wiki.asSlug = util.asSlug;
+  if (typeof wiki !== "undefined" && wiki !== null) {
+    wiki.asSlug = util.asSlug;
+  }
 
   util.emptyPage = function() {
     return {
@@ -480,10 +540,18 @@ require.define("/lib/util.coffee", function (require, module, exports, __dirname
     if ((page != null) && (page.story != null)) {
       p1 = page.story[0];
       p2 = page.story[1];
-      if (p1 && p1.type === 'paragraph') synopsis || (synopsis = p1.text);
-      if (p2 && p2.type === 'paragraph') synopsis || (synopsis = p2.text);
-      if (p1 && (p1.text != null)) synopsis || (synopsis = p1.text);
-      if (p2 && (p2.text != null)) synopsis || (synopsis = p2.text);
+      if (p1 && p1.type === 'paragraph') {
+        synopsis || (synopsis = p1.text);
+      }
+      if (p2 && p2.type === 'paragraph') {
+        synopsis || (synopsis = p2.text);
+      }
+      if (p1 && (p1.text != null)) {
+        synopsis || (synopsis = p1.text);
+      }
+      if (p2 && (p2.text != null)) {
+        synopsis || (synopsis = p2.text);
+      }
       synopsis || (synopsis = (page.story != null) && ("A page with " + page.story.length + " items."));
     } else {
       synopsis = 'A page with no story.';
@@ -495,8 +563,7 @@ require.define("/lib/util.coffee", function (require, module, exports, __dirname
 
 });
 
-require.define("/test/util.coffee", function (require, module, exports, __dirname, __filename) {
-(function() {
+require.define("/test/util.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
   var timezoneOffset, util;
 
   util = require('../lib/util.coffee');
@@ -560,8 +627,7 @@ require.define("/test/util.coffee", function (require, module, exports, __dirnam
 
 });
 
-require.define("/test/active.coffee", function (require, module, exports, __dirname, __filename) {
-(function() {
+require.define("/test/active.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
   var active;
 
   active = require('../lib/active.coffee');
@@ -588,8 +654,7 @@ require.define("/test/active.coffee", function (require, module, exports, __dirn
 
 });
 
-require.define("/lib/active.coffee", function (require, module, exports, __dirname, __filename) {
-(function() {
+require.define("/lib/active.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
   var active, findScrollContainer, scrollTo;
 
   module.exports = active = {};
@@ -646,8 +711,7 @@ require.define("/lib/active.coffee", function (require, module, exports, __dirna
 
 });
 
-require.define("/test/pageHandler.coffee", function (require, module, exports, __dirname, __filename) {
-(function() {
+require.define("/test/pageHandler.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
   var mockServer, pageHandler;
 
   pageHandler = require('../lib/pageHandler.coffee');
@@ -782,8 +846,7 @@ require.define("/test/pageHandler.coffee", function (require, module, exports, _
 
 });
 
-require.define("/lib/pageHandler.coffee", function (require, module, exports, __dirname, __filename) {
-(function() {
+require.define("/lib/pageHandler.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
   var pageFromLocalStorage, pageHandler, pushToLocal, pushToServer, recursiveGet, revision, state, util;
 
   util = require('./util');
@@ -799,7 +862,7 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
     if (json = localStorage[slug]) {
       return JSON.parse(json);
     } else {
-      return;
+      return void 0;
     }
   };
 
@@ -812,7 +875,9 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
     } else {
       site = localContext.shift();
     }
-    if (site === 'view') site = null;
+    if (site === 'view') {
+      site = null;
+    }
     if (site != null) {
       if (site === 'local') {
         if (localPage = pageFromLocalStorage(pageInformation.slug)) {
@@ -835,7 +900,9 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
       dataType: 'json',
       url: url + ("?random=" + (util.randomBytes(4))),
       success: function(page) {
-        if (rev) page = revision.create(rev, page);
+        if (rev) {
+          page = revision.create(rev, page);
+        }
         return whenGotten(page, site);
       },
       error: function(xhr, type, msg) {
@@ -872,7 +939,9 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
     var localPage, pageInformation, whenGotten, whenNotGotten;
     whenGotten = _arg.whenGotten, whenNotGotten = _arg.whenNotGotten, pageInformation = _arg.pageInformation;
     wiki.log('pageHandler.get', pageInformation.site, pageInformation.slug, pageInformation.rev, 'context', pageHandler.context.join(' => '));
-    if (pageInformation.wasServerGenerated) return whenGotten(null);
+    if (pageInformation.wasServerGenerated) {
+      return whenGotten(null);
+    }
     if (!pageInformation.site) {
       if (localPage = pageFromLocalStorage(pageInformation.slug)) {
         if (pageInformation.rev) {
@@ -881,7 +950,9 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
         return whenGotten(localPage, 'local');
       }
     }
-    if (!pageHandler.context.length) pageHandler.context = ['view'];
+    if (!pageHandler.context.length) {
+      pageHandler.context = ['view'];
+    }
     return recursiveGet({
       pageInformation: pageInformation,
       whenGotten: whenGotten,
@@ -901,7 +972,9 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
       };
     }
     page || (page = pageElement.data("data"));
-    if (page.journal == null) page.journal = [];
+    if (page.journal == null) {
+      page.journal = [];
+    }
     if ((site = action['fork']) != null) {
       page.journal = page.journal.concat({
         'type': 'fork',
@@ -965,7 +1038,9 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
       }
     }
     action.date = (new Date()).getTime();
-    if (action.site === 'origin') delete action.site;
+    if (action.site === 'origin') {
+      delete action.site;
+    }
     if (forkFrom) {
       pageElement.find('h1 img').attr('src', '/favicon.png');
       pageElement.find('h1 a').attr('href', '/');
@@ -992,10 +1067,9 @@ require.define("/lib/pageHandler.coffee", function (require, module, exports, __
 
 });
 
-require.define("/lib/state.coffee", function (require, module, exports, __dirname, __filename) {
-(function() {
-  var active, state;
-  var __hasProp = Object.prototype.hasOwnProperty, __indexOf = Array.prototype.indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (__hasProp.call(this, i) && this[i] === item) return i; } return -1; };
+require.define("/lib/state.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
+  var active, state,
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   active = require('./active');
 
@@ -1045,9 +1119,9 @@ require.define("/lib/state.coffee", function (require, module, exports, __dirnam
       locs = state.locsInDom();
       pages = state.pagesInDom();
       url = ((function() {
-        var _len, _results;
+        var _i, _len, _results;
         _results = [];
-        for (idx = 0, _len = pages.length; idx < _len; idx++) {
+        for (idx = _i = 0, _len = pages.length; _i < _len; idx = ++_i) {
           page = pages[idx];
           _results.push("/" + ((locs != null ? locs[idx] : void 0) || 'view') + "/" + page);
         }
@@ -1060,18 +1134,22 @@ require.define("/lib/state.coffee", function (require, module, exports, __dirnam
   };
 
   state.show = function(e) {
-    var idx, name, newLocs, newPages, old, oldLocs, oldPages, previous, _len, _ref;
+    var idx, name, newLocs, newPages, old, oldLocs, oldPages, previous, _i, _len, _ref;
     oldPages = state.pagesInDom();
     newPages = state.urlPages();
     oldLocs = state.locsInDom();
     newLocs = state.urlLocs();
-    if (!location.pathname || location.pathname === '/') return;
+    if (!location.pathname || location.pathname === '/') {
+      return;
+    }
     previous = $('.page').eq(0);
-    for (idx = 0, _len = newPages.length; idx < _len; idx++) {
+    for (idx = _i = 0, _len = newPages.length; _i < _len; idx = ++_i) {
       name = newPages[idx];
       if (name !== oldPages[idx]) {
         old = $('.page').eq(idx);
-        if (old) old.remove();
+        if (old) {
+          old.remove();
+        }
         wiki.createPage(name, newLocs[idx]).insertAfter(previous).each(wiki.refresh);
       }
       previous = $('.page').eq(idx);
@@ -1082,13 +1160,13 @@ require.define("/lib/state.coffee", function (require, module, exports, __dirnam
   };
 
   state.first = function() {
-    var firstUrlLocs, firstUrlPages, idx, oldPages, urlPage, _len, _results;
+    var firstUrlLocs, firstUrlPages, idx, oldPages, urlPage, _i, _len, _results;
     state.setUrl();
     firstUrlPages = state.urlPages();
     firstUrlLocs = state.urlLocs();
     oldPages = state.pagesInDom();
     _results = [];
-    for (idx = 0, _len = firstUrlPages.length; idx < _len; idx++) {
+    for (idx = _i = 0, _len = firstUrlPages.length; _i < _len; idx = ++_i) {
       urlPage = firstUrlPages[idx];
       if (__indexOf.call(oldPages, urlPage) < 0) {
         if (urlPage !== '') {
@@ -1105,16 +1183,15 @@ require.define("/lib/state.coffee", function (require, module, exports, __dirnam
 
 });
 
-require.define("/lib/revision.coffee", function (require, module, exports, __dirname, __filename) {
-(function() {
+require.define("/lib/revision.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
   var create;
 
   create = function(revIndex, data) {
-    var afterIndex, editIndex, itemId, items, journal, journalEntry, removeIndex, revJournal, revStory, revStoryIds, revTitle, storyItem, _i, _j, _k, _len, _len2, _len3, _ref;
+    var afterIndex, editIndex, itemId, items, journal, journalEntry, removeIndex, revJournal, revStory, revStoryIds, revTitle, storyItem, _i, _j, _k, _len, _len1, _len2, _ref;
     journal = data.journal;
     revTitle = data.title;
     revStory = [];
-    revJournal = journal.slice(0, (+revIndex) + 1 || 9e9);
+    revJournal = journal.slice(0, +(+revIndex) + 1 || 9e9);
     for (_i = 0, _len = revJournal.length; _i < _len; _i++) {
       journalEntry = revJournal[_i];
       revStoryIds = revStory.map(function(storyItem) {
@@ -1143,13 +1220,13 @@ require.define("/lib/revision.coffee", function (require, module, exports, __dir
           break;
         case 'move':
           items = [];
-          for (_j = 0, _len2 = revStory.length; _j < _len2; _j++) {
+          for (_j = 0, _len1 = revStory.length; _j < _len1; _j++) {
             storyItem = revStory[_j];
             items[storyItem.id] = storyItem;
           }
           revStory = [];
           _ref = journalEntry.order;
-          for (_k = 0, _len3 = _ref.length; _k < _len3; _k++) {
+          for (_k = 0, _len2 = _ref.length; _k < _len2; _k++) {
             itemId = _ref[_k];
             revStory.push(items[itemId]);
           }
@@ -1173,8 +1250,7 @@ require.define("/lib/revision.coffee", function (require, module, exports, __dir
 
 });
 
-require.define("/test/mockServer.coffee", function (require, module, exports, __dirname, __filename) {
-(function() {
+require.define("/test/mockServer.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
   var simulatePageFound, simulatePageNotFound;
 
   simulatePageNotFound = function() {
@@ -1186,7 +1262,9 @@ require.define("/test/mockServer.coffee", function (require, module, exports, __
   };
 
   simulatePageFound = function(pageToReturn) {
-    if (pageToReturn == null) pageToReturn = {};
+    if (pageToReturn == null) {
+      pageToReturn = {};
+    }
     return sinon.stub(jQuery, "ajax").yieldsTo('success', pageToReturn);
   };
 
@@ -1199,8 +1277,7 @@ require.define("/test/mockServer.coffee", function (require, module, exports, __
 
 });
 
-require.define("/test/refresh.coffee", function (require, module, exports, __dirname, __filename) {
-(function() {
+require.define("/test/refresh.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
   var mockServer, refresh;
 
   refresh = require('../lib/refresh.coffee');
@@ -1240,10 +1317,9 @@ require.define("/test/refresh.coffee", function (require, module, exports, __dir
 
 });
 
-require.define("/lib/refresh.coffee", function (require, module, exports, __dirname, __filename) {
-(function() {
-  var createFactory, emitHeader, handleDragging, initAddButton, initDragging, neighborhood, pageHandler, plugin, refresh, state, util;
-  var __slice = Array.prototype.slice;
+require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
+  var createFactory, emitHeader, handleDragging, initAddButton, initDragging, neighborhood, pageHandler, plugin, refresh, state, util,
+    __slice = [].slice;
 
   util = require('./util.coffee');
 
@@ -1347,7 +1423,7 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
   };
 
   wiki.buildPage = function(data, siteFound, pageElement) {
-    var action, addContext, context, doItem, footerElement, journalElement, page, site, slug, storyElement, _i, _len, _ref, _ref2;
+    var action, addContext, context, doItem, footerElement, journalElement, page, site, slug, storyElement, _i, _len, _ref, _ref1;
     if (siteFound === 'local') {
       pageElement.addClass('local');
     } else {
@@ -1367,9 +1443,13 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
       slug = $(pageElement).attr('id');
       site = $(pageElement).data('site');
       context = ['view'];
-      if (site != null) context.push(site);
+      if (site != null) {
+        context.push(site);
+      }
       addContext = function(site) {
-        if ((site != null) && !_.include(context, site)) return context.push(site);
+        if ((site != null) && !_.include(context, site)) {
+          return context.push(site);
+        }
       };
       _ref = page.journal.slice(0).reverse();
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -1379,14 +1459,18 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
       wiki.resolutionContext = context;
       wiki.log('buildPage', slug, 'site', site, 'context', context.join(' => '));
       emitHeader(pageElement, page);
-      _ref2 = ['story', 'journal', 'footer'].map(function(className) {
+      _ref1 = ['story', 'journal', 'footer'].map(function(className) {
         return $("<div />").addClass(className).appendTo(pageElement);
-      }), storyElement = _ref2[0], journalElement = _ref2[1], footerElement = _ref2[2];
+      }), storyElement = _ref1[0], journalElement = _ref1[1], footerElement = _ref1[2];
       doItem = function(i) {
         var div, item;
-        if (i >= page.story.length) return;
+        if (i >= page.story.length) {
+          return;
+        }
         item = page.story[i];
-        if ($.isArray(item)) item = item[0];
+        if ($.isArray(item)) {
+          item = item[0];
+        }
         div = $("<div />").addClass("item").addClass(item.type).attr("data-id", item.id);
         storyElement.append(div);
         return plugin["do"](div, item, function() {
@@ -1417,7 +1501,7 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
       wasServerGenerated: pageElement.attr('data-server-generated') === 'true'
     };
     createGhostPage = function() {
-      var heading, hits, info, page, result, site, title, _ref2, _ref3;
+      var heading, hits, info, page, result, site, title, _ref1, _ref2;
       title = $("a[href=\"/" + slug + ".html\"]:last").text() || slug;
       page = {
         'title': title,
@@ -1436,9 +1520,9 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
         'text': "We did find the page in your current neighborhood."
       };
       hits = [];
-      _ref2 = wiki.neighborhood;
-      for (site in _ref2) {
-        info = _ref2[site];
+      _ref1 = wiki.neighborhood;
+      for (site in _ref1) {
+        info = _ref1[site];
         if (info.sitemap != null) {
           result = _.find(info.sitemap, function(each) {
             return each.slug === slug;
@@ -1456,27 +1540,29 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
         }
       }
       if (hits.length > 0) {
-        (_ref3 = page.story).push.apply(_ref3, [heading].concat(__slice.call(hits)));
+        (_ref2 = page.story).push.apply(_ref2, [heading].concat(__slice.call(hits)));
         page.story[0].text = 'We could not find this page in the expected context.';
       }
       return wiki.buildPage(page, void 0, pageElement).addClass('ghost');
     };
     registerNeighbors = function(data, site) {
-      var action, item, _i, _j, _len, _len2, _ref2, _ref3, _results;
+      var action, item, _i, _j, _len, _len1, _ref1, _ref2, _results;
       if (_.include(['local', 'origin', 'view', null, void 0], site)) {
         neighborhood.registerNeighbor(location.host);
       } else {
         neighborhood.registerNeighbor(site);
       }
-      _ref2 = data.story || [];
-      for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-        item = _ref2[_i];
-        if (item.site != null) neighborhood.registerNeighbor(item.site);
+      _ref1 = data.story || [];
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        item = _ref1[_i];
+        if (item.site != null) {
+          neighborhood.registerNeighbor(item.site);
+        }
       }
-      _ref3 = data.journal || [];
+      _ref2 = data.journal || [];
       _results = [];
-      for (_j = 0, _len2 = _ref3.length; _j < _len2; _j++) {
-        action = _ref3[_j];
+      for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+        action = _ref2[_j];
         if (action.site != null) {
           _results.push(neighborhood.registerNeighbor(action.site));
         } else {
@@ -1500,8 +1586,7 @@ require.define("/lib/refresh.coffee", function (require, module, exports, __dirn
 
 });
 
-require.define("/lib/plugin.coffee", function (require, module, exports, __dirname, __filename) {
-(function() {
+require.define("/lib/plugin.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
   var getScript, plugin, scripts, util;
 
   util = require('./util.coffee');
@@ -1511,7 +1596,9 @@ require.define("/lib/plugin.coffee", function (require, module, exports, __dirna
   scripts = {};
 
   getScript = wiki.getScript = function(url, callback) {
-    if (callback == null) callback = function() {};
+    if (callback == null) {
+      callback = function() {};
+    }
     if (scripts[url] != null) {
       return callback();
     } else {
@@ -1525,9 +1612,13 @@ require.define("/lib/plugin.coffee", function (require, module, exports, __dirna
   };
 
   plugin.get = wiki.getPlugin = function(name, callback) {
-    if (window.plugins[name]) return callback(window.plugins[name]);
+    if (window.plugins[name]) {
+      return callback(window.plugins[name]);
+    }
     return getScript("/plugins/" + name + "/" + name + ".js", function() {
-      if (window.plugins[name]) return callback(window.plugins[name]);
+      if (window.plugins[name]) {
+        return callback(window.plugins[name]);
+      }
       return getScript("/plugins/" + name + ".js", function() {
         return callback(window.plugins[name]);
       });
@@ -1536,7 +1627,9 @@ require.define("/lib/plugin.coffee", function (require, module, exports, __dirna
 
   plugin["do"] = wiki.doPlugin = function(div, item, done) {
     var error;
-    if (done == null) done = function() {};
+    if (done == null) {
+      done = function() {};
+    }
     error = function(ex) {
       var errorElement;
       errorElement = $("<div />").addClass('error');
@@ -1624,10 +1717,9 @@ require.define("/lib/plugin.coffee", function (require, module, exports, __dirna
 
 });
 
-require.define("/lib/neighborhood.coffee", function (require, module, exports, __dirname, __filename) {
-(function() {
-  var active, createSearch, neighborhood, nextAvailableFetch, nextFetchInterval, populateSiteInfoFor, util, _ref;
-  var __hasProp = Object.prototype.hasOwnProperty;
+require.define("/lib/neighborhood.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
+  var active, createSearch, neighborhood, nextAvailableFetch, nextFetchInterval, populateSiteInfoFor, util, _ref,
+    __hasProp = {}.hasOwnProperty;
 
   active = require('./active.coffee');
 
@@ -1637,7 +1729,9 @@ require.define("/lib/neighborhood.coffee", function (require, module, exports, _
 
   module.exports = neighborhood = {};
 
-  if ((_ref = wiki.neighborhood) == null) wiki.neighborhood = {};
+  if ((_ref = wiki.neighborhood) == null) {
+    wiki.neighborhood = {};
+  }
 
   nextAvailableFetch = 0;
 
@@ -1645,7 +1739,9 @@ require.define("/lib/neighborhood.coffee", function (require, module, exports, _
 
   populateSiteInfoFor = function(site, neighborInfo) {
     var fetchMap, now, transition;
-    if (neighborInfo.sitemapRequestInflight) return;
+    if (neighborInfo.sitemapRequestInflight) {
+      return;
+    }
     neighborInfo.sitemapRequestInflight = true;
     transition = function(site, from, to) {
       return $(".neighbor[data-site=\"" + site + "\"]").find('div').removeClass(from).addClass(to);
@@ -1680,7 +1776,9 @@ require.define("/lib/neighborhood.coffee", function (require, module, exports, _
 
   wiki.registerNeighbor = neighborhood.registerNeighbor = function(site) {
     var neighborInfo;
-    if (wiki.neighborhood[site] != null) return;
+    if (wiki.neighborhood[site] != null) {
+      return;
+    }
     neighborInfo = {};
     wiki.neighborhood[site] = neighborInfo;
     populateSiteInfoFor(site, neighborInfo);
@@ -1692,7 +1790,7 @@ require.define("/lib/neighborhood.coffee", function (require, module, exports, _
   };
 
   neighborhood.search = function(searchQuery) {
-    var finds, match, matchingPages, neighborInfo, neighborSite, sitemap, start, tally, tick, _ref2;
+    var finds, match, matchingPages, neighborInfo, neighborSite, sitemap, start, tally, tick, _ref1;
     finds = [];
     tally = {};
     tick = function(key) {
@@ -1705,16 +1803,20 @@ require.define("/lib/neighborhood.coffee", function (require, module, exports, _
     match = function(key, text) {
       var hit;
       hit = (text != null) && text.toLowerCase().indexOf(searchQuery.toLowerCase()) >= 0;
-      if (hit) tick(key);
+      if (hit) {
+        tick(key);
+      }
       return hit;
     };
     start = Date.now();
-    _ref2 = wiki.neighborhood;
-    for (neighborSite in _ref2) {
-      if (!__hasProp.call(_ref2, neighborSite)) continue;
-      neighborInfo = _ref2[neighborSite];
+    _ref1 = wiki.neighborhood;
+    for (neighborSite in _ref1) {
+      if (!__hasProp.call(_ref1, neighborSite)) continue;
+      neighborInfo = _ref1[neighborSite];
       sitemap = neighborInfo.sitemap;
-      if (sitemap != null) tick('sites');
+      if (sitemap != null) {
+        tick('sites');
+      }
       matchingPages = _.each(sitemap, function(page) {
         tick('pages');
         if (!(match('title', page.title) || match('text', page.synopsis) || match('slug', page.slug))) {
@@ -1751,7 +1853,9 @@ require.define("/lib/neighborhood.coffee", function (require, module, exports, _
     });
     return $('input.search').on('keypress', function(e) {
       var searchQuery;
-      if (e.keyCode !== 13) return;
+      if (e.keyCode !== 13) {
+        return;
+      }
       searchQuery = $(this).val();
       search.performSearch(searchQuery);
       return $(this).val("");
@@ -1762,8 +1866,7 @@ require.define("/lib/neighborhood.coffee", function (require, module, exports, _
 
 });
 
-require.define("/lib/search.coffee", function (require, module, exports, __dirname, __filename) {
-(function() {
+require.define("/lib/search.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
   var active, createSearch, util;
 
   util = require('./util');
@@ -1821,7 +1924,7 @@ require.define("/lib/search.coffee", function (require, module, exports, __dirna
 
 });
 
-require.define("/lib/dom.coffee", function (require, module, exports, __dirname, __filename) {
+require.define("/lib/dom.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
 
   wiki.createPage = function(name, loc) {
     if (loc && loc !== 'view') {
@@ -1831,10 +1934,11 @@ require.define("/lib/dom.coffee", function (require, module, exports, __dirname,
     }
   };
 
+}).call(this);
+
 });
 
-require.define("/test/plugin.coffee", function (require, module, exports, __dirname, __filename) {
-(function() {
+require.define("/test/plugin.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
   var plugin;
 
   plugin = require('../lib/plugin.coffee');
@@ -1875,8 +1979,7 @@ require.define("/test/plugin.coffee", function (require, module, exports, __dirn
 
 });
 
-require.define("/test/revision.coffee", function (require, module, exports, __dirname, __filename) {
-(function() {
+require.define("/test/revision.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
   var revision, util;
 
   util = require('../lib/util.coffee');
@@ -2130,8 +2233,7 @@ require.define("/test/revision.coffee", function (require, module, exports, __di
 
 });
 
-require.define("/test/neighborhood.coffee", function (require, module, exports, __dirname, __filename) {
-(function() {
+require.define("/test/neighborhood.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
   var neighborhood;
 
   neighborhood = require('../lib/neighborhood.coffee');
@@ -2246,8 +2348,7 @@ require.define("/test/neighborhood.coffee", function (require, module, exports, 
 
 });
 
-require.define("/test/search.coffee", function (require, module, exports, __dirname, __filename) {
-(function() {
+require.define("/test/search.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
   var createSearch;
 
   createSearch = require('../lib/search.coffee');
@@ -2271,8 +2372,7 @@ require.define("/test/search.coffee", function (require, module, exports, __dirn
 
 });
 
-require.define("/changes.js", function (require, module, exports, __dirname, __filename) {
-// Generated by CoffeeScript 1.3.3
+require.define("/plugins/changes/changes.js",function(require,module,exports,__dirname,__filename,process,global){// Generated by CoffeeScript 1.4.0
 (function() {
   var constructor, listItemHtml, pageBundle;
 
@@ -2377,10 +2477,9 @@ require.define("/changes.js", function (require, module, exports, __dirname, __f
 
 });
 
-require.define("/testclient.coffee", function (require, module, exports, __dirname, __filename) {
-    (function() {
-  var util;
-  var __slice = Array.prototype.slice;
+require.define("/testclient.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
+  var util,
+    __slice = [].slice;
 
   mocha.setup('bdd');
 
@@ -2426,15 +2525,16 @@ require.define("/testclient.coffee", function (require, module, exports, __dirna
 });
 require("/testclient.coffee");
 
-require.define("/test.coffee", function (require, module, exports, __dirname, __filename) {
-    (function() {
+require.define("/plugins/changes/test.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
   var createFakeLocalStorage, pluginCtor;
 
   pluginCtor = require('./changes');
 
   createFakeLocalStorage = function(initialContents) {
     var fake, getStoreSize, keys, store;
-    if (initialContents == null) initialContents = {};
+    if (initialContents == null) {
+      initialContents = {};
+    }
     store = initialContents;
     keys = function() {
       var k, _, _results;
@@ -2545,4 +2645,5 @@ require.define("/test.coffee", function (require, module, exports, __dirname, __
 }).call(this);
 
 });
-require("/test.coffee");
+require("/plugins/changes/test.coffee");
+})();

@@ -31,8 +31,11 @@ while (sleep 1) {
   $old = $new;
   print `clear; date`;
   say('client.');
-  run('npm start');
+  run('./node_modules/.bin/browserify client.coffee -o client.js');
   say('test.');
-  run('npm test');
+  run('./node_modules/.bin/browserify testclient.coffee ./plugins/*/test.coffee -o test/testclient.js');
+  say('plugins.');
+  run('./node_modules/.bin/coffee -c ./plugins/*.coffee');
+  run('./node_modules/.bin/coffee -c ./plugins/*/*.coffee');
   say('done.');
 }
