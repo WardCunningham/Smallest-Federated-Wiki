@@ -423,15 +423,15 @@ module.exports = exports = (argv) ->
       sitemap = []
       # used to make sure all of the files are read 
       # and processesed in the site map before responding
-      numFiles = files.length 
-      for file in files
+      numFiles = files.length
+      doSitemapFile = (file) ->
         pagehandler.get(file, (e, page, status) ->
           if e 
             numFiles--
             console.log(['pagehandler exception', e])
             return
           sitemap.push({
-            slug     : page.title.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase(),
+            slug     : file,
             title    : page.title,
             date     : page.journal and page.journal.length > 0 and page.journal.pop().date,
             synopsis : util.createSynopsis(page)
@@ -439,7 +439,9 @@ module.exports = exports = (argv) ->
           numFiles--
           if numFiles == 0
             res.json(sitemap)
-        ) 
+        )
+      for file in files
+        doSitemapFile file
     )    
   ) 
 

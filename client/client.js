@@ -844,8 +844,8 @@ require.define("/lib/util.coffee", function (require, module, exports, __dirname
       p2 = page.story[1];
       if (p1 && p1.type === 'paragraph') synopsis || (synopsis = p1.text);
       if (p2 && p2.type === 'paragraph') synopsis || (synopsis = p2.text);
-      if (p1) synopsis || (synopsis = p1.text != null);
-      if (p2) synopsis || (synopsis = p2.text != null);
+      if (p1 && (p1.text != null)) synopsis || (synopsis = p1.text);
+      if (p2 && (p2.text != null)) synopsis || (synopsis = p2.text);
       synopsis || (synopsis = (page.story != null) && ("A page with " + page.story.length + " items."));
     } else {
       synopsis = 'A page with no story.';
