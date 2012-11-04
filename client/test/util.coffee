@@ -1,7 +1,7 @@
 util = require('../lib/util.coffee')
 
 timezoneOffset = ->
-  ((new Date()).getTimezoneOffset() * 60)
+  ((new Date(1333843344000)).getTimezoneOffset() * 60)
 
 module.exports = describe 'util', ->
   it 'should make random bytes', ->

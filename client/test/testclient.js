@@ -502,7 +502,7 @@ require.define("/test/util.coffee", function (require, module, exports, __dirnam
   util = require('../lib/util.coffee');
 
   timezoneOffset = function() {
-    return (new Date()).getTimezoneOffset() * 60;
+    return (new Date(1333843344000)).getTimezoneOffset() * 60;
   };
 
   module.exports = describe('util', function() {
