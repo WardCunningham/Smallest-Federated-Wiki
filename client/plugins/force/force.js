@@ -14,7 +14,7 @@
             fill = d3.scale.category20();
             vis = d3.select(div.get(0)).append("svg:svg").attr("width", w).attr("height", h);
             vis.append("svg:defs").selectAll("marker").data(["arrowhead"]).enter().append("svg:marker").attr("id", String).attr("viewBox", "0 0 10 10").attr("refX", "20").attr("refY", "5").attr("markerUnits", "strokeWidth").attr("markerWidth", "9").attr("markerHeight", "5").attr("orient", "auto").append("svg:path").attr("d", "M 0 0 L 10 5 L 0 10 z").attr("fill", "#BBBBBB");
-            json = wiki.getData();
+            json = $.extend(true, {}, wiki.getData());
             console.log(json);
             force = d3.layout.force().charge(-120).linkDistance(30).nodes(json.nodes).links(json.links).size([w, h]).start();
             link = vis.selectAll("line.link").data(json.links).enter().append("svg:line").attr("class", "link").style("stroke-width", function(d) {

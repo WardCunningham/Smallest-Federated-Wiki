@@ -42,7 +42,7 @@ window.plugins.force =
             .attr("d","M 0 0 L 10 5 L 0 10 z")
             .attr("fill", "#BBBBBB");
 
-          json = wiki.getData()
+          json = $.extend true, {}, wiki.getData()
           console.log json
 
           force = d3.layout.force()
