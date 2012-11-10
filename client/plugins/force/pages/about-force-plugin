@@ -1,0 +1,1617 @@
+{
+  "title": "About Force Plugin",
+  "story": [
+    {
+      "type": "data",
+      "id": "8902993143252477",
+      "data": {
+        "nodes": [
+          {
+            "name": "NSCDLA_1314_SUB1",
+            "group": 2
+          },
+          {
+            "name": "NSCDLA_321_SUB5",
+            "group": 2
+          },
+          {
+            "name": "NSCDLA_321_SUB4",
+            "group": 2
+          },
+          {
+            "name": "NSCDLA_321_SUB3",
+            "group": 2
+          },
+          {
+            "name": "NSCDLA_321_SUB2",
+            "group": 2
+          },
+          {
+            "name": "NSCDLA_321_SUB6",
+            "group": 2
+          },
+          {
+            "name": "NSCDLA_322_SUB4",
+            "group": 2
+          },
+          {
+            "name": "NSCDLA_322_SUB3",
+            "group": 2
+          },
+          {
+            "name": "NSCDLA_322_SUB2",
+            "group": 2
+          },
+          {
+            "name": "NSCDLA_322_SUB6",
+            "group": 2
+          },
+          {
+            "name": "NSCDLA_322_SUB5",
+            "group": 2
+          },
+          {
+            "name": "NSCDLA_398_SUB1",
+            "group": 2
+          },
+          {
+            "name": "NSCDLA_323_SUB6",
+            "group": 2
+          },
+          {
+            "name": "NSCDLA_323_SUB5",
+            "group": 2
+          },
+          {
+            "name": "NSCDLA_323_SUB4",
+            "group": 2
+          },
+          {
+            "name": "NSCDLA_323_SUB2",
+            "group": 2
+          },
+          {
+            "name": "NSCDLA_323_SUB1",
+            "group": 2
+          },
+          {
+            "name": "NSCDLA_371_SUB1",
+            "group": 2
+          },
+          {
+            "name": "NSCDLA_362_SUB1",
+            "group": 2
+          },
+          {
+            "name": "NSCDLA_323_SUB3",
+            "group": 2
+          },
+          {
+            "name": "NSCDLA_471_SUB1",
+            "group": 2
+          },
+          {
+            "name": "NSCDLA_390",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_320",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_316",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_1324",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_1323",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_1322",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_409",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_1319",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_1318",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_1317",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_1316",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_1315",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_1314",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_410",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_411",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_497",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_306",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_471",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_321",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_312",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_372",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_1321",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_1320",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_328",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_407",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_392",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_371",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_396",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_338",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_491",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_331",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_362",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_395",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_379",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_399",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_398",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_353",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_394",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_322",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_305",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_308",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_300",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_311",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_309",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_323",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_351",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_490",
+            "group": 1
+          },
+          {
+            "name": "NSCDLA_397",
+            "group": 1
+          },
+          {
+            "name": "nscdla9164_as-20pir4",
+            "group": 4
+          },
+          {
+            "name": "nscdla0178_asa-ddlsl4",
+            "group": 4
+          },
+          {
+            "name": "nscdla0167_asa-ddlsl3",
+            "group": 4
+          },
+          {
+            "name": "nscdla0156_asa-ddlsl2",
+            "group": 4
+          },
+          {
+            "name": "NSCCSA_318_SUB3",
+            "group": 3
+          },
+          {
+            "name": "nscdla0159_asa-ddlsl9",
+            "group": 4
+          },
+          {
+            "name": "nscdla0226_asa-ddlsl7",
+            "group": 4
+          },
+          {
+            "name": "nscdla0215_asa-ddlsl6",
+            "group": 4
+          },
+          {
+            "name": "nscdla0240_asa-ddlsla",
+            "group": 4
+          },
+          {
+            "name": "nscdla0237_asa-ddlsl8",
+            "group": 4
+          },
+          {
+            "name": "nscdla7196_apc-fc2",
+            "group": 4
+          },
+          {
+            "name": "nscdla0911_asa-ddrsl5",
+            "group": 4
+          },
+          {
+            "name": "nscdla0862_asa-ddrsl4",
+            "group": 4
+          },
+          {
+            "name": "nscdla0856_asa-ddrsl3",
+            "group": 4
+          },
+          {
+            "name": "nscdla0844_asa-ddrsl1",
+            "group": 4
+          },
+          {
+            "name": "NSCBCA_302",
+            "group": 3
+          },
+          {
+            "name": "nscdla0850_asa-ddrsl2",
+            "group": 4
+          },
+          {
+            "name": "NSCCSA_418_SUB2",
+            "group": 3
+          }
+        ],
+        "links": [
+          {
+            "source": 0,
+            "target": 33,
+            "value": 6
+          },
+          {
+            "source": 0,
+            "target": 69,
+            "value": 1
+          },
+          {
+            "source": 1,
+            "target": 39,
+            "value": 6
+          },
+          {
+            "source": 1,
+            "target": 70,
+            "value": 1
+          },
+          {
+            "source": 2,
+            "target": 39,
+            "value": 6
+          },
+          {
+            "source": 2,
+            "target": 71,
+            "value": 1
+          },
+          {
+            "source": 3,
+            "target": 39,
+            "value": 6
+          },
+          {
+            "source": 3,
+            "target": 72,
+            "value": 1
+          },
+          {
+            "source": 4,
+            "target": 39,
+            "value": 6
+          },
+          {
+            "source": 4,
+            "target": 73,
+            "value": 1
+          },
+          {
+            "source": 5,
+            "target": 39,
+            "value": 6
+          },
+          {
+            "source": 5,
+            "target": 74,
+            "value": 1
+          },
+          {
+            "source": 6,
+            "target": 59,
+            "value": 6
+          },
+          {
+            "source": 6,
+            "target": 75,
+            "value": 1
+          },
+          {
+            "source": 7,
+            "target": 59,
+            "value": 6
+          },
+          {
+            "source": 7,
+            "target": 76,
+            "value": 1
+          },
+          {
+            "source": 8,
+            "target": 59,
+            "value": 6
+          },
+          {
+            "source": 8,
+            "target": 39,
+            "value": 1
+          },
+          {
+            "source": 9,
+            "target": 59,
+            "value": 6
+          },
+          {
+            "source": 9,
+            "target": 77,
+            "value": 1
+          },
+          {
+            "source": 10,
+            "target": 59,
+            "value": 6
+          },
+          {
+            "source": 10,
+            "target": 78,
+            "value": 1
+          },
+          {
+            "source": 11,
+            "target": 56,
+            "value": 6
+          },
+          {
+            "source": 11,
+            "target": 79,
+            "value": 1
+          },
+          {
+            "source": 11,
+            "target": 79,
+            "value": 1
+          },
+          {
+            "source": 12,
+            "target": 65,
+            "value": 6
+          },
+          {
+            "source": 12,
+            "target": 80,
+            "value": 1
+          },
+          {
+            "source": 13,
+            "target": 65,
+            "value": 6
+          },
+          {
+            "source": 13,
+            "target": 81,
+            "value": 1
+          },
+          {
+            "source": 14,
+            "target": 65,
+            "value": 6
+          },
+          {
+            "source": 14,
+            "target": 82,
+            "value": 1
+          },
+          {
+            "source": 15,
+            "target": 65,
+            "value": 6
+          },
+          {
+            "source": 15,
+            "target": 83,
+            "value": 1
+          },
+          {
+            "source": 16,
+            "target": 65,
+            "value": 6
+          },
+          {
+            "source": 16,
+            "target": 59,
+            "value": 1
+          },
+          {
+            "source": 16,
+            "target": 84,
+            "value": 1
+          },
+          {
+            "source": 17,
+            "target": 47,
+            "value": 6
+          },
+          {
+            "source": 18,
+            "target": 52,
+            "value": 6
+          },
+          {
+            "source": 19,
+            "target": 65,
+            "value": 6
+          },
+          {
+            "source": 19,
+            "target": 85,
+            "value": 1
+          },
+          {
+            "source": 20,
+            "target": 38,
+            "value": 6
+          },
+          {
+            "source": 20,
+            "target": 86,
+            "value": 1
+          },
+          {
+            "source": 56,
+            "target": 79,
+            "value": 1
+          },
+          {
+            "source": 56,
+            "target": 79,
+            "value": 1
+          },
+          {
+            "source": 56,
+            "target": 11,
+            "value": 1
+          }
+        ]
+      }
+    },
+    {
+      "type": "paragraph",
+      "id": "258c90f833723391",
+      "text": "The Force plugin renders nodes and links from a Data item as a graph with dots and arcs automatically positioned by a force relaxation algorithm built into the d3.js visualization package."
+    },
+    {
+      "type": "force",
+      "id": "41cae7d03b2f6c4a"
+    },
+    {
+      "type": "paragraph",
+      "id": "86f2f1009a30eacd",
+      "text": "Hover over dots to discover node names."
+    },
+    {
+      "type": "paragraph",
+      "id": "a8da7f79274ad9d1",
+      "text": "Drag dots to rearrange the graph."
+    },
+    {
+      "type": "paragraph",
+      "id": "c807c1f047a67799",
+      "text": "Double-click dotes to open a corresponding page, if any."
+    },
+    {
+      "type": "paragraph",
+      "id": "107ab31edc0ce7e1",
+      "text": "<h3> Data"
+    },
+    {
+      "type": "paragraph",
+      "id": "3e3baa164f53284a",
+      "text": "The data item is expected to be formatted as an object with two parts, \"nodes\" and \"links\", both arrays."
+    },
+    {
+      "type": "paragraph",
+      "id": "c3d39dc491525e9d",
+      "text": "A node is an object that has a \"name\", a string, and a \"group\", an integer. Group determines the dot color."
+    },
+    {
+      "type": "code",
+      "id": "f2a0f31fc60d6384",
+      "text": "{\n  \"name\": \"Chicago\",\n  \"group\": 2\n}"
+    },
+    {
+      "type": "paragraph",
+      "id": "31145994b4ae2d93",
+      "text": "A link is an object that a \"source\", \"target\", and \"value\", all integers. Value determines the arc stroke width."
+    },
+    {
+      "type": "code",
+      "id": "c8102f28200fa4b9",
+      "text": "{\n  \"source\": 10,\n  \"target\": 59,\n  \"value\": 6\n}"
+    },
+    {
+      "type": "paragraph",
+      "id": "4604beff2443e635",
+      "text": "See [https://github.com/WardCunningham/Smallest-Federated-Wiki/tree/master/client/plugins/force GitHub] for plugin source."
+    },
+    {
+      "type": "paragraph",
+      "id": "8631608eac5dd73e",
+      "text": "The plugin is adapted from the <i>Les Misérables</i> [http://mbostock.github.com/d3/ex/force.html example] from the d3.js documentation."
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "item": {
+        "title": "About Force Plugin"
+      },
+      "date": 1352513202374
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "258c90f833723391",
+        "text": "The Force plugin renders nodes and links from a Data item as a graph with dots and arcs automatically positioned by a force relaxation algorithm built into the d3.js visualization package."
+      },
+      "id": "258c90f833723391",
+      "date": 1352513210591
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "data",
+        "id": "8902993143252477",
+        "data": {
+          "nodes": [
+            {
+              "name": "NSCDLA_1314_SUB1",
+              "group": 2
+            },
+            {
+              "name": "NSCDLA_321_SUB5",
+              "group": 2
+            },
+            {
+              "name": "NSCDLA_321_SUB4",
+              "group": 2
+            },
+            {
+              "name": "NSCDLA_321_SUB3",
+              "group": 2
+            },
+            {
+              "name": "NSCDLA_321_SUB2",
+              "group": 2
+            },
+            {
+              "name": "NSCDLA_321_SUB6",
+              "group": 2
+            },
+            {
+              "name": "NSCDLA_322_SUB4",
+              "group": 2
+            },
+            {
+              "name": "NSCDLA_322_SUB3",
+              "group": 2
+            },
+            {
+              "name": "NSCDLA_322_SUB2",
+              "group": 2
+            },
+            {
+              "name": "NSCDLA_322_SUB6",
+              "group": 2
+            },
+            {
+              "name": "NSCDLA_322_SUB5",
+              "group": 2
+            },
+            {
+              "name": "NSCDLA_398_SUB1",
+              "group": 2
+            },
+            {
+              "name": "NSCDLA_323_SUB6",
+              "group": 2
+            },
+            {
+              "name": "NSCDLA_323_SUB5",
+              "group": 2
+            },
+            {
+              "name": "NSCDLA_323_SUB4",
+              "group": 2
+            },
+            {
+              "name": "NSCDLA_323_SUB2",
+              "group": 2
+            },
+            {
+              "name": "NSCDLA_323_SUB1",
+              "group": 2
+            },
+            {
+              "name": "NSCDLA_371_SUB1",
+              "group": 2
+            },
+            {
+              "name": "NSCDLA_362_SUB1",
+              "group": 2
+            },
+            {
+              "name": "NSCDLA_323_SUB3",
+              "group": 2
+            },
+            {
+              "name": "NSCDLA_471_SUB1",
+              "group": 2
+            },
+            {
+              "name": "NSCDLA_390",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_320",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_316",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_1324",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_1323",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_1322",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_409",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_1319",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_1318",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_1317",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_1316",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_1315",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_1314",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_410",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_411",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_497",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_306",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_471",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_321",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_312",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_372",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_1321",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_1320",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_328",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_407",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_392",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_371",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_396",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_338",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_491",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_331",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_362",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_395",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_379",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_399",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_398",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_353",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_394",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_322",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_305",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_308",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_300",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_311",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_309",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_323",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_351",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_490",
+              "group": 1
+            },
+            {
+              "name": "NSCDLA_397",
+              "group": 1
+            },
+            {
+              "name": "nscdla9164_as-20pir4",
+              "group": 4
+            },
+            {
+              "name": "nscdla0178_asa-ddlsl4",
+              "group": 4
+            },
+            {
+              "name": "nscdla0167_asa-ddlsl3",
+              "group": 4
+            },
+            {
+              "name": "nscdla0156_asa-ddlsl2",
+              "group": 4
+            },
+            {
+              "name": "NSCCSA_318_SUB3",
+              "group": 3
+            },
+            {
+              "name": "nscdla0159_asa-ddlsl9",
+              "group": 4
+            },
+            {
+              "name": "nscdla0226_asa-ddlsl7",
+              "group": 4
+            },
+            {
+              "name": "nscdla0215_asa-ddlsl6",
+              "group": 4
+            },
+            {
+              "name": "nscdla0240_asa-ddlsla",
+              "group": 4
+            },
+            {
+              "name": "nscdla0237_asa-ddlsl8",
+              "group": 4
+            },
+            {
+              "name": "nscdla7196_apc-fc2",
+              "group": 4
+            },
+            {
+              "name": "nscdla0911_asa-ddrsl5",
+              "group": 4
+            },
+            {
+              "name": "nscdla0862_asa-ddrsl4",
+              "group": 4
+            },
+            {
+              "name": "nscdla0856_asa-ddrsl3",
+              "group": 4
+            },
+            {
+              "name": "nscdla0844_asa-ddrsl1",
+              "group": 4
+            },
+            {
+              "name": "NSCBCA_302",
+              "group": 3
+            },
+            {
+              "name": "nscdla0850_asa-ddrsl2",
+              "group": 4
+            },
+            {
+              "name": "NSCCSA_418_SUB2",
+              "group": 3
+            }
+          ],
+          "links": [
+            {
+              "source": 0,
+              "target": 33,
+              "value": 6
+            },
+            {
+              "source": 0,
+              "target": 69,
+              "value": 1
+            },
+            {
+              "source": 1,
+              "target": 39,
+              "value": 6
+            },
+            {
+              "source": 1,
+              "target": 70,
+              "value": 1
+            },
+            {
+              "source": 2,
+              "target": 39,
+              "value": 6
+            },
+            {
+              "source": 2,
+              "target": 71,
+              "value": 1
+            },
+            {
+              "source": 3,
+              "target": 39,
+              "value": 6
+            },
+            {
+              "source": 3,
+              "target": 72,
+              "value": 1
+            },
+            {
+              "source": 4,
+              "target": 39,
+              "value": 6
+            },
+            {
+              "source": 4,
+              "target": 73,
+              "value": 1
+            },
+            {
+              "source": 5,
+              "target": 39,
+              "value": 6
+            },
+            {
+              "source": 5,
+              "target": 74,
+              "value": 1
+            },
+            {
+              "source": 6,
+              "target": 59,
+              "value": 6
+            },
+            {
+              "source": 6,
+              "target": 75,
+              "value": 1
+            },
+            {
+              "source": 7,
+              "target": 59,
+              "value": 6
+            },
+            {
+              "source": 7,
+              "target": 76,
+              "value": 1
+            },
+            {
+              "source": 8,
+              "target": 59,
+              "value": 6
+            },
+            {
+              "source": 8,
+              "target": 39,
+              "value": 1
+            },
+            {
+              "source": 9,
+              "target": 59,
+              "value": 6
+            },
+            {
+              "source": 9,
+              "target": 77,
+              "value": 1
+            },
+            {
+              "source": 10,
+              "target": 59,
+              "value": 6
+            },
+            {
+              "source": 10,
+              "target": 78,
+              "value": 1
+            },
+            {
+              "source": 11,
+              "target": 56,
+              "value": 6
+            },
+            {
+              "source": 11,
+              "target": 79,
+              "value": 1
+            },
+            {
+              "source": 11,
+              "target": 79,
+              "value": 1
+            },
+            {
+              "source": 12,
+              "target": 65,
+              "value": 6
+            },
+            {
+              "source": 12,
+              "target": 80,
+              "value": 1
+            },
+            {
+              "source": 13,
+              "target": 65,
+              "value": 6
+            },
+            {
+              "source": 13,
+              "target": 81,
+              "value": 1
+            },
+            {
+              "source": 14,
+              "target": 65,
+              "value": 6
+            },
+            {
+              "source": 14,
+              "target": 82,
+              "value": 1
+            },
+            {
+              "source": 15,
+              "target": 65,
+              "value": 6
+            },
+            {
+              "source": 15,
+              "target": 83,
+              "value": 1
+            },
+            {
+              "source": 16,
+              "target": 65,
+              "value": 6
+            },
+            {
+              "source": 16,
+              "target": 59,
+              "value": 1
+            },
+            {
+              "source": 16,
+              "target": 84,
+              "value": 1
+            },
+            {
+              "source": 17,
+              "target": 47,
+              "value": 6
+            },
+            {
+              "source": 18,
+              "target": 52,
+              "value": 6
+            },
+            {
+              "source": 19,
+              "target": 65,
+              "value": 6
+            },
+            {
+              "source": 19,
+              "target": 85,
+              "value": 1
+            },
+            {
+              "source": 20,
+              "target": 38,
+              "value": 6
+            },
+            {
+              "source": 20,
+              "target": 86,
+              "value": 1
+            },
+            {
+              "source": 56,
+              "target": 79,
+              "value": 1
+            },
+            {
+              "source": 56,
+              "target": 79,
+              "value": 1
+            },
+            {
+              "source": 56,
+              "target": 11,
+              "value": 1
+            }
+          ]
+        }
+      },
+      "id": "8902993143252477",
+      "date": 1352513239625
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "force",
+        "id": "41cae7d03b2f6c4a"
+      },
+      "after": "8902993143252477",
+      "id": "41cae7d03b2f6c4a",
+      "date": 1352513312957
+    },
+    {
+      "type": "move",
+      "order": [
+        "8902993143252477",
+        "258c90f833723391",
+        "41cae7d03b2f6c4a"
+      ],
+      "id": "41cae7d03b2f6c4a",
+      "date": 1352513342204
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "86f2f1009a30eacd"
+      },
+      "id": "86f2f1009a30eacd",
+      "type": "add",
+      "after": "41cae7d03b2f6c4a",
+      "date": 1352513480193
+    },
+    {
+      "type": "edit",
+      "id": "86f2f1009a30eacd",
+      "item": {
+        "type": "paragraph",
+        "id": "86f2f1009a30eacd",
+        "text": "The Data item is expected to be formatted as an object with two parts, \"nodes\" and \"links\", both arrays. "
+      },
+      "date": 1352513566403
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "c3d39dc491525e9d",
+        "text": ""
+      },
+      "id": "c3d39dc491525e9d",
+      "type": "add",
+      "after": "86f2f1009a30eacd",
+      "date": 1352513566911
+    },
+    {
+      "type": "edit",
+      "id": "c3d39dc491525e9d",
+      "item": {
+        "type": "paragraph",
+        "id": "c3d39dc491525e9d",
+        "text": "A node is an object that has a \"name\", a string, and a \"group\", an integer."
+      },
+      "date": 1352513619055
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "f2a0f31fc60d6384"
+      },
+      "id": "f2a0f31fc60d6384",
+      "type": "add",
+      "after": "c3d39dc491525e9d",
+      "date": 1352513623472
+    },
+    {
+      "type": "edit",
+      "id": "f2a0f31fc60d6384",
+      "item": {
+        "type": "code",
+        "id": "f2a0f31fc60d6384",
+        "text": "{\n  \"name\": \"Chicago\",\n  \"group\": 2\n}"
+      },
+      "date": 1352513683811
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "31145994b4ae2d93"
+      },
+      "id": "31145994b4ae2d93",
+      "type": "add",
+      "after": "f2a0f31fc60d6384",
+      "date": 1352513740669
+    },
+    {
+      "type": "edit",
+      "id": "31145994b4ae2d93",
+      "item": {
+        "type": "paragraph",
+        "id": "31145994b4ae2d93",
+        "text": "A link is an object that a \"source\", \"target\", and \"value\", all integers."
+      },
+      "date": 1352513798676
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "c8102f28200fa4b9"
+      },
+      "id": "c8102f28200fa4b9",
+      "type": "add",
+      "after": "31145994b4ae2d93",
+      "date": 1352513803091
+    },
+    {
+      "type": "edit",
+      "id": "c8102f28200fa4b9",
+      "item": {
+        "type": "code",
+        "id": "c8102f28200fa4b9",
+        "text": "{\n  \"source\": 10,\n  \"target\": 59,\n  \"value\": 6\n}"
+      },
+      "date": 1352513843377
+    },
+    {
+      "type": "edit",
+      "id": "31145994b4ae2d93",
+      "item": {
+        "type": "paragraph",
+        "id": "31145994b4ae2d93",
+        "text": "A link is an object that a \"source\", \"target\", and \"value\", all integers. Value determines the arc stroke width."
+      },
+      "date": 1352513900960
+    },
+    {
+      "type": "edit",
+      "id": "c3d39dc491525e9d",
+      "item": {
+        "type": "paragraph",
+        "id": "c3d39dc491525e9d",
+        "text": "A node is an object that has a \"name\", a string, and a \"group\", an integer. Group determines the dot color."
+      },
+      "date": 1352513923392
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "4604beff2443e635"
+      },
+      "id": "4604beff2443e635",
+      "type": "add",
+      "after": "c8102f28200fa4b9",
+      "date": 1352514069895
+    },
+    {
+      "type": "edit",
+      "id": "4604beff2443e635",
+      "item": {
+        "type": "paragraph",
+        "id": "4604beff2443e635",
+        "text": "The plugin is adapted from the d3.js example on [http://mbostock.github.com/d3/ex/force.html github]."
+      },
+      "date": 1352514186111
+    },
+    {
+      "type": "edit",
+      "id": "4604beff2443e635",
+      "item": {
+        "type": "paragraph",
+        "id": "4604beff2443e635",
+        "text": "The plugin is adapted from the d3.js <i>Les Misérables</i> example on [http://mbostock.github.com/d3/ex/force.html github]."
+      },
+      "date": 1352514257158
+    },
+    {
+      "type": "edit",
+      "id": "86f2f1009a30eacd",
+      "item": {
+        "type": "paragraph",
+        "id": "86f2f1009a30eacd",
+        "text": "<h3> Data"
+      },
+      "date": 1352514341510
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "3e3baa164f53284a",
+        "text": "The Data item is expected to be formatted as an object with two parts, \"nodes\" and \"links\", both arrays. "
+      },
+      "id": "3e3baa164f53284a",
+      "type": "add",
+      "after": "86f2f1009a30eacd",
+      "date": 1352514342020
+    },
+    {
+      "type": "edit",
+      "id": "86f2f1009a30eacd",
+      "item": {
+        "type": "paragraph",
+        "id": "86f2f1009a30eacd",
+        "text": "Hover over dots to discover node names."
+      },
+      "date": 1352514390515
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "a8da7f79274ad9d1",
+        "text": "<h3> Data"
+      },
+      "id": "a8da7f79274ad9d1",
+      "type": "add",
+      "after": "86f2f1009a30eacd",
+      "date": 1352514391023
+    },
+    {
+      "type": "edit",
+      "id": "a8da7f79274ad9d1",
+      "item": {
+        "type": "paragraph",
+        "id": "a8da7f79274ad9d1",
+        "text": "Drag dots to rearrange the graph."
+      },
+      "date": 1352514402970
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "c807c1f047a67799",
+        "text": "<h3> Data"
+      },
+      "id": "c807c1f047a67799",
+      "type": "add",
+      "after": "a8da7f79274ad9d1",
+      "date": 1352514403476
+    },
+    {
+      "type": "edit",
+      "id": "c807c1f047a67799",
+      "item": {
+        "type": "paragraph",
+        "id": "c807c1f047a67799",
+        "text": "Double-click dotes to open a corresponding page, if any."
+      },
+      "date": 1352514426973
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "107ab31edc0ce7e1",
+        "text": "<h3> Data"
+      },
+      "id": "107ab31edc0ce7e1",
+      "type": "add",
+      "after": "c807c1f047a67799",
+      "date": 1352514427478
+    },
+    {
+      "type": "edit",
+      "id": "4604beff2443e635",
+      "item": {
+        "type": "paragraph",
+        "id": "4604beff2443e635",
+        "text": "See [https://github.com/WardCunningham/Smallest-Federated-Wiki/tree/master/client/plugins/force GitHub] for plugin source."
+      },
+      "date": 1352514651148
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "8631608eac5dd73e",
+        "text": "The plugin is adapted from the d3.js <i>Les Misérables</i> example on [http://mbostock.github.com/d3/ex/force.html github]."
+      },
+      "id": "8631608eac5dd73e",
+      "type": "add",
+      "after": "4604beff2443e635",
+      "date": 1352514651656
+    },
+    {
+      "type": "edit",
+      "id": "8631608eac5dd73e",
+      "item": {
+        "type": "paragraph",
+        "id": "8631608eac5dd73e",
+        "text": "The plugin is adapted from the <i>Les Misérables</i> example on [http://mbostock.github.com/d3/ex/force.html d3.js] documentation."
+      },
+      "date": 1352514717361
+    },
+    {
+      "type": "edit",
+      "id": "8631608eac5dd73e",
+      "item": {
+        "type": "paragraph",
+        "id": "8631608eac5dd73e",
+        "text": "The plugin is adapted from the <i>Les Misérables</i> [http://mbostock.github.com/d3/ex/force.html example] from the d3.js documentation."
+      },
+      "date": 1352514768590
+    },
+    {
+      "type": "move",
+      "order": [
+        "8902993143252477",
+        "258c90f833723391",
+        "4604beff2443e635",
+        "41cae7d03b2f6c4a",
+        "86f2f1009a30eacd",
+        "a8da7f79274ad9d1",
+        "c807c1f047a67799",
+        "107ab31edc0ce7e1",
+        "3e3baa164f53284a",
+        "c3d39dc491525e9d",
+        "f2a0f31fc60d6384",
+        "31145994b4ae2d93",
+        "c8102f28200fa4b9",
+        "8631608eac5dd73e"
+      ],
+      "id": "4604beff2443e635",
+      "date": 1352514845231
+    },
+    {
+      "type": "move",
+      "order": [
+        "8902993143252477",
+        "258c90f833723391",
+        "41cae7d03b2f6c4a",
+        "86f2f1009a30eacd",
+        "a8da7f79274ad9d1",
+        "c807c1f047a67799",
+        "107ab31edc0ce7e1",
+        "3e3baa164f53284a",
+        "c3d39dc491525e9d",
+        "f2a0f31fc60d6384",
+        "31145994b4ae2d93",
+        "c8102f28200fa4b9",
+        "4604beff2443e635",
+        "8631608eac5dd73e"
+      ],
+      "id": "4604beff2443e635",
+      "date": 1352514883094
+    },
+    {
+      "type": "edit",
+      "id": "3e3baa164f53284a",
+      "item": {
+        "type": "paragraph",
+        "id": "3e3baa164f53284a",
+        "text": "The Data item is expected to be formatted as an object with two parts, \"nodes\" and \"links\", both arrays."
+      },
+      "date": 1352514982055
+    },
+    {
+      "type": "edit",
+      "id": "3e3baa164f53284a",
+      "item": {
+        "type": "paragraph",
+        "id": "3e3baa164f53284a",
+        "text": "The data item is expected to be formatted as an object with two parts, \"nodes\" and \"links\", both arrays."
+      },
+      "date": 1352514999495
+    }
+  ]
+}
