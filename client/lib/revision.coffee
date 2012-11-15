@@ -27,12 +27,12 @@ create = (revIndex, data) ->
         else
           revStory.push journalEntry.item
       when 'move'
-        items = []
+        items = {}
         for storyItem in revStory
           items[storyItem.id] = storyItem
         revStory = []
         for itemId in journalEntry.order
-          revStory.push(items[itemId])
+          revStory.push(items[itemId]) if items[itemId]?
       when 'remove'
         if (removeIndex = revStoryIds.indexOf journalEntry.id) != -1
           revStory.splice(removeIndex,1)

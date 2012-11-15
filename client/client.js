@@ -1384,7 +1384,7 @@ require.define("/lib/revision.coffee",function(require,module,exports,__dirname,
           }
           break;
         case 'move':
-          items = [];
+          items = {};
           for (_j = 0, _len1 = revStory.length; _j < _len1; _j++) {
             storyItem = revStory[_j];
             items[storyItem.id] = storyItem;
@@ -1393,7 +1393,9 @@ require.define("/lib/revision.coffee",function(require,module,exports,__dirname,
           _ref = journalEntry.order;
           for (_k = 0, _len2 = _ref.length; _k < _len2; _k++) {
             itemId = _ref[_k];
-            revStory.push(items[itemId]);
+            if (items[itemId] != null) {
+              revStory.push(items[itemId]);
+            }
           }
           break;
         case 'remove':
