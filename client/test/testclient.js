@@ -1681,7 +1681,6 @@ require.define("/lib/plugin.coffee",function(require,module,exports,__dirname,__
     image: {
       emit: function(div, item) {
         item.text || (item.text = item.caption);
-        wiki.log('image', item);
         return div.append("<img class=thumbnail src=\"" + item.url + "\"> <p>" + (wiki.resolveLinks(item.text)) + "</p>");
       },
       bind: function(div, item) {
