@@ -108,7 +108,7 @@ window.plugins.rollup =
     for row in rows
       slug = wiki.asSlug row.Material
       $table.append ($row = $ """<tr class="#{slug}">""")
-      state = {$row: $row, row: row, slug: slug, input: radar(), errors: []}
+      state = {$row, row, slug, input: radar(), errors: []}
       display false, state
       delay += 200
       recalculate delay, state, (state)->
