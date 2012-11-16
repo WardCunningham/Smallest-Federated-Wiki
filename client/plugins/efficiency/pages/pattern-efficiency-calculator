@@ -59,6 +59,42 @@
         "text": "Choose an image of a pattern or pattern waste. Then bring up this calculator. It will find the dominant shades/tones and compute their relative area."
       },
       "date": 1337460462176
+    },
+    {
+      "type": "move",
+      "order": [
+        "d1f54b2c70394234",
+        "0a3827944cc58613"
+      ],
+      "id": "0a3827944cc58613",
+      "date": 1352312391613
+    },
+    {
+      "type": "move",
+      "order": [
+        "0a3827944cc58613",
+        "d1f54b2c70394234"
+      ],
+      "id": "0a3827944cc58613",
+      "date": 1352312396569
+    },
+    {
+      "type": "move",
+      "order": [
+        "d1f54b2c70394234",
+        "0a3827944cc58613"
+      ],
+      "id": "0a3827944cc58613",
+      "date": 1353034982700
+    },
+    {
+      "type": "move",
+      "order": [
+        "0a3827944cc58613",
+        "d1f54b2c70394234"
+      ],
+      "id": "0a3827944cc58613",
+      "date": 1353035504126
     }
   ]
 }

@@ -13,18 +13,23 @@
     },
     {
       "type": "paragraph",
-      "id": "d60a2c0abfe3fc99",
-      "text": "[[Repeat Sensitive Pattern Photo]] framed with some sensitivity to pattern pitch."
-    },
-    {
-      "type": "paragraph",
       "id": "43e63f8e1296b2bf",
       "text": "[[Full Material Pattern Photo]] employing a third color for area to be disregarded."
     },
     {
       "type": "paragraph",
-      "id": "7a19d217dafa7612",
-      "text": "Try the [[Pattern Efficiency Calculator]]."
+      "id": "d60a2c0abfe3fc99",
+      "text": "[[Repeat Sensitive Pattern Photo]] framed with some sensitivity to pattern pitch."
+    },
+    {
+      "type": "paragraph",
+      "id": "11ca7ca927e0661d",
+      "text": "[[High Contrast Test Image]] in boldest black and white."
+    },
+    {
+      "type": "paragraph",
+      "id": "daa2349e3efef4bf",
+      "text": "[[Radial Gradient Test Image]] of diffuse white oval."
     }
   ],
   "journal": [
@@ -147,6 +152,65 @@
         "text": "Try the [[Pattern Efficiency Calculator]]."
       },
       "date": 1337458618562
+    },
+    {
+      "type": "move",
+      "order": [
+        "a2ff3a2e34d365be",
+        "fe233368cd101e79",
+        "43e63f8e1296b2bf",
+        "d60a2c0abfe3fc99",
+        "7a19d217dafa7612"
+      ],
+      "id": "43e63f8e1296b2bf",
+      "date": 1353033263400
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "11ca7ca927e0661d",
+        "text": ""
+      },
+      "id": "11ca7ca927e0661d",
+      "type": "add",
+      "after": "d60a2c0abfe3fc99",
+      "date": 1353035192737
+    },
+    {
+      "type": "edit",
+      "id": "11ca7ca927e0661d",
+      "item": {
+        "type": "paragraph",
+        "id": "11ca7ca927e0661d",
+        "text": "[[High Contrast Test Image]] in boldest black and white."
+      },
+      "date": 1353035312589
+    },
+    {
+      "type": "remove",
+      "id": "7a19d217dafa7612",
+      "date": 1353035496042
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "daa2349e3efef4bf",
+        "text": ""
+      },
+      "id": "daa2349e3efef4bf",
+      "type": "add",
+      "after": "11ca7ca927e0661d",
+      "date": 1353039957687
+    },
+    {
+      "type": "edit",
+      "id": "daa2349e3efef4bf",
+      "item": {
+        "type": "paragraph",
+        "id": "daa2349e3efef4bf",
+        "text": "[[Radial Gradient Test Image]] of diffuse white oval."
+      },
+      "date": 1353040037672
     }
   ]
 }

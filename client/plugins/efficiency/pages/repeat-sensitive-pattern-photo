@@ -12,6 +12,11 @@
       "type": "paragraph",
       "id": "cbd2673b3a6d8a5a",
       "text": "This sample image has been cropped to align with the pattern repeat and then scaled to be 400 pixels across."
+    },
+    {
+      "type": "paragraph",
+      "id": "7735addd900f8737",
+      "text": "Try the [[Pattern Efficiency Calculator]]."
     }
   ],
   "journal": [
@@ -78,6 +83,27 @@
         "text": "This sample image has been cropped to align with the pattern repeat and then scaled to be 400 pixels across."
       },
       "date": 1337458484149
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "7735addd900f8737",
+        "text": ""
+      },
+      "id": "7735addd900f8737",
+      "type": "add",
+      "after": "cbd2673b3a6d8a5a",
+      "date": 1353022669655
+    },
+    {
+      "type": "edit",
+      "id": "7735addd900f8737",
+      "item": {
+        "type": "paragraph",
+        "id": "7735addd900f8737",
+        "text": "Try the [[Pattern Efficiency Calculator]]."
+      },
+      "date": 1353022672046
     }
   ]
 }

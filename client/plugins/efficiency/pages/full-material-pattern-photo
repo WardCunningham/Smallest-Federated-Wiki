@@ -12,6 +12,11 @@
       "type": "paragraph",
       "id": "041015a50652dd79",
       "text": "This sample image has been edited to neutralize the area outside the pattern material and then scaled to be 400 pixels across."
+    },
+    {
+      "type": "paragraph",
+      "id": "663f3887c5b95caf",
+      "text": "Try the [[Pattern Efficiency Calculator]]."
     }
   ],
   "journal": [
@@ -63,6 +68,26 @@
         "text": "This sample image has been edited to neutralize the area outside the pattern material and then scaled to be 400 pixels across."
       },
       "date": 1337458581137
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "663f3887c5b95caf"
+      },
+      "id": "663f3887c5b95caf",
+      "type": "add",
+      "after": "041015a50652dd79",
+      "date": 1353022679644
+    },
+    {
+      "type": "edit",
+      "id": "663f3887c5b95caf",
+      "item": {
+        "type": "paragraph",
+        "id": "663f3887c5b95caf",
+        "text": "Try the [[Pattern Efficiency Calculator]]."
+      },
+      "date": 1353022683286
     }
   ]
 }
