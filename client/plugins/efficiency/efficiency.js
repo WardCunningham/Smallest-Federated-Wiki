@@ -28,12 +28,14 @@
         return div.find('p:first').text("" + (value.toFixed(1)) + "%");
       };
       getImageData = function(div) {
-        var c, d, imageData, src;
+        var c, d, h, imageData, src, w;
         src = $(div).find('img').get(0);
-        c = $('<canvas id="myCanvas" width="200" height="100" style="border:1px solid #c3c3c3;">');
+        w = src.width;
+        h = src.height;
+        c = $('<canvas id="myCanvas" width="#{w}" height="#{h}">');
         d = c.get(0).getContext("2d");
         d.drawImage(src, 0, 0);
-        imageData = d.getImageData(0, 0, 200, 100);
+        imageData = d.getImageData(0, 0, w, h);
         return imageData.data;
       };
       calculatePercentage = function(data) {
