@@ -2,17 +2,13 @@
 (function() {
 
   window.plugins.efficiency = {
-    efficiencyDIV: null,
     emit: function(div, item) {
-      wiki.log('efficiency', div, item);
       div.addClass('data');
       $('<p />').addClass('readout').appendTo(div).text("0%");
-      this.efficiencyDIV = div;
       return $('<p />').html(wiki.resolveLinks(item.text || 'efficiency')).appendTo(div);
     },
     bind: function(div, item) {
-      var calculate, calculatePercentage, calculateStrategy_GrayBinary, calculateStrategy_GrayIterativeClustering, getImageData, lastThumb, locate, setEfficiencyReadoutValue,
-        _this = this;
+      var calculate, calculatePercentage, calculateStrategy_GrayBinary, calculateStrategy_GrayIterativeClustering, display, getImageData, lastThumb, locate;
       lastThumb = null;
       div.find('p:first').dblclick(function(e) {
         return wiki.dialog("JSON for " + item.text, $('<pre/>').text("something good"));
@@ -21,37 +17,27 @@
         return wiki.textEditor(div, item);
       });
       locate = function() {
-        var idx, who;
+        var idx;
         idx = $('.item').index(div);
-        who = $(".item:lt(" + idx + ")").filter('.image').toArray().reverse();
-        return who.last();
+        return $(".item:lt(" + idx + ")").filter('.image:last');
       };
       calculate = function(div) {
-        var data, value;
-        data = getImageData(div);
-        value = calculatePercentage(data);
-        return setEfficiencyReadoutValue(value);
+        return calculatePercentage(getImageData(div));
+      };
+      display = function(value) {
+        return div.find('p:first').text("" + (value.toFixed(1)) + "%");
       };
       getImageData = function(div) {
-        var c, d, imageData, img, src;
+        var c, d, imageData, src;
         src = $(div).find('img').get(0);
         c = $('<canvas id="myCanvas" width="200" height="100" style="border:1px solid #c3c3c3;">');
         d = c.get(0).getContext("2d");
-        img = new Image();
-        img.src = src;
         d.drawImage(src, 0, 0);
         imageData = d.getImageData(0, 0, 200, 100);
         return imageData.data;
       };
       calculatePercentage = function(data) {
         return calculateStrategy_GrayBinary(data);
-      };
-      setEfficiencyReadoutValue = function(value) {
-        var note;
-        note = '%</p><p>Pattern Efficiency from Photographic Statistics</p>';
-        if (_this.efficiencyDIV) {
-          return $(_this.efficiencyDIV)[0].innerHTML = '<p class="readout">' + value + note;
-        }
       };
       calculateStrategy_GrayBinary = function(data) {
         var B, G, R, i, l, luma, lumaHighCount, lumaLowCount, lumaMax, lumaMid, lumaMin, lumas, numPix, percentage, _i, _j, _len;
@@ -173,7 +159,7 @@
         }
         return percentage;
       };
-      return calculate(locate());
+      return display(calculate(locate()));
     }
   };
 

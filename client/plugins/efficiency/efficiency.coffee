@@ -1,11 +1,8 @@
 window.plugins.efficiency =
-  efficiencyDIV: null
 
   emit: (div, item) ->
-    wiki.log 'efficiency', div, item
     div.addClass 'data'
     $('<p />').addClass('readout').appendTo(div).text("0%")
-    this.efficiencyDIV = div
     $('<p />').html(wiki.resolveLinks(item.text||'efficiency')).appendTo(div)
 
   bind: (div, item) ->
@@ -25,20 +22,18 @@ window.plugins.efficiency =
 
     locate = ->
       idx = $('.item').index(div)
-      who = $(".item:lt(#{idx})").filter('.image').toArray().reverse()
-      who.last()
+      $(".item:lt(#{idx})").filter('.image:last')
 
     calculate = (div) ->
-      data = getImageData(div);
-      value = calculatePercentage(data);
-      setEfficiencyReadoutValue value
+      calculatePercentage getImageData(div)
+
+    display = (value) ->
+      div.find('p:first').text "#{value.toFixed 1}%"
 
     getImageData = (div) ->
       src = $(div).find('img').get(0)
       c = $ '<canvas id="myCanvas" width="200" height="100" style="border:1px solid #c3c3c3;">'
       d = c.get(0).getContext("2d");
-      img=new Image()
-      img.src=src
       d.drawImage(src,0,0);
       #TODO change getImageData call to use dimensions like c.width, c.height), 
       #they are currently both zero for some reason, and that triggers an exception.
@@ -57,11 +52,6 @@ window.plugins.efficiency =
       # Different calc strategies follow:
       return calculateStrategy_GrayBinary(data)
       #return calculateStrategy_GrayIterativeClustering(data)
-
-    setEfficiencyReadoutValue = (value) =>
-      note = '%</p><p>Pattern Efficiency from Photographic Statistics</p>'
-      if this.efficiencyDIV
-        $(this.efficiencyDIV)[0].innerHTML = '<p class="readout">' + value + note
 
     calculateStrategy_GrayBinary = (data) ->
 	  # a very simple first attempt, using two bins of gray scale values.
@@ -190,5 +180,4 @@ window.plugins.efficiency =
       if (percentage > 100.0) then percentage = 100
       return percentage
       # End of above calc stratgey function  TODO make it smaller and remove this comment
-
-    calculate locate()
+    display calculate locate()
