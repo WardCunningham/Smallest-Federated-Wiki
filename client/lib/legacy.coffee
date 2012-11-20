@@ -78,6 +78,31 @@ $ ->
   useLocalStorage = wiki.useLocalStorage = ->
     $(".login").length > 0
 
+  sleep = (time, done) -> setTimeout done, time
+
+  wiki.removeItem = ($item, item) ->
+    pageHandler.put $item.parents('.page:first'), {type: 'remove', id: item.id}
+    $item.remove()
+
+  wiki.createItem = ($page, $before, item) ->
+    $page = $before.parents('.page') unless $page?
+    item.id = util.randomBytes(8)
+    $item = $ """
+      <div class="item #{item.type}" data-id="#{}"</div>
+    """
+    $item
+      .data('item', item)
+      .data('pageElement', $page)
+    if $before?
+      $before.after $item
+    else
+      $page.find('.story').append $item
+    plugin.do $item, item
+    before = wiki.getItem $before
+    sleep 500, ->
+      pageHandler.put $page, {item, id: item.id, type: 'add', after: before?.id}
+    $item
+
   createTextElement = (pageElement, beforeElement, initialText) ->
     item =
       type: 'paragraph'
@@ -93,7 +118,6 @@ $ ->
     plugin.do itemElement, item
     itemBefore = wiki.getItem beforeElement
     wiki.textEditor itemElement, item
-    sleep = (time, code) -> setTimeout code, time
     sleep 500, -> pageHandler.put pageElement, {item: item, id: item.id, type: 'add', after: itemBefore?.id}
 
   textEditor = wiki.textEditor = (div, item, caretPos, doubleClicked) ->

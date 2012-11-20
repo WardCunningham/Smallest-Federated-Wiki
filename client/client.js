@@ -418,7 +418,7 @@ require.define("/lib/legacy.coffee",function(require,module,exports,__dirname,__
   };
 
   $(function() {
-    var LEFTARROW, RIGHTARROW, addToJournal, createTextElement, doInternalLink, finishClick, getItem, getTemplate, resolveFrom, textEditor, useLocalStorage;
+    var LEFTARROW, RIGHTARROW, addToJournal, createTextElement, doInternalLink, finishClick, getItem, getTemplate, resolveFrom, sleep, textEditor, useLocalStorage;
     window.dialog = $('<div></div>').html('This dialog will show every time!').dialog({
       autoOpen: false,
       title: 'Basic Dialog',
@@ -470,8 +470,43 @@ require.define("/lib/legacy.coffee",function(require,module,exports,__dirname,__
     useLocalStorage = wiki.useLocalStorage = function() {
       return $(".login").length > 0;
     };
+    sleep = function(time, done) {
+      return setTimeout(done, time);
+    };
+    wiki.removeItem = function($item, item) {
+      pageHandler.put($item.parents('.page:first'), {
+        type: 'remove',
+        id: item.id
+      });
+      return $item.remove();
+    };
+    wiki.createItem = function($page, $before, item) {
+      var $item, before;
+      if ($page == null) {
+        $page = $before.parents('.page');
+      }
+      item.id = util.randomBytes(8);
+      $item = $("<div class=\"item " + item.type + "\" data-id=\"" + "\"</div>");
+      $item.data('item', item).data('pageElement', $page);
+      if ($before != null) {
+        $before.after($item);
+      } else {
+        $page.find('.story').append($item);
+      }
+      plugin["do"]($item, item);
+      before = wiki.getItem($before);
+      sleep(500, function() {
+        return pageHandler.put($page, {
+          item: item,
+          id: item.id,
+          type: 'add',
+          after: before != null ? before.id : void 0
+        });
+      });
+      return $item;
+    };
     createTextElement = function(pageElement, beforeElement, initialText) {
-      var item, itemBefore, itemElement, sleep;
+      var item, itemBefore, itemElement;
       item = {
         type: 'paragraph',
         id: util.randomBytes(8),
@@ -483,9 +518,6 @@ require.define("/lib/legacy.coffee",function(require,module,exports,__dirname,__
       plugin["do"](itemElement, item);
       itemBefore = wiki.getItem(beforeElement);
       wiki.textEditor(itemElement, item);
-      sleep = function(time, code) {
-        return setTimeout(code, time);
-      };
       return sleep(500, function() {
         return pageHandler.put(pageElement, {
           item: item,
