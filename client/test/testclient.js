@@ -998,7 +998,11 @@ require.define("/lib/pageHandler.coffee",function(require,module,exports,__dirna
         'action': JSON.stringify(action)
       },
       success: function() {
-        return wiki.addToJournal(pageElement.find('.journal'), action);
+        wiki.addToJournal(pageElement.find('.journal'), action);
+        if (action.type === 'fork') {
+          localStorage.removeItem(pageElement.attr('id'));
+          return state.setUrl;
+        }
       },
       error: function(xhr, type, msg) {
         return wiki.log("ajax error callback", type, msg);

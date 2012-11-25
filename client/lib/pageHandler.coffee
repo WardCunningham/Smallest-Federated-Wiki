@@ -101,6 +101,9 @@ pushToServer = (pageElement, pagePutInfo, action) ->
       'action': JSON.stringify(action)
     success: () ->
       wiki.addToJournal pageElement.find('.journal'), action
+      if action.type == 'fork' # push
+        localStorage.removeItem pageElement.attr('id')
+        state.setUrl
     error: (xhr, type, msg) ->
       wiki.log "ajax error callback", type, msg
 

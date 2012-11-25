@@ -277,7 +277,12 @@ class Controller < Sinatra::Base
       return halt 409 if farm_page.exists?(name)
       page = action['item'].clone
     elsif action['type'] == 'fork'
-      page = JSON.parse RestClient.get("#{action['site']}/#{name}.json")
+      if action['item']
+        page = action['item'].clone
+        action.delete 'item'
+      else
+        page = JSON.parse RestClient.get("#{action['site']}/#{name}.json")
+      end
     else
       page = farm_page.get(name)
     end

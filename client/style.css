@@ -218,7 +218,7 @@ p.readout {
     z-index: 10; }
 
 .page.local {
-  border: 3px solid #EE8;
+  box-shadow: inset 0px 0px 40px 0px rgba(220,180,0,.7);
 }
 
 .factory,
