@@ -31,15 +31,16 @@ window.plugins.efficiency =
       div.find('p:first').text "#{value.toFixed 1}%"
 
     getImageData = (div) ->
-      src = $(div).find('img').get(0)
-      w = src.width
-      h = src.height
+      img = new Image;
+      img.src = $(div).data('item').url
+      w = img.width
+      h = img.height
       c = $ '<canvas id="myCanvas" width="#{w}" height="#{h}">'
       d = c.get(0).getContext("2d");
-      d.drawImage(src,0,0);
+      d.drawImage(img,0,0);
       #TODO change getImageData call to use dimensions like c.width, c.height), 
       #they are currently both zero for some reason, and that triggers an exception.
-      #wiki.log 'c.width c.height ', c.width(), c.height()
+      wiki.log 'efficiency img w, h', w, h, 'c w, h ', c.width(), c.height()
       imageData = d.getImageData(0, 0, w, h);
       imageData.data
 
