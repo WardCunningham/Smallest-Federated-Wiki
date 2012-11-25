@@ -13,7 +13,8 @@ window.plugins.chart =
     captionElement = $('<p />').html(wiki.resolveLinks(item.caption)).appendTo(div)
   bind: (div, item) ->
     div.find('p:first').mousemove (e) ->
-      [time, sample] = item.data[Math.floor(item.data.length * e.offsetX / e.target.offsetWidth)]
+      return unless (data = item.data[Math.floor(item.data.length * e.offsetX / e.target.offsetWidth)])?
+      [time, sample] = data
       $(e.target).text sample.toFixed(1)
       $(e.target).siblings("p").last().html formatTime(time)
     .dblclick ->
