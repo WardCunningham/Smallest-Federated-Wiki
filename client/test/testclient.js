@@ -2512,22 +2512,22 @@ require.define("/plugins/efficiency/efficiency.js",function(require,module,expor
         return div.find('p:first').text("" + (value.toFixed(1)) + "%");
       };
       getImageData = function(div) {
-        var c, d, h, imageData, img, w;
+        var can, ctx, h, imageData, img, w;
         img = new Image;
         img.src = $(div).data('item').url;
         w = img.width;
         h = img.height;
-        c = $('<canvas id="myCanvas" width="#{w}" height="#{h}">');
-        d = c.get(0).getContext("2d");
-        d.drawImage(img, 0, 0);
-        wiki.log('efficiency img w, h', w, h, 'c w, h ', c.width(), c.height());
-        imageData = d.getImageData(0, 0, w, h);
+        can = $('<canvas id="myCanvas" width="#{w}" height="#{h}">');
+        ctx = can.get(0).getContext("2d");
+        ctx.drawImage(img, 0, 0);
+        wiki.log('efficiency img w, h', w, h, 'c w, h ', can.width(), can.height());
+        imageData = ctx.getImageData(0, 0, w, h);
         return imageData.data;
       };
       calculatePercentage = function(data) {
         var lumas;
         lumas = window.plugins.efficiency.getGrayLumaFromRGBT(data);
-        return window.plugins.efficiency.calculateStrategy_GrayIterativeClustering(lumas);
+        return window.plugins.efficiency.calculateStrategy_GrayBinary(lumas);
       };
       return display(calculate(locate()));
     },
