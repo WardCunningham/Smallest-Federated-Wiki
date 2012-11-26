@@ -162,6 +162,9 @@
         return percentage;
       };
       return display(calculate(locate()));
+    },
+    doAdd: function(a, b) {
+      return a + b;
     }
   };
 

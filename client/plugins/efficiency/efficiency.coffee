@@ -43,6 +43,7 @@ window.plugins.efficiency =
       imageData = d.getImageData(0, 0, w, h);
       imageData.data
 
+
     calculatePercentage = (data) ->
       # Call real calcs here. 
       # By calling a strategy function here, we can try multiple strategy functions,
@@ -183,3 +184,7 @@ window.plugins.efficiency =
       return percentage
       # End of above calc stratgey function  TODO make it smaller and remove this comment
     display calculate locate()
+
+
+  doAdd: (a, b) ->
+    return (a + b)
