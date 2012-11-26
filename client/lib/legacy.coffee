@@ -68,7 +68,7 @@ $ ->
       actionElement.insertBefore(controls)
     else
       actionElement.appendTo(journalElement)
-    if action.type == 'fork'
+    if action.type == 'fork' and action.site?
       actionElement
         .css("background-image", "url(//#{action.site}/favicon.png)")
         .attr("href", "//#{action.site}/#{pageElement.attr('id')}.html")
@@ -270,8 +270,7 @@ $ ->
     .delegate '.action', 'click', (e) ->
       e.preventDefault()
       $action = $(e.target)
-      if $action.is('.fork')
-        name = $(e.target).data('slug')
+      if $action.is('.fork') and (name = $action.data('slug'))?
         pageHandler.context = [$action.data('site')]
         finishClick e, name
       else
@@ -286,8 +285,14 @@ $ ->
 
     .delegate '.fork-page', 'click', (e) ->
       pageElement = $(e.target).parents('.page')
-      return unless (remoteSite = pageElement.data('site'))?
-      pageHandler.put pageElement, {type:'fork', site: remoteSite}
+      if pageElement.hasClass('local')
+        unless useLocalStorage()
+          item = pageElement.data('data')
+          pageElement.removeClass('local')
+          pageHandler.put pageElement, {type: 'fork', item} # push
+      else
+        if (remoteSite = pageElement.data('site'))?
+          pageHandler.put pageElement, {type:'fork', site: remoteSite} # pull
 
     .delegate '.action', 'hover', ->
       id = $(this).attr('data-id')

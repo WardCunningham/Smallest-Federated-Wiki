@@ -512,6 +512,13 @@ module.exports = exports = (argv) ->
         else
           actionCB(null, itemCopy)
       )
+    else if action.type == 'fork'
+      if action.item # push
+        itemCopy = JSON.parse(JSON.stringify(action.item))
+        delete action.item
+        actionCB(null, itemCopy)
+      else # pull
+        remoteGet(action.site, req.params[0], actionCB)
     else
       pagehandler.get(req.params[0], actionCB)
   )

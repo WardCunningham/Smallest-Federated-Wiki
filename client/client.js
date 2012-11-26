@@ -463,7 +463,7 @@ require.define("/lib/legacy.coffee",function(require,module,exports,__dirname,__
       } else {
         actionElement.appendTo(journalElement);
       }
-      if (action.type === 'fork') {
+      if (action.type === 'fork' && (action.site != null)) {
         return actionElement.css("background-image", "url(//" + action.site + "/favicon.png)").attr("href", "//" + action.site + "/" + (pageElement.attr('id')) + ".html").data("site", action.site).data("slug", pageElement.attr('id'));
       }
     };
@@ -738,8 +738,7 @@ require.define("/lib/legacy.coffee",function(require,module,exports,__dirname,__
       var $action, $page, name, rev, slug;
       e.preventDefault();
       $action = $(e.target);
-      if ($action.is('.fork')) {
-        name = $(e.target).data('slug');
+      if ($action.is('.fork') && ((name = $action.data('slug')) != null)) {
         pageHandler.context = [$action.data('site')];
         return finishClick(e, name);
       } else {
@@ -753,15 +752,25 @@ require.define("/lib/legacy.coffee",function(require,module,exports,__dirname,__
         return active.set($('.page').last());
       }
     }).delegate('.fork-page', 'click', function(e) {
-      var pageElement, remoteSite;
+      var item, pageElement, remoteSite;
       pageElement = $(e.target).parents('.page');
-      if ((remoteSite = pageElement.data('site')) == null) {
-        return;
+      if (pageElement.hasClass('local')) {
+        if (!useLocalStorage()) {
+          item = pageElement.data('data');
+          pageElement.removeClass('local');
+          return pageHandler.put(pageElement, {
+            type: 'fork',
+            item: item
+          });
+        }
+      } else {
+        if ((remoteSite = pageElement.data('site')) != null) {
+          return pageHandler.put(pageElement, {
+            type: 'fork',
+            site: remoteSite
+          });
+        }
       }
-      return pageHandler.put(pageElement, {
-        type: 'fork',
-        site: remoteSite
-      });
     }).delegate('.action', 'hover', function() {
       var id;
       id = $(this).attr('data-id');
@@ -1138,7 +1147,11 @@ require.define("/lib/pageHandler.coffee",function(require,module,exports,__dirna
         'action': JSON.stringify(action)
       },
       success: function() {
-        return wiki.addToJournal(pageElement.find('.journal'), action);
+        wiki.addToJournal(pageElement.find('.journal'), action);
+        if (action.type === 'fork') {
+          localStorage.removeItem(pageElement.attr('id'));
+          return state.setUrl;
+        }
       },
       error: function(xhr, type, msg) {
         return wiki.log("ajax error callback", type, msg);
