@@ -1,5 +1,23 @@
 window.plugins.efficiency =
 
+  # TODO remove this temp experiment
+  doAdd: (a, b) ->
+    return (a + b)
+
+  getGrayLumaFromRGBT: (rgbt) ->
+    numPix = rgbt.length / 4    # bytes divided by four bytes per pixel. RGB + transparency
+    wiki.log 'getGrayLumaFromRGBT numPix: ', numPix
+    lumas = []
+    for i in [0..(numPix-1)]
+      R = rgbt[ i * 4 + 0 ]
+      G = rgbt[ i * 4 + 1 ]
+      B = rgbt[ i * 4 + 2 ]
+      # Get gray scale vaue, by weighting RGB values (various literature references on this)
+      #lumas[i] = 0.299 * R + 0.587 * G + 0.114 * B  
+      lumas[i] = (0.30 * R) + (0.60 * G) + (0.10 * B)   # close to above, but convenient for test expectations.
+  
+    return lumas
+
   emit: (div, item) ->
     div.addClass 'data'
     $('<p />').addClass('readout').appendTo(div).text("0%")
@@ -34,15 +52,24 @@ window.plugins.efficiency =
       src = $(div).find('img').get(0)
       w = src.width
       h = src.height
+      wiki.log 'getImageData.  src.width, src.height: ', src.width, src.height
       c = $ '<canvas id="myCanvas" width="#{w}" height="#{h}">'
       d = c.get(0).getContext("2d");
-      d.drawImage(src,0,0);
+      #img = new Image();
+      #img.src = src
+      img = new Image;
+      img.src = div.data('item').url
+      #img.src = $('.image:last').data('item').url
+      w = img.width
+      h = img.height
+      wiki.log 'getImageData.  img.width, img.height: ', img.width, img.height
+      d.drawImage(img,0,0);
       #TODO change getImageData call to use dimensions like c.width, c.height), 
       #they are currently both zero for some reason, and that triggers an exception.
       #wiki.log 'c.width c.height ', c.width(), c.height()
       imageData = d.getImageData(0, 0, w, h);
+      #imageData = d.getImageData(0, 0, 100, 100);   
       imageData.data
-
 
     calculatePercentage = (data) ->
       # Call real calcs here. 
@@ -58,6 +85,8 @@ window.plugins.efficiency =
 
     calculateStrategy_GrayBinary = (data) ->
 	  # a very simple first attempt, using two bins of gray scale values.
+      ###
+
       numPix = data.length / 4    # bytes divided by four bytes per pixel. RGB + transparency
 	
       lumaMin = 255
@@ -72,18 +101,33 @@ window.plugins.efficiency =
         luma = lumas[i] = 0.299 * R + 0.587 * G + 0.114 * B
         if luma > lumaMax  then lumaMax = luma
         if luma < lumaMin  then lumaMin = luma
+      ###
+
+      lumas = window.plugins.efficiency.getGrayLumaFromRGBT(data)
+      lumaMin = Math.min lumas...
+      lumaMax = Math.max lumas...
+      numLumas = lumas.length
       
       # count the values high and low
-      lumaMid = (lumaMax - lumaMin ) /2
+      lumaMid = (lumaMax - lumaMin ) /2.0
+      wiki.log 'lumaMid: ', lumaMid
       lumaLowCount = 0
       lumaHighCount = 0
+      #lumaMaxCount = 0
       for l in lumas
         if (l <= lumaMid)
           lumaLowCount++
         else
           lumaHighCount++
+
+      #  if (l == lumaMin)
+      #    lumaMaxCount++
 		
-      percentage = lumaHighCount/numPix * 100
+      wiki.log 'calculateStrategy_GrayBinary: numLumas, lowCount, high count: ', numLumas, lumaLowCount, lumaHighCount
+      #numLumas -= lumaMaxCount 
+      #wiki.log 'calculateStrategy_GrayBinary: numLumas, lowCount, high count, max count: ', numLumas, lumaLowCount, lumaHighCount, lumaMaxCount
+
+      percentage = lumaHighCount/numLumas * 100
       return percentage
 
     calculateStrategy_GrayIterativeClustering = (data) ->
@@ -186,5 +230,3 @@ window.plugins.efficiency =
     display calculate locate()
 
 
-  doAdd: (a, b) ->
-    return (a + b)

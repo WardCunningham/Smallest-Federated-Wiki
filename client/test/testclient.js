@@ -416,12 +416,10 @@ require.define("/lib/util.coffee",function(require,module,exports,__dirname,__fi
   };
 
   util.randomByte = function() {
-    wiki.log('randomByte');
     return (((1 + Math.random()) * 0x100) | 0).toString(16).substring(1);
   };
 
   util.randomBytes = function(n) {
-    wiki.log('randomBytes.  n: ', n);
     return ((function() {
       var _i, _results;
       _results = [];
@@ -2484,6 +2482,22 @@ require.define("/plugins/efficiency/efficiency.js",function(require,module,expor
 (function() {
 
   window.plugins.efficiency = {
+    doAdd: function(a, b) {
+      return a + b;
+    },
+    getGrayLumaFromRGBT: function(rgbt) {
+      var B, G, R, i, lumas, numPix, _i, _ref;
+      numPix = rgbt.length / 4;
+      wiki.log('getGrayLumaFromRGBT numPix: ', numPix);
+      lumas = [];
+      for (i = _i = 0, _ref = numPix - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+        R = rgbt[i * 4 + 0];
+        G = rgbt[i * 4 + 1];
+        B = rgbt[i * 4 + 2];
+        lumas[i] = (0.30 * R) + (0.60 * G) + (0.10 * B);
+      }
+      return lumas;
+    },
     emit: function(div, item) {
       div.addClass('data');
       $('<p />').addClass('readout').appendTo(div).text("0%");
@@ -2510,13 +2524,19 @@ require.define("/plugins/efficiency/efficiency.js",function(require,module,expor
         return div.find('p:first').text("" + (value.toFixed(1)) + "%");
       };
       getImageData = function(div) {
-        var c, d, h, imageData, src, w;
+        var c, d, h, imageData, img, src, w;
         src = $(div).find('img').get(0);
         w = src.width;
         h = src.height;
+        wiki.log('getImageData.  src.width, src.height: ', src.width, src.height);
         c = $('<canvas id="myCanvas" width="#{w}" height="#{h}">');
         d = c.get(0).getContext("2d");
-        d.drawImage(src, 0, 0);
+        img = new Image;
+        img.src = div.data('item').url;
+        w = img.width;
+        h = img.height;
+        wiki.log('getImageData.  img.width, img.height: ', img.width, img.height);
+        d.drawImage(src, 0, 0, w, h);
         imageData = d.getImageData(0, 0, w, h);
         return imageData.data;
       };
@@ -2524,35 +2544,43 @@ require.define("/plugins/efficiency/efficiency.js",function(require,module,expor
         return calculateStrategy_GrayBinary(data);
       };
       calculateStrategy_GrayBinary = function(data) {
-        var B, G, R, i, l, luma, lumaHighCount, lumaLowCount, lumaMax, lumaMid, lumaMin, lumas, numPix, percentage, _i, _j, _len;
-        numPix = data.length / 4;
-        lumaMin = 255;
-        lumaMax = 0;
-        lumas = [];
-        for (i = _i = 0; 0 <= numPix ? _i <= numPix : _i >= numPix; i = 0 <= numPix ? ++_i : --_i) {
-          R = data[i * 4 + 0];
-          G = data[i * 4 + 1];
-          B = data[i * 4 + 2];
-          luma = lumas[i] = 0.299 * R + 0.587 * G + 0.114 * B;
-          if (luma > lumaMax) {
-            lumaMax = luma;
-          }
-          if (luma < lumaMin) {
-            lumaMin = luma;
-          }
-        }
-        lumaMid = (lumaMax - lumaMin) / 2;
+        /*
+        
+              numPix = data.length / 4    # bytes divided by four bytes per pixel. RGB + transparency
+        	
+              lumaMin = 255
+              lumaMax = 0
+              lumas = []
+        
+              for i in [0..numPix]
+                R = data[ i * 4 + 0 ]
+                G = data[ i * 4 + 1 ]
+                B = data[ i * 4 + 2 ]
+                # Get gray scale vaue, by weighting RGB values (various literature references on this)
+                luma = lumas[i] = 0.299 * R + 0.587 * G + 0.114 * B
+                if luma > lumaMax  then lumaMax = luma
+                if luma < lumaMin  then lumaMin = luma
+        */
+
+        var l, lumaHighCount, lumaLowCount, lumaMax, lumaMid, lumaMin, lumas, numLumas, percentage, _i, _len;
+        lumas = window.plugins.efficiency.getGrayLumaFromRGBT(data);
+        lumaMin = Math.min.apply(Math, lumas);
+        lumaMax = Math.max.apply(Math, lumas);
+        numLumas = lumas.length;
+        lumaMid = (lumaMax - lumaMin) / 2.0;
+        wiki.log('lumaMid: ', lumaMid);
         lumaLowCount = 0;
         lumaHighCount = 0;
-        for (_j = 0, _len = lumas.length; _j < _len; _j++) {
-          l = lumas[_j];
+        for (_i = 0, _len = lumas.length; _i < _len; _i++) {
+          l = lumas[_i];
           if (l <= lumaMid) {
             lumaLowCount++;
           } else {
             lumaHighCount++;
           }
         }
-        percentage = lumaHighCount / numPix * 100;
+        wiki.log('calculateStrategy_GrayBinary: numLumas, lowCount, high count: ', numLumas, lumaLowCount, lumaHighCount);
+        percentage = lumaHighCount / numLumas * 100;
         return percentage;
       };
       calculateStrategy_GrayIterativeClustering = function(data) {
@@ -2644,9 +2672,6 @@ require.define("/plugins/efficiency/efficiency.js",function(require,module,expor
         return percentage;
       };
       return display(calculate(locate()));
-    },
-    doAdd: function(a, b) {
-      return a + b;
     }
   };
 
@@ -2825,80 +2850,64 @@ require.define("/plugins/changes/test.coffee",function(require,module,exports,__
 require("/plugins/changes/test.coffee");
 
 require.define("/plugins/efficiency/test.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
-  var createFakeLocalStorage, pluginCtor, thePlugin;
+  var expectArraysEqual;
 
-  pluginCtor = require('./efficiency');
+  require('./efficiency');
 
-  thePlugin = null;
-
-  createFakeLocalStorage = function(initialContents) {
-    var fake, getStoreSize, keys, store;
-    if (initialContents == null) {
-      initialContents = {};
+  expectArraysEqual = function(a1, a2, accuracy) {
+    var diff, i, isItGood, length, _i, _ref, _results;
+    if (accuracy == null) {
+      accuracy = 0.1;
     }
-    store = initialContents;
-    keys = function() {
-      var k, _, _results;
-      _results = [];
-      for (k in store) {
-        _ = store[k];
-        _results.push(k);
-      }
-      return _results;
-    };
-    getStoreSize = function() {
-      return keys().length;
-    };
-    fake = {
-      setItem: function(k, v) {
-        return store[k] = v;
-      },
-      getItem: function(k) {
-        return store[k];
-      },
-      key: function(i) {
-        return keys()[i];
-      },
-      removeItem: function(k) {
-        return delete store[k];
-      }
-    };
-    Object.defineProperty(fake, 'length', {
-      get: getStoreSize
-    });
-    return fake;
+    wiki.log('expectArraysEqual a1', a1);
+    wiki.log('expectArraysEqual a2', a2);
+    expect(a1.length).to.equal(a2.length);
+    length = a1.length;
+    _results = [];
+    for (i = _i = 0, _ref = length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+      diff = Math.abs(a1[i] - a2[i]);
+      isItGood = diff <= accuracy;
+      wiki.log('expectArraysEqual diff: ', diff);
+      _results.push(expect(isItGood).to.be.ok());
+    }
+    return _results;
   };
 
   describe('efficiency plugin', function() {
-    var $div, expectNumberOfPagesToBe, fakeLocalStore;
-    fakeLocalStore = void 0;
-    $div = void 0;
-    beforeEach(function() {
-      $div = $('<div/>');
-      return fakeLocalStore = createFakeLocalStorage();
-    });
-    /*
-      #makePlugin = -> pluginCtor($,{localStorage: fakeLocalStore})
-      makePlugin = new window.plugins.efficiency
-      installPlugin = -> 
-        plugin = makePlugin()
-        wiki.log 'plugin ', plugin
-        plugin.emit( $div, {} )
-        plugin.bind( $div, {} )
-        thePlugin = plugin
-    */
-
-    expectNumberOfPagesToBe = function(expectedLength) {
-      return expect($div.find('li a').length).to.be(expectedLength);
-    };
+    var actual, actualArray, expected, expectedLuma, rgbt;
     it("calcs 10%", function() {
       wiki.log('10%');
       wiki.log('window.plugins.efficiency ', window.plugins.efficiency);
       expect(10).to.equal(10);
       return expect(5).to.equal(window.plugins.efficiency.doAdd(2, 3));
     });
-    return it("calcs 50%", function() {
+    it("calcs 50%", function() {
       wiki.log('50%');
+      return expect(50).to.equal(50);
+    });
+    it("max & min of array", function() {
+      wiki.log('max & min of array');
+      expect(6).to.equal(Math.max.apply(Math, [1, 2, 3, 4, 5, 6]));
+      return expect(1).to.equal(Math.min.apply(Math, [1, 2, 3, 4, 5, 6]));
+    });
+    it("Get gray luma from 4-byte RGBT data. Two values", function() {});
+    wiki.log('get luma, two values');
+    rgbt = [1.0, 1.0, 1.0, 1.0, 2.0, 2.0, 2.0, 2.0];
+    expectedLuma = [1.0, 2.0];
+    actualArray = window.plugins.efficiency.getGrayLumaFromRGBT(rgbt);
+    expected = JSON.stringify(expectedLuma);
+    actual = JSON.stringify(actualArray);
+    expectArraysEqual(expectedLuma, actualArray);
+    it("Get gray luma from 4-byte RGBT data. Three values", function() {});
+    wiki.log('get luma, three values');
+    rgbt = [1.0, 1.0, 1.0, 1.0, 2.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0, 3.0];
+    expectedLuma = [1.0, 2.0, 3.0];
+    actualArray = window.plugins.efficiency.getGrayLumaFromRGBT(rgbt);
+    expected = JSON.stringify(expectedLuma);
+    actual = JSON.stringify(actualArray);
+    expectArraysEqual(expectedLuma, actualArray);
+    return it("calcs 50% 2", function() {
+      wiki.log('50% 2');
       return expect(50).to.equal(50);
     });
   });

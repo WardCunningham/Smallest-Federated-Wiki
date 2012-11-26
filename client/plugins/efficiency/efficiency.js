@@ -2,6 +2,22 @@
 (function() {
 
   window.plugins.efficiency = {
+    doAdd: function(a, b) {
+      return a + b;
+    },
+    getGrayLumaFromRGBT: function(rgbt) {
+      var B, G, R, i, lumas, numPix, _i, _ref;
+      numPix = rgbt.length / 4;
+      wiki.log('getGrayLumaFromRGBT numPix: ', numPix);
+      lumas = [];
+      for (i = _i = 0, _ref = numPix - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+        R = rgbt[i * 4 + 0];
+        G = rgbt[i * 4 + 1];
+        B = rgbt[i * 4 + 2];
+        lumas[i] = (0.30 * R) + (0.60 * G) + (0.10 * B);
+      }
+      return lumas;
+    },
     emit: function(div, item) {
       div.addClass('data');
       $('<p />').addClass('readout').appendTo(div).text("0%");
@@ -28,13 +44,19 @@
         return div.find('p:first').text("" + (value.toFixed(1)) + "%");
       };
       getImageData = function(div) {
-        var c, d, h, imageData, src, w;
+        var c, d, h, imageData, img, src, w;
         src = $(div).find('img').get(0);
         w = src.width;
         h = src.height;
+        wiki.log('getImageData.  src.width, src.height: ', src.width, src.height);
         c = $('<canvas id="myCanvas" width="#{w}" height="#{h}">');
         d = c.get(0).getContext("2d");
-        d.drawImage(src, 0, 0);
+        img = new Image;
+        img.src = div.data('item').url;
+        w = img.width;
+        h = img.height;
+        wiki.log('getImageData.  img.width, img.height: ', img.width, img.height);
+        d.drawImage(img, 0, 0);
         imageData = d.getImageData(0, 0, w, h);
         return imageData.data;
       };
@@ -42,35 +64,43 @@
         return calculateStrategy_GrayBinary(data);
       };
       calculateStrategy_GrayBinary = function(data) {
-        var B, G, R, i, l, luma, lumaHighCount, lumaLowCount, lumaMax, lumaMid, lumaMin, lumas, numPix, percentage, _i, _j, _len;
-        numPix = data.length / 4;
-        lumaMin = 255;
-        lumaMax = 0;
-        lumas = [];
-        for (i = _i = 0; 0 <= numPix ? _i <= numPix : _i >= numPix; i = 0 <= numPix ? ++_i : --_i) {
-          R = data[i * 4 + 0];
-          G = data[i * 4 + 1];
-          B = data[i * 4 + 2];
-          luma = lumas[i] = 0.299 * R + 0.587 * G + 0.114 * B;
-          if (luma > lumaMax) {
-            lumaMax = luma;
-          }
-          if (luma < lumaMin) {
-            lumaMin = luma;
-          }
-        }
-        lumaMid = (lumaMax - lumaMin) / 2;
+        /*
+        
+              numPix = data.length / 4    # bytes divided by four bytes per pixel. RGB + transparency
+        	
+              lumaMin = 255
+              lumaMax = 0
+              lumas = []
+        
+              for i in [0..numPix]
+                R = data[ i * 4 + 0 ]
+                G = data[ i * 4 + 1 ]
+                B = data[ i * 4 + 2 ]
+                # Get gray scale vaue, by weighting RGB values (various literature references on this)
+                luma = lumas[i] = 0.299 * R + 0.587 * G + 0.114 * B
+                if luma > lumaMax  then lumaMax = luma
+                if luma < lumaMin  then lumaMin = luma
+        */
+
+        var l, lumaHighCount, lumaLowCount, lumaMax, lumaMid, lumaMin, lumas, numLumas, percentage, _i, _len;
+        lumas = window.plugins.efficiency.getGrayLumaFromRGBT(data);
+        lumaMin = Math.min.apply(Math, lumas);
+        lumaMax = Math.max.apply(Math, lumas);
+        numLumas = lumas.length;
+        lumaMid = (lumaMax - lumaMin) / 2.0;
+        wiki.log('lumaMid: ', lumaMid);
         lumaLowCount = 0;
         lumaHighCount = 0;
-        for (_j = 0, _len = lumas.length; _j < _len; _j++) {
-          l = lumas[_j];
+        for (_i = 0, _len = lumas.length; _i < _len; _i++) {
+          l = lumas[_i];
           if (l <= lumaMid) {
             lumaLowCount++;
           } else {
             lumaHighCount++;
           }
         }
-        percentage = lumaHighCount / numPix * 100;
+        wiki.log('calculateStrategy_GrayBinary: numLumas, lowCount, high count: ', numLumas, lumaLowCount, lumaHighCount);
+        percentage = lumaHighCount / numLumas * 100;
         return percentage;
       };
       calculateStrategy_GrayIterativeClustering = function(data) {
@@ -162,9 +192,6 @@
         return percentage;
       };
       return display(calculate(locate()));
-    },
-    doAdd: function(a, b) {
-      return a + b;
     }
   };
 
