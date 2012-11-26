@@ -1,23 +1,5 @@
 window.plugins.efficiency =
 
-  # TODO remove this temp experiment
-  doAdd: (a, b) ->
-    return (a + b)
-
-  getGrayLumaFromRGBT: (rgbt) ->
-    numPix = rgbt.length / 4    # bytes divided by four bytes per pixel. RGB + transparency
-    wiki.log 'getGrayLumaFromRGBT numPix: ', numPix
-    lumas = []
-    for i in [0..(numPix-1)]
-      R = rgbt[ i * 4 + 0 ]
-      G = rgbt[ i * 4 + 1 ]
-      B = rgbt[ i * 4 + 2 ]
-      # Get gray scale vaue, by weighting RGB values (various literature references on this)
-      #lumas[i] = 0.299 * R + 0.587 * G + 0.114 * B  
-      lumas[i] = (0.30 * R) + (0.60 * G) + (0.10 * B)   # close to above, but convenient for test expectations.
-  
-    return lumas
-
   emit: (div, item) ->
     div.addClass 'data'
     $('<p />').addClass('readout').appendTo(div).text("0%")
@@ -59,8 +41,7 @@ window.plugins.efficiency =
       #TODO change getImageData call to use dimensions like c.width, c.height), 
       #they are currently both zero for some reason, and that triggers an exception.
       wiki.log 'efficiency img w, h', w, h, 'c w, h ', c.width(), c.height()
-      imageData = d.getImageData(0, 0, w, h);
-      #imageData = d.getImageData(0, 0, 100, 100);   
+      imageData = d.getImageData(0, 0, w, h);  
       imageData.data
 
     calculatePercentage = (data) ->
@@ -72,57 +53,51 @@ window.plugins.efficiency =
       # http://www.w3.org/TR/2011/WD-2dcontext-20110525/#canvaspixelarray
       # https://developer.mozilla.org/en-US/docs/HTML/Canvas/Pixel_manipulation_with_canvas
       # Different calc strategies follow:
-      return calculateStrategy_GrayBinary(data)
-      #return calculateStrategy_GrayIterativeClustering(data)
-
-    calculateStrategy_GrayBinary = (data) ->
-	  # a very simple first attempt, using two bins of gray scale values.
-      ###
-
-      numPix = data.length / 4    # bytes divided by four bytes per pixel. RGB + transparency
-	
-      lumaMin = 255
-      lumaMax = 0
-      lumas = []
-
-      for i in [0..numPix]
-        R = data[ i * 4 + 0 ]
-        G = data[ i * 4 + 1 ]
-        B = data[ i * 4 + 2 ]
-        # Get gray scale vaue, by weighting RGB values (various literature references on this)
-        luma = lumas[i] = 0.299 * R + 0.587 * G + 0.114 * B
-        if luma > lumaMax  then lumaMax = luma
-        if luma < lumaMin  then lumaMin = luma
-      ###
-
       lumas = window.plugins.efficiency.getGrayLumaFromRGBT(data)
+      return window.plugins.efficiency.calculateStrategy_GrayBinary(lumas)
+      #return window.plugins.efficiency.calculateStrategy_GrayIterativeClustering(lumas)
+
+    display calculate locate()
+
+
+  getGrayLumaFromRGBT: (rgbt) ->
+    numPix = rgbt.length / 4    # bytes divided by four bytes per pixel. RGB + transparency
+    wiki.log 'getGrayLumaFromRGBT numPix: ', numPix
+    lumas = []
+    for i in [0..(numPix-1)]
+      R = rgbt[ i * 4 + 0 ]
+      G = rgbt[ i * 4 + 1 ]
+      B = rgbt[ i * 4 + 2 ]
+      # Get gray scale vaue, by weighting RGB values (various literature references on this)
+      #lumas[i] = 0.299 * R + 0.587 * G + 0.114 * B  
+      lumas[i] = (0.30 * R) + (0.60 * G) + (0.10 * B)   # close to above, but convenient for test expectations.
+
+    return lumas
+
+  calculateStrategy_GrayBinary: (lumas) ->
+	  # a very simple first attempt, using two bins of gray scale values.
+
       lumaMin = Math.min lumas...
       lumaMax = Math.max lumas...
       numLumas = lumas.length
-      
+
       # count the values high and low
-      lumaMid = (lumaMax - lumaMin ) /2.0
-      wiki.log 'lumaMid: ', lumaMid
+      lumaMid = (lumaMax - lumaMin ) /2.0 + lumaMin
+      wiki.log 'lumaMin, lumaMax, lumaMid: ', lumaMin, lumaMax, lumaMid
       lumaLowCount = 0
       lumaHighCount = 0
-      #lumaMaxCount = 0
       for l in lumas
         if (l <= lumaMid)
           lumaLowCount++
         else
           lumaHighCount++
 
-      #  if (l == lumaMin)
-      #    lumaMaxCount++
-		
       wiki.log 'calculateStrategy_GrayBinary: numLumas, lowCount, high count: ', numLumas, lumaLowCount, lumaHighCount
-      #numLumas -= lumaMaxCount 
-      #wiki.log 'calculateStrategy_GrayBinary: numLumas, lowCount, high count, max count: ', numLumas, lumaLowCount, lumaHighCount, lumaMaxCount
 
       percentage = lumaHighCount/numLumas * 100
       return percentage
 
-    calculateStrategy_GrayIterativeClustering = (data) ->
+  calculateStrategy_GrayIterativeClustering: (lumas) ->
       # iterative algorithm. a special one-dimensional case of the k-means clustering algorithm.
       # stops once a threshold Convergence Goal is met
       # TODO fix/find bug whereby refreshing the view yields a different result than initial result.
@@ -133,23 +108,13 @@ window.plugins.efficiency =
       THRESHOLD_CONVERGENCE_GOAL = 5
       MAX_TRIES = 10
 
-      numPix = Math.floor(data.length / 4)    # bytes divided by four bytes per pixel. RGB + transparency
-
-      lumaMin = 255
-      lumaMax = 0
-      lumas = []
-
-      for i in [0..numPix]
-        R = data[ i * 4 + 0 ]
-        G = data[ i * 4 + 1 ]
-        B = data[ i * 4 + 2 ]
-        # Get gray scale vaue, by weighting RGB values (various literature references on this)
-        luma = lumas[i] = 0.299 * R + 0.587 * G + 0.114 * B
-        if luma > lumaMax  then lumaMax = luma
-        if luma < lumaMin  then lumaMin = luma
+      lumaMin = Math.min lumas...
+      lumaMax = Math.max lumas...
+      numLumas = lumas.length
+      numPix = numLumas
 
       # initial threshold guess
-      thresholdInitial = (lumaMax - lumaMin ) /2
+      thresholdInitial = (lumaMax - lumaMin )/2 + lumaMin
       threshold = thresholdInitial
 
       lumaHighCount = 0
@@ -205,7 +170,7 @@ window.plugins.efficiency =
         wiki.log 'lumaLowTotal ', lumaLowTotal, '  lumaHighTotal ', lumaHighTotal
         wiki.log 'lumaAvgLow ', lumaAvgLow, '  lumaAvgHigh ', lumaAvgHigh
 
-        threshold = (lumaAvgHigh - lumaAvgLow) / 2
+        threshold = (lumaAvgHigh - lumaAvgLow) / 2  + lumaAvgLow
 
         thresholdDiff = Math.abs(threshold - thresholdInitial)
         wiki.log 'numTries ', numTries, '  thresholdDiff ', thresholdDiff, '  thresholdInitial ', thresholdInitial, '  threshold new ', threshold
@@ -219,6 +184,4 @@ window.plugins.efficiency =
       if (percentage > 100.0) then percentage = 100
       return percentage
       # End of above calc stratgey function  TODO make it smaller and remove this comment
-    display calculate locate()
-
 

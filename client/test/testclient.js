@@ -2486,29 +2486,13 @@ require.define("/plugins/efficiency/efficiency.js",function(require,module,expor
 (function() {
 
   window.plugins.efficiency = {
-    doAdd: function(a, b) {
-      return a + b;
-    },
-    getGrayLumaFromRGBT: function(rgbt) {
-      var B, G, R, i, lumas, numPix, _i, _ref;
-      numPix = rgbt.length / 4;
-      wiki.log('getGrayLumaFromRGBT numPix: ', numPix);
-      lumas = [];
-      for (i = _i = 0, _ref = numPix - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-        R = rgbt[i * 4 + 0];
-        G = rgbt[i * 4 + 1];
-        B = rgbt[i * 4 + 2];
-        lumas[i] = (0.30 * R) + (0.60 * G) + (0.10 * B);
-      }
-      return lumas;
-    },
     emit: function(div, item) {
       div.addClass('data');
       $('<p />').addClass('readout').appendTo(div).text("0%");
       return $('<p />').html(wiki.resolveLinks(item.text || 'efficiency')).appendTo(div);
     },
     bind: function(div, item) {
-      var calculate, calculatePercentage, calculateStrategy_GrayBinary, calculateStrategy_GrayIterativeClustering, display, getImageData, lastThumb, locate;
+      var calculate, calculatePercentage, display, getImageData, lastThumb, locate;
       lastThumb = null;
       div.find('p:first').dblclick(function(e) {
         return wiki.dialog("JSON for " + item.text, $('<pre/>').text("something good"));
@@ -2528,154 +2512,134 @@ require.define("/plugins/efficiency/efficiency.js",function(require,module,expor
         return div.find('p:first').text("" + (value.toFixed(1)) + "%");
       };
       getImageData = function(div) {
-        var c, d, h, imageData, img, src, w;
-        src = $(div).find('img').get(0);
-        w = src.width;
-        h = src.height;
-        wiki.log('getImageData.  src.width, src.height: ', src.width, src.height);
-        c = $('<canvas id="myCanvas" width="#{w}" height="#{h}">');
-        d = c.get(0).getContext("2d");
+        var c, d, h, imageData, img, w;
         img = new Image;
-        img.src = div.data('item').url;
+        img.src = $(div).data('item').url;
         w = img.width;
         h = img.height;
-        wiki.log('getImageData.  img.width, img.height: ', img.width, img.height);
-        d.drawImage(src, 0, 0, w, h);
+        c = $('<canvas id="myCanvas" width="#{w}" height="#{h}">');
+        d = c.get(0).getContext("2d");
+        d.drawImage(img, 0, 0);
+        wiki.log('efficiency img w, h', w, h, 'c w, h ', c.width(), c.height());
         imageData = d.getImageData(0, 0, w, h);
         return imageData.data;
       };
       calculatePercentage = function(data) {
-        return calculateStrategy_GrayBinary(data);
-      };
-      calculateStrategy_GrayBinary = function(data) {
-        /*
-        
-              numPix = data.length / 4    # bytes divided by four bytes per pixel. RGB + transparency
-        	
-              lumaMin = 255
-              lumaMax = 0
-              lumas = []
-        
-              for i in [0..numPix]
-                R = data[ i * 4 + 0 ]
-                G = data[ i * 4 + 1 ]
-                B = data[ i * 4 + 2 ]
-                # Get gray scale vaue, by weighting RGB values (various literature references on this)
-                luma = lumas[i] = 0.299 * R + 0.587 * G + 0.114 * B
-                if luma > lumaMax  then lumaMax = luma
-                if luma < lumaMin  then lumaMin = luma
-        */
-
-        var l, lumaHighCount, lumaLowCount, lumaMax, lumaMid, lumaMin, lumas, numLumas, percentage, _i, _len;
+        var lumas;
         lumas = window.plugins.efficiency.getGrayLumaFromRGBT(data);
-        lumaMin = Math.min.apply(Math, lumas);
-        lumaMax = Math.max.apply(Math, lumas);
-        numLumas = lumas.length;
-        lumaMid = (lumaMax - lumaMin) / 2.0;
-        wiki.log('lumaMid: ', lumaMid);
+        return window.plugins.efficiency.calculateStrategy_GrayIterativeClustering(lumas);
+      };
+      return display(calculate(locate()));
+    },
+    getGrayLumaFromRGBT: function(rgbt) {
+      var B, G, R, i, lumas, numPix, _i, _ref;
+      numPix = rgbt.length / 4;
+      wiki.log('getGrayLumaFromRGBT numPix: ', numPix);
+      lumas = [];
+      for (i = _i = 0, _ref = numPix - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+        R = rgbt[i * 4 + 0];
+        G = rgbt[i * 4 + 1];
+        B = rgbt[i * 4 + 2];
+        lumas[i] = (0.30 * R) + (0.60 * G) + (0.10 * B);
+      }
+      return lumas;
+    },
+    calculateStrategy_GrayBinary: function(lumas) {
+      var l, lumaHighCount, lumaLowCount, lumaMax, lumaMid, lumaMin, numLumas, percentage, _i, _len;
+      lumaMin = Math.min.apply(Math, lumas);
+      lumaMax = Math.max.apply(Math, lumas);
+      numLumas = lumas.length;
+      lumaMid = (lumaMax - lumaMin) / 2.0 + lumaMin;
+      wiki.log('lumaMin, lumaMax, lumaMid: ', lumaMin, lumaMax, lumaMid);
+      lumaLowCount = 0;
+      lumaHighCount = 0;
+      for (_i = 0, _len = lumas.length; _i < _len; _i++) {
+        l = lumas[_i];
+        if (l <= lumaMid) {
+          lumaLowCount++;
+        } else {
+          lumaHighCount++;
+        }
+      }
+      wiki.log('calculateStrategy_GrayBinary: numLumas, lowCount, high count: ', numLumas, lumaLowCount, lumaHighCount);
+      percentage = lumaHighCount / numLumas * 100;
+      return percentage;
+    },
+    calculateStrategy_GrayIterativeClustering: function(lumas) {
+      var MAX_TRIES, THRESHOLD_CONVERGENCE_GOAL, high, l, low, lumaAvgHigh, lumaAvgLow, lumaHighCount, lumaHighTotal, lumaLowCount, lumaLowTotal, lumaMax, lumaMin, lumasHigh, lumasLow, numLumas, numPix, numTries, percentage, threshold, thresholdDiff, thresholdInitial, _i, _j, _k, _len, _len1, _len2;
+      THRESHOLD_CONVERGENCE_GOAL = 5;
+      MAX_TRIES = 10;
+      lumaMin = Math.min.apply(Math, lumas);
+      lumaMax = Math.max.apply(Math, lumas);
+      numLumas = lumas.length;
+      numPix = numLumas;
+      thresholdInitial = (lumaMax - lumaMin) / 2 + lumaMin;
+      threshold = thresholdInitial;
+      lumaHighCount = 0;
+      numTries = 0;
+      while (numTries < MAX_TRIES) {
+        numTries++;
+        lumasLow = [];
+        lumasHigh = [];
         lumaLowCount = 0;
         lumaHighCount = 0;
         for (_i = 0, _len = lumas.length; _i < _len; _i++) {
           l = lumas[_i];
-          if (l <= lumaMid) {
+          if (l <= threshold) {
+            lumasLow.push(l);
             lumaLowCount++;
           } else {
-            lumaHighCount++;
+            if (l !== NaN) {
+              lumasHigh.push(l);
+              lumaHighCount++;
+            }
           }
         }
-        wiki.log('calculateStrategy_GrayBinary: numLumas, lowCount, high count: ', numLumas, lumaLowCount, lumaHighCount);
-        percentage = lumaHighCount / numLumas * 100;
-        return percentage;
-      };
-      calculateStrategy_GrayIterativeClustering = function(data) {
-        var B, G, MAX_TRIES, R, THRESHOLD_CONVERGENCE_GOAL, high, i, l, low, luma, lumaAvgHigh, lumaAvgLow, lumaHighCount, lumaHighTotal, lumaLowCount, lumaLowTotal, lumaMax, lumaMin, lumas, lumasHigh, lumasLow, numPix, numTries, percentage, threshold, thresholdDiff, thresholdInitial, _i, _j, _k, _l, _len, _len1, _len2;
-        THRESHOLD_CONVERGENCE_GOAL = 5;
-        MAX_TRIES = 10;
-        numPix = Math.floor(data.length / 4);
-        lumaMin = 255;
-        lumaMax = 0;
-        lumas = [];
-        for (i = _i = 0; 0 <= numPix ? _i <= numPix : _i >= numPix; i = 0 <= numPix ? ++_i : --_i) {
-          R = data[i * 4 + 0];
-          G = data[i * 4 + 1];
-          B = data[i * 4 + 2];
-          luma = lumas[i] = 0.299 * R + 0.587 * G + 0.114 * B;
-          if (luma > lumaMax) {
-            lumaMax = luma;
-          }
-          if (luma < lumaMin) {
-            lumaMin = luma;
-          }
-        }
-        thresholdInitial = (lumaMax - lumaMin) / 2;
-        threshold = thresholdInitial;
-        lumaHighCount = 0;
-        numTries = 0;
-        while (numTries < MAX_TRIES) {
-          numTries++;
-          lumasLow = [];
-          lumasHigh = [];
-          lumaLowCount = 0;
-          lumaHighCount = 0;
-          for (_j = 0, _len = lumas.length; _j < _len; _j++) {
-            l = lumas[_j];
-            if (l <= threshold) {
-              lumasLow.push(l);
-              lumaLowCount++;
-            } else {
-              if (l !== NaN) {
-                lumasHigh.push(l);
-                lumaHighCount++;
-              }
-            }
-          }
-          lumaLowTotal = 0;
-          for (_k = 0, _len1 = lumasLow.length; _k < _len1; _k++) {
-            low = lumasLow[_k];
-            if (!isNaN(low)) {
-              lumaLowTotal += low;
-            } else {
-              wiki.log('Found a NaN low ', low);
-            }
-          }
-          lumaAvgLow = 0;
-          if (lumaLowCount > 0) {
-            lumaAvgLow = lumaLowTotal / lumaLowCount;
-          }
-          lumaHighTotal = 0;
-          wiki.log('lumasHigh ', lumasHigh);
-          for (_l = 0, _len2 = lumasHigh.length; _l < _len2; _l++) {
-            high = lumasHigh[_l];
-            if (!isNaN(high)) {
-              lumaHighTotal += high;
-            } else {
-              wiki.log('Found a NaN high', high);
-            }
-          }
-          lumaAvgHigh = 0;
-          if (lumaHighCount > 0) {
-            lumaAvgHigh = lumaHighTotal / lumaHighCount;
-          }
-          wiki.log('lumaLowCount ', lumaLowCount, '  lumaHighCount ', lumaHighCount);
-          wiki.log('lumaLowTotal ', lumaLowTotal, '  lumaHighTotal ', lumaHighTotal);
-          wiki.log('lumaAvgLow ', lumaAvgLow, '  lumaAvgHigh ', lumaAvgHigh);
-          threshold = (lumaAvgHigh - lumaAvgLow) / 2;
-          thresholdDiff = Math.abs(threshold - thresholdInitial);
-          wiki.log('numTries ', numTries, '  thresholdDiff ', thresholdDiff, '  thresholdInitial ', thresholdInitial, '  threshold new ', threshold);
-          if (thresholdDiff <= THRESHOLD_CONVERGENCE_GOAL || numTries > MAX_TRIES) {
-            wiki.log("we're done");
-            break;
+        lumaLowTotal = 0;
+        for (_j = 0, _len1 = lumasLow.length; _j < _len1; _j++) {
+          low = lumasLow[_j];
+          if (!isNaN(low)) {
+            lumaLowTotal += low;
           } else {
-            thresholdInitial = threshold;
+            wiki.log('Found a NaN low ', low);
           }
         }
-        percentage = lumaHighCount / numPix * 100;
-        if (percentage > 100.0) {
-          percentage = 100;
+        lumaAvgLow = 0;
+        if (lumaLowCount > 0) {
+          lumaAvgLow = lumaLowTotal / lumaLowCount;
         }
-        return percentage;
-      };
-      return display(calculate(locate()));
+        lumaHighTotal = 0;
+        wiki.log('lumasHigh ', lumasHigh);
+        for (_k = 0, _len2 = lumasHigh.length; _k < _len2; _k++) {
+          high = lumasHigh[_k];
+          if (!isNaN(high)) {
+            lumaHighTotal += high;
+          } else {
+            wiki.log('Found a NaN high', high);
+          }
+        }
+        lumaAvgHigh = 0;
+        if (lumaHighCount > 0) {
+          lumaAvgHigh = lumaHighTotal / lumaHighCount;
+        }
+        wiki.log('lumaLowCount ', lumaLowCount, '  lumaHighCount ', lumaHighCount);
+        wiki.log('lumaLowTotal ', lumaLowTotal, '  lumaHighTotal ', lumaHighTotal);
+        wiki.log('lumaAvgLow ', lumaAvgLow, '  lumaAvgHigh ', lumaAvgHigh);
+        threshold = (lumaAvgHigh - lumaAvgLow) / 2 + lumaAvgLow;
+        thresholdDiff = Math.abs(threshold - thresholdInitial);
+        wiki.log('numTries ', numTries, '  thresholdDiff ', thresholdDiff, '  thresholdInitial ', thresholdInitial, '  threshold new ', threshold);
+        if (thresholdDiff <= THRESHOLD_CONVERGENCE_GOAL || numTries > MAX_TRIES) {
+          wiki.log("we're done");
+          break;
+        } else {
+          thresholdInitial = threshold;
+        }
+      }
+      percentage = lumaHighCount / numPix * 100;
+      if (percentage > 100.0) {
+        percentage = 100;
+      }
+      return percentage;
     }
   };
 
@@ -2879,16 +2843,6 @@ require.define("/plugins/efficiency/test.coffee",function(require,module,exports
 
   describe('efficiency plugin', function() {
     var actual, actualArray, expected, expectedLuma, rgbt;
-    it("calcs 10%", function() {
-      wiki.log('10%');
-      wiki.log('window.plugins.efficiency ', window.plugins.efficiency);
-      expect(10).to.equal(10);
-      return expect(5).to.equal(window.plugins.efficiency.doAdd(2, 3));
-    });
-    it("calcs 50%", function() {
-      wiki.log('50%');
-      return expect(50).to.equal(50);
-    });
     it("max & min of array", function() {
       wiki.log('max & min of array');
       expect(6).to.equal(Math.max.apply(Math, [1, 2, 3, 4, 5, 6]));
@@ -2896,7 +2850,7 @@ require.define("/plugins/efficiency/test.coffee",function(require,module,exports
     });
     it("Get gray luma from 4-byte RGBT data. Two values", function() {});
     wiki.log('get luma, two values');
-    rgbt = [1.0, 1.0, 1.0, 1.0, 2.0, 2.0, 2.0, 2.0];
+    rgbt = [1, 1, 1, 1, 2, 2, 2, 2];
     expectedLuma = [1.0, 2.0];
     actualArray = window.plugins.efficiency.getGrayLumaFromRGBT(rgbt);
     expected = JSON.stringify(expectedLuma);
@@ -2904,15 +2858,53 @@ require.define("/plugins/efficiency/test.coffee",function(require,module,exports
     expectArraysEqual(expectedLuma, actualArray);
     it("Get gray luma from 4-byte RGBT data. Three values", function() {});
     wiki.log('get luma, three values');
-    rgbt = [1.0, 1.0, 1.0, 1.0, 2.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0, 3.0];
+    rgbt = [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3];
     expectedLuma = [1.0, 2.0, 3.0];
     actualArray = window.plugins.efficiency.getGrayLumaFromRGBT(rgbt);
     expected = JSON.stringify(expectedLuma);
     actual = JSON.stringify(actualArray);
     expectArraysEqual(expectedLuma, actualArray);
-    return it("calcs 50% 2", function() {
-      wiki.log('50% 2');
-      return expect(50).to.equal(50);
+    it("calculateStrategy_GrayBinary 50% binary data", function() {
+      var lumas, output;
+      wiki.log('calculateStrategy_GrayBinary 50% binary');
+      lumas = [0, 0, 255, 255];
+      output = window.plugins.efficiency.calculateStrategy_GrayBinary(lumas);
+      return expect('50.0').to.equal(output.toFixed(1));
+    });
+    it("calculateStrategy_GrayBinary 50% linear data", function() {
+      var lumas, output;
+      wiki.log('calculateStrategy_GrayBinary 50%  linear');
+      lumas = [1, 2, 3, 4];
+      output = window.plugins.efficiency.calculateStrategy_GrayBinary(lumas);
+      return expect('50.0').to.equal(output.toFixed(1));
+    });
+    it("calculateStrategy_GrayBinary 75% binary data", function() {
+      var lumas, output;
+      wiki.log('calculateStrategy_GrayBinary 75% binary');
+      lumas = [0, 255, 255, 255];
+      output = window.plugins.efficiency.calculateStrategy_GrayBinary(lumas);
+      return expect('75.0').to.equal(output.toFixed(1));
+    });
+    it("calculateStrategy_GrayIterativeClustering 50% binary data", function() {
+      var lumas, output;
+      wiki.log('calculateStrategy_GrayIterativeClustering 50% binary');
+      lumas = [0, 0, 255, 255];
+      output = window.plugins.efficiency.calculateStrategy_GrayIterativeClustering(lumas);
+      return expect('50.0').to.equal(output.toFixed(1));
+    });
+    it("calculateStrategy_GrayIterativeClustering 50% linear data", function() {
+      var lumas, output;
+      wiki.log('calculateStrategy_GrayIterativeClustering 50% linear');
+      lumas = [1, 2, 3, 4];
+      output = window.plugins.efficiency.calculateStrategy_GrayIterativeClustering(lumas);
+      return expect('50.0').to.equal(output.toFixed(1));
+    });
+    return it("calculateStrategy_GrayIterativeClustering 75% binary data", function() {
+      var lumas, output;
+      wiki.log('calculateStrategy_GrayIterativeClustering 75% binary');
+      lumas = [0, 255, 255, 255];
+      output = window.plugins.efficiency.calculateStrategy_GrayIterativeClustering(lumas);
+      return expect('75.0').to.equal(output.toFixed(1));
     });
   });
 
