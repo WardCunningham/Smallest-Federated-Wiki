@@ -11,34 +11,33 @@
 #     npm install
 
 # Standard lib
-fs = require('fs')
-path = require('path')
-http = require('http')
-child_process = require('child_process')
+fs = require 'fs'
+path = require 'path'
+http = require 'http'
+child_process = require 'child_process'
+spawn = child_process.spawn
 
 # From npm
-mkdirp = require('mkdirp')
-express = require('express')
-hbs = require('hbs')
-passportImport = require('passport')
+mkdirp = require 'mkdirp'
+express = require 'express'
+hbs = require 'hbs'
+passportImport = require 'passport'
 OpenIDstrat = require('passport-openid').Strategy
 WebSocketServer = require('ws').Server
-spawn = require('child_process').spawn
-path = require 'path'
 glob = require 'glob'
 es = require 'event-stream'
 JSONStream = require 'JSONStream'
 
 # Local files
-random = require('./random_id')
-defargs = require('./defaultargs')
-util = require('../../../client/lib/util')
+random = require './random_id'
+defargs = require './defaultargs'
+util = require '../../../client/lib/util'
 
 # pageFactory can be easily replaced here by requiring your own page handler
 # factory, which gets called with the argv object, and then has get and put
 # methods that accept the same arguments and callbacks. That would be the
 # easiest way to use the Smallest Federated Wiki with a database backend.
-pageFactory = require('./page')
+pageFactory = require './page'
 
 # When the server factory is first started attempt to retrieve the gitlog.
 gitlog = ''
@@ -51,61 +50,23 @@ module.exports = exports = (argv) ->
   # Create the main application object, app.
   app = express.createServer()
 
-  # General, gloabl use sockets
-  echoSocket     = new WebSocketServer({server: app, path: '/system/echo'})
-  logWatchSocket = new WebSocketServer({server: app, path: '/system/logwatch'})
-  counterSocket  = new WebSocketServer({server: app, path: '/system/counter'})
-  echoSocket.on('connection', (ws) ->
-    ws.on('message', (message) ->
-      console.log ['socktest message from client: ', message]
-      try
-        ws.send(message)
-      catch e
-        console.log ['unable to send ws message: ', e]
-    )
-  )
-  logWatchSocket.on('connection', (ws) ->
-    logWatchSocket.on('fetch', (page) ->
-      reference =
-        title: page.title
-      try
-        ws.send(JSON.stringify reference)
-      catch e
-        console.log ['unable to send ws message: ', e]
-    )
-    ws.on('message', (message) ->
-      console.log ['logWatch message from client: ', message]
-    )
-  )
-  counterSocket.on('connection', (ws) ->
-    counter = spawn( path.join(__dirname, '..', 'plugins', 'counter', 'counter.js') )
-    counter.stdout.on('data', (data) ->
-      try
-        ws.send( data )
-      catch e
-        console.log('client disconnected, killing child counter proc...')
-        counter.kill('SIGHUP')
-    )
-    counter.stderr.on('data', (data) ->
-      try
-        ws.send('stderr: ' + data)
-      catch e
-        console.log('client disconnected, killing child counter proc...')
-        counter.kill('SIGHUP')
-    )
-    counter.on('exit', (code) ->
-      try
-        ws.send('child process exited with code: ' + code)
-      catch e
-        console.log('client disconnected, killing child counter proc...')
-        counter.kill('SIGHUP')
-    )
-  )
-
   # defaultargs.coffee exports a function that takes the argv object
   # that is passed in and then does its
   # best to supply sane defaults for any arguments that are missing.
   argv = defargs(argv)
+
+  app.startOpts = do ->
+    options = {}
+    for own k, v of argv
+      options[k] = v
+    options
+
+  log = (stuff...) ->
+    console.log stuff if argv.debug
+
+  loga = (stuff...) ->
+    console.log stuff
+
   errorHandler = (req, res, next) ->
     fired = false
     res.e = (error, status) ->
@@ -113,20 +74,69 @@ module.exports = exports = (argv) ->
         fired = true
         res.statusCode = status or 500
         res.end 'Server ' + error
-        console.log("Res sent: " + res.statusCode + ' ' + error) if argv.debug
+        log "Res sent:", res.statusCode, error
       else
-        console.log "Allready fired " + error
+        log "Allready fired", error
     next()
 
-  app.startOpts = do ->
-    options = {}
-    for own k, v of argv
-      options[k] = v
-    options
   # Construct authentication handler.
   passport = new passportImport.Passport()
+
   # Tell pagehandler where to find data, and default data.
   app.pagehandler = pagehandler = pageFactory(argv)
+
+  ### Sockets ###
+  # General, gloabl use sockets
+  echoSocket     = new WebSocketServer({server: app, path: '/system/echo'})
+  logWatchSocket = new WebSocketServer({server: app, path: '/system/logwatch'})
+  counterSocket  = new WebSocketServer({server: app, path: '/system/counter'})
+  echoSocket.on('connection', (ws) ->
+    ws.on('message', (message) ->
+      log 'socktest message from client:', message
+      ws.send message, (e) ->
+        if e
+          log 'unable to send ws message:', e
+          return
+    )
+  )
+  logWatchSocket.on('connection', (ws) ->
+    logWatchSocket.on('fetch', (page) ->
+      reference =
+        title: page.title
+      ws.send JSON.stringify(reference), (e) ->
+        if e
+          log 'unable to send ws message: ', e
+          return
+    )
+    ws.on('message', (message) ->
+      log 'logWatch message from client:', message
+    )
+  )
+  counterSocket.on('connection', (ws) ->
+    counter = spawn( path.join(__dirname, '..', 'plugins', 'counter', 'counter.js') )
+    counter.stdout.on('data', (data) ->
+      ws.send data, (e) ->
+        if e
+          log 'client disconnected, killing child counter proc...'
+          counter.kill('SIGHUP')
+          return
+    )
+    counter.stderr.on('data', (data) ->
+      ws.send 'stderr: ' + data, (e) ->
+        if e
+          log 'client disconnected, killing child counter proc...'
+          counter.kill('SIGHUP')
+          return
+    )
+    counter.on('exit', (code) ->
+      ws.send 'child process exited with code: ' + code, (e) ->
+        if e
+          log 'client disconnected, killing child counter proc...'
+          counter.kill('SIGHUP')
+          return
+    )
+  )
+
 
   #### Setting up Authentication ####
   # The owner of a server is simply the open id url that the wiki
@@ -147,7 +157,7 @@ module.exports = exports = (argv) ->
       else if id
         fs.writeFile(argv.id, id, (err) ->
           if err then return cb err
-          console.log("Claimed by #{id}")
+          loga "Claimed by #{id}"
           owner = id
           cb())
       else
@@ -188,7 +198,7 @@ module.exports = exports = (argv) ->
     identifierField: 'identifier'
   },
   ((id, done) ->
-    console.log(id, done) #if argv.debug
+    loga id, done
     process.nextTick( ->
       if owner
         if id is owner
@@ -205,7 +215,7 @@ module.exports = exports = (argv) ->
   # Handle errors thrown by passport openid by returning the oops page
   # with the error message.
   openIDErr = (err, req, res, next) ->
-    console.log err
+    log err
     if err.message[0..5] is 'OpenID'
       res.render('oops.html', {status: 401, msg:err.message})
     else
@@ -270,7 +280,7 @@ module.exports = exports = (argv) ->
   )
 
   # Show all of the options a server is using.
-  console.log argv if argv.debug
+  log argv
 
   # Swallow errors when in production.
   app.configure('production', ->
@@ -333,7 +343,7 @@ module.exports = exports = (argv) ->
 
   app.get ////plugins/(factory/)?factory.js///, (req, res) ->
     cb = (e, catalog) ->
-      if e then return res.e(e)
+      if e then return res.e e
       res.write('window.catalog = ' + JSON.stringify(catalog) + ';')
       fs.createReadStream(argv.c + '/plugins/meta-factory.js').pipe(res)
 
@@ -365,7 +375,9 @@ module.exports = exports = (argv) ->
   # and sends it to the client.  TODO: consider caching remote pages locally.
   app.get(///^/remote/([a-zA-Z0-9:\.-]+)/([a-z0-9-]+)\.json$///, (req, res) ->
     remoteGet(req.params[0], req.params[1], (e, page, status) ->
-      if e then console.log "remoteGet error:", e if argv.debug
+      if e 
+        log "remoteGet error:", e
+        return res.e e
       res.send(page, status)
     )
   )
@@ -407,19 +419,22 @@ module.exports = exports = (argv) ->
   ###### Meta Routes ######
   # Send an array of pages in the database via json
   app.get('/system/slugs.json', cors, (req, res) ->
-    fs.readdir(argv.db, (err, files) ->
+    fs.readdir(argv.db, (e, files) ->
+      if e then return res.e e
       res.send(files)
     )
   )
 
   app.get('/system/plugins.json', cors, (req, res) ->
-    fs.readdir(path.join(argv.c, 'plugins'), (err, files) ->
+    fs.readdir(path.join(argv.c, 'plugins'), (e, files) ->
+      if e then return res.e e
       res.send(files)
     )
   )
 
   app.get('/system/sitemap.json', cors, (req, res) ->
-    fs.readdir(argv.db, (err, files) ->
+    fs.readdir(argv.db, (e, files) ->
+      if e then return res.e e
       sitemap = []
       # used to make sure all of the files are read 
       # and processesed in the site map before responding
@@ -428,7 +443,7 @@ module.exports = exports = (argv) ->
         pagehandler.get(file, (e, page, status) ->
           if e 
             numFiles--
-            console.log(['pagehandler exception', e])
+            log 'pagehandler exception', e
             return
           sitemap.push({
             slug     : file,
@@ -442,8 +457,8 @@ module.exports = exports = (argv) ->
         )
       for file in files
         doSitemapFile file
-    )    
-  ) 
+    )
+  )
 
 
   ##### Put routes #####
@@ -452,10 +467,10 @@ module.exports = exports = (argv) ->
     action = JSON.parse(req.body.action)
     # Handle all of the possible actions to be taken on a page,
     actionCB = (e, page, status) ->
-      if e then return res.e e
+      #if e then return res.e e
       if status is 404
         res.send(page, status)
-      console.log page if argv.debug
+      log page
       # Using Coffee-Scripts implicit returns we assign page.story to the
       # result of a list comprehension by way of a switch expression.
       page.story = switch action.type
@@ -480,7 +495,7 @@ module.exports = exports = (argv) ->
           page.story or []
 
         else
-          console.log "Unfamiliar action: #{action}"
+          log "Unfamiliar action:", action
           page.story
 
       # Add a blank journal if it does not exist.
@@ -491,14 +506,14 @@ module.exports = exports = (argv) ->
         page.journal.push({type: "fork", site: action.fork})
         delete action.fork
       page.journal.push(action)
-      console.log page
+      log page
       pagehandler.put(req.params[0], page, (e) ->
         if e then return res.e e
         res.send('ok')
-        console.log 'saved' if argv.debug
+        log 'saved'
       )
 
-    console.log(action) if argv.debug
+    log action
     # If the action is a fork, get the page from the remote server,
     # otherwise ask pagehandler for it.
     if action.fork
@@ -507,6 +522,7 @@ module.exports = exports = (argv) ->
       # Prevent attempt to write circular structure
       itemCopy = JSON.parse(JSON.stringify(action.item))
       pagehandler.get(req.params[0], (e, page, status) ->
+        if e then return actionCB(e)
         unless status is 404
           res.send('Page already exists.', 409)
         else
@@ -558,9 +574,9 @@ module.exports = exports = (argv) ->
   # Wait to make sure owner is known before listening.
   setOwner( null, (e) ->
     # Throw if you can't find the initial owner
-    if e then return throw e
+    if e then throw e
     app.listen(argv.p, argv.o if argv.o)
-    console.log("Smallest Federated Wiki server listening on #{app.address().port} in mode: #{app.settings.env}")
+    loga "Smallest Federated Wiki server listening on", app.address().port, "in mode:", app.settings.env
   )
   # Return app when called, so that it can be watched for events and shutdown with .close() externally.
   app
