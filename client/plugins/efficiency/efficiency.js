@@ -8,7 +8,7 @@
       return $('<p />').html(wiki.resolveLinks(item.text || 'efficiency')).appendTo(div);
     },
     bind: function(div, item) {
-      var calculate, calculatePercentage, calculateStrategy_GrayBinary, calculateStrategy_GrayIterativeClustering, display, getImageData, lastThumb, locate;
+      var calculate, calculatePercentage, display, getImageData, lastThumb, locate;
       lastThumb = null;
       div.find('p:first').dblclick(function(e) {
         return wiki.dialog("JSON for " + item.text, $('<pre/>').text("something good"));
@@ -41,129 +41,121 @@
         return imageData.data;
       };
       calculatePercentage = function(data) {
-        return calculateStrategy_GrayBinary(data);
-      };
-      calculateStrategy_GrayBinary = function(data) {
-        var B, G, R, i, l, luma, lumaHighCount, lumaLowCount, lumaMax, lumaMid, lumaMin, lumas, numPix, percentage, _i, _j, _len;
-        numPix = data.length / 4;
-        lumaMin = 255;
-        lumaMax = 0;
-        lumas = [];
-        for (i = _i = 0; 0 <= numPix ? _i <= numPix : _i >= numPix; i = 0 <= numPix ? ++_i : --_i) {
-          R = data[i * 4 + 0];
-          G = data[i * 4 + 1];
-          B = data[i * 4 + 2];
-          luma = lumas[i] = 0.299 * R + 0.587 * G + 0.114 * B;
-          if (luma > lumaMax) {
-            lumaMax = luma;
-          }
-          if (luma < lumaMin) {
-            lumaMin = luma;
-          }
-        }
-        lumaMid = (lumaMax - lumaMin) / 2;
-        lumaLowCount = 0;
-        lumaHighCount = 0;
-        for (_j = 0, _len = lumas.length; _j < _len; _j++) {
-          l = lumas[_j];
-          if (l <= lumaMid) {
-            lumaLowCount++;
-          } else {
-            lumaHighCount++;
-          }
-        }
-        percentage = lumaHighCount / numPix * 100;
-        return percentage;
-      };
-      calculateStrategy_GrayIterativeClustering = function(data) {
-        var B, G, MAX_TRIES, R, THRESHOLD_CONVERGENCE_GOAL, high, i, l, low, luma, lumaAvgHigh, lumaAvgLow, lumaHighCount, lumaHighTotal, lumaLowCount, lumaLowTotal, lumaMax, lumaMin, lumas, lumasHigh, lumasLow, numPix, numTries, percentage, threshold, thresholdDiff, thresholdInitial, _i, _j, _k, _l, _len, _len1, _len2;
-        THRESHOLD_CONVERGENCE_GOAL = 5;
-        MAX_TRIES = 10;
-        numPix = Math.floor(data.length / 4);
-        lumaMin = 255;
-        lumaMax = 0;
-        lumas = [];
-        for (i = _i = 0; 0 <= numPix ? _i <= numPix : _i >= numPix; i = 0 <= numPix ? ++_i : --_i) {
-          R = data[i * 4 + 0];
-          G = data[i * 4 + 1];
-          B = data[i * 4 + 2];
-          luma = lumas[i] = 0.299 * R + 0.587 * G + 0.114 * B;
-          if (luma > lumaMax) {
-            lumaMax = luma;
-          }
-          if (luma < lumaMin) {
-            lumaMin = luma;
-          }
-        }
-        thresholdInitial = (lumaMax - lumaMin) / 2;
-        threshold = thresholdInitial;
-        lumaHighCount = 0;
-        numTries = 0;
-        while (numTries < MAX_TRIES) {
-          numTries++;
-          lumasLow = [];
-          lumasHigh = [];
-          lumaLowCount = 0;
-          lumaHighCount = 0;
-          for (_j = 0, _len = lumas.length; _j < _len; _j++) {
-            l = lumas[_j];
-            if (l <= threshold) {
-              lumasLow.push(l);
-              lumaLowCount++;
-            } else {
-              if (l !== NaN) {
-                lumasHigh.push(l);
-                lumaHighCount++;
-              }
-            }
-          }
-          lumaLowTotal = 0;
-          for (_k = 0, _len1 = lumasLow.length; _k < _len1; _k++) {
-            low = lumasLow[_k];
-            if (!isNaN(low)) {
-              lumaLowTotal += low;
-            } else {
-              wiki.log('Found a NaN low ', low);
-            }
-          }
-          lumaAvgLow = 0;
-          if (lumaLowCount > 0) {
-            lumaAvgLow = lumaLowTotal / lumaLowCount;
-          }
-          lumaHighTotal = 0;
-          wiki.log('lumasHigh ', lumasHigh);
-          for (_l = 0, _len2 = lumasHigh.length; _l < _len2; _l++) {
-            high = lumasHigh[_l];
-            if (!isNaN(high)) {
-              lumaHighTotal += high;
-            } else {
-              wiki.log('Found a NaN high', high);
-            }
-          }
-          lumaAvgHigh = 0;
-          if (lumaHighCount > 0) {
-            lumaAvgHigh = lumaHighTotal / lumaHighCount;
-          }
-          wiki.log('lumaLowCount ', lumaLowCount, '  lumaHighCount ', lumaHighCount);
-          wiki.log('lumaLowTotal ', lumaLowTotal, '  lumaHighTotal ', lumaHighTotal);
-          wiki.log('lumaAvgLow ', lumaAvgLow, '  lumaAvgHigh ', lumaAvgHigh);
-          threshold = (lumaAvgHigh - lumaAvgLow) / 2;
-          thresholdDiff = Math.abs(threshold - thresholdInitial);
-          wiki.log('numTries ', numTries, '  thresholdDiff ', thresholdDiff, '  thresholdInitial ', thresholdInitial, '  threshold new ', threshold);
-          if (thresholdDiff <= THRESHOLD_CONVERGENCE_GOAL || numTries > MAX_TRIES) {
-            wiki.log("we're done");
-            break;
-          } else {
-            thresholdInitial = threshold;
-          }
-        }
-        percentage = lumaHighCount / numPix * 100;
-        if (percentage > 100.0) {
-          percentage = 100;
-        }
-        return percentage;
+        var lumas;
+        lumas = window.plugins.efficiency.getGrayLumaFromRGBT(data);
+        return window.plugins.efficiency.calculateStrategy_GrayBinary(lumas);
       };
       return display(calculate(locate()));
+    },
+    getGrayLumaFromRGBT: function(rgbt) {
+      var B, G, R, i, lumas, numPix, _i, _ref;
+      numPix = rgbt.length / 4;
+      wiki.log('getGrayLumaFromRGBT numPix: ', numPix);
+      lumas = [];
+      for (i = _i = 0, _ref = numPix - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+        R = rgbt[i * 4 + 0];
+        G = rgbt[i * 4 + 1];
+        B = rgbt[i * 4 + 2];
+        lumas[i] = (0.30 * R) + (0.60 * G) + (0.10 * B);
+      }
+      return lumas;
+    },
+    calculateStrategy_GrayBinary: function(lumas) {
+      var l, lumaHighCount, lumaLowCount, lumaMax, lumaMid, lumaMin, numLumas, percentage, _i, _len;
+      lumaMin = Math.min.apply(Math, lumas);
+      lumaMax = Math.max.apply(Math, lumas);
+      numLumas = lumas.length;
+      lumaMid = (lumaMax - lumaMin) / 2.0 + lumaMin;
+      wiki.log('lumaMin, lumaMax, lumaMid: ', lumaMin, lumaMax, lumaMid);
+      lumaLowCount = 0;
+      lumaHighCount = 0;
+      for (_i = 0, _len = lumas.length; _i < _len; _i++) {
+        l = lumas[_i];
+        if (l <= lumaMid) {
+          lumaLowCount++;
+        } else {
+          lumaHighCount++;
+        }
+      }
+      wiki.log('calculateStrategy_GrayBinary: numLumas, lowCount, high count: ', numLumas, lumaLowCount, lumaHighCount);
+      percentage = lumaHighCount / numLumas * 100;
+      return percentage;
+    },
+    calculateStrategy_GrayIterativeClustering: function(lumas) {
+      var MAX_TRIES, THRESHOLD_CONVERGENCE_GOAL, high, l, low, lumaAvgHigh, lumaAvgLow, lumaHighCount, lumaHighTotal, lumaLowCount, lumaLowTotal, lumaMax, lumaMin, lumasHigh, lumasLow, numLumas, numPix, numTries, percentage, threshold, thresholdDiff, thresholdInitial, _i, _j, _k, _len, _len1, _len2;
+      THRESHOLD_CONVERGENCE_GOAL = 5;
+      MAX_TRIES = 10;
+      lumaMin = Math.min.apply(Math, lumas);
+      lumaMax = Math.max.apply(Math, lumas);
+      numLumas = lumas.length;
+      numPix = numLumas;
+      thresholdInitial = (lumaMax - lumaMin) / 2 + lumaMin;
+      threshold = thresholdInitial;
+      lumaHighCount = 0;
+      numTries = 0;
+      while (numTries < MAX_TRIES) {
+        numTries++;
+        lumasLow = [];
+        lumasHigh = [];
+        lumaLowCount = 0;
+        lumaHighCount = 0;
+        for (_i = 0, _len = lumas.length; _i < _len; _i++) {
+          l = lumas[_i];
+          if (l <= threshold) {
+            lumasLow.push(l);
+            lumaLowCount++;
+          } else {
+            if (l !== NaN) {
+              lumasHigh.push(l);
+              lumaHighCount++;
+            }
+          }
+        }
+        lumaLowTotal = 0;
+        for (_j = 0, _len1 = lumasLow.length; _j < _len1; _j++) {
+          low = lumasLow[_j];
+          if (!isNaN(low)) {
+            lumaLowTotal += low;
+          } else {
+            wiki.log('Found a NaN low ', low);
+          }
+        }
+        lumaAvgLow = 0;
+        if (lumaLowCount > 0) {
+          lumaAvgLow = lumaLowTotal / lumaLowCount;
+        }
+        lumaHighTotal = 0;
+        wiki.log('lumasHigh ', lumasHigh);
+        for (_k = 0, _len2 = lumasHigh.length; _k < _len2; _k++) {
+          high = lumasHigh[_k];
+          if (!isNaN(high)) {
+            lumaHighTotal += high;
+          } else {
+            wiki.log('Found a NaN high', high);
+          }
+        }
+        lumaAvgHigh = 0;
+        if (lumaHighCount > 0) {
+          lumaAvgHigh = lumaHighTotal / lumaHighCount;
+        }
+        wiki.log('lumaLowCount ', lumaLowCount, '  lumaHighCount ', lumaHighCount);
+        wiki.log('lumaLowTotal ', lumaLowTotal, '  lumaHighTotal ', lumaHighTotal);
+        wiki.log('lumaAvgLow ', lumaAvgLow, '  lumaAvgHigh ', lumaAvgHigh);
+        threshold = (lumaAvgHigh - lumaAvgLow) / 2 + lumaAvgLow;
+        thresholdDiff = Math.abs(threshold - thresholdInitial);
+        wiki.log('numTries ', numTries, '  thresholdDiff ', thresholdDiff, '  thresholdInitial ', thresholdInitial, '  threshold new ', threshold);
+        if (thresholdDiff <= THRESHOLD_CONVERGENCE_GOAL || numTries > MAX_TRIES) {
+          wiki.log("we're done");
+          break;
+        } else {
+          thresholdInitial = threshold;
+        }
+      }
+      percentage = lumaHighCount / numPix * 100;
+      if (percentage > 100.0) {
+        percentage = 100;
+      }
+      return percentage;
     }
   };
 
