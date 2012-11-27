@@ -1383,6 +1383,9 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
 
   initAddButton = function(pageElement) {
     return pageElement.find(".add-factory").live("click", function(evt) {
+      if (pageElement.hasClass('ghost')) {
+        return;
+      }
       evt.preventDefault();
       return createFactory(pageElement);
     });
@@ -2512,16 +2515,16 @@ require.define("/plugins/efficiency/efficiency.js",function(require,module,expor
         return div.find('p:first').text("" + (value.toFixed(1)) + "%");
       };
       getImageData = function(div) {
-        var can, ctx, h, imageData, img, w;
+        var c, d, h, imageData, img, w;
         img = new Image;
         img.src = $(div).data('item').url;
         w = img.width;
         h = img.height;
-        can = $('<canvas id="myCanvas" width="#{w}" height="#{h}">');
-        ctx = can.get(0).getContext("2d");
-        ctx.drawImage(img, 0, 0);
-        wiki.log('efficiency img w, h', w, h, 'c w, h ', can.width(), can.height());
-        imageData = ctx.getImageData(0, 0, w, h);
+        c = $('<canvas id="myCanvas" width="#{w}" height="#{h}">');
+        d = c.get(0).getContext("2d");
+        d.drawImage(img, 0, 0);
+        wiki.log('efficiency img w, h', w, h, 'c w, h ', c.width(), c.height());
+        imageData = d.getImageData(0, 0, w, h);
         return imageData.data;
       };
       calculatePercentage = function(data) {

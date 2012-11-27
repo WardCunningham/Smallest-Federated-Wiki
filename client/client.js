@@ -1652,6 +1652,9 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
 
   initAddButton = function(pageElement) {
     return pageElement.find(".add-factory").live("click", function(evt) {
+      if (pageElement.hasClass('ghost')) {
+        return;
+      }
       evt.preventDefault();
       return createFactory(pageElement);
     });
