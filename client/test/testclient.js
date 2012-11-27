@@ -343,7 +343,7 @@ process.nextTick = (function () {
     ;
 
     if (canSetImmediate) {
-        return function (f) { return window.setImmediate(f) };
+        return window.setImmediate;
     }
 
     if (canPost) {
@@ -2527,7 +2527,7 @@ require.define("/plugins/efficiency/efficiency.js",function(require,module,expor
       calculatePercentage = function(data) {
         var lumas;
         lumas = window.plugins.efficiency.getGrayLumaFromRGBT(data);
-        return window.plugins.efficiency.calculateStrategy_GrayIterativeClustering(lumas);
+        return window.plugins.efficiency.calculateStrategy_GrayBinary(lumas);
       };
       return display(calculate(locate()));
     },
