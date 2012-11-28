@@ -826,7 +826,7 @@ require.define("/lib/legacy.coffee",function(require,module,exports,__dirname,__
 require.define("/lib/util.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
   var util;
 
-  module.exports = util = {};
+  module.exports = wiki.util = util = {};
 
   util.symbols = {
     create: '☼',
@@ -1906,7 +1906,8 @@ require.define("/lib/neighborhood.coffee",function(require,module,exports,__dirn
         return neighborInfo.sitemapRequestInflight = false;
       }).done(function(data) {
         neighborInfo.sitemap = data;
-        return transition(site, 'fetch', 'done');
+        transition(site, 'fetch', 'done');
+        return $('body').trigger('new-neighbor-done', site);
       }).fail(function(data) {
         return transition(site, 'fetch', 'fail');
       });
