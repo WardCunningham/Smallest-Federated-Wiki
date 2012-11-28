@@ -25,6 +25,11 @@
       "type": "paragraph",
       "id": "3984f468aba91d2a",
       "text": "Double-click the plugin to preview the JSON bundle."
+    },
+    {
+      "type": "paragraph",
+      "id": "baee38765fca4d7c",
+      "text": "See [[About Activity Plugin]] to review changes stored on servers in your neighborhood."
     }
   ],
   "journal": [
@@ -173,6 +178,27 @@
         "text": "Double-click the plugin to preview the JSON bundle."
       },
       "date": 1344463547224
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "baee38765fca4d7c",
+        "text": ""
+      },
+      "id": "baee38765fca4d7c",
+      "type": "add",
+      "after": "3984f468aba91d2a",
+      "date": 1354083871534
+    },
+    {
+      "type": "edit",
+      "id": "baee38765fca4d7c",
+      "item": {
+        "type": "paragraph",
+        "id": "baee38765fca4d7c",
+        "text": "See [[About Activity Plugin]] to review changes stored on servers in your neighborhood."
+      },
+      "date": 1354083921523
     }
   ]
 }

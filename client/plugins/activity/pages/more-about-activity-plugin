@@ -1,0 +1,542 @@
+{
+  "title": "More About Activity Plugin",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "1e34f0c615e9a564",
+      "text": "The Activity plugin lists pages found in sitemaps retrieved from federated wiki sites mentioned on pages you have visited. These sites comprise your search neighborhood."
+    },
+    {
+      "type": "paragraph",
+      "id": "63c2c72d233b1bbb",
+      "text": "Wiki takes a few seconds to load each sitemap so it can get behind. You can see wiki working at this by noticing the flags in the web page footer."
+    },
+    {
+      "type": "paragraph",
+      "id": "59d50cdad99a336f",
+      "text": "The server dates the pages as the sitemaps are loaded. More recent changes can go unnoticed until the sitemaps are loaded again."
+    },
+    {
+      "type": "paragraph",
+      "id": "64655cb747df6366",
+      "text": "Pages are listed in a compact variation on References. The flags in front of each page name indicate where that page has been found."
+    },
+    {
+      "type": "paragraph",
+      "id": "d587f7aa780bbe8c",
+      "text": "Click a flag to retrieve the page from a specific server. Click the link to retrieve the page by wiki's usual rules."
+    },
+    {
+      "type": "paragraph",
+      "id": "3a98c0f54a6bdc40",
+      "text": "See [[About Changes Plugin]] to list changes kept in browser local storage."
+    },
+    {
+      "type": "paragraph",
+      "id": "5d9e9030bece488c",
+      "text": "See [https://github.com/WardCunningham/Smallest-Federated-Wiki/tree/master/client/plugins/activity GitHub] for plugin source."
+    },
+    {
+      "type": "paragraph",
+      "id": "258eebc705c5583e",
+      "text": "<h3> Related How Tos"
+    },
+    {
+      "type": "reference",
+      "id": "7bda271909e25809",
+      "site": "fed.wiki.org",
+      "slug": "neighborhood",
+      "title": "Neighborhood",
+      "text": "The wiki keeps track of sites you visit and sites mentioned on pages you visit on each site. Wiki seeks to know about sites in this collection called a neighborhood. "
+    },
+    {
+      "type": "reference",
+      "id": "e77142847ba1464c",
+      "site": "fed.wiki.org",
+      "slug": "search-sites",
+      "title": "Search Sites",
+      "text": "Search looks at the title and first paragraph of all pages in your [[Neighborhood]]. As you browse the federation more sites are added to your neighborhood so search can find more pages."
+    },
+    {
+      "type": "reference",
+      "id": "ba134ef79afcae9f",
+      "site": "fed.wiki.org",
+      "slug": "example-reference",
+      "title": "Example Reference",
+      "text": "You can add references to other Federated Wiki sites. Here we show what a reference looks like."
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "item": {
+        "title": "More About Activity Plugin"
+      },
+      "date": 1354076628301
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "1e34f0c615e9a564"
+      },
+      "id": "1e34f0c615e9a564",
+      "type": "add",
+      "date": 1354076643778
+    },
+    {
+      "type": "edit",
+      "id": "1e34f0c615e9a564",
+      "item": {
+        "type": "paragraph",
+        "id": "1e34f0c615e9a564",
+        "text": "The Activity plugin lists pages found in site maps retrieved from federated wiki sites mentioned on pages you have visited. These sites are your neighborhood and will expand as your neighborhood grows. Pages with the same name are grouped together with the newest first. Read [[More About Activity Plugin]]. "
+      },
+      "date": 1354076923425
+    },
+    {
+      "type": "edit",
+      "id": "1e34f0c615e9a564",
+      "item": {
+        "type": "paragraph",
+        "id": "1e34f0c615e9a564",
+        "text": "The Activity plugin lists pages found in site maps retrieved from federated wiki sites mentioned on pages you have visited. These sites comprise your search neighborhood."
+      },
+      "date": 1354077062246
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "63c2c72d233b1bbb",
+        "text": " expand as your neighborhood grows. Pages with the same name are grouped together with the newest first. Read [[More About Activity Plugin]]. "
+      },
+      "id": "63c2c72d233b1bbb",
+      "type": "add",
+      "after": "1e34f0c615e9a564",
+      "date": 1354077062757
+    },
+    {
+      "type": "edit",
+      "id": "63c2c72d233b1bbb",
+      "item": {
+        "type": "paragraph",
+        "id": "63c2c72d233b1bbb",
+        "text": "Pages with the same name are grouped together with the newest first. Read [[More About Activity Plugin]]. "
+      },
+      "date": 1354077150291
+    },
+    {
+      "type": "edit",
+      "id": "63c2c72d233b1bbb",
+      "item": {
+        "type": "paragraph",
+        "id": "63c2c72d233b1bbb",
+        "text": "Wiki takes a few seconds to load each sitemap so it can get behind. You can see wiki working at this by noticing the flags in the web page footer."
+      },
+      "date": 1354077334834
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "59d50cdad99a336f",
+        "text": ""
+      },
+      "id": "59d50cdad99a336f",
+      "type": "add",
+      "after": "63c2c72d233b1bbb",
+      "date": 1354077335342
+    },
+    {
+      "type": "edit",
+      "id": "59d50cdad99a336f",
+      "item": {
+        "type": "paragraph",
+        "id": "59d50cdad99a336f",
+        "text": "The server dates the pages as the sitemaps are loaded. More recent changes can go unnoticed until the sitemaps are loaded again."
+      },
+      "date": 1354077442014
+    },
+    {
+      "type": "edit",
+      "id": "1e34f0c615e9a564",
+      "item": {
+        "type": "paragraph",
+        "id": "1e34f0c615e9a564",
+        "text": "The Activity plugin lists pages found in sitemaps retrieved from federated wiki sites mentioned on pages you have visited. These sites comprise your search neighborhood."
+      },
+      "date": 1354077448022
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "fc4bff493f09557c"
+      },
+      "id": "fc4bff493f09557c",
+      "type": "add",
+      "after": "59d50cdad99a336f",
+      "date": 1354077555891
+    },
+    {
+      "type": "remove",
+      "id": "fc4bff493f09557c",
+      "date": 1354077559513
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "e77142847ba1464c"
+      },
+      "id": "e77142847ba1464c",
+      "type": "add",
+      "after": "59d50cdad99a336f",
+      "date": 1354077561803
+    },
+    {
+      "type": "edit",
+      "id": "e77142847ba1464c",
+      "item": {
+        "type": "reference",
+        "id": "e77142847ba1464c",
+        "site": "fed.wiki.org",
+        "slug": "search-sites",
+        "title": "Search Sites",
+        "text": "Search looks at the title and first paragraph of all pages in your [[Neighborhood]]. As you browse the federation more sites are added to your neighborhood so search can find more pages."
+      },
+      "date": 1354077653138
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "7bda271909e25809"
+      },
+      "id": "7bda271909e25809",
+      "type": "add",
+      "after": "e77142847ba1464c",
+      "date": 1354077680648
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "258eebc705c5583e"
+      },
+      "id": "258eebc705c5583e",
+      "type": "add",
+      "after": "7bda271909e25809",
+      "date": 1354077684016
+    },
+    {
+      "type": "edit",
+      "id": "7bda271909e25809",
+      "item": {
+        "type": "reference",
+        "id": "7bda271909e25809",
+        "site": "fed.wiki.org",
+        "slug": "neighborhood",
+        "title": "Neighborhood",
+        "text": "The wiki keeps track of sites you visit and sites mentioned on pages you visit on each site. Wiki seeks to know about sites in this collection called a neighborhood. "
+      },
+      "date": 1354077695796
+    },
+    {
+      "type": "edit",
+      "id": "258eebc705c5583e",
+      "item": {
+        "type": "paragraph",
+        "id": "258eebc705c5583e",
+        "text": "<h3> Related Help"
+      },
+      "date": 1354077745517
+    },
+    {
+      "type": "edit",
+      "id": "258eebc705c5583e",
+      "item": {
+        "type": "paragraph",
+        "id": "258eebc705c5583e",
+        "text": "<h3> Related How Tos"
+      },
+      "date": 1354077758237
+    },
+    {
+      "type": "move",
+      "order": [
+        "1e34f0c615e9a564",
+        "63c2c72d233b1bbb",
+        "59d50cdad99a336f",
+        "258eebc705c5583e",
+        "e77142847ba1464c",
+        "7bda271909e25809"
+      ],
+      "id": "258eebc705c5583e",
+      "date": 1354077761942
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "5d9e9030bece488c",
+        "text": ""
+      },
+      "id": "5d9e9030bece488c",
+      "type": "add",
+      "after": "59d50cdad99a336f",
+      "date": 1354077912565
+    },
+    {
+      "type": "edit",
+      "id": "5d9e9030bece488c",
+      "item": {
+        "type": "paragraph",
+        "id": "5d9e9030bece488c",
+        "text": "See [https://github.com/WardCunningham/Smallest-Federated-Wiki/tree/master/client/plugins/activity GitHub] for plugin source."
+      },
+      "date": 1354077933737
+    },
+    {
+      "type": "move",
+      "order": [
+        "1e34f0c615e9a564",
+        "63c2c72d233b1bbb",
+        "59d50cdad99a336f",
+        "5d9e9030bece488c",
+        "258eebc705c5583e",
+        "7bda271909e25809",
+        "e77142847ba1464c"
+      ],
+      "id": "7bda271909e25809",
+      "date": 1354080796687
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "ba134ef79afcae9f"
+      },
+      "id": "ba134ef79afcae9f",
+      "type": "add",
+      "after": "e77142847ba1464c",
+      "date": 1354082079918
+    },
+    {
+      "type": "edit",
+      "id": "ba134ef79afcae9f",
+      "item": {
+        "type": "reference",
+        "id": "ba134ef79afcae9f",
+        "site": "fed.wiki.org",
+        "slug": "example-reference",
+        "title": "Example Reference",
+        "text": "You can add references to other Federated Wiki sites. Here we show what a reference looks like."
+      },
+      "date": 1354082088600
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "64655cb747df6366",
+        "text": ""
+      },
+      "id": "64655cb747df6366",
+      "type": "add",
+      "after": "59d50cdad99a336f",
+      "date": 1354082142731
+    },
+    {
+      "type": "edit",
+      "id": "64655cb747df6366",
+      "item": {
+        "type": "paragraph",
+        "id": "64655cb747df6366",
+        "text": "The flags in front of each page indicate where that page has been found. Click the flag to retrieve the page from a specific server. Click the link to retrieve the page by wiki's usual lookup rules."
+      },
+      "date": 1354082489732
+    },
+    {
+      "type": "edit",
+      "id": "64655cb747df6366",
+      "item": {
+        "type": "paragraph",
+        "id": "64655cb747df6366",
+        "text": "The flags in front of each page name indicate where that page has been found. Click the flag to retrieve the page from a specific server. Click the link to retrieve the page by wiki's usual lookup rules."
+      },
+      "date": 1354082498283
+    },
+    {
+      "type": "edit",
+      "id": "64655cb747df6366",
+      "item": {
+        "type": "paragraph",
+        "id": "64655cb747df6366",
+        "text": "The flags in front of each page name indicate where that page has been found. "
+      },
+      "date": 1354082514901
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "adbd578b05e2aa62",
+        "text": "Click the flag to retrieve the page from a specific server. Click the link to retrieve the page by wiki's usual lookup rules."
+      },
+      "id": "adbd578b05e2aa62",
+      "type": "add",
+      "after": "64655cb747df6366",
+      "date": 1354082515408
+    },
+    {
+      "type": "edit",
+      "id": "adbd578b05e2aa62",
+      "item": {
+        "type": "paragraph",
+        "id": "adbd578b05e2aa62",
+        "text": "Click the flag to retrieve the page from a specific server. "
+      },
+      "date": 1354082518126
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "6c2a6fad827a8c64",
+        "text": "Click the link to retrieve the page by wiki's usual lookup rules."
+      },
+      "id": "6c2a6fad827a8c64",
+      "type": "add",
+      "after": "adbd578b05e2aa62",
+      "date": 1354082518632
+    },
+    {
+      "type": "edit",
+      "id": "adbd578b05e2aa62",
+      "item": {
+        "type": "paragraph",
+        "id": "adbd578b05e2aa62",
+        "text": "Click a flag to retrieve the page from a specific server. "
+      },
+      "date": 1354082551802
+    },
+    {
+      "type": "edit",
+      "id": "6c2a6fad827a8c64",
+      "item": {
+        "type": "paragraph",
+        "id": "6c2a6fad827a8c64",
+        "text": "Click the link to retrieve the page by wiki's usual rules."
+      },
+      "date": 1354082576386
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "0da23bdef31eac51",
+        "text": ""
+      },
+      "id": "0da23bdef31eac51",
+      "type": "add",
+      "after": "59d50cdad99a336f",
+      "date": 1354082602265
+    },
+    {
+      "type": "edit",
+      "id": "0da23bdef31eac51",
+      "item": {
+        "type": "paragraph",
+        "id": "0da23bdef31eac51",
+        "text": "<h3> Links"
+      },
+      "date": 1354082608776
+    },
+    {
+      "type": "remove",
+      "id": "0da23bdef31eac51",
+      "date": 1354082639335
+    },
+    {
+      "type": "remove",
+      "id": "adbd578b05e2aa62",
+      "date": 1354082644144
+    },
+    {
+      "type": "remove",
+      "id": "6c2a6fad827a8c64",
+      "date": 1354082655384
+    },
+    {
+      "type": "edit",
+      "id": "64655cb747df6366",
+      "item": {
+        "type": "paragraph",
+        "id": "64655cb747df6366",
+        "text": "Pages are listed in a compact variation on References. The flags in front of each page name indicate where that page has been found. Click a flag to retrieve the page from a specific server. Click the link to retrieve the page by wiki's usual rules."
+      },
+      "date": 1354082811621
+    },
+    {
+      "type": "edit",
+      "id": "64655cb747df6366",
+      "item": {
+        "type": "paragraph",
+        "id": "64655cb747df6366",
+        "text": "Pages are listed in a compact variation on References. The flags in front of each page name indicate where that page has been found."
+      },
+      "date": 1354082834611
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "d587f7aa780bbe8c",
+        "text": "Click a flag to retrieve the page from a specific server. Click the link to retrieve the page by wiki's usual rules."
+      },
+      "id": "d587f7aa780bbe8c",
+      "type": "add",
+      "after": "64655cb747df6366",
+      "date": 1354082835118
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "3a98c0f54a6bdc40",
+        "text": ""
+      },
+      "id": "3a98c0f54a6bdc40",
+      "type": "add",
+      "after": "d587f7aa780bbe8c",
+      "date": 1354083392973
+    },
+    {
+      "type": "edit",
+      "id": "3a98c0f54a6bdc40",
+      "item": {
+        "type": "paragraph",
+        "id": "3a98c0f54a6bdc40",
+        "text": "See also [[About Changes Plugin]] for pages in browser local storage."
+      },
+      "date": 1354083464160
+    },
+    {
+      "type": "edit",
+      "id": "3a98c0f54a6bdc40",
+      "item": {
+        "type": "paragraph",
+        "id": "3a98c0f54a6bdc40",
+        "text": "See also [[About Changes Plugin]] to review pages saved in browser local storage."
+      },
+      "date": 1354083531551
+    },
+    {
+      "type": "edit",
+      "id": "3a98c0f54a6bdc40",
+      "item": {
+        "type": "paragraph",
+        "id": "3a98c0f54a6bdc40",
+        "text": "See [[About Changes Plugin]] changes in browser local storage."
+      },
+      "date": 1354083550606
+    },
+    {
+      "type": "edit",
+      "id": "3a98c0f54a6bdc40",
+      "item": {
+        "type": "paragraph",
+        "id": "3a98c0f54a6bdc40",
+        "text": "See [[About Changes Plugin]] to list changes kept in browser local storage."
+      },
+      "date": 1354083600444
+    }
+  ]
+}
