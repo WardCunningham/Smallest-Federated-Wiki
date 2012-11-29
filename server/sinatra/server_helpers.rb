@@ -12,9 +12,9 @@ module ServerHelpers
 
                   slug = name.gsub(/\s/, '-')
                   slug = slug.gsub(/[^A-Za-z0-9-]/, '').downcase
-                  '<a class="internal" href="/'+slug+'.html" data-page-name="'+slug+'">'+name+'</a>'
+                  '<a class="internal" href="/'+slug+'.html" data-page-name="'+slug+'" >'+name+'</a>'
               }.
-      gsub(/\[(http.*?) (.*?)\]/i, '<a class="external" href="\1">\2</a>')
+      gsub(/\[(http.*?) (.*?)\]/i, '<a class="external" href="\1" rel="nofollow">\2</a>')
   end
 
   def openid_consumer
