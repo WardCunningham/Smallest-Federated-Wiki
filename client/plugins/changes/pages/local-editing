@@ -28,7 +28,12 @@
     {
       "type": "paragraph",
       "id": "4b5fd698ca1b3ea1",
-      "text": "If you make local changes to another site, you may be able to offer those changes to the site owner using the [[Submit Changes]] mechanism."
+      "text": "If you make local changes to another site, you may be able to offer those changes to the site owner. Follow the instructions at [[Submit Changes]]. The owner and others can see your contributions in [[Recent Submissions]]."
+    },
+    {
+      "type": "paragraph",
+      "id": "981ea6c559926cef",
+      "text": "If you make local changes to a site you own, you can selectively publish local changes to that site by logging in and then forking [⚑] each local page you want to save. "
     }
   ],
   "journal": [
@@ -243,6 +248,86 @@
         "text": "If you make local changes to another site, you may be able to offer those changes to the site owner using the [[Submit Changes]] mechanism."
       },
       "date": 1351467124610
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "981ea6c559926cef"
+      },
+      "id": "981ea6c559926cef",
+      "type": "add",
+      "after": "4b5fd698ca1b3ea1",
+      "date": 1353972159736
+    },
+    {
+      "type": "edit",
+      "id": "981ea6c559926cef",
+      "item": {
+        "type": "paragraph",
+        "id": "981ea6c559926cef",
+        "text": "If you make local changes to a site you own, you can selectively publish (push) local changes to that site by logging in and then forking (press [⚑] button) each local page you want to save. "
+      },
+      "date": 1353972629447
+    },
+    {
+      "type": "edit",
+      "id": "981ea6c559926cef",
+      "item": {
+        "type": "paragraph",
+        "id": "981ea6c559926cef",
+        "text": "If you make local changes to a site you own, you can selectively publish (push) local changes to that site by logging in and then forking [⚑] each local page you want to save. "
+      },
+      "date": 1353972650158
+    },
+    {
+      "type": "edit",
+      "id": "981ea6c559926cef",
+      "item": {
+        "type": "paragraph",
+        "id": "981ea6c559926cef",
+        "text": "If you make local changes to a site you own, you can selectively publish local changes to that site by logging in and then forking [⚑] each local page you want to save. "
+      },
+      "date": 1353972658542
+    },
+    {
+      "type": "edit",
+      "id": "4b5fd698ca1b3ea1",
+      "item": {
+        "type": "paragraph",
+        "id": "4b5fd698ca1b3ea1",
+        "text": "If you make local changes to another site, you may be able to offer those changes to the site owner using the [[Submit Changes]] mechanism. The owner will see your contributions in [[Recent Submissions]]."
+      },
+      "date": 1354091940956
+    },
+    {
+      "type": "edit",
+      "id": "4b5fd698ca1b3ea1",
+      "item": {
+        "type": "paragraph",
+        "id": "4b5fd698ca1b3ea1",
+        "text": "If you make local changes to another site, you may be able to offer those changes to the site owner. Follow the instructions at [[Submit Changes]] mechanism. The owner will see your contributions in [[Recent Submissions]]."
+      },
+      "date": 1354092026101
+    },
+    {
+      "type": "edit",
+      "id": "4b5fd698ca1b3ea1",
+      "item": {
+        "type": "paragraph",
+        "id": "4b5fd698ca1b3ea1",
+        "text": "If you make local changes to another site, you may be able to offer those changes to the site owner. Follow the instructions at [[Submit Changes]]. The owner will see your contributions in [[Recent Submissions]]."
+      },
+      "date": 1354092034449
+    },
+    {
+      "type": "edit",
+      "id": "4b5fd698ca1b3ea1",
+      "item": {
+        "type": "paragraph",
+        "id": "4b5fd698ca1b3ea1",
+        "text": "If you make local changes to another site, you may be able to offer those changes to the site owner. Follow the instructions at [[Submit Changes]]. The owner and others can see your contributions in [[Recent Submissions]]."
+      },
+      "date": 1354092062714
     }
   ]
 }

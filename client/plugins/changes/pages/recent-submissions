@@ -23,6 +23,11 @@
     },
     {
       "type": "paragraph",
+      "id": "d59ee093356abe44",
+      "text": "If you have many or complex submissions, you can view all submissions merged with your changes. See [[About Activity Plugin]]."
+    },
+    {
+      "type": "paragraph",
       "id": "9c10ddc18b4ddce1",
       "text": "You can accept changes to your site by forking the remote page back to your site."
     },
@@ -309,6 +314,27 @@
         "text": "Recent submissions appear below here."
       },
       "date": 1351467001126
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "d59ee093356abe44",
+        "text": ""
+      },
+      "id": "d59ee093356abe44",
+      "type": "add",
+      "after": "07f5bde2ec9ac99e",
+      "date": 1354091075583
+    },
+    {
+      "type": "edit",
+      "id": "d59ee093356abe44",
+      "item": {
+        "type": "paragraph",
+        "id": "d59ee093356abe44",
+        "text": "If you have many or complex submissions, you can view all submissions merged with your changes. See [[About Activity Plugin]]."
+      },
+      "date": 1354091186851
     }
   ]
 }

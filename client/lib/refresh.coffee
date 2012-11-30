@@ -48,6 +48,7 @@ initDragging = (pageElement) ->
 
 initAddButton = (pageElement) ->
   pageElement.find(".add-factory").live "click", (evt) ->
+    return if pageElement.hasClass 'ghost'
     evt.preventDefault()
     createFactory(pageElement)
 

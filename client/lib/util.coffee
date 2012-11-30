@@ -1,4 +1,4 @@
-module.exports = util = {}
+module.exports = wiki.util = util = {}
 
 util.symbols =
   create: '☼'

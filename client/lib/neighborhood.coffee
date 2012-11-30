@@ -31,6 +31,7 @@ populateSiteInfoFor = (site,neighborInfo)->
       .done (data)->
         neighborInfo.sitemap = data
         transition site, 'fetch', 'done'
+        $('body').trigger 'new-neighbor-done', site
       .fail (data)->
         transition site, 'fetch', 'fail'
 
