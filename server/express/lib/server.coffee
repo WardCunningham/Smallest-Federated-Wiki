@@ -31,7 +31,7 @@ JSONStream = require 'JSONStream'
 # Local files
 random = require './random_id'
 defargs = require './defaultargs'
-util = require '../../../client/lib/util'
+synopsis = require '../../../client/lib/synopsis'
 
 # pageFactory can be easily replaced here by requiring your own page handler
 # factory, which gets called with the argv object, and then has get and put
@@ -449,7 +449,7 @@ module.exports = exports = (argv) ->
             slug     : file,
             title    : page.title,
             date     : page.journal and page.journal.length > 0 and page.journal.pop().date,
-            synopsis : util.createSynopsis(page)
+            synopsis : synopsis(page)
           })
           numFiles--
           if numFiles == 0
