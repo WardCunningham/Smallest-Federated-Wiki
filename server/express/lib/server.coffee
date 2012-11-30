@@ -453,7 +453,7 @@ module.exports = exports = (argv) ->
 
       async.map files, doSitemap, (e, sitemap) ->
         if e then return res.e e
-        res.json(sitemap)
+        res.json(sitemap.filter (item) -> if item? then true)
     )
   )
 
