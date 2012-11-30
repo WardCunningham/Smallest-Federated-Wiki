@@ -27,6 +27,7 @@ WebSocketServer = require('ws').Server
 glob = require 'glob'
 es = require 'event-stream'
 JSONStream = require 'JSONStream'
+async = require 'async'
 
 # Local files
 random = require './random_id'
@@ -435,28 +436,24 @@ module.exports = exports = (argv) ->
   app.get('/system/sitemap.json', cors, (req, res) ->
     fs.readdir(argv.db, (e, files) ->
       if e then return res.e e
-      sitemap = []
       # used to make sure all of the files are read 
       # and processesed in the site map before responding
       numFiles = files.length
-      doSitemapFile = (file) ->
-        pagehandler.get(file, (e, page, status) ->
+      doSitemap = (file, cb) ->
+        pagehandler.get file, (e, page, status) ->
           if e 
-            numFiles--
-            log 'pagehandler exception', e
-            return
-          sitemap.push({
-            slug     : file,
-            title    : page.title,
-            date     : page.journal and page.journal.length > 0 and page.journal.pop().date,
+            log 'Problem building sitemap:', file, 'e: ', e
+            return cb() # Ignore errors in the pagehandler get.
+          cb null, {
+            slug     : file
+            title    : page.title
+            date     : page.journal and page.journal.length > 0 and page.journal.pop().date
             synopsis : synopsis(page)
-          })
-          numFiles--
-          if numFiles == 0
-            res.json(sitemap)
-        )
-      for file in files
-        doSitemapFile file
+          }
+
+      async.map files, doSitemap, (e, sitemap) ->
+        if e then return res.e e
+        res.json(sitemap)
     )
   )
 
@@ -491,7 +488,7 @@ module.exports = exports = (argv) ->
         when 'edit'
           (if item.id is action.id then action.item else item) for item in page.story
 
-        when 'create'
+        when 'create', 'fork'
           page.story or []
 
         else
