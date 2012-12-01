@@ -8,13 +8,13 @@
     },
     {
       "type": "paragraph",
-      "id": "63c2c72d233b1bbb",
-      "text": "Wiki takes a few seconds to load each sitemap so it can get behind. You can see wiki working at this by noticing the flags in the web page footer."
+      "id": "20227a2466137813",
+      "text": "See [[About Activity Plugin]] for an example use."
     },
     {
       "type": "paragraph",
-      "id": "59d50cdad99a336f",
-      "text": "The server dates the pages as the sitemaps are loaded. More recent changes can go unnoticed until the sitemaps are loaded again."
+      "id": "5d9e9030bece488c",
+      "text": "See [https://github.com/WardCunningham/Smallest-Federated-Wiki/tree/master/client/plugins/activity GitHub] for plugin source."
     },
     {
       "type": "paragraph",
@@ -28,13 +28,23 @@
     },
     {
       "type": "paragraph",
-      "id": "3a98c0f54a6bdc40",
-      "text": "See [[About Changes Plugin]] to list changes kept in browser local storage."
+      "id": "63c2c72d233b1bbb",
+      "text": "Wiki takes a few seconds to load each sitemap so it can get behind. You can see wiki working at this by noticing the flags in the web page footer."
     },
     {
       "type": "paragraph",
-      "id": "5d9e9030bece488c",
-      "text": "See [https://github.com/WardCunningham/Smallest-Federated-Wiki/tree/master/client/plugins/activity GitHub] for plugin source."
+      "id": "59d50cdad99a336f",
+      "text": "The server dates the pages as the sitemaps are loaded. More recent changes can go unnoticed until the sitemaps are loaded again."
+    },
+    {
+      "type": "paragraph",
+      "id": "adfba91aefb7e9f1",
+      "text": "The plugin interprets data that is loaded in the course of browsing. It updates as new information becomes available. For the newest information, reload the whole web page, not just the wiki page with the Activity plugin."
+    },
+    {
+      "type": "paragraph",
+      "id": "3a98c0f54a6bdc40",
+      "text": "See [[About Changes Plugin]] to list changes kept in browser local storage."
     },
     {
       "type": "paragraph",
@@ -537,6 +547,108 @@
         "text": "See [[About Changes Plugin]] to list changes kept in browser local storage."
       },
       "date": 1354083600444
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "20227a2466137813",
+        "text": ""
+      },
+      "id": "20227a2466137813",
+      "type": "add",
+      "after": "1e34f0c615e9a564",
+      "date": 1354401054584
+    },
+    {
+      "type": "edit",
+      "id": "20227a2466137813",
+      "item": {
+        "type": "paragraph",
+        "id": "20227a2466137813",
+        "text": "See [[About Activity Plugin]] for an example use."
+      },
+      "date": 1354401093279
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "adfba91aefb7e9f1",
+        "text": ""
+      },
+      "id": "adfba91aefb7e9f1",
+      "type": "add",
+      "after": "59d50cdad99a336f",
+      "date": 1354401156629
+    },
+    {
+      "type": "edit",
+      "id": "adfba91aefb7e9f1",
+      "item": {
+        "type": "paragraph",
+        "id": "adfba91aefb7e9f1",
+        "text": "The plugin interprets data that is loaded in the course of browsing. It updates as new information becomes available. For the newest information, reload the whole web page, not just the wiki page with the Activity plugin."
+      },
+      "date": 1354401282016
+    },
+    {
+      "type": "move",
+      "order": [
+        "1e34f0c615e9a564",
+        "20227a2466137813",
+        "64655cb747df6366",
+        "63c2c72d233b1bbb",
+        "59d50cdad99a336f",
+        "adfba91aefb7e9f1",
+        "d587f7aa780bbe8c",
+        "3a98c0f54a6bdc40",
+        "5d9e9030bece488c",
+        "258eebc705c5583e",
+        "7bda271909e25809",
+        "e77142847ba1464c",
+        "ba134ef79afcae9f"
+      ],
+      "id": "64655cb747df6366",
+      "date": 1354401295224
+    },
+    {
+      "type": "move",
+      "order": [
+        "1e34f0c615e9a564",
+        "20227a2466137813",
+        "64655cb747df6366",
+        "d587f7aa780bbe8c",
+        "63c2c72d233b1bbb",
+        "59d50cdad99a336f",
+        "adfba91aefb7e9f1",
+        "3a98c0f54a6bdc40",
+        "5d9e9030bece488c",
+        "258eebc705c5583e",
+        "7bda271909e25809",
+        "e77142847ba1464c",
+        "ba134ef79afcae9f"
+      ],
+      "id": "d587f7aa780bbe8c",
+      "date": 1354401299700
+    },
+    {
+      "type": "move",
+      "order": [
+        "1e34f0c615e9a564",
+        "20227a2466137813",
+        "5d9e9030bece488c",
+        "64655cb747df6366",
+        "d587f7aa780bbe8c",
+        "63c2c72d233b1bbb",
+        "59d50cdad99a336f",
+        "adfba91aefb7e9f1",
+        "3a98c0f54a6bdc40",
+        "258eebc705c5583e",
+        "7bda271909e25809",
+        "e77142847ba1464c",
+        "ba134ef79afcae9f"
+      ],
+      "id": "5d9e9030bece488c",
+      "date": 1354401320629
     }
   ]
 }
