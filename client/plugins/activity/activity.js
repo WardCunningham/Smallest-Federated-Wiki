@@ -6,7 +6,7 @@
     bind: function($item, item) {
       var display, merge;
       display = function(pages) {
-        var bigger, context, each, now, section, sections, sites, smaller, _i, _j, _k, _len, _len1, _len2, _results;
+        var bigger, context, each, i, joint, now, section, sections, sites, smaller, _i, _j, _k, _len, _len1, _len2, _ref, _results;
         now = (new Date).getTime();
         sections = [
           {
@@ -52,9 +52,10 @@
             }
           }
           bigger = smaller;
-          for (_k = 0, _len2 = sites.length; _k < _len2; _k++) {
-            each = sites[_k];
-            $item.append("<img width=\"16px\" height=\"16px\"\n  class=\"remote\"\n  title=\"" + each.site + "\n" + (wiki.util.formatElapsedTime(each.page.date)) + "\"\n  src=\"http://" + each.site + "/favicon.png\"\n  data-site=\"" + each.site + "\"\n  data-slug=\"" + each.page.slug + "\"> &nbsp;");
+          for (i = _k = 0, _len2 = sites.length; _k < _len2; i = ++_k) {
+            each = sites[i];
+            joint = ((_ref = sites[i + 1]) != null ? _ref.page.date : void 0) === each.page.date ? "" : "&nbsp";
+            $item.append("<img width=\"16px\" height=\"16px\"\n  class=\"remote\"\n  title=\"" + each.site + "\n" + (wiki.util.formatElapsedTime(each.page.date)) + "\"\n  src=\"http://" + each.site + "/favicon.png\"\n  data-site=\"" + each.site + "\"\n  data-slug=\"" + each.page.slug + "\">" + joint);
           }
           context = sites[0].site === location.host ? "view" : "view => " + sites[0].site;
           _results.push($item.append("<a class=\"internal\"\n  href=\"/" + sites[0].page.slug + "\"\n  data-page-name=\"" + sites[0].page.slug + "\"\n  title=\"" + context + "\">\n  " + (sites[0].page.title || sites[0].page.slug) + "\n</a><br>"));
