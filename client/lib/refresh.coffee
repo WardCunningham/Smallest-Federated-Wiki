@@ -64,24 +64,34 @@ createFactory = (pageElement) ->
   before = wiki.getItem(beforeElement)
   pageHandler.put pageElement, {item: item, id: item.id, type: "add", after: before?.id}
 
+buildPageHeader = ({title,tooltip,header_href,favicon_src})->
+  """<h1 title="#{tooltip}"><a href="#{header_href}"><img src="#{favicon_src}" height="32px" class="favicon"></a> #{title}</h1>"""
+
 emitHeader = (pageElement, page) ->
   site = $(pageElement).data('site')
-  if site? and site != 'local' and site != 'origin' and site != 'view'
-    $(pageElement)
-      .append """<h1 title="#{site}"><a href="//#{site}"><img src = "http://#{site}/favicon.png" height = "32px"></a> #{page.title}</h1>"""
+  loading_a_remote_page = site? and site != 'local' and site != 'origin' and site != 'view'
+  header = ''
+
+  pageHeader = if loading_a_remote_page
+    buildPageHeader
+      tooltip: site
+      header_href: "//#{site}"
+      favicon_src: "http://#{site}/favicon.png"
+      title: page.title
   else
-    $(pageElement)
-      .append(
-        $("""<h1 title="#{location.host}"/>""").append(
-          $("<a />").attr('href', '/').append(
-            $("<img>")
-              .error((e) ->
-                plugin.get('favicon', (favicon) ->
-                  favicon.create()))
-              .attr('class', 'favicon')
-              .attr('src', '/favicon.png')
-              .attr('height', '32px')
-          ), " #{page.title}"))
+    buildPageHeader
+      tooltip: location.host
+      header_href: "/"
+      favicon_src: "/favicon.png"
+      title: page.title
+
+  $(pageElement).append( pageHeader )
+  
+  unless loading_a_remote_page
+    $('img.favicon',pageElement).error (e)->
+      plugin.get 'favicon', (favicon) ->
+        favicon.create()
+
   if (rev = pageElement.attr('id').split('_rev')[1])?
     date = page.journal[page.journal.length-1].date
     $(pageElement).addClass('ghost').data('rev',rev).append $ """
