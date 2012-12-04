@@ -18,6 +18,7 @@
     "ws": "*",
     "event-stream": "*",
     "JSONStream": "*",
+    "async": "*",
     "glob": "*"
   },
   "scripts": {
