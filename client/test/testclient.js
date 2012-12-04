@@ -396,6 +396,8 @@ require.define("/lib/util.coffee",function(require,module,exports,__dirname,__fi
 
   module.exports = wiki.util = util = {};
 
+  util.createSynopsis = require('./synopsis');
+
   util.symbols = {
     create: '☼',
     add: '+',
@@ -534,7 +536,13 @@ require.define("/lib/util.coffee",function(require,module,exports,__dirname,__fi
     }
   };
 
-  util.createSynopsis = function(page) {
+}).call(this);
+
+});
+
+require.define("/lib/synopsis.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
+
+  module.exports = function(page) {
     var p1, p2, synopsis;
     synopsis = page.synopsis;
     if ((page != null) && (page.story != null)) {
@@ -1324,7 +1332,7 @@ require.define("/test/refresh.coffee",function(require,module,exports,__dirname,
 });
 
 require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
-  var createFactory, emitHeader, handleDragging, initAddButton, initDragging, neighborhood, pageHandler, plugin, refresh, state, util,
+  var buildPageHeader, createFactory, emitHeader, handleDragging, initAddButton, initDragging, neighborhood, pageHandler, plugin, refresh, state, util,
     __slice = [].slice;
 
   util = require('./util.coffee');
@@ -1413,17 +1421,35 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
     });
   };
 
+  buildPageHeader = function(_arg) {
+    var favicon_src, header_href, title, tooltip;
+    title = _arg.title, tooltip = _arg.tooltip, header_href = _arg.header_href, favicon_src = _arg.favicon_src;
+    return "<h1 title=\"" + tooltip + "\"><a href=\"" + header_href + "\"><img src=\"" + favicon_src + "\" height=\"32px\" class=\"favicon\"></a> " + title + "</h1>";
+  };
+
   emitHeader = function(pageElement, page) {
-    var date, rev, site;
+    var date, header, loading_a_remote_page, pageHeader, rev, site;
     site = $(pageElement).data('site');
-    if ((site != null) && site !== 'local' && site !== 'origin' && site !== 'view') {
-      $(pageElement).append("<h1 title=\"" + site + "\"><a href=\"//" + site + "\"><img src = \"http://" + site + "/favicon.png\" height = \"32px\"></a> " + page.title + "</h1>");
-    } else {
-      $(pageElement).append($("<h1 title=\"" + location.host + "\"/>").append($("<a />").attr('href', '/').append($("<img>").error(function(e) {
+    loading_a_remote_page = (site != null) && site !== 'local' && site !== 'origin' && site !== 'view';
+    header = '';
+    pageHeader = loading_a_remote_page ? buildPageHeader({
+      tooltip: site,
+      header_href: "//" + site,
+      favicon_src: "http://" + site + "/favicon.png",
+      title: page.title
+    }) : buildPageHeader({
+      tooltip: location.host,
+      header_href: "/",
+      favicon_src: "/favicon.png",
+      title: page.title
+    });
+    $(pageElement).append(pageHeader);
+    if (!loading_a_remote_page) {
+      $('img.favicon', pageElement).error(function(e) {
         return plugin.get('favicon', function(favicon) {
           return favicon.create();
         });
-      }).attr('class', 'favicon').attr('src', '/favicon.png').attr('height', '32px')), " " + page.title));
+      });
     }
     if ((rev = pageElement.attr('id').split('_rev')[1]) != null) {
       date = page.journal[page.journal.length - 1].date;
