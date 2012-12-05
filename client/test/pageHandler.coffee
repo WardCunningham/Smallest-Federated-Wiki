@@ -12,7 +12,6 @@ describe 'pageHandler.get', ->
     expect(pageHandler.context).to.eql([])
 
   pageInformationWithoutSite = {
-    wasServerGenerated: false
     slug: 'slugName'
     rev: 'revName'
   }

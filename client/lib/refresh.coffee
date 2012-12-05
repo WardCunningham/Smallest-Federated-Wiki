@@ -143,8 +143,6 @@ renderPageIntoPageElement = (pageData,$pageElement, siteFound) ->
     .append("<a class=\"show-page-source\" href=\"/#{slug}.json?random=#{util.randomBytes(4)}\" title=\"source\">JSON</a> . ")
     .append("<a>#{siteFound || 'origin'}</a>")
 
-  state.setUrl()
-
 
 wiki.buildPage = (data,siteFound,$pageElement) ->
 
@@ -153,14 +151,10 @@ wiki.buildPage = (data,siteFound,$pageElement) ->
   else
     $pageElement.data('site', siteFound)
 
-  if not data?
-    $pageElement.find('.item').each (i, each) ->
-      item = wiki.getItem($(each))
-      plugin.get item.type, (plugin) ->
-        plugin.bind $(each), item
-  else
-    #TODO: avoid passing siteFound
-    renderPageIntoPageElement( data, $pageElement, siteFound )
+  #TODO: avoid passing siteFound
+  renderPageIntoPageElement( data, $pageElement, siteFound )
+
+  state.setUrl()
 
   initDragging $pageElement
   initAddButton $pageElement
@@ -175,7 +169,6 @@ module.exports = refresh = wiki.refresh = ->
     slug: slug
     rev: rev
     site: $pageElement.data('site')
-    wasServerGenerated: $pageElement.attr('data-server-generated') == 'true'
   }
 
   createGhostPage = ->
