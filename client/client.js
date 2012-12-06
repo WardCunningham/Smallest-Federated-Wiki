@@ -413,6 +413,8 @@ require.define("/lib/legacy.coffee",function(require,module,exports,__dirname,__
 
   resolveLinks = wiki.resolveLinks = util.resolveLinks;
 
+  wiki.createSynopsis = util.createSynopsis;
+
   Array.prototype.last = function() {
     return this[this.length - 1];
   };

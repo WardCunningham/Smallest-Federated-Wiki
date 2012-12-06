@@ -8,6 +8,7 @@ refresh = require('./refresh.coffee')
 require ('./dom.coffee')
 
 resolveLinks = wiki.resolveLinks = util.resolveLinks
+wiki.createSynopsis = util.createSynopsis
 
 Array::last = ->
   this[@length - 1]

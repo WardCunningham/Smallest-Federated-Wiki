@@ -140,20 +140,10 @@
                 item.site = origin;
               }
               return $.getJSON("http://" + item.site + "/" + item.slug + ".json", function(remote) {
-                var p1, p2;
                 wiki.log('remote', remote);
                 item.type = 'reference';
                 item.title = remote.title || item.slug;
-                item.text = remote.synopsis;
-                p1 = remote.story[0];
-                p2 = remote.story[1];
-                if (p1.type === 'paragraph') {
-                  item.text || (item.text = p1.text);
-                }
-                if (p2.type === 'paragraph') {
-                  item.text || (item.text = p2.text);
-                }
-                item.text || (item.text = p1.text || p2.text || 'A recently found page.');
+                item.text = wiki.createSynopsis(remote);
                 syncEditAction();
                 if (item.site != null) {
                   return wiki.registerNeighbor(item.site);
