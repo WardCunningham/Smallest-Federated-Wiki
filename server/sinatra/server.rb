@@ -129,6 +129,7 @@ class Controller < Sinatra::Base
 
   get '/favicon.png' do
     content_type 'image/png'
+    headers 'Cache-Control' => "max-age=3600"
     cross_origin
     Favicon.get_or_create(File.join farm_status, 'favicon.png')
   end
