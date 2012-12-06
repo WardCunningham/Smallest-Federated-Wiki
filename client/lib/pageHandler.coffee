@@ -61,9 +61,6 @@ pageHandler.get = ({whenGotten,whenNotGotten,pageInformation}  ) ->
 
   wiki.log 'pageHandler.get', pageInformation.site, pageInformation.slug, pageInformation.rev, 'context', pageHandler.context.join ' => '
 
-  if pageInformation.wasServerGenerated
-    return whenGotten( null )
-
   unless pageInformation.site
     if localPage = pageFromLocalStorage(pageInformation.slug)
       localPage = revision.create pageInformation.rev, localPage if pageInformation.rev
