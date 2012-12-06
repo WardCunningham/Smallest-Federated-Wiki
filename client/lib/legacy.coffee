@@ -327,9 +327,16 @@ $ ->
     $("footer input:first").val $(this).attr('data-provider')
     $("footer form").submit()
 
-# CODE that gets the web page application started
-  state.first()
 
-  $('.page').each refresh
-  active.set($('.page').last())
+  if ($firstPage = $('.page:first')).data('serverGenerated')
+    # if the page appears to be a server generated page, but we're running javascript then
+    # redirect to the full-featured client-side version of the page.
+    # E.G. visiting /welcome-visitors.html with a JS-enabled browser will bounce you to /view/welcome-visitors
+    document.location = "/view/#{$firstPage.attr('id')}"
+  else
+    # CODE that gets the web page application started
+    state.first()
+
+    $('.page').each refresh
+    active.set($('.page').last())
 

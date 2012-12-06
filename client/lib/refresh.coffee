@@ -41,38 +41,38 @@ handleDragging = (evt, ui) ->
   action.id = item.id
   pageHandler.put thisPageElement, action
 
-initDragging = (pageElement) ->
-  storyElement = pageElement.find('.story')
+initDragging = ($pageElement) ->
+  storyElement = $pageElement.find('.story')
   storyElement.sortable(connectWith: '.page .story').on("sortupdate", handleDragging)
 
 
-initAddButton = (pageElement) ->
-  pageElement.find(".add-factory").live "click", (evt) ->
-    return if pageElement.hasClass 'ghost'
+initAddButton = ($pageElement) ->
+  $pageElement.find(".add-factory").live "click", (evt) ->
+    return if $pageElement.hasClass 'ghost'
     evt.preventDefault()
-    createFactory(pageElement)
+    createFactory($pageElement)
 
-createFactory = (pageElement) ->
+createFactory = ($pageElement) ->
   item =
     type: "factory"
     id: util.randomBytes(8)
   itemElement = $("<div />", class: "item factory").data('item',item).attr('data-id', item.id)
-  itemElement.data 'pageElement', pageElement
-  pageElement.find(".story").append(itemElement)
+  itemElement.data 'pageElement', $pageElement
+  $pageElement.find(".story").append(itemElement)
   plugin.do itemElement, item
   beforeElement = itemElement.prev('.item')
   before = wiki.getItem(beforeElement)
-  pageHandler.put pageElement, {item: item, id: item.id, type: "add", after: before?.id}
+  pageHandler.put $pageElement, {item: item, id: item.id, type: "add", after: before?.id}
 
 buildPageHeader = ({title,tooltip,header_href,favicon_src})->
   """<h1 title="#{tooltip}"><a href="#{header_href}"><img src="#{favicon_src}" height="32px" class="favicon"></a> #{title}</h1>"""
 
-emitHeader = (pageElement, page) ->
-  site = $(pageElement).data('site')
-  loading_a_remote_page = site? and site != 'local' and site != 'origin' and site != 'view'
+emitHeader = ($pageElement, page) ->
+  site = $pageElement.data('site')
+  isRemotePage = site? and site != 'local' and site != 'origin' and site != 'view'
   header = ''
 
-  pageHeader = if loading_a_remote_page
+  pageHeader = if isRemotePage
     buildPageHeader
       tooltip: site
       header_href: "//#{site}"
@@ -85,100 +85,91 @@ emitHeader = (pageElement, page) ->
       favicon_src: "/favicon.png"
       title: page.title
 
-  $(pageElement).append( pageHeader )
+  $pageElement.append( pageHeader )
   
-  unless loading_a_remote_page
-    $('img.favicon',pageElement).error (e)->
+  unless isRemotePage
+    $('img.favicon',$pageElement).error (e)->
       plugin.get 'favicon', (favicon) ->
         favicon.create()
 
-  if (rev = pageElement.attr('id').split('_rev')[1])?
+  if (rev = $pageElement.attr('id').split('_rev')[1])?
     date = page.journal[page.journal.length-1].date
-    $(pageElement).addClass('ghost').data('rev',rev).append $ """
+    $pageElement.addClass('ghost').data('rev',rev).append $ """
       <h2 class="revision">
         <span>
           #{if date? then util.formatDate(date) else "Revision #{rev}"}
         </span>
       </h2>
     """
+renderPageIntoPageElement = (pageData,$pageElement, siteFound) ->
+  page = $.extend(util.emptyPage(), pageData)
+  $pageElement.data("data", page)
+  slug = $pageElement.attr('id')
+  site = $pageElement.data('site')
 
-wiki.buildPage = (data,siteFound,pageElement) ->
+  context = ['view']
+  context.push site if site?
+  addContext = (site) -> context.push site if site? and not _.include context, site
+  addContext action.site for action in page.journal.slice(0).reverse()
+
+  wiki.resolutionContext = context
+
+  wiki.log 'buildPage', slug, 'context', context.join ' => '
+  emitHeader $pageElement, page
+
+  [storyElement, journalElement, footerElement] = ['story', 'journal', 'footer'].map (className) ->
+    $("<div />").addClass(className).appendTo($pageElement)
+
+  doItem = (i) ->
+    return if i >= page.story.length
+    item = page.story[i]
+    item = item[0] if $.isArray item # unwrap accidentally wrapped items
+    div = $("<div />").addClass("item").addClass(item.type).attr("data-id", item.id)
+    storyElement.append div
+    plugin.do div, item, -> doItem i+1
+  doItem 0
+
+  $.each page.journal, (i, action) ->
+    wiki.addToJournal journalElement, action
+
+  journalElement.append """
+    <div class="control-buttons">
+      <a href="#" class="button fork-page" title="fork this page">#{util.symbols['fork']}</a>
+      <a href="#" class="button add-factory" title="add paragraph">#{util.symbols['add']}</a>
+    </div>
+                        """
+  footerElement
+    .append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ')
+    .append("<a class=\"show-page-source\" href=\"/#{slug}.json?random=#{util.randomBytes(4)}\" title=\"source\">JSON</a> . ")
+    .append("<a>#{siteFound || 'origin'}</a>")
+
+
+wiki.buildPage = (data,siteFound,$pageElement) ->
 
   if siteFound == 'local'
-    pageElement.addClass('local')
+    $pageElement.addClass('local')
   else
-    pageElement.data('site', siteFound)
+    $pageElement.data('site', siteFound)
 
-  if not data?
-    pageElement.find('.item').each (i, each) ->
-      item = wiki.getItem($(each))
-      plugin.get item.type, (plugin) ->
-        plugin.bind $(each), item
-  else
-    page = $.extend(util.emptyPage(), data)
-    $(pageElement).data("data", page)
-    slug = $(pageElement).attr('id')
-    site = $(pageElement).data('site')
+  #TODO: avoid passing siteFound
+  renderPageIntoPageElement( data, $pageElement, siteFound )
 
-    context = ['view']
-    context.push site if site?
-    addContext = (site) -> context.push site if site? and not _.include context, site
-    addContext action.site for action in page.journal.slice(0).reverse()
-    wiki.resolutionContext = context
+  state.setUrl()
 
-    wiki.log 'buildPage', slug, 'site', site, 'context', context.join ' => '
-    emitHeader pageElement, page
-
-    [storyElement, journalElement, footerElement] = ['story', 'journal', 'footer'].map (className) ->
-      $("<div />").addClass(className).appendTo(pageElement)
-
-    doItem = (i) ->
-      return if i >= page.story.length
-      item = page.story[i]
-      item = item[0] if $.isArray item # unwrap accidentally wrapped items
-      div = $("<div />").addClass("item").addClass(item.type).attr("data-id", item.id)
-      storyElement.append div
-      plugin.do div, item, -> doItem i+1
-    doItem 0
-
-    $.each page.journal, (i, action) ->
-      wiki.addToJournal journalElement, action
-
-    journalElement.append """
-      <div class="control-buttons">
-        <a href="#" class="button fork-page" title="fork this page">#{util.symbols['fork']}</a>
-        <a href="#" class="button add-factory" title="add paragraph">#{util.symbols['add']}</a>
-      </div>
-                          """
-    footerElement
-      .append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ')
-      .append("<a class=\"show-page-source\" href=\"/#{slug}.json?random=#{util.randomBytes(4)}\" title=\"source\">JSON</a> . ")
-      .append("<a>#{siteFound || 'origin'}</a>")
-
-    state.setUrl()
-
-  initDragging pageElement
-  initAddButton pageElement
-  pageElement
+  initDragging $pageElement
+  initAddButton $pageElement
+  $pageElement
 
 
 module.exports = refresh = wiki.refresh = ->
-  pageElement = $(this)
+  $pageElement = $(this)
 
-  [slug, rev] = pageElement.attr('id').split('_rev')
+  [slug, rev] = $pageElement.attr('id').split('_rev')
   pageInformation = {
     slug: slug
     rev: rev
-    site: pageElement.data('site')
-    wasServerGenerated: pageElement.attr('data-server-generated') == 'true'
+    site: $pageElement.data('site')
   }
-
-  # No longer used, now that we create ghost pages for unknown pages
-  #createPage = ->
-    #title = $("""a[href="/#{slug}.html"]:last""").text()
-    #title or= slug
-    #pageHandler.put $(pageElement), {type: 'create', id: util.randomBytes(8), item: {title}}
-    #wiki.buildPage( {title}, undefined, pageElement )
 
   createGhostPage = ->
     title = $("""a[href="/#{slug}.html"]:last""").text() or slug
@@ -210,7 +201,8 @@ module.exports = refresh = wiki.refresh = ->
     if hits.length > 0
       page.story.push heading, hits...
       page.story[0].text = 'We could not find this page in the expected context.'
-    wiki.buildPage( page, undefined, pageElement ).addClass('ghost')
+
+    wiki.buildPage( page, undefined, $pageElement ).addClass('ghost')
 
   registerNeighbors = (data, site) ->
     if _.include ['local', 'origin', 'view', null, undefined], site
@@ -223,7 +215,7 @@ module.exports = refresh = wiki.refresh = ->
       neighborhood.registerNeighbor action.site if action.site?
 
   whenGotten = (data,siteFound) ->
-    wiki.buildPage( data, siteFound, pageElement )
+    wiki.buildPage( data, siteFound, $pageElement )
     registerNeighbors( data, siteFound )
 
   pageHandler.get
