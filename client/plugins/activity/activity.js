@@ -101,12 +101,10 @@
         pages.sort(function(a, b) {
           return (b[0].page.date || 0) - (a[0].page.date || 0);
         });
-        wiki.log('activity reconcile pages', pages);
         return pages;
       };
       display(merge(wiki.neighborhood));
       return $('body').on('new-neighbor-done', function(e, site) {
-        wiki.log("activty new-neighbor", site);
         return display(merge(wiki.neighborhood));
       });
     }

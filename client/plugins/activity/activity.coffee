@@ -60,11 +60,9 @@ window.plugins.activity =
       pages = (sites for slug, sites of pages)
       pages.sort (a, b) ->
           (b[0].page.date || 0) - (a[0].page.date || 0)
-      wiki.log 'activity reconcile pages', pages
       pages
 
     display merge wiki.neighborhood
 
     $('body').on 'new-neighbor-done', (e, site) ->
-      wiki.log "activty new-neighbor", site
       display merge wiki.neighborhood
