@@ -1,34 +1,41 @@
 window.plugins.factory =
   emit: (div, item) ->
     div.append '<p>Double-Click to Edit<br>Drop Text or Image to Insert</p>'
-    show_menu = ->
+    showMenu = ->
       menu = div.find('p').append "<br>Or Choose a Plugin"
-      wiki.log 'show menu', div, item, menu
+      menuItem = (title, name) ->
+        menu.append """
+          <li>
+            <a class="menu" href="#" title="#{title}">
+              #{name}
+            </a>
+          </li>
+        """
       if Array.isArray window.catalog
-        for info in window.catalog
-          menu.append "<li><a href='#' title='#{info.title}'>#{info.name}</a></li>"
-      else
-        for name, info of window.catalog # deprecated
-          menu.append "<li><a href='#' title='#{info.menu}'>#{name}</a></li>"
-      menu.find('a').click (evt)->
+        menuItem(info.title, info.name) for info in window.catalog
+      else  # deprecated
+        menuItem(info.menu, name) for name, info of window.catalog
+      menu.find('a.menu').click (evt)->
         div.removeClass('factory').addClass(item.type=evt.target.text.toLowerCase())
         div.unbind()
         wiki.textEditor div, item
 
-    if window.catalog?
-      wiki.log 'have menu', window.catalog
-      show_menu()
+    showPrompt = ->
+      div.append "<p>#{wiki.resolveLinks(item.prompt)}</b>"
+
+    if item.prompt
+      showPrompt()
+    else if window.catalog?
+      showMenu()
     else
-      wiki.log 'fetching menu', window.catalog
       $.getJSON '/system/factories.json', (data) ->
         window.catalog = data
-        wiki.log 'fetched menu', window.catalog
-        show_menu()
+        showMenu()
 
   bind: (div, item) ->
 
     syncEditAction = () ->
-      wiki.log 'item', item
+      wiki.log 'factory item', item
       div.empty().unbind()
       div.removeClass("factory").addClass(item.type)
       pageElement = div.parents('.page:first')
@@ -52,7 +59,7 @@ window.plugins.factory =
     div.bind "drop", (dropEvent) ->
 
       punt = (data) ->
-        wiki.log 'punt', dropEvent
+        wiki.log 'factory punt', dropEvent
         item.type = 'data'
         item.text = "Unexpected Item"
         item.data = data
@@ -97,12 +104,12 @@ window.plugins.factory =
         if dt.types? and ('text/uri-list' in dt.types or 'text/x-moz-url' in dt.types)
           url = dt.getData 'URL'
           if found = url.match /^http:\/\/([a-zA-Z0-9:.-]+)(\/([a-zA-Z0-9:.-]+)\/([a-z0-9-]+(_rev\d+)?))+$/
-            wiki.log 'drop url', found
+            wiki.log 'factory drop url', found
             [ignore, origin, ignore, item.site, item.slug, ignore] = found
             if $.inArray(item.site,['view','local','origin']) >= 0
               item.site = origin
             $.getJSON "http://#{item.site}/#{item.slug}.json", (remote) ->
-              wiki.log 'remote', remote
+              wiki.log 'factory remote', remote
               item.type = 'reference'
               item.title = remote.title || item.slug
               item.text = wiki.createSynopsis remote

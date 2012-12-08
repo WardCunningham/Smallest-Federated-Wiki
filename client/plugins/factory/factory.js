@@ -5,40 +5,44 @@
 
   window.plugins.factory = {
     emit: function(div, item) {
-      var show_menu;
+      var showMenu, showPrompt;
       div.append('<p>Double-Click to Edit<br>Drop Text or Image to Insert</p>');
-      show_menu = function() {
-        var info, menu, name, _i, _len, _ref, _ref1;
+      showMenu = function() {
+        var info, menu, menuItem, name, _i, _len, _ref, _ref1;
         menu = div.find('p').append("<br>Or Choose a Plugin");
-        wiki.log('show menu', div, item, menu);
+        menuItem = function(title, name) {
+          return menu.append("<li>\n  <a class=\"menu\" href=\"#\" title=\"" + title + "\">\n    " + name + "\n  </a>\n</li>");
+        };
         if (Array.isArray(window.catalog)) {
           _ref = window.catalog;
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             info = _ref[_i];
-            menu.append("<li><a href='#' title='" + info.title + "'>" + info.name + "</a></li>");
+            menuItem(info.title, info.name);
           }
         } else {
           _ref1 = window.catalog;
           for (name in _ref1) {
             info = _ref1[name];
-            menu.append("<li><a href='#' title='" + info.menu + "'>" + name + "</a></li>");
+            menuItem(info.menu, name);
           }
         }
-        return menu.find('a').click(function(evt) {
+        return menu.find('a.menu').click(function(evt) {
           div.removeClass('factory').addClass(item.type = evt.target.text.toLowerCase());
           div.unbind();
           return wiki.textEditor(div, item);
         });
       };
-      if (window.catalog != null) {
-        wiki.log('have menu', window.catalog);
-        return show_menu();
+      showPrompt = function() {
+        return div.append("<p>" + (wiki.resolveLinks(item.prompt)) + "</b>");
+      };
+      if (item.prompt) {
+        return showPrompt();
+      } else if (window.catalog != null) {
+        return showMenu();
       } else {
-        wiki.log('fetching menu', window.catalog);
         return $.getJSON('/system/factories.json', function(data) {
           window.catalog = data;
-          wiki.log('fetched menu', window.catalog);
-          return show_menu();
+          return showMenu();
         });
       }
     },
@@ -46,7 +50,7 @@
       var syncEditAction;
       syncEditAction = function() {
         var pageElement;
-        wiki.log('item', item);
+        wiki.log('factory item', item);
         div.empty().unbind();
         div.removeClass("factory").addClass(item.type);
         pageElement = div.parents('.page:first');
@@ -80,7 +84,7 @@
       return div.bind("drop", function(dropEvent) {
         var dt, found, ignore, origin, punt, readFile, url;
         punt = function(data) {
-          wiki.log('punt', dropEvent);
+          wiki.log('factory punt', dropEvent);
           item.type = 'data';
           item.text = "Unexpected Item";
           item.data = data;
@@ -134,13 +138,13 @@
           if ((dt.types != null) && (__indexOf.call(dt.types, 'text/uri-list') >= 0 || __indexOf.call(dt.types, 'text/x-moz-url') >= 0)) {
             url = dt.getData('URL');
             if (found = url.match(/^http:\/\/([a-zA-Z0-9:.-]+)(\/([a-zA-Z0-9:.-]+)\/([a-z0-9-]+(_rev\d+)?))+$/)) {
-              wiki.log('drop url', found);
+              wiki.log('factory drop url', found);
               ignore = found[0], origin = found[1], ignore = found[2], item.site = found[3], item.slug = found[4], ignore = found[5];
               if ($.inArray(item.site, ['view', 'local', 'origin']) >= 0) {
                 item.site = origin;
               }
               return $.getJSON("http://" + item.site + "/" + item.slug + ".json", function(remote) {
-                wiki.log('remote', remote);
+                wiki.log('factory remote', remote);
                 item.type = 'reference';
                 item.title = remote.title || item.slug;
                 item.text = wiki.createSynopsis(remote);
