@@ -2,22 +2,17 @@
 (function() {
 
   window.plugins.federatedWiki = {
-    emit: function(div, item) {
+    emit: function($item, item) {
       var site, slug;
       slug = item.slug || 'welcome-visitors';
       site = item.site;
-      wiki.log('emit', slug, 'site', site);
       return wiki.resolveFrom(site, function() {
-        var title;
-        title = wiki.resolveLinks("[[" + (item.title || slug) + "]]");
-        div.append($("<h3 style='margin-bottom:3px;'><img src='//" + site + "/favicon.png' class='remote' width='16px' height='16px' title='" + site + "'> " + title + "</h3>"));
-        div.append($("<div>" + (wiki.resolveLinks(item.text)) + "</div>"));
-        return div.find('img').data('slug', slug).data('site', site);
+        return $item.append("<p style='margin-bottom:3px;'>\n  <img class='remote'\n    src='//" + site + "/favicon.png'\n    title='" + site + "'\n    data-site=\"" + site + "\"\n    data-slug=\"" + slug + "\"\n  >\n  " + (wiki.resolveLinks("[[" + (item.title || slug) + "]]")) + "\n</p>\n<div>\n  " + (wiki.resolveLinks(item.text)) + "\n</div>");
       });
     },
-    bind: function(div, item) {
-      return div.dblclick(function() {
-        return wiki.textEditor(div, item);
+    bind: function($item, item) {
+      return $item.dblclick(function() {
+        return wiki.textEditor($item, item);
       });
     }
   };

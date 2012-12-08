@@ -29,8 +29,7 @@ window.plugins.activity =
         for each, i in sites
           joint = if sites[i+1]?.page.date == each.page.date then "" else "&nbsp"
           $item.append """
-            <img width="16px" height="16px"
-              class="remote"
+            <img class="remote"
               title="#{each.site}\n#{wiki.util.formatElapsedTime each.page.date}"
               src="http://#{each.site}/favicon.png"
               data-site="#{each.site}"

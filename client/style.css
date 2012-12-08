@@ -189,10 +189,10 @@ footer {
   color: gray;
   font-size: 70%; }
 
-.federatedWiki .reference {
-  margin-top: 0;
-  color: gray;
-  font-size: 70%; }
+image.remote {
+  width:16px;
+  height:26px;
+}
 
 p.readout {
   text-align: center;
