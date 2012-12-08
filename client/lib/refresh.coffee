@@ -114,7 +114,6 @@ renderPageIntoPageElement = (pageData,$pageElement, siteFound) ->
 
   wiki.resolutionContext = context
 
-  wiki.log 'buildPage', slug, 'context', context.join ' => '
   emitHeader $pageElement, page
 
   [storyElement, journalElement, footerElement] = ['story', 'journal', 'footer'].map (className) ->

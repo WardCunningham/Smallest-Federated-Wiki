@@ -44,7 +44,7 @@ $ ->
 # FUNCTIONS used by plugins and elsewhere
 
   wiki.log = (things...) ->
-    console.log things if console?.log?
+    console.log things... if console?.log?
 
   wiki.resolutionContext = []
   resolveFrom = wiki.resolveFrom = (addition, callback) ->
@@ -221,10 +221,13 @@ $ ->
 
   $(document)
     .ajaxError (event, request, settings) ->
+      return if request.status == 0 or request.status == 404
       wiki.log 'ajax error', event, request, settings
-      return if request.status == 0
-      msg = "<li class='error'>Error on #{settings.url}: #{request.responseText}</li>"
-      $('.main').prepend msg unless request.status == 404
+      $('.main').prepend """
+        <li class='error'>
+          Error on #{settings.url}: #{request.responseText}
+        </li>
+      """
 
   getTemplate = (slug, done) ->
     return done(null) unless slug
