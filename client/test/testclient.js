@@ -1341,14 +1341,13 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
   neighborhood = require('./neighborhood.coffee');
 
   handleDragging = function(evt, ui) {
-    var action, before, beforeElement, destinationPageElement, equals, item, itemElement, journalElement, moveFromPage, moveToPage, moveWithinPage, order, sourcePageElement, sourceSite, thisPageElement;
+    var action, before, beforeElement, destinationPageElement, equals, item, itemElement, moveFromPage, moveToPage, moveWithinPage, order, sourcePageElement, sourceSite, thisPageElement;
     itemElement = ui.item;
     item = wiki.getItem(itemElement);
     thisPageElement = $(this).parents('.page:first');
     sourcePageElement = itemElement.data('pageElement');
     sourceSite = sourcePageElement.data('site');
     destinationPageElement = itemElement.parents('.page:first');
-    journalElement = thisPageElement.find('.journal');
     equals = function(a, b) {
       return a && b && a.get(0) === b.get(0);
     };
@@ -1376,25 +1375,25 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
     return pageHandler.put(thisPageElement, action);
   };
 
-  initDragging = function($pageElement) {
-    var storyElement;
-    storyElement = $pageElement.find('.story');
-    return storyElement.sortable({
+  initDragging = function($page) {
+    var $story;
+    $story = $page.find('.story');
+    return $story.sortable({
       connectWith: '.page .story'
     }).on("sortupdate", handleDragging);
   };
 
-  initAddButton = function($pageElement) {
-    return $pageElement.find(".add-factory").live("click", function(evt) {
-      if ($pageElement.hasClass('ghost')) {
+  initAddButton = function($page) {
+    return $page.find(".add-factory").live("click", function(evt) {
+      if ($page.hasClass('ghost')) {
         return;
       }
       evt.preventDefault();
-      return createFactory($pageElement);
+      return createFactory($page);
     });
   };
 
-  createFactory = function($pageElement) {
+  createFactory = function($page) {
     var before, beforeElement, item, itemElement;
     item = {
       type: "factory",
@@ -1403,12 +1402,12 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
     itemElement = $("<div />", {
       "class": "item factory"
     }).data('item', item).attr('data-id', item.id);
-    itemElement.data('pageElement', $pageElement);
-    $pageElement.find(".story").append(itemElement);
+    itemElement.data('pageElement', $page);
+    $page.find(".story").append(itemElement);
     plugin["do"](itemElement, item);
     beforeElement = itemElement.prev('.item');
     before = wiki.getItem(beforeElement);
-    return pageHandler.put($pageElement, {
+    return pageHandler.put($page, {
       item: item,
       id: item.id,
       type: "add",
@@ -1422,9 +1421,9 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
     return "<h1 title=\"" + tooltip + "\"><a href=\"" + header_href + "\"><img src=\"" + favicon_src + "\" height=\"32px\" class=\"favicon\"></a> " + title + "</h1>";
   };
 
-  emitHeader = function($pageElement, page) {
+  emitHeader = function($page, page) {
     var date, header, isRemotePage, pageHeader, rev, site;
-    site = $pageElement.data('site');
+    site = $page.data('site');
     isRemotePage = (site != null) && site !== 'local' && site !== 'origin' && site !== 'view';
     header = '';
     pageHeader = isRemotePage ? buildPageHeader({
@@ -1438,26 +1437,26 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
       favicon_src: "/favicon.png",
       title: page.title
     });
-    $pageElement.append(pageHeader);
+    $page.append(pageHeader);
     if (!isRemotePage) {
-      $('img.favicon', $pageElement).error(function(e) {
+      $('img.favicon', $page).error(function(e) {
         return plugin.get('favicon', function(favicon) {
           return favicon.create();
         });
       });
     }
-    if ((rev = $pageElement.attr('id').split('_rev')[1]) != null) {
+    if ((rev = $page.attr('id').split('_rev')[1]) != null) {
       date = page.journal[page.journal.length - 1].date;
-      return $pageElement.addClass('ghost').data('rev', rev).append($("<h2 class=\"revision\">\n  <span>\n    " + (date != null ? util.formatDate(date) : "Revision " + rev) + "\n  </span>\n</h2>"));
+      return $page.addClass('ghost').data('rev', rev).append($("<h2 class=\"revision\">\n  <span>\n    " + (date != null ? util.formatDate(date) : "Revision " + rev) + "\n  </span>\n</h2>"));
     }
   };
 
-  renderPageIntoPageElement = function(pageData, $pageElement, siteFound) {
-    var action, addContext, context, doItem, footerElement, journalElement, page, site, slug, storyElement, _i, _len, _ref, _ref1;
+  renderPageIntoPageElement = function(pageData, $page, siteFound) {
+    var $footer, $journal, $story, action, addContext, context, emitItem, page, site, slug, _i, _j, _len, _len1, _ref, _ref1, _ref2;
     page = $.extend(util.emptyPage(), pageData);
-    $pageElement.data("data", page);
-    slug = $pageElement.attr('id');
-    site = $pageElement.data('site');
+    $page.data("data", page);
+    slug = $page.attr('id');
+    site = $page.data('site');
     context = ['view'];
     if (site != null) {
       context.push(site);
@@ -1473,54 +1472,53 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
       addContext(action.site);
     }
     wiki.resolutionContext = context;
-    emitHeader($pageElement, page);
+    emitHeader($page, page);
     _ref1 = ['story', 'journal', 'footer'].map(function(className) {
-      return $("<div />").addClass(className).appendTo($pageElement);
-    }), storyElement = _ref1[0], journalElement = _ref1[1], footerElement = _ref1[2];
-    doItem = function(i) {
-      var div, item;
+      return $("<div />").addClass(className).appendTo($page);
+    }), $story = _ref1[0], $journal = _ref1[1], $footer = _ref1[2];
+    emitItem = function(i) {
+      var $item, item;
       if (i >= page.story.length) {
         return;
       }
       item = page.story[i];
-      if ($.isArray(item)) {
-        item = item[0];
-      }
-      div = $("<div />").addClass("item").addClass(item.type).attr("data-id", item.id);
-      storyElement.append(div);
-      return plugin["do"](div, item, function() {
-        return doItem(i + 1);
+      $item = $("<div class=\"item " + item.type + "\" data-id=\"" + item.id + "\">");
+      $story.append($item);
+      return plugin["do"]($item, item, function() {
+        return emitItem(i + 1);
       });
     };
-    doItem(0);
-    $.each(page.journal, function(i, action) {
-      return wiki.addToJournal(journalElement, action);
-    });
-    journalElement.append("<div class=\"control-buttons\">\n  <a href=\"#\" class=\"button fork-page\" title=\"fork this page\">" + util.symbols['fork'] + "</a>\n  <a href=\"#\" class=\"button add-factory\" title=\"add paragraph\">" + util.symbols['add'] + "</a>\n</div>");
-    return footerElement.append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ').append("<a class=\"show-page-source\" href=\"/" + slug + ".json?random=" + (util.randomBytes(4)) + "\" title=\"source\">JSON</a> . ").append("<a>" + (siteFound || 'origin') + "</a>");
+    emitItem(0);
+    _ref2 = page.journal;
+    for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+      action = _ref2[_j];
+      wiki.addToJournal($journal, action);
+    }
+    $journal.append("<div class=\"control-buttons\">\n  <a href=\"#\" class=\"button fork-page\" title=\"fork this page\">" + util.symbols['fork'] + "</a>\n  <a href=\"#\" class=\"button add-factory\" title=\"add paragraph\">" + util.symbols['add'] + "</a>\n</div>");
+    return $footer.append("<a id=\"license\" href=\"http://creativecommons.org/licenses/by-sa/3.0/\">CC BY-SA 3.0</a> .\n<a class=\"show-page-source\" href=\"/" + slug + ".json?random=" + (util.randomBytes(4)) + "\" title=\"source\">JSON</a> .\n<a>" + (siteFound || 'origin') + "</a>");
   };
 
-  wiki.buildPage = function(data, siteFound, $pageElement) {
+  wiki.buildPage = function(data, siteFound, $page) {
     if (siteFound === 'local') {
-      $pageElement.addClass('local');
+      $page.addClass('local');
     } else {
-      $pageElement.data('site', siteFound);
+      $page.data('site', siteFound);
     }
-    renderPageIntoPageElement(data, $pageElement, siteFound);
+    renderPageIntoPageElement(data, $page, siteFound);
     state.setUrl();
-    initDragging($pageElement);
-    initAddButton($pageElement);
-    return $pageElement;
+    initDragging($page);
+    initAddButton($page);
+    return $page;
   };
 
   module.exports = refresh = wiki.refresh = function() {
-    var $pageElement, createGhostPage, pageInformation, registerNeighbors, rev, slug, whenGotten, _ref;
-    $pageElement = $(this);
-    _ref = $pageElement.attr('id').split('_rev'), slug = _ref[0], rev = _ref[1];
+    var $page, createGhostPage, pageInformation, registerNeighbors, rev, slug, whenGotten, _ref;
+    $page = $(this);
+    _ref = $page.attr('id').split('_rev'), slug = _ref[0], rev = _ref[1];
     pageInformation = {
       slug: slug,
       rev: rev,
-      site: $pageElement.data('site')
+      site: $page.data('site')
     };
     createGhostPage = function() {
       var heading, hits, info, page, result, site, title, _ref1, _ref2;
@@ -1565,7 +1563,7 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
         (_ref2 = page.story).push.apply(_ref2, [heading].concat(__slice.call(hits)));
         page.story[0].text = 'We could not find this page in the expected context.';
       }
-      return wiki.buildPage(page, void 0, $pageElement).addClass('ghost');
+      return wiki.buildPage(page, void 0, $page).addClass('ghost');
     };
     registerNeighbors = function(data, site) {
       var action, item, _i, _j, _len, _len1, _ref1, _ref2, _results;
@@ -1594,7 +1592,7 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
       return _results;
     };
     whenGotten = function(data, siteFound) {
-      wiki.buildPage(data, siteFound, $pageElement);
+      wiki.buildPage(data, siteFound, $page);
       return registerNeighbors(data, siteFound);
     };
     return pageHandler.get({
