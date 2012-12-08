@@ -13,7 +13,6 @@ handleDragging = (evt, ui) ->
   sourceSite = sourcePageElement.data('site')
 
   destinationPageElement = itemElement.parents('.page:first')
-  journalElement = thisPageElement.find('.journal')
   equals = (a, b) -> a and b and a.get(0) == b.get(0)
 
   moveWithinPage = not sourcePageElement or equals(sourcePageElement, destinationPageElement)
@@ -41,34 +40,34 @@ handleDragging = (evt, ui) ->
   action.id = item.id
   pageHandler.put thisPageElement, action
 
-initDragging = ($pageElement) ->
-  storyElement = $pageElement.find('.story')
-  storyElement.sortable(connectWith: '.page .story').on("sortupdate", handleDragging)
+initDragging = ($page) ->
+  $story = $page.find('.story')
+  $story.sortable(connectWith: '.page .story').on("sortupdate", handleDragging)
 
 
-initAddButton = ($pageElement) ->
-  $pageElement.find(".add-factory").live "click", (evt) ->
-    return if $pageElement.hasClass 'ghost'
+initAddButton = ($page) ->
+  $page.find(".add-factory").live "click", (evt) ->
+    return if $page.hasClass 'ghost'
     evt.preventDefault()
-    createFactory($pageElement)
+    createFactory($page)
 
-createFactory = ($pageElement) ->
+createFactory = ($page) ->
   item =
     type: "factory"
     id: util.randomBytes(8)
   itemElement = $("<div />", class: "item factory").data('item',item).attr('data-id', item.id)
-  itemElement.data 'pageElement', $pageElement
-  $pageElement.find(".story").append(itemElement)
+  itemElement.data 'pageElement', $page
+  $page.find(".story").append(itemElement)
   plugin.do itemElement, item
   beforeElement = itemElement.prev('.item')
   before = wiki.getItem(beforeElement)
-  pageHandler.put $pageElement, {item: item, id: item.id, type: "add", after: before?.id}
+  pageHandler.put $page, {item: item, id: item.id, type: "add", after: before?.id}
 
 buildPageHeader = ({title,tooltip,header_href,favicon_src})->
   """<h1 title="#{tooltip}"><a href="#{header_href}"><img src="#{favicon_src}" height="32px" class="favicon"></a> #{title}</h1>"""
 
-emitHeader = ($pageElement, page) ->
-  site = $pageElement.data('site')
+emitHeader = ($page, page) ->
+  site = $page.data('site')
   isRemotePage = site? and site != 'local' and site != 'origin' and site != 'view'
   header = ''
 
@@ -85,27 +84,27 @@ emitHeader = ($pageElement, page) ->
       favicon_src: "/favicon.png"
       title: page.title
 
-  $pageElement.append( pageHeader )
+  $page.append( pageHeader )
   
   unless isRemotePage
-    $('img.favicon',$pageElement).error (e)->
+    $('img.favicon',$page).error (e)->
       plugin.get 'favicon', (favicon) ->
         favicon.create()
 
-  if (rev = $pageElement.attr('id').split('_rev')[1])?
+  if (rev = $page.attr('id').split('_rev')[1])?
     date = page.journal[page.journal.length-1].date
-    $pageElement.addClass('ghost').data('rev',rev).append $ """
+    $page.addClass('ghost').data('rev',rev).append $ """
       <h2 class="revision">
         <span>
           #{if date? then util.formatDate(date) else "Revision #{rev}"}
         </span>
       </h2>
     """
-renderPageIntoPageElement = (pageData,$pageElement, siteFound) ->
+renderPageIntoPageElement = (pageData,$page, siteFound) ->
   page = $.extend(util.emptyPage(), pageData)
-  $pageElement.data("data", page)
-  slug = $pageElement.attr('id')
-  site = $pageElement.data('site')
+  $page.data("data", page)
+  slug = $page.attr('id')
+  site = $page.data('site')
 
   context = ['view']
   context.push site if site?
@@ -114,60 +113,61 @@ renderPageIntoPageElement = (pageData,$pageElement, siteFound) ->
 
   wiki.resolutionContext = context
 
-  emitHeader $pageElement, page
+  emitHeader $page, page
 
-  [storyElement, journalElement, footerElement] = ['story', 'journal', 'footer'].map (className) ->
-    $("<div />").addClass(className).appendTo($pageElement)
+  [$story, $journal, $footer] = ['story', 'journal', 'footer'].map (className) ->
+    $("<div />").addClass(className).appendTo($page)
 
-  doItem = (i) ->
+  emitItem = (i) ->
     return if i >= page.story.length
     item = page.story[i]
-    item = item[0] if $.isArray item # unwrap accidentally wrapped items
-    div = $("<div />").addClass("item").addClass(item.type).attr("data-id", item.id)
-    storyElement.append div
-    plugin.do div, item, -> doItem i+1
-  doItem 0
+    $item = $ """<div class="item #{item.type}" data-id="#{item.id}">"""
+    $story.append $item
+    plugin.do $item, item, -> emitItem i+1
+  emitItem 0
 
-  $.each page.journal, (i, action) ->
-    wiki.addToJournal journalElement, action
+  for action in page.journal
+    wiki.addToJournal $journal, action
 
-  journalElement.append """
+  $journal.append """
     <div class="control-buttons">
       <a href="#" class="button fork-page" title="fork this page">#{util.symbols['fork']}</a>
       <a href="#" class="button add-factory" title="add paragraph">#{util.symbols['add']}</a>
     </div>
-                        """
-  footerElement
-    .append('<a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> . ')
-    .append("<a class=\"show-page-source\" href=\"/#{slug}.json?random=#{util.randomBytes(4)}\" title=\"source\">JSON</a> . ")
-    .append("<a>#{siteFound || 'origin'}</a>")
+  """
+
+  $footer.append """
+    <a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> .
+    <a class="show-page-source" href="/#{slug}.json?random=#{util.randomBytes(4)}" title="source">JSON</a> .
+    <a>#{siteFound || 'origin'}</a>
+  """
 
 
-wiki.buildPage = (data,siteFound,$pageElement) ->
+wiki.buildPage = (data,siteFound,$page) ->
 
   if siteFound == 'local'
-    $pageElement.addClass('local')
+    $page.addClass('local')
   else
-    $pageElement.data('site', siteFound)
+    $page.data('site', siteFound)
 
   #TODO: avoid passing siteFound
-  renderPageIntoPageElement( data, $pageElement, siteFound )
+  renderPageIntoPageElement( data, $page, siteFound )
 
   state.setUrl()
 
-  initDragging $pageElement
-  initAddButton $pageElement
-  $pageElement
+  initDragging $page
+  initAddButton $page
+  $page
 
 
 module.exports = refresh = wiki.refresh = ->
-  $pageElement = $(this)
+  $page = $(this)
 
-  [slug, rev] = $pageElement.attr('id').split('_rev')
+  [slug, rev] = $page.attr('id').split('_rev')
   pageInformation = {
     slug: slug
     rev: rev
-    site: $pageElement.data('site')
+    site: $page.data('site')
   }
 
   createGhostPage = ->
@@ -201,7 +201,7 @@ module.exports = refresh = wiki.refresh = ->
       page.story.push heading, hits...
       page.story[0].text = 'We could not find this page in the expected context.'
 
-    wiki.buildPage( page, undefined, $pageElement ).addClass('ghost')
+    wiki.buildPage( page, undefined, $page ).addClass('ghost')
 
   registerNeighbors = (data, site) ->
     if _.include ['local', 'origin', 'view', null, undefined], site
@@ -214,7 +214,7 @@ module.exports = refresh = wiki.refresh = ->
       neighborhood.registerNeighbor action.site if action.site?
 
   whenGotten = (data,siteFound) ->
-    wiki.buildPage( data, siteFound, $pageElement )
+    wiki.buildPage( data, siteFound, $page )
     registerNeighbors( data, siteFound )
 
   pageHandler.get
