@@ -113,7 +113,7 @@ The server is a ruby bundle. Get the bundler gem and then use it to get everythi
 Launch the server with this bundle command:
 
 	cd server/sinatra
-	bundle exec rackup -s thin -p 1111
+	bundle exec rackup -s puma -p 1111
 
 Now go to your browser and browse your new wiki:
 
@@ -174,5 +174,5 @@ for those not using Ruby much, but using Debian:
     sudo gem install bundle
     sudo /var/lib/gems/1.8/bin/bundle install
     rvm 1.9.2
-    /var/lib/gems/1.8/bin/bundle exec rackup -s thin -p 1111
+    /var/lib/gems/1.8/bin/bundle exec rackup -s puma -p 1111
 
