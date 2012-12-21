@@ -1,0 +1,134 @@
+{
+  "title": "About Report Plugin",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "a2cff8d47db5a135",
+      "text": "The report plugin specifies when reports are due and how they should be delivered."
+    },
+    {
+      "type": "report",
+      "id": "5c1f884bf173e679",
+      "text": "DAILY\n  ward@example.com \n  sam@example.com\n\nWEEKLY TUESDAY\n  headquarters@example.com\n  console"
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "item": {
+        "title": "About Report Plugin"
+      },
+      "date": 1356033566447
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "a2cff8d47db5a135"
+      },
+      "id": "a2cff8d47db5a135",
+      "type": "add",
+      "date": 1356033574449
+    },
+    {
+      "type": "edit",
+      "id": "a2cff8d47db5a135",
+      "item": {
+        "type": "paragraph",
+        "id": "a2cff8d47db5a135",
+        "text": "The report plugin specifies when reports are due and how they should be delivered."
+      },
+      "date": 1356033617554
+    },
+    {
+      "item": {
+        "type": "report",
+        "id": "5c1f884bf173e679",
+        "text": ""
+      },
+      "id": "5c1f884bf173e679",
+      "type": "add",
+      "after": "a2cff8d47db5a135",
+      "date": 1356033618062
+    },
+    {
+      "type": "edit",
+      "id": "5c1f884bf173e679",
+      "item": {
+        "type": "report",
+        "id": "5c1f884bf173e679",
+        "text": "WEEKLY TUESDAY ward@c2.com"
+      },
+      "date": 1356033702009
+    },
+    {
+      "type": "edit",
+      "id": "5c1f884bf173e679",
+      "item": {
+        "type": "report",
+        "id": "5c1f884bf173e679",
+        "text": "ward@c2.com"
+      },
+      "date": 1356037594354
+    },
+    {
+      "type": "edit",
+      "id": "5c1f884bf173e679",
+      "item": {
+        "type": "report",
+        "id": "5c1f884bf173e679",
+        "text": "TUE ward@c2.com"
+      },
+      "date": 1356037608528
+    },
+    {
+      "type": "edit",
+      "id": "5c1f884bf173e679",
+      "item": {
+        "type": "report",
+        "id": "5c1f884bf173e679",
+        "text": "DAILY ward@c2.com"
+      },
+      "date": 1356038001575
+    },
+    {
+      "type": "edit",
+      "id": "5c1f884bf173e679",
+      "item": {
+        "type": "report",
+        "id": "5c1f884bf173e679",
+        "text": "DAILY\n  ward@example.com \n  sam@example.com"
+      },
+      "date": 1356038105325
+    },
+    {
+      "type": "edit",
+      "id": "5c1f884bf173e679",
+      "item": {
+        "type": "report",
+        "id": "5c1f884bf173e679",
+        "text": "DAILY\n  ward@example.com \n  sam@example.com\n\nWEEKLY\n  headquarters@example.com"
+      },
+      "date": 1356038171586
+    },
+    {
+      "type": "edit",
+      "id": "5c1f884bf173e679",
+      "item": {
+        "type": "report",
+        "id": "5c1f884bf173e679",
+        "text": "DAILY\n  ward@example.com \n  sam@example.com\n\nWEEKLY TUESDAY\n  headquarters@example.com"
+      },
+      "date": 1356041135798
+    },
+    {
+      "type": "edit",
+      "id": "5c1f884bf173e679",
+      "item": {
+        "type": "report",
+        "id": "5c1f884bf173e679",
+        "text": "DAILY\n  ward@example.com \n  sam@example.com\n\nWEEKLY TUESDAY\n  headquarters@example.com\n  console"
+      },
+      "date": 1356041995279
+    }
+  ]
+}
