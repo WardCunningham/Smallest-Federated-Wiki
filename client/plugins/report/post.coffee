@@ -1,16 +1,21 @@
 child = require 'child_process'
 fs = require 'fs'
 report = require './report.js'
-farm = '../../../data/farm'
 print = (arg...) -> console.log arg...
+
+
+# */10 * * * * (cd wiki/client/plugins/report; Port=:1111 /usr/local/bin/node post.js)
+
+port = process.env.Port or ''
+farm = process.env.Farm or '../../../data/farm'
 
 # Fetch data from wiki farm files
 
-pagePaths = (sufix, done) ->
+findPaths = (sufix, done) ->
   child.exec "ls #{farm}/*/pages/*-#{sufix}", (err, stdout, stderr) ->
     done stdout.split /\n/
 
-pageObject = (path, done) ->
+fetchPage = (path, done) ->
   text = fs.readFile path, 'utf8', (err, text) ->
     done JSON.parse text
 
@@ -20,23 +25,21 @@ findSchedule = (page) ->
   null
 
 findPubs = (done) ->
-  pagePaths 'report', (paths) ->
+  findPaths 'report', (paths) ->
     path = paths[0]
     [x,x,x,x,x,site,x,slug] = path.split '/'
-    pageObject path, (page) ->
+    fetchPage path, (page) ->
       if schedule = findSchedule page
         for issue in schedule
           if issue.interval? and issue.recipients?.length
             done {site, slug, page, schedule, issue}
 
 
-# Compose and send email
+
+# Compose summary from story and journal
 
 fold = (text) ->
   text.match(/(\S*\s*){1,9}/g).join "\n"
-
-header = (fields) ->
-  ("#{k}: #{v}" for k, v of fields).join "\n"
 
 compose = (page) ->
   result = []
@@ -51,7 +54,14 @@ ready = ({issue, now, period}) ->
   lapse = now.getTime() - thisIssue.getTime()
   lapse < window
 
-enclose = ({site, port, slug, page, issue, summary}) ->
+
+
+# Hand off to sendmail for distribution
+
+header = (fields) ->
+  ("#{k}: #{v}" for k, v of fields).join "\n"
+
+enclose = ({site, slug, page, issue, summary}) ->
   [header
     To: issue.recipients.join ", "
     'Reply-to': issue.recipients.join ", "
@@ -63,9 +73,13 @@ send = (pub) ->
   send = child.spawn 'sendmail', ['-fward@wiki.org', '-t']
   send.stdin.write pub.message
   send.stdin.end()
+  send.on 'exit', (code) -> print "sent #{pub.page.title} (pub.issue.interval), code: #{code}"
+
+
+
+# Main program loops over all publications
 
 findPubs (pub) ->
-  pub.port = ':1111'
   pub.now = new Date(2012,12-1,21,0,0,3)
   pub.period = 10
   if ready pub
