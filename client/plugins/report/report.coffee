@@ -1,28 +1,30 @@
-intervals = 
-	{'HOURLY','DAILY','WEEKLY','MONTHLY','YEARLY'}
-hours = 
-	{'MIDNIGHT','MORNING','NOON','AFTERNOON'}
-days = 
-	{'SUNDAY','MONDAY','TUESDAY','WEDNESDAY',
-	'THURSDAY','FRIDAY','SATURDAY'}
-months =
-	{'JANUARY','FEBUARY','MARCH','APRIL','MAY','JUNE',
-	'JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'}
+enumerate = (keys...) ->
+	obj = {keys}
+	obj[k] = i for k,i in keys
+	obj
+
+intervals = enumerate 'HOURLY','DAILY','WEEKLY','MONTHLY','YEARLY'
+hours = enumerate 'MIDNIGHT','MORNING','NOON','AFTERNOON'
+days = enumerate 'SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY'
+months = enumerate 'JANUARY','FEBUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'
 
 decode = (text) ->
 	schedule = []
 	issue = null
 	for word in text.match /\S+/g
-		if intervals[word]
-			schedule.push issue =
-				interval: word
-				recipients: []
-		else if days[word]
-			issue.offset = word
-		else if word.match /@/
-			issue.recipients.push word
-		else 
-		  schedule.push {trouble: word}
+		try
+			if intervals[word]
+				schedule.push issue =
+					interval: word
+					recipients: []
+			else if days[word]
+				issue.offset = word
+			else if word.match /@/
+				issue.recipients.push word
+			else
+			  schedule.push {trouble: word}
+		catch e
+			schedule.push {trouble: e.message}
 	schedule
 
 human = (msecs) ->
@@ -58,7 +60,7 @@ explain = (issue) ->
 	else
 		"trouble"
 
-module.exports = {intervals, decode, explain} if module?
+module.exports = {intervals, decode, explain, advance} if module?
 
 summarize = (schedule) ->
 	(explain issue for issue in schedule).join "<br>"
