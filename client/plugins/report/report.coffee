@@ -66,11 +66,11 @@ summarize = (schedule) ->
 	(explain issue for issue in schedule).join "<br>"
 
 emit = ($item, item) ->
-		$item.append $ """
-			<p>#{summarize decode item.text}</p>
-		"""
+	$item.append $ """
+		<p>#{summarize decode item.text}</p>
+	"""
 
 bind = ($item, item) ->
-		$item.dblclick -> wiki.textEditor $item, item
+	$item.dblclick -> wiki.textEditor $item, item
 
 window.plugins.report = {emit, bind} if window?
