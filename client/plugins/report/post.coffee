@@ -70,7 +70,7 @@ enclose = ({site, slug, page, issue, summary}) ->
   "See details at http://#{site}#{port}/#{slug}.html"].join "\n\n"
 
 send = (pub) ->
-  send = child.spawn 'sendmail', ['-fward@wiki.org', '-t']
+  send = child.spawn '/usr/sbin/sendmail', ['-fward@wiki.org', '-t']
   send.stdin.write pub.message
   send.stdin.end()
   send.on 'exit', (code) -> print "sent #{pub.page.title} (pub.issue.interval), code: #{code}"
@@ -81,6 +81,7 @@ send = (pub) ->
 
 findPubs (pub) ->
   pub.now = new Date(2012,12-1,21,0,0,3)
+  pub.now = new Date()
   pub.period = 10
   if ready pub
     pub.summary = compose pub.page

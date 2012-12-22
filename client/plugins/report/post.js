@@ -125,7 +125,7 @@
   };
 
   send = function(pub) {
-    send = child.spawn('sendmail', ['-fward@wiki.org', '-t']);
+    send = child.spawn('/usr/sbin/sendmail', ['-fward@wiki.org', '-t']);
     send.stdin.write(pub.message);
     send.stdin.end();
     return send.on('exit', function(code) {
@@ -135,6 +135,7 @@
 
   findPubs(function(pub) {
     pub.now = new Date(2012, 12 - 1, 21, 0, 0, 3);
+    pub.now = new Date();
     pub.period = 10;
     if (ready(pub)) {
       pub.summary = compose(pub.page);
