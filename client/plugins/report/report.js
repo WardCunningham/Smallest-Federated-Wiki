@@ -11,7 +11,7 @@
     };
     for (i = _i = 0, _len = keys.length; _i < _len; i = ++_i) {
       k = keys[i];
-      obj[k] = i;
+      obj[k] = i + 1;
     }
     return obj;
   };

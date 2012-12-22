@@ -1,6 +1,6 @@
 enumerate = (keys...) ->
 	obj = {keys}
-	obj[k] = i for k,i in keys
+	obj[k] = i+1 for k,i in keys
 	obj
 
 intervals = enumerate 'HOURLY','DAILY','WEEKLY','MONTHLY','YEARLY'
