@@ -125,11 +125,18 @@
   };
 
   send = function(pub) {
+    var output;
+    output = [];
     send = child.spawn('/usr/sbin/sendmail', ['-fward@wiki.org', '-t']);
     send.stdin.write(pub.message);
     send.stdin.end();
+    send.stderr.setEncoding('utf8');
+    send.stderr.on('data', function(data) {
+      return output.push(data);
+    });
     return send.on('exit', function(code) {
-      return print("sent " + pub.page.title + " (pub.issue.interval), code: " + code);
+      print("sent " + pub.page.title + " (" + pub.issue.interval + "), code: " + code);
+      return print(output);
     });
   };
 

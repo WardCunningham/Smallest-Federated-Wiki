@@ -70,10 +70,15 @@ enclose = ({site, slug, page, issue, summary}) ->
   "See details at http://#{site}#{port}/#{slug}.html"].join "\n\n"
 
 send = (pub) ->
+  output = []
   send = child.spawn '/usr/sbin/sendmail', ['-fward@wiki.org', '-t']
   send.stdin.write pub.message
   send.stdin.end()
-  send.on 'exit', (code) -> print "sent #{pub.page.title} (pub.issue.interval), code: #{code}"
+  send.stderr.setEncoding 'utf8'
+  send.stderr.on 'data', (data) -> output.push data
+  send.on 'exit', (code) ->
+    print "sent #{pub.page.title} (#{pub.issue.interval}), code: #{code}"
+    print output
 
 
 
