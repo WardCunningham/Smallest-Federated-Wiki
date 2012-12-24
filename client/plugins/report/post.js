@@ -94,7 +94,7 @@
     var issue, lapse, now, period, thisIssue, window;
     issue = _arg.issue, now = _arg.now, period = _arg.period;
     window = period * 60 * 1000;
-    thisIssue = report.advance(now, issue.interval, 0);
+    thisIssue = report.advance(now, issue, 0);
     lapse = now.getTime() - thisIssue.getTime();
     return lapse < window;
   };

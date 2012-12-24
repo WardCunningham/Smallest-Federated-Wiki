@@ -4,21 +4,22 @@ enumerate = (keys...) ->
 	obj
 
 intervals = enumerate 'HOURLY','DAILY','WEEKLY','MONTHLY','YEARLY'
-hours = enumerate 'MIDNIGHT','MORNING','NOON','AFTERNOON'
+hours = enumerate 'MIDNIGHT','MORNING','NOON','EVENING'
 days = enumerate 'SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY'
 months = enumerate 'JANUARY','FEBUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'
 
 parse = (text) ->
 	schedule = []
 	issue = null
-	for word in text.match /\S+/g
+	for word in text.match(/\S+/g) or []
 		try
 			if intervals[word]
 				schedule.push issue =
 					interval: word
 					recipients: []
-			else if days[word]
-				issue.offset = word
+					offsets: []
+			else if months[word] or days[word] or hours[word]
+				issue.offsets.push word
 			else if word.match /@/
 				issue.recipients.push word
 			else
@@ -38,18 +39,34 @@ human = (msecs) ->
   return "#{Math.floor years} years"
 
 
-advance = (date, interval, count) ->
+primAdvance = (date, issue, count) ->
 	[y, m, d, h] = [date.getFullYear(), date.getMonth(), date.getDate(), date.getHours()]
-	switch interval
+	result = switch issue.interval
 		when 'HOURLY'  then new Date y, m, d, h+count
 		when 'DAILY'   then new Date y, m, d+count
 		when 'WEEKLY'  then new Date y, m, d-date.getDay()+7*count
 		when 'MONTHLY' then new Date y, m+count
-		when 'YEARLY'  then new Date y+count
+		when 'YEARLY'  then new Date y+count, 0
+	for offset in issue.offsets
+		[y, m, d, h] = [result.getFullYear(), result.getMonth(), result.getDate(), result.getHours()]
+		result = if months[offset]
+			new Date y, months[offset]-1, d, h
+		else if days[offset]
+			new Date y, m, d+(7-result.getDay()+days[offset]-1)%7, h
+		else if hours[offset]
+			new Date y, m, d, h+6*(hours[offset]-1)
+	result
+
+advance = (date, issue, count) ->
+	prim = primAdvance date, issue, 0
+	if prim > date
+		primAdvance date, issue, count-1 # when offset passes date
+	else
+		primAdvance date, issue, count
 
 soon = (issue) ->
 	now = new Date();
-	next = advance now, issue.interval, 1
+	next = advance now, issue, 1
 	human next.getTime() - now.getTime()
 
 explain = (issue) ->

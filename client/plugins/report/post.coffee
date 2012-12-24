@@ -50,7 +50,7 @@ compose = (page) ->
 
 ready = ({issue, now, period}) ->
   window = period*60*1000
-  thisIssue = report.advance(now, issue.interval, 0)
+  thisIssue = report.advance(now, issue, 0)
   lapse = now.getTime() - thisIssue.getTime()
   lapse < window
 
