@@ -21,7 +21,7 @@ fetchPage = (path, done) ->
 
 findSchedule = (page) ->
   for item in page.story
-    return report.decode(item.text) if item.type is 'report'
+    return report.parse(item.text) if item.type is 'report'
   null
 
 findPubs = (done) ->

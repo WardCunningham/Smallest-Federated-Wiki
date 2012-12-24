@@ -38,7 +38,7 @@
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       item = _ref[_i];
       if (item.type === 'report') {
-        return report.decode(item.text);
+        return report.parse(item.text);
       }
     }
     return null;

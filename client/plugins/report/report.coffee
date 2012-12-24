@@ -8,7 +8,7 @@ hours = enumerate 'MIDNIGHT','MORNING','NOON','AFTERNOON'
 days = enumerate 'SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY'
 months = enumerate 'JANUARY','FEBUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'
 
-decode = (text) ->
+parse = (text) ->
 	schedule = []
 	issue = null
 	for word in text.match /\S+/g
@@ -60,14 +60,14 @@ explain = (issue) ->
 	else
 		"trouble"
 
-module.exports = {intervals, decode, explain, advance} if module?
+module.exports = {intervals, parse, explain, advance} if module?
 
 summarize = (schedule) ->
 	(explain issue for issue in schedule).join "<br>"
 
 emit = ($item, item) ->
 	$item.append $ """
-		<p>#{summarize decode item.text}</p>
+		<p>#{summarize parse item.text}</p>
 	"""
 
 bind = ($item, item) ->

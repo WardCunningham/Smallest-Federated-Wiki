@@ -24,7 +24,7 @@
 
   months = enumerate('JANUARY', 'FEBUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER');
 
-  decode = function(text) {
+  parse = function(text) {
     var issue, schedule, word, _i, _len, _ref;
     schedule = [];
     issue = null;
@@ -118,7 +118,7 @@
   if (typeof module !== "undefined" && module !== null) {
     module.exports = {
       intervals: intervals,
-      decode: decode,
+      parse: parse,
       explain: explain,
       advance: advance
     };
@@ -138,7 +138,7 @@
   };
 
   emit = function($item, item) {
-    return $item.append($("<p>" + (summarize(decode(item.text))) + "</p>"));
+    return $item.append($("<p>" + (summarize(parse(item.text))) + "</p>"));
   };
 
   bind = function($item, item) {
