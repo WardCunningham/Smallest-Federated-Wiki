@@ -5,7 +5,7 @@ enumerate = (keys...) ->
 
 intervals = enumerate 'HOURLY','DAILY','WEEKLY','MONTHLY','YEARLY'
 hours = enumerate 'MIDNIGHT','MORNING','NOON','EVENING'
-days = enumerate 'SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY'
+wdays = enumerate 'SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY'
 months = enumerate 'JANUARY','FEBUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'
 
 parse = (text) ->
@@ -18,7 +18,7 @@ parse = (text) ->
 					interval: word
 					recipients: []
 					offsets: []
-			else if months[word] or days[word] or hours[word]
+			else if months[word] or wdays[word] or hours[word]
 				issue.offsets.push word
 			else if word.match /@/
 				issue.recipients.push word
@@ -51,8 +51,8 @@ primAdvance = (date, issue, count) ->
 		[y, m, d, h] = [result.getFullYear(), result.getMonth(), result.getDate(), result.getHours()]
 		result = if months[offset]
 			new Date y, months[offset]-1, d, h
-		else if days[offset]
-			new Date y, m, d+(7-result.getDay()+days[offset]-1)%7, h
+		else if wdays[offset]
+			new Date y, m, d+(7-result.getDay()+wdays[offset]-1)%7, h
 		else if hours[offset]
 			new Date y, m, d, h+6*(hours[offset]-1)
 	result
