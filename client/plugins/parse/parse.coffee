@@ -7,7 +7,7 @@ window.plugins.parse =
     nextOp = (state) ->
       switch item.state
         when undefined then "Start"
-        when "running" then "Stop"
+        when "starting", "running" then "Stop"
         when "stopped", "finished" then "Discard"
 
     isNumber = (n) ->
@@ -15,7 +15,7 @@ window.plugins.parse =
 
     stats = () ->
       rows = []
-      for key in ['state', 'grammar', 'parsed']
+      for key in ['state', 'server', 'parsed']
         if value = item[key]
           if isNumber value
             value = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
@@ -46,7 +46,7 @@ window.plugins.parse =
 
     start = ->
       wiki.log "start parse", item
-      wiki.createItem null, div, $.extend(true, {}, item, {state: "running", parsed: 0})
+      wiki.createItem null, div, $.extend(true, {}, item, {state: "starting", parsed: 0})
 
     stop = (state) ->
       clearTimeout timer
@@ -61,22 +61,25 @@ window.plugins.parse =
     div.find('button').click (event) ->
       switch item.state
         when undefined then start()
-        when "running" then stop()
+        when "starting", "running" then stop()
         when "stopped", "finished" then discard()
 
-    tick()
 
-    # socket = new WebSocket('ws://'+window.document.location.host+'/system/parse')
+    if item.state == 'starting'
+      socket = new WebSocket('ws://'+window.document.location.host+'/system/logwatch')
+      item.state = 'running'
+      tick()
 
-    # print = (m) ->
-    #   div.append $("<li>").html(m)
+      print = (m) ->
+        item.server = m
+        div.find('table').html stats()
 
-    # socket.onopen = ->
-    #   print "WebSocket Connection Opened."
+      socket.onopen = ->
+        print "opened"
 
-    # socket.onmessage = (e) ->
-    #   msg = JSON.parse e.data
-    #   print wiki.resolveLinks("[[#{msg.title}]]")
+      socket.onmessage = (e) ->
+        msg = JSON.parse e.data
+        print wiki.resolveLinks("page [[#{msg.title}]]")
 
-    # socket.onclose = ->
-    #   print "WebSocket Connection Closed."
+      socket.onclose = ->
+        print "closed"

@@ -4,7 +4,7 @@
   window.plugins.parse = {
     emit: function(div, item) {},
     bind: function(div, item) {
-      var assemble, discard, isNumber, nextOp, start, stats, stop, tick;
+      var assemble, discard, isNumber, nextOp, print, socket, start, stats, stop, tick;
       div.dblclick(function() {
         return wiki.textEditor(div, item);
       });
@@ -12,6 +12,7 @@
         switch (item.state) {
           case void 0:
             return "Start";
+          case "starting":
           case "running":
             return "Stop";
           case "stopped":
@@ -25,7 +26,7 @@
       stats = function() {
         var key, rows, value, _i, _len, _ref;
         rows = [];
-        _ref = ['state', 'grammar', 'parsed'];
+        _ref = ['state', 'server', 'parsed'];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           key = _ref[_i];
           if (value = item[key]) {
@@ -63,7 +64,7 @@
       start = function() {
         wiki.log("start parse", item);
         return wiki.createItem(null, div, $.extend(true, {}, item, {
-          state: "running",
+          state: "starting",
           parsed: 0
         }));
       };
@@ -82,6 +83,7 @@
         switch (item.state) {
           case void 0:
             return start();
+          case "starting":
           case "running":
             return stop();
           case "stopped":
@@ -89,7 +91,26 @@
             return discard();
         }
       });
-      return tick();
+      if (item.state === 'starting') {
+        socket = new WebSocket('ws://' + window.document.location.host + '/system/logwatch');
+        item.state = 'running';
+        tick();
+        print = function(m) {
+          item.server = m;
+          return div.find('table').html(stats());
+        };
+        socket.onopen = function() {
+          return print("opened");
+        };
+        socket.onmessage = function(e) {
+          var msg;
+          msg = JSON.parse(e.data);
+          return print(wiki.resolveLinks("page [[" + msg.title + "]]"));
+        };
+        return socket.onclose = function() {
+          return print("closed");
+        };
+      }
     }
   };
 
