@@ -107,7 +107,7 @@ module.exports = exports = (argv) ->
         listeners: logWatchSocket.listeners('fetch').length
       ws.send JSON.stringify(reference), (e) ->
         if e
-          log 'unable to send ws message: ', e
+          log 'unable to send ws message: ', e, reference
           logWatchSocket.removeListener 'fetch', fetchListener
           ws.close()
     )
