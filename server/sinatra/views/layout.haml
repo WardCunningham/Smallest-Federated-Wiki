@@ -4,6 +4,7 @@
 		%title Smallest Federated Wiki
 		/
 			= settings.versions
+		
 		%meta(http-equiv="Content-Type" content="text/html; charset=UTF-8")
 		%meta(name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no")
 		%link(type="image/png" href="/favicon.png" rel="icon")
@@ -13,6 +14,13 @@
 		%link(type="text/css" href="/js/jquery-ui-1.8.16.custom.css" rel="stylesheet")
 		%script(type="text/javascript" src="/js/underscore-min.js")
 		%script(type="text/javascript" src="/client.js")
+		
+		%meta(name="apple-mobile-web-app-capable" content="yes")
+		%meta(name="apple-mobile-web-app-status-bar-style" content="black")
+		%meta(name="apple-mobile-web-app-title" content="SF Wiki")
+		
+		%link(rel="apple-touch-icon" href="/favicon.png")
+		%link(rel="shortcut icon" href="/favicon.png")
 	%body
 		%section.main
 			=yield
