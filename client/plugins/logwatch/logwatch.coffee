@@ -11,7 +11,7 @@ window.plugins.logwatch =
 
     socket.onmessage = (e) ->
       msg = JSON.parse e.data
-      print wiki.resolveLinks("[[#{msg.title}]]")
+      print wiki.resolveLinks("[[#{msg.title}]] #{msg.listeners}")
 
     socket.onclose = ->
       print "WebSocket Connection Closed."

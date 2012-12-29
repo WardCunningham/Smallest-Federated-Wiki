@@ -15,7 +15,7 @@
       socket.onmessage = function(e) {
         var msg;
         msg = JSON.parse(e.data);
-        return print(wiki.resolveLinks("[[" + msg.title + "]]"));
+        return print(wiki.resolveLinks("[[" + msg.title + "]] " + msg.listeners));
       };
       return socket.onclose = function() {
         return print("WebSocket Connection Closed.");

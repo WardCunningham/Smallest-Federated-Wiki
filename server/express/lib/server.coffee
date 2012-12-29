@@ -101,13 +101,15 @@ module.exports = exports = (argv) ->
     )
   )
   logWatchSocket.on('connection', (ws) ->
-    logWatchSocket.on('fetch', (page) ->
+    logWatchSocket.on('fetch', fetchListener = (page) ->
       reference =
         title: page.title
+        listeners: logWatchSocket.listeners('fetch').length
       ws.send JSON.stringify(reference), (e) ->
         if e
           log 'unable to send ws message: ', e
-          return
+          logWatchSocket.removeListener 'fetch', fetchListener
+          ws.close()
     )
     ws.on('message', (message) ->
       log 'logWatch message from client:', message
