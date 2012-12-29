@@ -443,6 +443,7 @@ module.exports = exports = (argv) ->
       numFiles = files.length
       doSitemap = (file, cb) ->
         pagehandler.get file, (e, page, status) ->
+          return cb() if file.match /^\./
           if e 
             log 'Problem building sitemap:', file, 'e: ', e
             return cb() # Ignore errors in the pagehandler get.
