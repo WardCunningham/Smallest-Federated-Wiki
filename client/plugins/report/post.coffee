@@ -4,10 +4,13 @@ report = require './report.js'
 print = (arg...) -> console.log arg...
 
 
-# */10 * * * * (cd wiki/client/plugins/report; Port=:1111 /usr/local/bin/node post.js)
+
+# 0 * * * * (cd wiki/client/plugins/report; Port=:1111 /usr/local/bin/node post.js)
 
 port = process.env.Port or ''
 farm = process.env.Farm or '../../../data/farm'
+
+
 
 # Fetch data from wiki farm files
 
@@ -41,10 +44,16 @@ findPubs = (done) ->
 fold = (text) ->
   text.match(/(\S*\s*){1,9}/g).join "\n"
 
-compose = (page) ->
+compose = (page, since) ->
+  active = {}
+  for action in page.journal
+    if action.date and action.date > since
+      active[action.id] = 'NEW' if action.type == 'add'
+      active[action.id] = 'UPDATE' if action.type == 'edit' and not active[action.id]
   result = []
   for item in page.story
-    if item.type is 'paragraph'
+    if item.type is 'paragraph' and active[item.id]
+      result.push active[item.id]
       result.push fold item.text 
   result.join "\n"
 
@@ -78,7 +87,7 @@ send = (pub) ->
   send.stderr.on 'data', (data) -> output.push data
   send.on 'exit', (code) ->
     print "sent #{pub.page.title} (#{pub.issue.interval}), code: #{code}"
-    print output
+    print output.join ''
 
 
 
@@ -87,9 +96,10 @@ send = (pub) ->
 findPubs (pub) ->
   pub.now = new Date(2012,12-1,21,0,0,3)
   pub.now = new Date()
-  pub.period = 10
+  pub.period = 60
   if ready pub
-    pub.summary = compose pub.page
-    pub.message = enclose pub
-    send pub
+    pub.summary = compose pub.page, report.advance(pub.now, pub.issue, -1)
+    unless pub.summary is ''
+      pub.message = enclose pub
+      send pub
     

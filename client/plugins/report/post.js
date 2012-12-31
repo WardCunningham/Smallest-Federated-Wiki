@@ -77,13 +77,27 @@
     return text.match(/(\S*\s*){1,9}/g).join("\n");
   };
 
-  compose = function(page) {
-    var item, result, _i, _len, _ref;
-    result = [];
-    _ref = page.story;
+  compose = function(page, since) {
+    var action, active, item, result, _i, _j, _len, _len1, _ref, _ref1;
+    active = {};
+    _ref = page.journal;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      item = _ref[_i];
-      if (item.type === 'paragraph') {
+      action = _ref[_i];
+      if (action.date && action.date > since) {
+        if (action.type === 'add') {
+          active[action.id] = 'NEW';
+        }
+        if (action.type === 'edit' && !active[action.id]) {
+          active[action.id] = 'UPDATE';
+        }
+      }
+    }
+    result = [];
+    _ref1 = page.story;
+    for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+      item = _ref1[_j];
+      if (item.type === 'paragraph' && active[item.id]) {
+        result.push(active[item.id]);
         result.push(fold(item.text));
       }
     }
@@ -136,18 +150,20 @@
     });
     return send.on('exit', function(code) {
       print("sent " + pub.page.title + " (" + pub.issue.interval + "), code: " + code);
-      return print(output);
+      return print(output.join(''));
     });
   };
 
   findPubs(function(pub) {
     pub.now = new Date(2012, 12 - 1, 21, 0, 0, 3);
     pub.now = new Date();
-    pub.period = 10;
+    pub.period = 60;
     if (ready(pub)) {
-      pub.summary = compose(pub.page);
-      pub.message = enclose(pub);
-      return send(pub);
+      pub.summary = compose(pub.page, report.advance(pub.now, pub.issue, -1));
+      if (pub.summary !== '') {
+        pub.message = enclose(pub);
+        return send(pub);
+      }
     }
   });
 
