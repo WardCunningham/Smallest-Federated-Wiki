@@ -75,6 +75,7 @@ enclose = ({site, slug, page, issue, summary}) ->
     To: issue.recipients.join ", "
     'Reply-to': issue.recipients.join ", "
     Subject: "#{page.title} (#{issue.interval})"
+  "#{page.title}\nPublished #{issue.interval} from #{site}#{port}"
   summary
   "See details at http://#{site}#{port}/#{slug}.html"].join "\n\n"
 

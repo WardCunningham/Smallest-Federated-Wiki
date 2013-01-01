@@ -134,7 +134,7 @@
         To: issue.recipients.join(", "),
         'Reply-to': issue.recipients.join(", "),
         Subject: "" + page.title + " (" + issue.interval + ")"
-      }), summary, "See details at http://" + site + port + "/" + slug + ".html"
+      }), "" + page.title + "\nPublished " + issue.interval + " from " + site + port, summary, "See details at http://" + site + port + "/" + slug + ".html"
     ].join("\n\n");
   };
 
