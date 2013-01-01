@@ -7,19 +7,32 @@ print = (arg...) -> console.log arg...
 
 # 0 * * * * (cd wiki/client/plugins/report; Port=:1111 /usr/local/bin/node post.js)
 
-port = process.env.Port or ''
-farm = process.env.Farm or '../../../data/farm'
+Site = process.env.Site or null
+Port = process.env.Port or ''
+Farm = process.env.Farm or '../../../data/farm' unless Site
+Sufix = process.env.Sufix or 'report'
 
 
 
 # Fetch data from wiki farm files
 
-findPaths = (sufix, done) ->
-  child.exec "ls #{farm}/*/pages/*-#{sufix}", (err, stdout, stderr) ->
-    done stdout.split /\n/
+findPaths = (done) ->
+  if Farm
+    child.exec "ls #{Farm}/*/pages/*-#{Sufix}", (err, stdout, stderr) ->
+      for path in stdout.split /\n/
+        continue if path is ''
+        [slug,x,site] = path.split('/').reverse()
+        done path, site, slug
+  else
+    child.exec "ls ../../../data/pages/*-#{Sufix}", (err, stdout, stderr) ->
+      for path in stdout.split /\n/
+        continue if path is ''
+        [slug] = path.split('/').reverse()
+        done path, Site, slug
 
 fetchPage = (path, done) ->
   text = fs.readFile path, 'utf8', (err, text) ->
+    return console.log ['fetchPage', path, err] if err
     done JSON.parse text
 
 findSchedule = (page) ->
@@ -28,9 +41,7 @@ findSchedule = (page) ->
   null
 
 findPubs = (done) ->
-  findPaths 'report', (paths) ->
-    path = paths[0]
-    [x,x,x,x,x,site,x,slug] = path.split '/'
+  findPaths (path, site, slug) ->
     fetchPage path, (page) ->
       if schedule = findSchedule page
         for issue in schedule
@@ -75,9 +86,9 @@ enclose = ({site, slug, page, issue, summary}) ->
     To: issue.recipients.join ", "
     'Reply-to': issue.recipients.join ", "
     Subject: "#{page.title} (#{issue.interval})"
-  "#{page.title}\nPublished #{issue.interval} from #{site}#{port}"
+  "#{page.title}\nPublished #{issue.interval} from #{site}#{Port}"
   summary
-  "See details at http://#{site}#{port}/#{slug}.html"].join "\n\n"
+  "See details at http://#{site}#{Port}/#{slug}.html"].join "\n\n"
 
 send = (pub) ->
   output = []
