@@ -1,0 +1,443 @@
+{
+  "title": "About Report Plugin Scripts",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "a8b4e14dca4a4379",
+      "text": "The report plugin script finds report pages, select those ready for issue, compose an appropriate summary, and deliver that to specified recipients by email."
+    },
+    {
+      "type": "paragraph",
+      "id": "74fe4324f062325d",
+      "text": "See [[About Report Plugin]] for how to make report pages."
+    },
+    {
+      "type": "paragraph",
+      "id": "26e42a9ab3f1ef89",
+      "text": "From the plugin's directory, run the script as a node.js program. This program can be run at will for testing. It expects to be run once an hour in production. It is tolerant of delays after the hour but does not expect to be run early."
+    },
+    {
+      "type": "code",
+      "id": "46bab90b58097103",
+      "text": "cd wiki/client/plugins/report\n/usr/local/bin/node post.js"
+    },
+    {
+      "type": "paragraph",
+      "id": "f6bd9c0bad80a283",
+      "text": "The program expects to be run within a wiki farm using flat file conventions of the sinatra server. Environment variables can changes these expectations."
+    },
+    {
+      "type": "paragraph",
+      "id": "8e7616c28abd406e",
+      "text": "<b>Farm</b>=<i>path</i> — Change the expected location of the farm data files. If unspecified, ../../../data/farm is used."
+    },
+    {
+      "type": "paragraph",
+      "id": "df7b087ed2e78479",
+      "text": "<b>Site</b>=<i>domain</i>  — Change the internet domain name of the server. If unspecified, domain names come from the farm information. (Farm is ignored if Site is specified.)"
+    },
+    {
+      "type": "paragraph",
+      "id": "71cf71ff6958e819",
+      "text": "<b>Port</b>=<i>:port</i>  — Change the expected server port number used forming hyperlinks in the report. If unspecified, hyperlinks will not include a port in their urls."
+    },
+    {
+      "type": "paragraph",
+      "id": "da1520367d56b2d1",
+      "text": "<b>Sufix</b>=<i>word</i>  — Change the word expected to conclude page names used for reports. If unspecified, reports are expected to end with the word 'report'. The suffix must be specified in lower case but will match page names in any case."
+    },
+    {
+      "type": "paragraph",
+      "id": "6de4840147fea918",
+      "text": "For example, a laptop user running the sinatra server from the github project cloned into a home directory named wiki could run the script hourly from a cron job with the following single line crontab entry."
+    },
+    {
+      "type": "code",
+      "id": "7d1453fd0d949cc7",
+      "text": "0 * * * * (cd wiki/client/plugins/report; Port=:1111 /usr/local/bin/node post.js)"
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "item": {
+        "title": "About Report Plugin Scripts"
+      },
+      "date": 1357068815708
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "a8b4e14dca4a4379"
+      },
+      "id": "a8b4e14dca4a4379",
+      "type": "add",
+      "date": 1357068819373
+    },
+    {
+      "type": "edit",
+      "id": "a8b4e14dca4a4379",
+      "item": {
+        "type": "paragraph",
+        "id": "a8b4e14dca4a4379",
+        "text": "The report plugin scripts find report pages, select those ready for issue, compose an appropriate summary, and deliver that to specified recipients by email."
+      },
+      "date": 1357069014011
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "c886ec7552ee66e2",
+        "text": ""
+      },
+      "id": "c886ec7552ee66e2",
+      "type": "add",
+      "after": "a8b4e14dca4a4379",
+      "date": 1357069014518
+    },
+    {
+      "type": "remove",
+      "id": "c886ec7552ee66e2",
+      "date": 1357069045845
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "46bab90b58097103"
+      },
+      "id": "46bab90b58097103",
+      "type": "add",
+      "after": "a8b4e14dca4a4379",
+      "date": 1357069079476
+    },
+    {
+      "type": "edit",
+      "id": "46bab90b58097103",
+      "item": {
+        "type": "code",
+        "id": "46bab90b58097103",
+        "text": "/usr/local/bin/node post.js"
+      },
+      "date": 1357069089054
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "26e42a9ab3f1ef89",
+        "text": ""
+      },
+      "id": "26e42a9ab3f1ef89",
+      "type": "add",
+      "after": "a8b4e14dca4a4379",
+      "date": 1357069113944
+    },
+    {
+      "type": "edit",
+      "id": "26e42a9ab3f1ef89",
+      "item": {
+        "type": "paragraph",
+        "id": "26e42a9ab3f1ef89",
+        "text": "From the plugin's directory, run the script as a node.js program. This program can be run at will for testing. It expects to be run once an hour in production. It is tolerant of delays after the hour but does not expect to be run early."
+      },
+      "date": 1357069420812
+    },
+    {
+      "type": "edit",
+      "id": "46bab90b58097103",
+      "item": {
+        "type": "code",
+        "id": "46bab90b58097103",
+        "text": "cd  sfw/client/plugins/report\n/usr/local/bin/node post.js"
+      },
+      "date": 1357069466339
+    },
+    {
+      "type": "edit",
+      "id": "46bab90b58097103",
+      "item": {
+        "type": "code",
+        "id": "46bab90b58097103",
+        "text": "cd sfw/client/plugins/report\n/usr/local/bin/node post.js"
+      },
+      "date": 1357069479199
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "f6bd9c0bad80a283"
+      },
+      "id": "f6bd9c0bad80a283",
+      "type": "add",
+      "after": "46bab90b58097103",
+      "date": 1357069536424
+    },
+    {
+      "type": "edit",
+      "id": "f6bd9c0bad80a283",
+      "item": {
+        "type": "paragraph",
+        "id": "f6bd9c0bad80a283",
+        "text": "The program expects to be run within a wiki farm using flat file conventions of the sinatra server. Environment variables can changes these expectations."
+      },
+      "date": 1357069682297
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "8e7616c28abd406e",
+        "text": ""
+      },
+      "id": "8e7616c28abd406e",
+      "type": "add",
+      "after": "f6bd9c0bad80a283",
+      "date": 1357069682802
+    },
+    {
+      "type": "edit",
+      "id": "8e7616c28abd406e",
+      "item": {
+        "type": "paragraph",
+        "id": "8e7616c28abd406e",
+        "text": "<b>Farm</b>=<i>path</i> — Change the expected location of the farm data files. If unspecified, ../../../.."
+      },
+      "date": 1357069849023
+    },
+    {
+      "type": "edit",
+      "id": "8e7616c28abd406e",
+      "item": {
+        "type": "paragraph",
+        "id": "8e7616c28abd406e",
+        "text": "<b>Farm</b>=<i>path</i> — Change the expected location of the farm data files. If unspecified, ../../../data/farm is used."
+      },
+      "date": 1357069878083
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "df7b087ed2e78479",
+        "text": ""
+      },
+      "id": "df7b087ed2e78479",
+      "type": "add",
+      "after": "8e7616c28abd406e",
+      "date": 1357069892102
+    },
+    {
+      "type": "edit",
+      "id": "df7b087ed2e78479",
+      "item": {
+        "type": "paragraph",
+        "id": "df7b087ed2e78479",
+        "text": "<b>Site</b>=<i>domain</i>  — Change the internet domain name of the server. If unspecified, domain names come from the farm information. (Farm is ignored if Site is specified.)"
+      },
+      "date": 1357070041291
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "71cf71ff6958e819",
+        "text": ""
+      },
+      "id": "71cf71ff6958e819",
+      "type": "add",
+      "after": "df7b087ed2e78479",
+      "date": 1357070041797
+    },
+    {
+      "type": "edit",
+      "id": "71cf71ff6958e819",
+      "item": {
+        "type": "paragraph",
+        "id": "71cf71ff6958e819",
+        "text": "<b>Port</b>=<i>:port</i>  — Change the expected server port number used forming hyperlinks in the report. If unspecified, hyperlinks will not include a port in their urls."
+      },
+      "date": 1357070353781
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "5acb800ebc10c1f7",
+        "text": ""
+      },
+      "id": "5acb800ebc10c1f7",
+      "type": "add",
+      "after": "71cf71ff6958e819",
+      "date": 1357070354287
+    },
+    {
+      "type": "remove",
+      "id": "5acb800ebc10c1f7",
+      "date": 1357070373573
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "da1520367d56b2d1",
+        "text": ""
+      },
+      "id": "da1520367d56b2d1",
+      "type": "add",
+      "after": "71cf71ff6958e819",
+      "date": 1357070380897
+    },
+    {
+      "type": "edit",
+      "id": "da1520367d56b2d1",
+      "item": {
+        "type": "paragraph",
+        "id": "da1520367d56b2d1",
+        "text": "<b>Sufix</b>=<i>word</i>  — Change the word expected to conclude page names used for reports. If unspecified, reports are expected to end with the word 'report'. The suffix must be specified in lower case but will match page names in any case."
+      },
+      "date": 1357070640120
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "74fe4324f062325d",
+        "text": ""
+      },
+      "id": "74fe4324f062325d",
+      "type": "add",
+      "after": "a8b4e14dca4a4379",
+      "date": 1357070767466
+    },
+    {
+      "type": "edit",
+      "id": "74fe4324f062325d",
+      "item": {
+        "type": "paragraph",
+        "id": "74fe4324f062325d",
+        "text": "See [[About Report Plugin]]."
+      },
+      "date": 1357070777391
+    },
+    {
+      "type": "edit",
+      "id": "74fe4324f062325d",
+      "item": {
+        "type": "paragraph",
+        "id": "74fe4324f062325d",
+        "text": "See [[About Report Plugin]]"
+      },
+      "date": 1357070785917
+    },
+    {
+      "type": "edit",
+      "id": "74fe4324f062325d",
+      "item": {
+        "type": "paragraph",
+        "id": "74fe4324f062325d",
+        "text": "See [[About Report Plugin]]."
+      },
+      "date": 1357070794235
+    },
+    {
+      "type": "edit",
+      "id": "74fe4324f062325d",
+      "item": {
+        "type": "paragraph",
+        "id": "74fe4324f062325d",
+        "text": "See [[About Report Plugin]] for how to make report pages."
+      },
+      "date": 1357070832293
+    },
+    {
+      "type": "edit",
+      "id": "a8b4e14dca4a4379",
+      "item": {
+        "type": "paragraph",
+        "id": "a8b4e14dca4a4379",
+        "text": "The report plugin script finds report pages, select those ready for issue, compose an appropriate summary, and deliver that to specified recipients by email."
+      },
+      "date": 1357070890210
+    },
+    {
+      "type": "edit",
+      "id": "46bab90b58097103",
+      "item": {
+        "type": "code",
+        "id": "46bab90b58097103",
+        "text": "cd wiki/client/plugins/report\n/usr/local/bin/node post.js"
+      },
+      "date": 1357070986906
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "6de4840147fea918",
+        "text": ""
+      },
+      "id": "6de4840147fea918",
+      "type": "add",
+      "after": "da1520367d56b2d1",
+      "date": 1357070993807
+    },
+    {
+      "type": "edit",
+      "id": "6de4840147fea918",
+      "item": {
+        "type": "paragraph",
+        "id": "6de4840147fea918",
+        "text": "For example, a laptop user running the sinatra server from the github project cloned into a home directory named wiki could run a cron job hourly with the following crontab entry."
+      },
+      "date": 1357071223284
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "2546b8140fea32ad",
+        "text": ""
+      },
+      "id": "2546b8140fea32ad",
+      "type": "add",
+      "after": "6de4840147fea918",
+      "date": 1357071223790
+    },
+    {
+      "type": "remove",
+      "id": "2546b8140fea32ad",
+      "date": 1357071227779
+    },
+    {
+      "type": "edit",
+      "id": "6de4840147fea918",
+      "item": {
+        "type": "paragraph",
+        "id": "6de4840147fea918",
+        "text": "For example, a laptop user running the sinatra server from the github project cloned into a home directory named wiki could run the script hourly from a cron job with the following crontab entry."
+      },
+      "date": 1357071268348
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "7d1453fd0d949cc7"
+      },
+      "id": "7d1453fd0d949cc7",
+      "type": "add",
+      "after": "6de4840147fea918",
+      "date": 1357071271199
+    },
+    {
+      "type": "edit",
+      "id": "7d1453fd0d949cc7",
+      "item": {
+        "type": "code",
+        "id": "7d1453fd0d949cc7",
+        "text": "0 * * * * (cd wiki/client/plugins/report; Port=:1111 /usr/local/bin/node post.js)"
+      },
+      "date": 1357071278460
+    },
+    {
+      "type": "edit",
+      "id": "6de4840147fea918",
+      "item": {
+        "type": "paragraph",
+        "id": "6de4840147fea918",
+        "text": "For example, a laptop user running the sinatra server from the github project cloned into a home directory named wiki could run the script hourly from a cron job with the following single line crontab entry."
+      },
+      "date": 1357071291032
+    }
+  ]
+}

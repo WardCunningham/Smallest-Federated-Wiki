@@ -14,7 +14,7 @@
     {
       "type": "paragraph",
       "id": "0a69690a768497ae",
-      "text": "The plugin includes a server script that will email reports based on the plugin's schedule. Server operators may set conditions upon if and how email will be sent."
+      "text": "The plugin includes a server script that will email reports based on the plugin's schedule. Server operators may set conditions upon if and how email will be sent. See [[About Report Plugin Scripts]]."
     },
     {
       "type": "paragraph",
@@ -758,6 +758,16 @@
         "text": "The schedule describes one or more issues of the report. Schedule elements are whitespace separated."
       },
       "date": 1356334494835
+    },
+    {
+      "type": "edit",
+      "id": "0a69690a768497ae",
+      "item": {
+        "type": "paragraph",
+        "id": "0a69690a768497ae",
+        "text": "The plugin includes a server script that will email reports based on the plugin's schedule. Server operators may set conditions upon if and how email will be sent. See [[About Report Plugin Scripts]]."
+      },
+      "date": 1357068800294
     }
   ]
 }
