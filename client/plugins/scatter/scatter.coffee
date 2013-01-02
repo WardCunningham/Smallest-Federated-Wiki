@@ -88,7 +88,6 @@ window.plugins.scatter =
           .style("cursor", 'pointer')
           .attr("r", 10)
           .on("click", (d) ->
-            $(div).parents('.page').nextAll().remove()
-            wiki.doInternalLink(d.Material))
+            wiki.doInternalLink(d.Material, div.parents '.page'))
           .append("svg:title").text title
 

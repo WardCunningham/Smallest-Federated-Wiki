@@ -84,8 +84,7 @@
           }).style("fill", function(d, i) {
             return fill(d.Cluster || d.Material.split(/\s+/).reverse()[0]);
           }).style("cursor", 'pointer').attr("r", 10).on("click", function(d) {
-            $(div).parents('.page').nextAll().remove();
-            return wiki.doInternalLink(d.Material);
+            return wiki.doInternalLink(d.Material, div.parents('.page'));
           }).append("svg:title").text(title);
         });
       });

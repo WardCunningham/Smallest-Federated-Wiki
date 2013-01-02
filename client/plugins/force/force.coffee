@@ -75,8 +75,7 @@ window.plugins.force =
             .attr("r", 5)
             .style("fill", (d) -> fill d.group)
             .on("dblclick", (d) ->
-              $(div).parents('.page').nextAll().remove()
-              wiki.doInternalLink "#{d.name} Box")
+              wiki.doInternalLink "#{d.name} Box", div.parents('.page'))
             .call(force.drag)
           node.append("svg:title").text((d, i) -> d.name)
 

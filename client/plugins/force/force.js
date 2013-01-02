@@ -35,8 +35,7 @@
             }).attr("r", 5).style("fill", function(d) {
               return fill(d.group);
             }).on("dblclick", function(d) {
-              $(div).parents('.page').nextAll().remove();
-              return wiki.doInternalLink("" + d.name + " Box");
+              return wiki.doInternalLink("" + d.name + " Box", div.parents('.page'));
             }).call(force.drag);
             node.append("svg:title").text(function(d, i) {
               return d.name;
