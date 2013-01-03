@@ -94,7 +94,7 @@ enclose = ({site, slug, page, issue, summary}) ->
   summary
   "See details at http://#{site}#{Port}/#{slug}.html"].join "\n\n"
 
-send = (pub) ->
+sendmail = (pub) ->
   output = []
   send = child.spawn '/usr/sbin/sendmail', ['-fward@wiki.org', '-t']
   send.stdin.write pub.message
@@ -117,5 +117,4 @@ findPubs (pub) ->
     pub.summary = compose pub.page, report.advance(pub.now, pub.issue, -1)
     unless pub.summary is ''
       pub.message = enclose pub
-      send pub
-    
+      sendmail pub
