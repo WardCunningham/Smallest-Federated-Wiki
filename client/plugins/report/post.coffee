@@ -114,8 +114,8 @@ findPubs (pub) ->
   pub.now = new Date()
   pub.period = 60
   if ready pub
-    print pub.summary = compose pub.page, report.advance(pub.now, pub.issue, -1)
+    pub.summary = compose pub.page, report.advance(pub.now, pub.issue, -1)
     unless pub.summary is ''
       pub.message = enclose pub
-      # send pub
+      send pub
     

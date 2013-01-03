@@ -197,9 +197,10 @@
     pub.now = new Date();
     pub.period = 60;
     if (ready(pub)) {
-      print(pub.summary = compose(pub.page, report.advance(pub.now, pub.issue, -1)));
+      pub.summary = compose(pub.page, report.advance(pub.now, pub.issue, -1));
       if (pub.summary !== '') {
-        return pub.message = enclose(pub);
+        pub.message = enclose(pub);
+        return send(pub);
       }
     }
   });
