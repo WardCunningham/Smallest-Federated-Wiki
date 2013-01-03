@@ -53,7 +53,7 @@ findPubs = (done) ->
 # Compose summary from story and journal
 
 links = (text) ->
-  text.replace /\[(http.*?) (.*?)\]/gi, "[$2]"
+  text.replace /\[(http.*?) +(.*?)\]/gi, "[$2]"
 
 fold = (text) ->
   # http://james.padolsey.com/javascript/wordwrap-for-javascript/

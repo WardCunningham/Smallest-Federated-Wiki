@@ -108,7 +108,7 @@
   };
 
   links = function(text) {
-    return text.replace(/\[(http.*?) (.*?)\]/gi, "[$2]");
+    return text.replace(/\[(http.*?) +(.*?)\]/gi, "[$2]");
   };
 
   fold = function(text) {
