@@ -55,6 +55,9 @@ findPubs = (done) ->
 links = (text) ->
   text.replace /\[(http.*?) +(.*?)\]/gi, "[$2]"
 
+flow = (text) ->
+  text.replace(/\s+/g, ' ') + "\n"
+
 fold = (text) ->
   # http://james.padolsey.com/javascript/wordwrap-for-javascript/
   text.match(/.{1,50}(\s|$)|\S+?(\s|$)/g).join "\n"
@@ -69,7 +72,7 @@ compose = (page, since) ->
   for item in page.story
     if item.type is 'paragraph' and active[item.id]
       result.push active[item.id]
-      result.push fold links item.text
+      result.push fold flow links item.text
   result.join "\n"
 
 ready = ({issue, now, period}) ->
@@ -90,9 +93,9 @@ enclose = ({site, slug, page, issue, summary}) ->
     To: issue.recipients.join ", "
     'Reply-to': issue.recipients.join ", "
     Subject: "#{page.title} (#{issue.interval})"
-  "#{page.title}\nPublished #{issue.interval} from #{site}#{Port}"
+  "#{page.title}\nPublished #{issue.interval} from Federated Wiki"
   summary
-  "See details at http://#{site}#{Port}/#{slug}.html"].join "\n\n"
+  "See details at\nhttp://#{site}#{Port}/#{slug}.html"].join "\n\n"
 
 sendmail = (pub) ->
   output = []
