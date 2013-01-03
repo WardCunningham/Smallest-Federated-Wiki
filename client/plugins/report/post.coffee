@@ -52,8 +52,11 @@ findPubs = (done) ->
 
 # Compose summary from story and journal
 
+links = (text) ->
+  text.replace /\[(http.*?) (.*?)\]/gi, "[$2]"
+
 fold = (text) ->
-  text.match(/(\S*\s*){1,9}/g).join "\n"
+  text.match(/(\S*\s*){1,8}/g).join "\n"
 
 compose = (page, since) ->
   active = {}
@@ -65,7 +68,7 @@ compose = (page, since) ->
   for item in page.story
     if item.type is 'paragraph' and active[item.id]
       result.push active[item.id]
-      result.push fold item.text 
+      result.push fold links item.text
   result.join "\n"
 
 ready = ({issue, now, period}) ->
@@ -110,8 +113,8 @@ findPubs (pub) ->
   pub.now = new Date()
   pub.period = 60
   if ready pub
-    pub.summary = compose pub.page, report.advance(pub.now, pub.issue, -1)
+    print pub.summary = compose pub.page, report.advance(pub.now, pub.issue, -1)
     unless pub.summary is ''
       pub.message = enclose pub
-      send pub
+      # send pub
     
