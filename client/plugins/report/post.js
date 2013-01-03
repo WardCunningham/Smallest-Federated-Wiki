@@ -112,7 +112,7 @@
   };
 
   fold = function(text) {
-    return text.match(/(\S*\s*){1,8}/g).join("\n");
+    return text.match(/.{1,50}(\s|$)|\S+?(\s|$)/g).join("\n");
   };
 
   compose = function(page, since) {

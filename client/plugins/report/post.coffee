@@ -56,7 +56,8 @@ links = (text) ->
   text.replace /\[(http.*?) (.*?)\]/gi, "[$2]"
 
 fold = (text) ->
-  text.match(/(\S*\s*){1,8}/g).join "\n"
+  # http://james.padolsey.com/javascript/wordwrap-for-javascript/
+  text.match(/.{1,50}(\s|$)|\S+?(\s|$)/g).join "\n"
 
 compose = (page, since) ->
   active = {}
