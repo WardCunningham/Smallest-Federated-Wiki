@@ -420,7 +420,7 @@ require.define("/lib/legacy.coffee",function(require,module,exports,__dirname,__
   };
 
   $(function() {
-    var $firstPage, LEFTARROW, RIGHTARROW, addToJournal, createTextElement, doInternalLink, finishClick, getItem, getTemplate, resolveFrom, sleep, textEditor, useLocalStorage;
+    var $firstPage, LEFTARROW, RIGHTARROW, createTextElement, doInternalLink, finishClick, getItem, getTemplate, resolveFrom, sleep, textEditor, useLocalStorage;
     window.dialog = $('<div></div>').html('This dialog will show every time!').dialog({
       autoOpen: false,
       title: 'Basic Dialog',
@@ -446,27 +446,6 @@ require.define("/lib/legacy.coffee",function(require,module,exports,__dirname,__
         return callback();
       } finally {
         wiki.resolutionContext.pop();
-      }
-    };
-    addToJournal = wiki.addToJournal = function(journalElement, action) {
-      var actionElement, actionTitle, controls, pageElement, prev;
-      pageElement = journalElement.parents('.page:first');
-      if (action.type === 'edit') {
-        prev = journalElement.find(".edit[data-id=" + (action.id || 0) + "]");
-      }
-      actionTitle = action.type;
-      if (action.date != null) {
-        actionTitle += " " + (util.formatElapsedTime(action.date));
-      }
-      actionElement = $("<a href=\"#\" /> ").addClass("action").addClass(action.type).text(util.symbols[action.type]).attr('title', actionTitle).attr('data-id', action.id || "0").data('action', action);
-      controls = journalElement.children('.control-buttons');
-      if (controls.length > 0) {
-        actionElement.insertBefore(controls);
-      } else {
-        actionElement.appendTo(journalElement);
-      }
-      if (action.type === 'fork' && (action.site != null)) {
-        return actionElement.css("background-image", "url(//" + action.site + "/favicon.png)").attr("href", "//" + action.site + "/" + (pageElement.attr('id')) + ".html").data("site", action.site).data("slug", pageElement.attr('id'));
       }
     };
     useLocalStorage = wiki.useLocalStorage = function() {
@@ -1006,13 +985,15 @@ require.define("/lib/synopsis.coffee",function(require,module,exports,__dirname,
 });
 
 require.define("/lib/pageHandler.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
-  var pageFromLocalStorage, pageHandler, pushToLocal, pushToServer, recursiveGet, revision, state, util;
+  var addToJournal, pageFromLocalStorage, pageHandler, pushToLocal, pushToServer, recursiveGet, revision, state, util;
 
   util = require('./util');
 
   state = require('./state');
 
   revision = require('./revision');
+
+  addToJournal = require('./addToJournal');
 
   module.exports = pageHandler = {};
 
@@ -1142,7 +1123,7 @@ require.define("/lib/pageHandler.coffee",function(require,module,exports,__dirna
       return $(this).data("item");
     }).get();
     localStorage[pagePutInfo.slug] = JSON.stringify(page);
-    return wiki.addToJournal(pageElement.find('.journal'), action);
+    return addToJournal(pageElement.find('.journal'), action);
   };
 
   pushToServer = function(pageElement, pagePutInfo, action) {
@@ -1153,7 +1134,7 @@ require.define("/lib/pageHandler.coffee",function(require,module,exports,__dirna
         'action': JSON.stringify(action)
       },
       success: function() {
-        wiki.addToJournal(pageElement.find('.journal'), action);
+        addToJournal(pageElement.find('.journal'), action);
         if (action.type === 'fork') {
           localStorage.removeItem(pageElement.attr('id'));
           return state.setUrl;
@@ -1207,7 +1188,7 @@ require.define("/lib/pageHandler.coffee",function(require,module,exports,__dirna
       state.setUrl();
       if (action.type !== 'fork') {
         action.fork = forkFrom;
-        wiki.addToJournal(pageElement.find('.journal'), {
+        addToJournal(pageElement.find('.journal'), {
           type: 'fork',
           site: forkFrom,
           date: action.date
@@ -1468,6 +1449,37 @@ require.define("/lib/revision.coffee",function(require,module,exports,__dirname,
 
 });
 
+require.define("/lib/addToJournal.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
+  var util;
+
+  util = require('./util');
+
+  module.exports = function(journalElement, action) {
+    var actionElement, actionTitle, controls, pageElement, prev;
+    pageElement = journalElement.parents('.page:first');
+    if (action.type === 'edit') {
+      prev = journalElement.find(".edit[data-id=" + (action.id || 0) + "]");
+    }
+    actionTitle = action.type;
+    if (action.date != null) {
+      actionTitle += " " + (util.formatElapsedTime(action.date));
+    }
+    actionElement = $("<a href=\"#\" /> ").addClass("action").addClass(action.type).text(util.symbols[action.type]).attr('title', actionTitle).attr('data-id', action.id || "0").data('action', action);
+    controls = journalElement.children('.control-buttons');
+    if (controls.length > 0) {
+      actionElement.insertBefore(controls);
+    } else {
+      actionElement.appendTo(journalElement);
+    }
+    if (action.type === 'fork' && (action.site != null)) {
+      return actionElement.css("background-image", "url(//" + action.site + "/favicon.png)").attr("href", "//" + action.site + "/" + (pageElement.attr('id')) + ".html").data("site", action.site).data("slug", pageElement.attr('id'));
+    }
+  };
+
+}).call(this);
+
+});
+
 require.define("/lib/plugin.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
   var getScript, plugin, scripts, util;
 
@@ -1599,7 +1611,7 @@ require.define("/lib/plugin.coffee",function(require,module,exports,__dirname,__
 });
 
 require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
-  var buildPageHeader, createFactory, emitHeader, handleDragging, initAddButton, initDragging, neighborhood, pageHandler, plugin, refresh, renderPageIntoPageElement, state, util,
+  var addToJournal, buildPageHeader, createFactory, emitHeader, handleDragging, initAddButton, initDragging, neighborhood, pageHandler, plugin, refresh, renderPageIntoPageElement, state, util,
     __slice = [].slice;
 
   util = require('./util.coffee');
@@ -1611,6 +1623,8 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
   state = require('./state.coffee');
 
   neighborhood = require('./neighborhood.coffee');
+
+  addToJournal = require('./addToJournal');
 
   handleDragging = function(evt, ui) {
     var action, before, beforeElement, destinationPageElement, equals, item, itemElement, moveFromPage, moveToPage, moveWithinPage, order, sourcePageElement, sourceSite, thisPageElement;
@@ -1764,7 +1778,7 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
     _ref2 = page.journal;
     for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
       action = _ref2[_j];
-      wiki.addToJournal($journal, action);
+      addToJournal($journal, action);
     }
     $journal.append("<div class=\"control-buttons\">\n  <a href=\"#\" class=\"button fork-page\" title=\"fork this page\">" + util.symbols['fork'] + "</a>\n  <a href=\"#\" class=\"button add-factory\" title=\"add paragraph\">" + util.symbols['add'] + "</a>\n</div>");
     return $footer.append("<a id=\"license\" href=\"http://creativecommons.org/licenses/by-sa/3.0/\">CC BY-SA 3.0</a> .\n<a class=\"show-page-source\" href=\"/" + slug + ".json?random=" + (util.randomBytes(4)) + "\" title=\"source\">JSON</a> .\n<a>" + (siteFound || 'origin') + "</a>");
