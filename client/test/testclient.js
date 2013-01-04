@@ -391,150 +391,100 @@ process.binding = function (name) {
 
 });
 
-require.define("/lib/util.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
-  var util;
+require.define("/lib/wiki.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
+  var createSynopsis, wiki,
+    __slice = [].slice;
 
-  module.exports = wiki.util = util = {};
+  createSynopsis = require('./synopsis');
 
-  util.createSynopsis = require('./synopsis');
-
-  util.symbols = {
-    create: '☼',
-    add: '+',
-    edit: '✎',
-    fork: '⚑',
-    move: '↕',
-    remove: '✕'
+  wiki = {
+    createSynopsis: createSynopsis
   };
 
-  util.resolveLinks = function(string) {
+  wiki.log = function() {
+    var things;
+    things = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+    if ((typeof console !== "undefined" && console !== null ? console.log : void 0) != null) {
+      return console.log.apply(console, things);
+    }
+  };
+
+  wiki.asSlug = function(name) {
+    return name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase();
+  };
+
+  wiki.useLocalStorage = function() {
+    return $(".login").length > 0;
+  };
+
+  wiki.resolutionContext = [];
+
+  wiki.resolveFrom = function(addition, callback) {
+    wiki.resolutionContext.push(addition);
+    try {
+      return callback();
+    } finally {
+      wiki.resolutionContext.pop();
+    }
+  };
+
+  wiki.getData = function(vis) {
+    var idx, who;
+    if (vis) {
+      idx = $('.item').index(vis);
+      who = $(".item:lt(" + idx + ")").filter('.chart,.data,.calculator').last();
+      if (who != null) {
+        return who.data('item').data;
+      } else {
+        return {};
+      }
+    } else {
+      who = $('.chart,.data,.calculator').last();
+      if (who != null) {
+        return who.data('item').data;
+      } else {
+        return {};
+      }
+    }
+  };
+
+  wiki.getDataNodes = function(vis) {
+    var idx, who;
+    if (vis) {
+      idx = $('.item').index(vis);
+      who = $(".item:lt(" + idx + ")").filter('.chart,.data,.calculator').toArray().reverse();
+      return $(who);
+    } else {
+      who = $('.chart,.data,.calculator').toArray().reverse();
+      return $(who);
+    }
+  };
+
+  wiki.createPage = function(name, loc) {
+    if (loc && loc !== 'view') {
+      return $("<div/>").attr('id', name).attr('data-site', loc).addClass("page");
+    } else {
+      return $("<div/>").attr('id', name).addClass("page");
+    }
+  };
+
+  wiki.getItem = function(element) {
+    if ($(element).length > 0) {
+      return $(element).data("item") || $(element).data('staticItem');
+    }
+  };
+
+  wiki.resolveLinks = function(string) {
     var renderInternalLink;
     renderInternalLink = function(match, name) {
       var slug;
-      slug = util.asSlug(name);
+      slug = wiki.asSlug(name);
       return "<a class=\"internal\" href=\"/" + slug + ".html\" data-page-name=\"" + slug + "\" title=\"" + (wiki.resolutionContext.join(' => ')) + "\">" + name + "</a>";
     };
     return string.replace(/\[\[([^\]]+)\]\]/gi, renderInternalLink).replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" target=\"_blank\" href=\"$1\" title=\"$1\" rel=\"nofollow\">$2 <img src=\"/images/external-link-ltr-icon.png\"></a>");
   };
 
-  util.randomByte = function() {
-    return (((1 + Math.random()) * 0x100) | 0).toString(16).substring(1);
-  };
-
-  util.randomBytes = function(n) {
-    return ((function() {
-      var _i, _results;
-      _results = [];
-      for (_i = 1; 1 <= n ? _i <= n : _i >= n; 1 <= n ? _i++ : _i--) {
-        _results.push(util.randomByte());
-      }
-      return _results;
-    })()).join('');
-  };
-
-  util.formatTime = function(time) {
-    var am, d, h, mi, mo;
-    d = new Date((time > 10000000000 ? time : time * 1000));
-    mo = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()];
-    h = d.getHours();
-    am = h < 12 ? 'AM' : 'PM';
-    h = h === 0 ? 12 : h > 12 ? h - 12 : h;
-    mi = (d.getMinutes() < 10 ? "0" : "") + d.getMinutes();
-    return "" + h + ":" + mi + " " + am + "<br>" + (d.getDate()) + " " + mo + " " + (d.getFullYear());
-  };
-
-  util.formatDate = function(msSinceEpoch) {
-    var am, d, day, h, mi, mo, sec, wk, yr;
-    d = new Date(msSinceEpoch);
-    wk = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d.getDay()];
-    mo = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()];
-    day = d.getDate();
-    yr = d.getFullYear();
-    h = d.getHours();
-    am = h < 12 ? 'AM' : 'PM';
-    h = h === 0 ? 12 : h > 12 ? h - 12 : h;
-    mi = (d.getMinutes() < 10 ? "0" : "") + d.getMinutes();
-    sec = (d.getSeconds() < 10 ? "0" : "") + d.getSeconds();
-    return "" + wk + " " + mo + " " + day + ", " + yr + "<br>" + h + ":" + mi + ":" + sec + " " + am;
-  };
-
-  util.formatElapsedTime = function(msSinceEpoch) {
-    var days, hrs, mins, months, msecs, secs, weeks, years;
-    msecs = new Date().getTime() - msSinceEpoch;
-    if ((secs = msecs / 1000) < 2) {
-      return "" + (Math.floor(msecs)) + " milliseconds ago";
-    }
-    if ((mins = secs / 60) < 2) {
-      return "" + (Math.floor(secs)) + " seconds ago";
-    }
-    if ((hrs = mins / 60) < 2) {
-      return "" + (Math.floor(mins)) + " minutes ago";
-    }
-    if ((days = hrs / 24) < 2) {
-      return "" + (Math.floor(hrs)) + " hours ago";
-    }
-    if ((weeks = days / 7) < 2) {
-      return "" + (Math.floor(days)) + " days ago";
-    }
-    if ((months = days / 31) < 2) {
-      return "" + (Math.floor(weeks)) + " weeks ago";
-    }
-    if ((years = days / 365) < 2) {
-      return "" + (Math.floor(months)) + " months ago";
-    }
-    return "" + (Math.floor(years)) + " years ago";
-  };
-
-  util.asSlug = function(name) {
-    return name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase();
-  };
-
-  if (typeof wiki !== "undefined" && wiki !== null) {
-    wiki.asSlug = util.asSlug;
-  }
-
-  util.emptyPage = function() {
-    return {
-      title: 'empty',
-      story: [],
-      journal: []
-    };
-  };
-
-  util.getSelectionPos = function(jQueryElement) {
-    var el, iePos, sel;
-    el = jQueryElement.get(0);
-    if (document.selection) {
-      el.focus();
-      sel = document.selection.createRange();
-      sel.moveStart('character', -el.value.length);
-      iePos = sel.text.length;
-      return {
-        start: iePos,
-        end: iePos
-      };
-    } else {
-      return {
-        start: el.selectionStart,
-        end: el.selectionEnd
-      };
-    }
-  };
-
-  util.setCaretPosition = function(jQueryElement, caretPos) {
-    var el, range;
-    el = jQueryElement.get(0);
-    if (el != null) {
-      if (el.createTextRange) {
-        range = el.createTextRange();
-        range.move("character", caretPos);
-        range.select();
-      } else {
-        el.setSelectionRange(caretPos, caretPos);
-      }
-      return el.focus();
-    }
-  };
+  module.exports = wiki;
 
 }).call(this);
 
@@ -610,7 +560,7 @@ require.define("/test/util.coffee",function(require,module,exports,__dirname,__f
     });
     it('should slug a name', function() {
       var s;
-      s = util.asSlug('Welcome Visitors');
+      s = wiki.asSlug('Welcome Visitors');
       return expect(s).to.be('welcome-visitors');
     });
     it('should make emptyPage page with title, story and journal', function() {
@@ -630,6 +580,135 @@ require.define("/test/util.coffee",function(require,module,exports,__dirname,__f
       return expect(page.story).to.eql([]);
     });
   });
+
+}).call(this);
+
+});
+
+require.define("/lib/util.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
+  var util;
+
+  module.exports = wiki.util = util = {};
+
+  util.symbols = {
+    create: '☼',
+    add: '+',
+    edit: '✎',
+    fork: '⚑',
+    move: '↕',
+    remove: '✕'
+  };
+
+  util.randomByte = function() {
+    return (((1 + Math.random()) * 0x100) | 0).toString(16).substring(1);
+  };
+
+  util.randomBytes = function(n) {
+    return ((function() {
+      var _i, _results;
+      _results = [];
+      for (_i = 1; 1 <= n ? _i <= n : _i >= n; 1 <= n ? _i++ : _i--) {
+        _results.push(util.randomByte());
+      }
+      return _results;
+    })()).join('');
+  };
+
+  util.formatTime = function(time) {
+    var am, d, h, mi, mo;
+    d = new Date((time > 10000000000 ? time : time * 1000));
+    mo = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()];
+    h = d.getHours();
+    am = h < 12 ? 'AM' : 'PM';
+    h = h === 0 ? 12 : h > 12 ? h - 12 : h;
+    mi = (d.getMinutes() < 10 ? "0" : "") + d.getMinutes();
+    return "" + h + ":" + mi + " " + am + "<br>" + (d.getDate()) + " " + mo + " " + (d.getFullYear());
+  };
+
+  util.formatDate = function(msSinceEpoch) {
+    var am, d, day, h, mi, mo, sec, wk, yr;
+    d = new Date(msSinceEpoch);
+    wk = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d.getDay()];
+    mo = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()];
+    day = d.getDate();
+    yr = d.getFullYear();
+    h = d.getHours();
+    am = h < 12 ? 'AM' : 'PM';
+    h = h === 0 ? 12 : h > 12 ? h - 12 : h;
+    mi = (d.getMinutes() < 10 ? "0" : "") + d.getMinutes();
+    sec = (d.getSeconds() < 10 ? "0" : "") + d.getSeconds();
+    return "" + wk + " " + mo + " " + day + ", " + yr + "<br>" + h + ":" + mi + ":" + sec + " " + am;
+  };
+
+  util.formatElapsedTime = function(msSinceEpoch) {
+    var days, hrs, mins, months, msecs, secs, weeks, years;
+    msecs = new Date().getTime() - msSinceEpoch;
+    if ((secs = msecs / 1000) < 2) {
+      return "" + (Math.floor(msecs)) + " milliseconds ago";
+    }
+    if ((mins = secs / 60) < 2) {
+      return "" + (Math.floor(secs)) + " seconds ago";
+    }
+    if ((hrs = mins / 60) < 2) {
+      return "" + (Math.floor(mins)) + " minutes ago";
+    }
+    if ((days = hrs / 24) < 2) {
+      return "" + (Math.floor(hrs)) + " hours ago";
+    }
+    if ((weeks = days / 7) < 2) {
+      return "" + (Math.floor(days)) + " days ago";
+    }
+    if ((months = days / 31) < 2) {
+      return "" + (Math.floor(weeks)) + " weeks ago";
+    }
+    if ((years = days / 365) < 2) {
+      return "" + (Math.floor(months)) + " months ago";
+    }
+    return "" + (Math.floor(years)) + " years ago";
+  };
+
+  util.emptyPage = function() {
+    return {
+      title: 'empty',
+      story: [],
+      journal: []
+    };
+  };
+
+  util.getSelectionPos = function(jQueryElement) {
+    var el, iePos, sel;
+    el = jQueryElement.get(0);
+    if (document.selection) {
+      el.focus();
+      sel = document.selection.createRange();
+      sel.moveStart('character', -el.value.length);
+      iePos = sel.text.length;
+      return {
+        start: iePos,
+        end: iePos
+      };
+    } else {
+      return {
+        start: el.selectionStart,
+        end: el.selectionEnd
+      };
+    }
+  };
+
+  util.setCaretPosition = function(jQueryElement, caretPos) {
+    var el, range;
+    el = jQueryElement.get(0);
+    if (el != null) {
+      if (el.createTextRange) {
+        range = el.createTextRange();
+        range.move("character", caretPos);
+        range.select();
+      } else {
+        el.setSelectionRange(caretPos, caretPos);
+      }
+      return el.focus();
+    }
+  };
 
 }).call(this);
 
@@ -1924,8 +2003,6 @@ require.define("/lib/search.coffee",function(require,module,exports,__dirname,__
 
   active = require('./active');
 
-  require('./dom');
-
   createSearch = function(_arg) {
     var neighborhood, performSearch;
     neighborhood = _arg.neighborhood;
@@ -1970,20 +2047,6 @@ require.define("/lib/search.coffee",function(require,module,exports,__dirname,__
   };
 
   module.exports = createSearch;
-
-}).call(this);
-
-});
-
-require.define("/lib/dom.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
-
-  wiki.createPage = function(name, loc) {
-    if (loc && loc !== 'view') {
-      return $("<div/>").attr('id', name).attr('data-site', loc).addClass("page");
-    } else {
-      return $("<div/>").attr('id', name).addClass("page");
-    }
-  };
 
 }).call(this);
 
@@ -2874,26 +2937,10 @@ require.define("/plugins/report/report.js",function(require,module,exports,__dir
 });
 
 require.define("/testclient.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
-  var util,
-    __slice = [].slice;
 
   mocha.setup('bdd');
 
-  window.wiki = {};
-
-  wiki.log = function() {
-    var things;
-    things = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-    if ((typeof console !== "undefined" && console !== null ? console.log : void 0) != null) {
-      return console.log(things);
-    }
-  };
-
-  util = require('./lib/util.coffee');
-
-  wiki.resolveLinks = util.resolveLinks;
-
-  wiki.resolutionContext = ['view'];
+  window.wiki = require('./lib/wiki');
 
   require('./test/util.coffee');
 

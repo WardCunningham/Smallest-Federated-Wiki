@@ -23,7 +23,7 @@ module.exports = describe 'util', ->
     s = util.formatDate(1333843344000 + timezoneOffset() * 1000)
     expect(s).to.be 'Sun Apr 8, 2012<br>12:02:24 AM'
   it 'should slug a name', ->
-    s = util.asSlug 'Welcome Visitors'
+    s = wiki.asSlug 'Welcome Visitors'
     expect(s).to.be 'welcome-visitors'
   it 'should make emptyPage page with title, story and journal', ->
     page = util.emptyPage()

@@ -11,4 +11,4 @@ module.exports = (page) ->
   else
     synopsis = 'A page with no story.'
   return synopsis
- 
+
