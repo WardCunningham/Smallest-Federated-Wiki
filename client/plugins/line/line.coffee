@@ -29,6 +29,15 @@ window.plugins.line =
         x = d3.time.scale().domain(extent (p)->p.x).range([ 0, w ])
         y = d3.scale.linear().domain(extent (p)->p.y).range([ h, 0 ])
 
+        lastThumb = null
+
+        $('.main').bind 'thumb', (e, thumb) ->
+          return if thumb is lastThumb
+          lastThumb = thumb
+          d3.selectAll("circle.line")
+            .attr('r', (d) -> if d.x.getTime() is thumb then 8 else 3.5)
+
+
         vis = d3.select(div.get(0))
           .data([ data ])
           .append("svg:svg")
@@ -81,3 +90,5 @@ window.plugins.line =
           .append("svg:circle")
           .attr("class", "line")
           .attr("cx", (d) -> x(d.x)).attr("cy", (d) -> y(d.y)).attr("r", 3.5)
+          .on('mouseover', (d) -> div.trigger('thumb', lastThumb = d.x.getTime()); d3.select(this).attr('r', 8))
+          .on('mouseout',  -> d3.select(this).attr('r', 3.5))

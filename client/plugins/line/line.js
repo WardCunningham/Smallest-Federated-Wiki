@@ -6,7 +6,7 @@
     emit: function(div, item) {
       return wiki.getScript('/js/d3/d3.js', function() {
         return wiki.getScript('/js/d3/d3.time.js', function() {
-          var data, extent, h, p, series, start, vis, w, x, xrules, y, yrules;
+          var data, extent, h, lastThumb, p, series, start, vis, w, x, xrules, y, yrules;
           div.append('<style>\n  svg { font: 10px sans-serif; }\n  .rule line { stroke: #eee; shape-rendering: crispEdges; }\n  .rule line.axis { stroke: #000; }\n  .line { fill: none; stroke: steelblue; stroke-width: 1.5px; }\n  circle.line { fill: #fff; }\n</style>');
           series = wiki.getData();
           data = (start = series[0][0]) > 1000000000000 ? (function() {
@@ -58,6 +58,20 @@
           y = d3.scale.linear().domain(extent(function(p) {
             return p.y;
           })).range([h, 0]);
+          lastThumb = null;
+          $('.main').bind('thumb', function(e, thumb) {
+            if (thumb === lastThumb) {
+              return;
+            }
+            lastThumb = thumb;
+            return d3.selectAll("circle.line").attr('r', function(d) {
+              if (d.x.getTime() === thumb) {
+                return 8;
+              } else {
+                return 3.5;
+              }
+            });
+          });
           vis = d3.select(div.get(0)).data([data]).append("svg:svg").attr("width", w + p * 2).attr("height", h + p * 2).append("svg:g").attr("transform", "translate(" + p + "," + p + ")");
           xrules = vis.selectAll("g.xrule").data(x.ticks(5)).enter().append("svg:g").attr("class", "rule");
           xrules.append("svg:line").attr("x1", x).attr("x2", x).attr("y1", 0).attr("y2", h - 1);
@@ -80,7 +94,12 @@
             return x(d.x);
           }).attr("cy", function(d) {
             return y(d.y);
-          }).attr("r", 3.5);
+          }).attr("r", 3.5).on('mouseover', function(d) {
+            div.trigger('thumb', lastThumb = d.x.getTime());
+            return d3.select(this).attr('r', 8);
+          }).on('mouseout', function() {
+            return d3.select(this).attr('r', 3.5);
+          });
         });
       });
     }
