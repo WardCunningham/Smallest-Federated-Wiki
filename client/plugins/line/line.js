@@ -7,27 +7,27 @@
       return wiki.getScript('/js/d3/d3.js', function() {
         return wiki.getScript('/js/d3/d3.time.js', function() {
           var data, extent, h, p, series, start, vis, w, x, xrules, y, yrules;
-          div.append('<style>\nsvg {\n  font: 10px sans-serif;\n}\n\n.rule line {\n  stroke: #eee;\n  shape-rendering: crispEdges;\n}\n\n.rule line.axis {\n  stroke: #000;\n}\n\n.line {\n  fill: none;\n  stroke: steelblue;\n  stroke-width: 1.5px;\n}\n\ncircle.line {\n  fill: #fff;\n}\n</style>');
+          div.append('<style>\n  svg { font: 10px sans-serif; }\n  .rule line { stroke: #eee; shape-rendering: crispEdges; }\n  .rule line.axis { stroke: #000; }\n  .line { fill: none; stroke: steelblue; stroke-width: 1.5px; }\n  circle.line { fill: #fff; }\n</style>');
           series = wiki.getData();
           data = (start = series[0][0]) > 1000000000000 ? (function() {
-            var _i, _len, _results;
+            var _i, _len, _ref, _results;
             _results = [];
             for (_i = 0, _len = series.length; _i < _len; _i++) {
-              p = series[_i];
+              _ref = series[_i], x = _ref[0], y = _ref[1];
               _results.push({
-                x: (p[0] - start) / 24 / 3600 / 1000,
-                y: p[1]
+                x: new Date(x),
+                y: y
               });
             }
             return _results;
           })() : start > 1000000000 ? (function() {
-            var _i, _len, _results;
+            var _i, _len, _ref, _results;
             _results = [];
             for (_i = 0, _len = series.length; _i < _len; _i++) {
-              p = series[_i];
+              _ref = series[_i], x = _ref[0], y = _ref[1];
               _results.push({
-                x: (p[0] - start) / 24 / 3600,
-                y: p[1]
+                x: new Date(x * 1000),
+                y: y
               });
             }
             return _results;
@@ -49,7 +49,7 @@
             step = Math.pow(10, Math.floor(Math.log(hi - lo) / Math.log(10)));
             return [step * Math.floor(lo / step), step * Math.ceil(hi / step)];
           };
-          w = 380;
+          w = 350;
           h = 275;
           p = 40;
           x = d3.time.scale().domain(extent(function(p) {
@@ -59,7 +59,7 @@
             return p.y;
           })).range([h, 0]);
           vis = d3.select(div.get(0)).data([data]).append("svg:svg").attr("width", w + p * 2).attr("height", h + p * 2).append("svg:g").attr("transform", "translate(" + p + "," + p + ")");
-          xrules = vis.selectAll("g.xrule").data(x.ticks(10)).enter().append("svg:g").attr("class", "rule");
+          xrules = vis.selectAll("g.xrule").data(x.ticks(5)).enter().append("svg:g").attr("class", "rule");
           xrules.append("svg:line").attr("x1", x).attr("x2", x).attr("y1", 0).attr("y2", h - 1);
           xrules.append("svg:text").attr("x", x).attr("y", h + 3).attr("dy", ".71em").attr("text-anchor", "middle").text(x.tickFormat(10));
           yrules = vis.selectAll("g.yrule").data(y.ticks(10)).enter().append("svg:g").attr("class", "rule");
