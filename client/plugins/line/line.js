@@ -7,7 +7,7 @@
       return wiki.getScript('/js/d3/d3.js', function() {
         return wiki.getScript('/js/d3/d3.time.js', function() {
           var data, extent, h, lastThumb, p, series, start, vis, w, x, xrules, y, yrules;
-          div.append('<style>\n  svg { font: 10px sans-serif; }\n  .rule line { stroke: #eee; shape-rendering: crispEdges; }\n  .rule line.axis { stroke: #000; }\n  .line { fill: none; stroke: steelblue; stroke-width: 1.5px; }\n  circle.line { fill: #fff; }\n</style>');
+          div.append('<style>\n  svg { font: 10px sans-serif; }\n  .rule line { stroke: #eee; shape-rendering: crispEdges; }\n  .rule line.axis { stroke: #000; }\n  .line { fill: none; stroke: steelblue; stroke-width: 1.5px; }\n  .line text { stroke-width: 1px; }\n  circle.line { fill: #fff; }\n</style>');
           series = wiki.getData();
           data = (start = series[0][0]) > 1000000000000 ? (function() {
             var _i, _len, _ref, _results;

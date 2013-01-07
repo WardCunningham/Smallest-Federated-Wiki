@@ -9,6 +9,7 @@ window.plugins.line =
             .rule line { stroke: #eee; shape-rendering: crispEdges; }
             .rule line.axis { stroke: #000; }
             .line { fill: none; stroke: steelblue; stroke-width: 1.5px; }
+            .line text { stroke-width: 1px; }
             circle.line { fill: #fff; }
           </style>
         '''
