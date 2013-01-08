@@ -15,11 +15,11 @@ window.plugins.line =
         '''
         series = wiki.getData()
         data = if (start = series[0][0]) > 1000000000000 # js time
-          ({x: new Date(x), y} for [x,y] in series)
+          ({t: new Date(x), x, y} for [x,y] in series)
         else if start > 1000000000 # unix time
-          ({x: new Date(x*1000), y} for [x,y] in series)
+          ({t: new Date(x*1000), x, y} for [x,y] in series)
         else
-          ({x: new Date(p.Date), y:p.Price*1} for p in series)
+          ({t: new Date(p.Date), y:p.Price*1} for p in series)
         extent = (f) ->
           [lo, hi] = [d3.min(data,f), d3.max(data,f)]
           step = Math.pow 10, Math.floor Math.log(hi-lo) / Math.log(10)
@@ -27,7 +27,7 @@ window.plugins.line =
         w = 350
         h = 275
         p = 40
-        x = d3.time.scale().domain(extent (p)->p.x).range([ 0, w ])
+        x = d3.time.scale().domain(extent (p)->p.t).range([ 0, w ])
         y = d3.scale.linear().domain(extent (p)->p.y).range([ h, 0 ])
 
         lastThumb = null
@@ -36,7 +36,7 @@ window.plugins.line =
           return if thumb is lastThumb
           lastThumb = thumb
           d3.selectAll("circle.line")
-            .attr('r', (d) -> if d.x.getTime() is thumb then 8 else 3.5)
+            .attr('r', (d) -> if d.x is thumb then 8 else 3.5)
 
 
         vis = d3.select(div.get(0))
@@ -84,12 +84,12 @@ window.plugins.line =
 
         vis.append("svg:path")
           .attr("class", "line")
-          .attr("d", d3.svg.line().x((d) -> x(d.x)).y((d) -> y(d.y)))
+          .attr("d", d3.svg.line().x((d) -> x(d.t)).y((d) -> y(d.y)))
         vis.selectAll("circle.line")
           .data(data)
           .enter()
           .append("svg:circle")
           .attr("class", "line")
-          .attr("cx", (d) -> x(d.x)).attr("cy", (d) -> y(d.y)).attr("r", 3.5)
-          .on('mouseover', (d) -> div.trigger('thumb', lastThumb = d.x.getTime()); d3.select(this).attr('r', 8))
+          .attr("cx", (d) -> x(d.t)).attr("cy", (d) -> y(d.y)).attr("r", 3.5)
+          .on('mouseover', (d) -> div.trigger('thumb', lastThumb = d.x); d3.select(this).attr('r', 8))
           .on('mouseout',  -> d3.select(this).attr('r', 3.5))

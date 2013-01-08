@@ -15,7 +15,8 @@
             for (_i = 0, _len = series.length; _i < _len; _i++) {
               _ref = series[_i], x = _ref[0], y = _ref[1];
               _results.push({
-                x: new Date(x),
+                t: new Date(x),
+                x: x,
                 y: y
               });
             }
@@ -26,7 +27,8 @@
             for (_i = 0, _len = series.length; _i < _len; _i++) {
               _ref = series[_i], x = _ref[0], y = _ref[1];
               _results.push({
-                x: new Date(x * 1000),
+                t: new Date(x * 1000),
+                x: x,
                 y: y
               });
             }
@@ -37,7 +39,7 @@
             for (_i = 0, _len = series.length; _i < _len; _i++) {
               p = series[_i];
               _results.push({
-                x: new Date(p.Date),
+                t: new Date(p.Date),
                 y: p.Price * 1
               });
             }
@@ -53,7 +55,7 @@
           h = 275;
           p = 40;
           x = d3.time.scale().domain(extent(function(p) {
-            return p.x;
+            return p.t;
           })).range([0, w]);
           y = d3.scale.linear().domain(extent(function(p) {
             return p.y;
@@ -65,7 +67,7 @@
             }
             lastThumb = thumb;
             return d3.selectAll("circle.line").attr('r', function(d) {
-              if (d.x.getTime() === thumb) {
+              if (d.x === thumb) {
                 return 8;
               } else {
                 return 3.5;
@@ -86,16 +88,16 @@
           }).attr("y1", y).attr("y2", y).attr("x1", 0).attr("x2", w + 1);
           yrules.append("svg:text").attr("y", y).attr("x", -3).attr("dy", ".35em").attr("text-anchor", "end").text(y.tickFormat(10));
           vis.append("svg:path").attr("class", "line").attr("d", d3.svg.line().x(function(d) {
-            return x(d.x);
+            return x(d.t);
           }).y(function(d) {
             return y(d.y);
           }));
           return vis.selectAll("circle.line").data(data).enter().append("svg:circle").attr("class", "line").attr("cx", function(d) {
-            return x(d.x);
+            return x(d.t);
           }).attr("cy", function(d) {
             return y(d.y);
           }).attr("r", 3.5).on('mouseover', function(d) {
-            div.trigger('thumb', lastThumb = d.x.getTime());
+            div.trigger('thumb', lastThumb = d.x);
             return d3.select(this).attr('r', 8);
           }).on('mouseout', function() {
             return d3.select(this).attr('r', 3.5);
