@@ -1,6 +1,5 @@
 util = require('./util')
 active = require('./active')
-require('./dom')
 
 createSearch = ({neighborhood})->
   performSearch = (searchQuery)->

@@ -391,11 +391,138 @@ process.binding = function (name) {
 
 });
 
-require.define("/lib/legacy.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
-  var active, pageHandler, plugin, refresh, resolveLinks, state, util,
+require.define("/lib/wiki.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
+  var createSynopsis, wiki,
     __slice = [].slice;
 
-  window.wiki = {};
+  createSynopsis = require('./synopsis');
+
+  wiki = {
+    createSynopsis: createSynopsis
+  };
+
+  wiki.log = function() {
+    var things;
+    things = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+    if ((typeof console !== "undefined" && console !== null ? console.log : void 0) != null) {
+      return console.log.apply(console, things);
+    }
+  };
+
+  wiki.asSlug = function(name) {
+    return name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase();
+  };
+
+  wiki.useLocalStorage = function() {
+    return $(".login").length > 0;
+  };
+
+  wiki.resolutionContext = [];
+
+  wiki.resolveFrom = function(addition, callback) {
+    wiki.resolutionContext.push(addition);
+    try {
+      return callback();
+    } finally {
+      wiki.resolutionContext.pop();
+    }
+  };
+
+  wiki.getData = function(vis) {
+    var idx, who;
+    if (vis) {
+      idx = $('.item').index(vis);
+      who = $(".item:lt(" + idx + ")").filter('.chart,.data,.calculator').last();
+      if (who != null) {
+        return who.data('item').data;
+      } else {
+        return {};
+      }
+    } else {
+      who = $('.chart,.data,.calculator').last();
+      if (who != null) {
+        return who.data('item').data;
+      } else {
+        return {};
+      }
+    }
+  };
+
+  wiki.getDataNodes = function(vis) {
+    var idx, who;
+    if (vis) {
+      idx = $('.item').index(vis);
+      who = $(".item:lt(" + idx + ")").filter('.chart,.data,.calculator').toArray().reverse();
+      return $(who);
+    } else {
+      who = $('.chart,.data,.calculator').toArray().reverse();
+      return $(who);
+    }
+  };
+
+  wiki.createPage = function(name, loc) {
+    if (loc && loc !== 'view') {
+      return $("<div/>").attr('id', name).attr('data-site', loc).addClass("page");
+    } else {
+      return $("<div/>").attr('id', name).addClass("page");
+    }
+  };
+
+  wiki.getItem = function(element) {
+    if ($(element).length > 0) {
+      return $(element).data("item") || $(element).data('staticItem');
+    }
+  };
+
+  wiki.resolveLinks = function(string) {
+    var renderInternalLink;
+    renderInternalLink = function(match, name) {
+      var slug;
+      slug = wiki.asSlug(name);
+      return "<a class=\"internal\" href=\"/" + slug + ".html\" data-page-name=\"" + slug + "\" title=\"" + (wiki.resolutionContext.join(' => ')) + "\">" + name + "</a>";
+    };
+    return string.replace(/\[\[([^\]]+)\]\]/gi, renderInternalLink).replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" target=\"_blank\" href=\"$1\" title=\"$1\" rel=\"nofollow\">$2 <img src=\"/images/external-link-ltr-icon.png\"></a>");
+  };
+
+  module.exports = wiki;
+
+}).call(this);
+
+});
+
+require.define("/lib/synopsis.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
+
+  module.exports = function(page) {
+    var p1, p2, synopsis;
+    synopsis = page.synopsis;
+    if ((page != null) && (page.story != null)) {
+      p1 = page.story[0];
+      p2 = page.story[1];
+      if (p1 && p1.type === 'paragraph') {
+        synopsis || (synopsis = p1.text);
+      }
+      if (p2 && p2.type === 'paragraph') {
+        synopsis || (synopsis = p2.text);
+      }
+      if (p1 && (p1.text != null)) {
+        synopsis || (synopsis = p1.text);
+      }
+      if (p2 && (p2.text != null)) {
+        synopsis || (synopsis = p2.text);
+      }
+      synopsis || (synopsis = (page.story != null) && ("A page with " + page.story.length + " items."));
+    } else {
+      synopsis = 'A page with no story.';
+    }
+    return synopsis;
+  };
+
+}).call(this);
+
+});
+
+require.define("/lib/legacy.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
+  var active, pageHandler, plugin, refresh, state, util;
 
   util = require('./util.coffee');
 
@@ -409,18 +536,12 @@ require.define("/lib/legacy.coffee",function(require,module,exports,__dirname,__
 
   refresh = require('./refresh.coffee');
 
-  require('./dom.coffee');
-
-  resolveLinks = wiki.resolveLinks = util.resolveLinks;
-
-  wiki.createSynopsis = util.createSynopsis;
-
   Array.prototype.last = function() {
     return this[this.length - 1];
   };
 
   $(function() {
-    var $firstPage, LEFTARROW, RIGHTARROW, addToJournal, createTextElement, doInternalLink, finishClick, getItem, getTemplate, resolveFrom, sleep, textEditor, useLocalStorage;
+    var $firstPage, LEFTARROW, RIGHTARROW, createTextElement, doInternalLink, finishClick, getTemplate, sleep, textEditor;
     window.dialog = $('<div></div>').html('This dialog will show every time!').dialog({
       autoOpen: false,
       title: 'Basic Dialog',
@@ -429,48 +550,8 @@ require.define("/lib/legacy.coffee",function(require,module,exports,__dirname,__
     });
     wiki.dialog = function(title, html) {
       window.dialog.html(html);
-      window.dialog.dialog("option", "title", resolveLinks(title));
+      window.dialog.dialog("option", "title", wiki.resolveLinks(title));
       return window.dialog.dialog('open');
-    };
-    wiki.log = function() {
-      var things;
-      things = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-      if ((typeof console !== "undefined" && console !== null ? console.log : void 0) != null) {
-        return console.log.apply(console, things);
-      }
-    };
-    wiki.resolutionContext = [];
-    resolveFrom = wiki.resolveFrom = function(addition, callback) {
-      wiki.resolutionContext.push(addition);
-      try {
-        return callback();
-      } finally {
-        wiki.resolutionContext.pop();
-      }
-    };
-    addToJournal = wiki.addToJournal = function(journalElement, action) {
-      var actionElement, actionTitle, controls, pageElement, prev;
-      pageElement = journalElement.parents('.page:first');
-      if (action.type === 'edit') {
-        prev = journalElement.find(".edit[data-id=" + (action.id || 0) + "]");
-      }
-      actionTitle = action.type;
-      if (action.date != null) {
-        actionTitle += " " + (util.formatElapsedTime(action.date));
-      }
-      actionElement = $("<a href=\"#\" /> ").addClass("action").addClass(action.type).text(util.symbols[action.type]).attr('title', actionTitle).attr('data-id', action.id || "0").data('action', action);
-      controls = journalElement.children('.control-buttons');
-      if (controls.length > 0) {
-        actionElement.insertBefore(controls);
-      } else {
-        actionElement.appendTo(journalElement);
-      }
-      if (action.type === 'fork' && (action.site != null)) {
-        return actionElement.css("background-image", "url(//" + action.site + "/favicon.png)").attr("href", "//" + action.site + "/" + (pageElement.attr('id')) + ".html").data("site", action.site).data("slug", pageElement.attr('id'));
-      }
-    };
-    useLocalStorage = wiki.useLocalStorage = function() {
-      return $(".login").length > 0;
     };
     sleep = function(time, done) {
       return setTimeout(done, time);
@@ -564,7 +645,7 @@ require.define("/lib/legacy.coffee",function(require,module,exports,__dirname,__
         if (item.type === 'paragraph') {
           sel = util.getSelectionPos(textarea);
           if (e.which === $.ui.keyCode.BACKSPACE && sel.start === 0 && sel.start === sel.end) {
-            prevItem = getItem(div.prev());
+            prevItem = wiki.getItem(div.prev());
             if (prevItem.type !== 'paragraph') {
               return false;
             }
@@ -604,46 +685,11 @@ require.define("/lib/legacy.coffee",function(require,module,exports,__dirname,__
         return textarea.focus();
       }
     };
-    getItem = wiki.getItem = function(element) {
-      if ($(element).length > 0) {
-        return $(element).data("item") || $(element).data('staticItem');
-      }
-    };
-    wiki.getData = function(vis) {
-      var idx, who;
-      if (vis) {
-        idx = $('.item').index(vis);
-        who = $(".item:lt(" + idx + ")").filter('.chart,.data,.calculator').last();
-        if (who != null) {
-          return who.data('item').data;
-        } else {
-          return {};
-        }
-      } else {
-        who = $('.chart,.data,.calculator').last();
-        if (who != null) {
-          return who.data('item').data;
-        } else {
-          return {};
-        }
-      }
-    };
-    wiki.getDataNodes = function(vis) {
-      var idx, who;
-      if (vis) {
-        idx = $('.item').index(vis);
-        who = $(".item:lt(" + idx + ")").filter('.chart,.data,.calculator').toArray().reverse();
-        return $(who);
-      } else {
-        who = $('.chart,.data,.calculator').toArray().reverse();
-        return $(who);
-      }
-    };
     doInternalLink = wiki.doInternalLink = function(name, page, site) {
       if (site == null) {
         site = null;
       }
-      name = util.asSlug(name);
+      name = wiki.asSlug(name);
       if (page != null) {
         $(page).nextAll().remove();
       }
@@ -741,7 +787,7 @@ require.define("/lib/legacy.coffee",function(require,module,exports,__dirname,__
         return finishClick(e, name);
       } else {
         $page = $(this).parents('.page');
-        slug = util.asSlug($page.data('data').title);
+        slug = wiki.asSlug($page.data('data').title);
         rev = $(this).parent().children().index($action);
         if (!e.shiftKey) {
           $page.nextAll().remove();
@@ -753,7 +799,7 @@ require.define("/lib/legacy.coffee",function(require,module,exports,__dirname,__
       var item, pageElement, remoteSite;
       pageElement = $(e.target).parents('.page');
       if (pageElement.hasClass('local')) {
-        if (!useLocalStorage()) {
+        if (!wiki.useLocalStorage()) {
           item = pageElement.data('data');
           pageElement.removeClass('local');
           return pageHandler.put(pageElement, {
@@ -830,8 +876,6 @@ require.define("/lib/util.coffee",function(require,module,exports,__dirname,__fi
 
   module.exports = wiki.util = util = {};
 
-  util.createSynopsis = require('./synopsis');
-
   util.symbols = {
     create: '☼',
     add: '+',
@@ -839,16 +883,6 @@ require.define("/lib/util.coffee",function(require,module,exports,__dirname,__fi
     fork: '⚑',
     move: '↕',
     remove: '✕'
-  };
-
-  util.resolveLinks = function(string) {
-    var renderInternalLink;
-    renderInternalLink = function(match, name) {
-      var slug;
-      slug = util.asSlug(name);
-      return "<a class=\"internal\" href=\"/" + slug + ".html\" data-page-name=\"" + slug + "\" title=\"" + (wiki.resolutionContext.join(' => ')) + "\">" + name + "</a>";
-    };
-    return string.replace(/\[\[([^\]]+)\]\]/gi, renderInternalLink).replace(/\[(http.*?) (.*?)\]/gi, "<a class=\"external\" target=\"_blank\" href=\"$1\" title=\"$1\" rel=\"nofollow\">$2 <img src=\"/images/external-link-ltr-icon.png\"></a>");
   };
 
   util.randomByte = function() {
@@ -919,14 +953,6 @@ require.define("/lib/util.coffee",function(require,module,exports,__dirname,__fi
     return "" + (Math.floor(years)) + " years ago";
   };
 
-  util.asSlug = function(name) {
-    return name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase();
-  };
-
-  if (typeof wiki !== "undefined" && wiki !== null) {
-    wiki.asSlug = util.asSlug;
-  }
-
   util.emptyPage = function() {
     return {
       title: 'empty',
@@ -974,45 +1000,16 @@ require.define("/lib/util.coffee",function(require,module,exports,__dirname,__fi
 
 });
 
-require.define("/lib/synopsis.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
-
-  module.exports = function(page) {
-    var p1, p2, synopsis;
-    synopsis = page.synopsis;
-    if ((page != null) && (page.story != null)) {
-      p1 = page.story[0];
-      p2 = page.story[1];
-      if (p1 && p1.type === 'paragraph') {
-        synopsis || (synopsis = p1.text);
-      }
-      if (p2 && p2.type === 'paragraph') {
-        synopsis || (synopsis = p2.text);
-      }
-      if (p1 && (p1.text != null)) {
-        synopsis || (synopsis = p1.text);
-      }
-      if (p2 && (p2.text != null)) {
-        synopsis || (synopsis = p2.text);
-      }
-      synopsis || (synopsis = (page.story != null) && ("A page with " + page.story.length + " items."));
-    } else {
-      synopsis = 'A page with no story.';
-    }
-    return synopsis;
-  };
-
-}).call(this);
-
-});
-
 require.define("/lib/pageHandler.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
-  var pageFromLocalStorage, pageHandler, pushToLocal, pushToServer, recursiveGet, revision, state, util;
+  var addToJournal, pageFromLocalStorage, pageHandler, pushToLocal, pushToServer, recursiveGet, revision, state, util;
 
   util = require('./util');
 
   state = require('./state');
 
   revision = require('./revision');
+
+  addToJournal = require('./addToJournal');
 
   module.exports = pageHandler = {};
 
@@ -1142,7 +1139,7 @@ require.define("/lib/pageHandler.coffee",function(require,module,exports,__dirna
       return $(this).data("item");
     }).get();
     localStorage[pagePutInfo.slug] = JSON.stringify(page);
-    return wiki.addToJournal(pageElement.find('.journal'), action);
+    return addToJournal(pageElement.find('.journal'), action);
   };
 
   pushToServer = function(pageElement, pagePutInfo, action) {
@@ -1153,7 +1150,7 @@ require.define("/lib/pageHandler.coffee",function(require,module,exports,__dirna
         'action': JSON.stringify(action)
       },
       success: function() {
-        wiki.addToJournal(pageElement.find('.journal'), action);
+        addToJournal(pageElement.find('.journal'), action);
         if (action.type === 'fork') {
           localStorage.removeItem(pageElement.attr('id'));
           return state.setUrl;
@@ -1207,7 +1204,7 @@ require.define("/lib/pageHandler.coffee",function(require,module,exports,__dirna
       state.setUrl();
       if (action.type !== 'fork') {
         action.fork = forkFrom;
-        wiki.addToJournal(pageElement.find('.journal'), {
+        addToJournal(pageElement.find('.journal'), {
           type: 'fork',
           site: forkFrom,
           date: action.date
@@ -1468,6 +1465,37 @@ require.define("/lib/revision.coffee",function(require,module,exports,__dirname,
 
 });
 
+require.define("/lib/addToJournal.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
+  var util;
+
+  util = require('./util');
+
+  module.exports = function(journalElement, action) {
+    var actionElement, actionTitle, controls, pageElement, prev;
+    pageElement = journalElement.parents('.page:first');
+    if (action.type === 'edit') {
+      prev = journalElement.find(".edit[data-id=" + (action.id || 0) + "]");
+    }
+    actionTitle = action.type;
+    if (action.date != null) {
+      actionTitle += " " + (util.formatElapsedTime(action.date));
+    }
+    actionElement = $("<a href=\"#\" /> ").addClass("action").addClass(action.type).text(util.symbols[action.type]).attr('title', actionTitle).attr('data-id', action.id || "0").data('action', action);
+    controls = journalElement.children('.control-buttons');
+    if (controls.length > 0) {
+      actionElement.insertBefore(controls);
+    } else {
+      actionElement.appendTo(journalElement);
+    }
+    if (action.type === 'fork' && (action.site != null)) {
+      return actionElement.css("background-image", "url(//" + action.site + "/favicon.png)").attr("href", "//" + action.site + "/" + (pageElement.attr('id')) + ".html").data("site", action.site).data("slug", pageElement.attr('id'));
+    }
+  };
+
+}).call(this);
+
+});
+
 require.define("/lib/plugin.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
   var getScript, plugin, scripts, util;
 
@@ -1599,7 +1627,7 @@ require.define("/lib/plugin.coffee",function(require,module,exports,__dirname,__
 });
 
 require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
-  var buildPageHeader, createFactory, emitHeader, handleDragging, initAddButton, initDragging, neighborhood, pageHandler, plugin, refresh, renderPageIntoPageElement, state, util,
+  var addToJournal, buildPageHeader, createFactory, emitHeader, handleDragging, initAddButton, initDragging, neighborhood, pageHandler, plugin, refresh, renderPageIntoPageElement, state, util,
     __slice = [].slice;
 
   util = require('./util.coffee');
@@ -1611,6 +1639,8 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
   state = require('./state.coffee');
 
   neighborhood = require('./neighborhood.coffee');
+
+  addToJournal = require('./addToJournal');
 
   handleDragging = function(evt, ui) {
     var action, before, beforeElement, destinationPageElement, equals, item, itemElement, moveFromPage, moveToPage, moveWithinPage, order, sourcePageElement, sourceSite, thisPageElement;
@@ -1764,7 +1794,7 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
     _ref2 = page.journal;
     for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
       action = _ref2[_j];
-      wiki.addToJournal($journal, action);
+      addToJournal($journal, action);
     }
     $journal.append("<div class=\"control-buttons\">\n  <a href=\"#\" class=\"button fork-page\" title=\"fork this page\">" + util.symbols['fork'] + "</a>\n  <a href=\"#\" class=\"button add-factory\" title=\"add paragraph\">" + util.symbols['add'] + "</a>\n</div>");
     return $footer.append("<a id=\"license\" href=\"http://creativecommons.org/licenses/by-sa/3.0/\">CC BY-SA 3.0</a> .\n<a class=\"show-page-source\" href=\"/" + slug + ".json?random=" + (util.randomBytes(4)) + "\" title=\"source\">JSON</a> .\n<a>" + (siteFound || 'origin') + "</a>");
@@ -2035,8 +2065,6 @@ require.define("/lib/search.coffee",function(require,module,exports,__dirname,__
 
   active = require('./active');
 
-  require('./dom');
-
   createSearch = function(_arg) {
     var neighborhood, performSearch;
     neighborhood = _arg.neighborhood;
@@ -2086,21 +2114,9 @@ require.define("/lib/search.coffee",function(require,module,exports,__dirname,__
 
 });
 
-require.define("/lib/dom.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
-
-  wiki.createPage = function(name, loc) {
-    if (loc && loc !== 'view') {
-      return $("<div/>").attr('id', name).attr('data-site', loc).addClass("page");
-    } else {
-      return $("<div/>").attr('id', name).addClass("page");
-    }
-  };
-
-}).call(this);
-
-});
-
 require.define("/client.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
+
+  window.wiki = require('./lib/wiki');
 
   require('./lib/legacy.coffee');
 
