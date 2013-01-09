@@ -1,14 +1,9 @@
-window.wiki = {}
 util = require('./util.coffee')
 pageHandler = wiki.pageHandler = require('./pageHandler.coffee')
 plugin = require('./plugin.coffee')
 state = require('./state.coffee')
 active = require('./active.coffee')
 refresh = require('./refresh.coffee')
-require ('./dom.coffee')
-
-resolveLinks = wiki.resolveLinks = util.resolveLinks
-wiki.createSynopsis = util.createSynopsis
 
 Array::last = ->
   this[@length - 1]
@@ -38,46 +33,10 @@ $ ->
 	  .dialog { autoOpen: false, title: 'Basic Dialog', height: 600, width: 800 }
   wiki.dialog = (title, html) ->
     window.dialog.html html
-    window.dialog.dialog "option", "title", resolveLinks(title)
+    window.dialog.dialog "option", "title", wiki.resolveLinks(title)
     window.dialog.dialog 'open'
 
 # FUNCTIONS used by plugins and elsewhere
-
-  wiki.log = (things...) ->
-    console.log things... if console?.log?
-
-  wiki.resolutionContext = []
-  resolveFrom = wiki.resolveFrom = (addition, callback) ->
-    wiki.resolutionContext.push addition
-    try
-      callback()
-    finally
-      wiki.resolutionContext.pop()
-
-  addToJournal = wiki.addToJournal = (journalElement, action) ->
-    pageElement = journalElement.parents('.page:first')
-    prev = journalElement.find(".edit[data-id=#{action.id || 0}]") if action.type == 'edit'
-    actionTitle = action.type
-    actionTitle += " #{util.formatElapsedTime(action.date)}" if action.date?
-    actionElement = $("""<a href="#" /> """).addClass("action").addClass(action.type)
-      .text(util.symbols[action.type])
-      .attr('title',actionTitle)
-      .attr('data-id', action.id || "0")
-      .data('action', action)
-    controls = journalElement.children('.control-buttons')
-    if controls.length > 0
-      actionElement.insertBefore(controls)
-    else
-      actionElement.appendTo(journalElement)
-    if action.type == 'fork' and action.site?
-      actionElement
-        .css("background-image", "url(//#{action.site}/favicon.png)")
-        .attr("href", "//#{action.site}/#{pageElement.attr('id')}.html")
-        .data("site", action.site)
-        .data("slug", pageElement.attr('id'))
-
-  useLocalStorage = wiki.useLocalStorage = ->
-    $(".login").length > 0
 
   sleep = (time, done) -> setTimeout done, time
 
@@ -143,7 +102,7 @@ $ ->
         if item.type is 'paragraph' 
           sel = util.getSelectionPos(textarea) # position of caret or selected text coords
           if e.which is $.ui.keyCode.BACKSPACE and sel.start is 0 and sel.start is sel.end 
-            prevItem = getItem(div.prev())
+            prevItem = wiki.getItem(div.prev())
             return false unless prevItem.type is 'paragraph'
             prevTextLen = prevItem.text.length
             prevItem.text += textarea.val()
@@ -173,29 +132,8 @@ $ ->
     else
       textarea.focus()
 
-  getItem = wiki.getItem = (element) ->
-    $(element).data("item") or $(element).data('staticItem') if $(element).length > 0
-
-  wiki.getData = (vis) ->
-    if vis
-      idx = $('.item').index(vis)
-      who = $(".item:lt(#{idx})").filter('.chart,.data,.calculator').last()
-      if who? then who.data('item').data else {}
-    else
-      who = $('.chart,.data,.calculator').last()
-      if who? then who.data('item').data else {}
-
-  wiki.getDataNodes = (vis) ->
-    if vis
-      idx = $('.item').index(vis)
-      who = $(".item:lt(#{idx})").filter('.chart,.data,.calculator').toArray().reverse()
-      $(who)
-    else
-      who = $('.chart,.data,.calculator').toArray().reverse()
-      $(who)
-
   doInternalLink = wiki.doInternalLink = (name, page, site=null) ->
-    name = util.asSlug(name)
+    name = wiki.asSlug(name)
     $(page).nextAll().remove() if page?
     wiki.createPage(name,site)
       .appendTo($('.main'))
@@ -279,7 +217,7 @@ $ ->
         finishClick e, name
       else
         $page = $(this).parents('.page')
-        slug = util.asSlug($page.data('data').title)
+        slug = wiki.asSlug($page.data('data').title)
         rev = $(this).parent().children().index($action)
         $page.nextAll().remove() unless e.shiftKey
         wiki.createPage("#{slug}_rev#{rev}", $page.data('site'))
@@ -290,7 +228,7 @@ $ ->
     .delegate '.fork-page', 'click', (e) ->
       pageElement = $(e.target).parents('.page')
       if pageElement.hasClass('local')
-        unless useLocalStorage()
+        unless wiki.useLocalStorage()
           item = pageElement.data('data')
           pageElement.removeClass('local')
           pageHandler.put pageElement, {type: 'fork', item} # push

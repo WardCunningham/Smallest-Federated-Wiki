@@ -1,13 +1,6 @@
 mocha.setup('bdd')
 
-window.wiki = {}
-
-wiki.log = (things...) ->
-  console.log things if console?.log?
-
-util = require('./lib/util.coffee')
-wiki.resolveLinks = util.resolveLinks
-wiki.resolutionContext = ['view']
+window.wiki = require('./lib/wiki')
 
 require('./test/util.coffee')
 require('./test/active.coffee')

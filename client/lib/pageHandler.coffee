@@ -1,6 +1,7 @@
 util = require('./util')
 state = require('./state')
 revision = require('./revision')
+addToJournal = require('./addToJournal')
 
 module.exports = pageHandler = {}
 
@@ -86,7 +87,7 @@ pushToLocal = (pageElement, pagePutInfo, action) ->
   page.journal = page.journal.concat(action)
   page.story = $(pageElement).find(".item").map(-> $(@).data("item")).get()
   localStorage[pagePutInfo.slug] = JSON.stringify(page)
-  wiki.addToJournal pageElement.find('.journal'), action
+  addToJournal pageElement.find('.journal'), action
 
 pushToServer = (pageElement, pagePutInfo, action) ->
   $.ajax
@@ -95,7 +96,7 @@ pushToServer = (pageElement, pagePutInfo, action) ->
     data:
       'action': JSON.stringify(action)
     success: () ->
-      wiki.addToJournal pageElement.find('.journal'), action
+      addToJournal pageElement.find('.journal'), action
       if action.type == 'fork' # push
         localStorage.removeItem pageElement.attr('id')
         state.setUrl
@@ -146,7 +147,7 @@ pageHandler.put = (pageElement, action) ->
     if action.type != 'fork'
       # bundle implicit fork with next action
       action.fork = forkFrom
-      wiki.addToJournal pageElement.find('.journal'),
+      addToJournal pageElement.find('.journal'),
         type: 'fork'
         site: forkFrom
         date: action.date

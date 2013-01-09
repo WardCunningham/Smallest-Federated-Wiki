@@ -1,7 +1,5 @@
 module.exports = wiki.util = util = {}
 
-util.createSynopsis = require('./synopsis')
-
 util.symbols =
   create: '☼'
   add: '+'
@@ -9,15 +7,6 @@ util.symbols =
   fork: '⚑'
   move: '↕'
   remove: '✕'
-
-util.resolveLinks = (string) ->
-  renderInternalLink = (match, name) ->
-    # spaces become 'slugs', non-alpha-num get removed
-    slug = util.asSlug name
-    "<a class=\"internal\" href=\"/#{slug}.html\" data-page-name=\"#{slug}\" title=\"#{wiki.resolutionContext.join(' => ')}\">#{name}</a>"
-  string
-    .replace(/\[\[([^\]]+)\]\]/gi, renderInternalLink)
-    .replace(/\[(http.*?) (.*?)\]/gi, """<a class="external" target="_blank" href="$1" title="$1" rel="nofollow">$2 <img src="/images/external-link-ltr-icon.png"></a>""")
 
 util.randomByte = ->
   (((1+Math.random())*0x100)|0).toString(16).substring(1)
@@ -59,11 +48,6 @@ util.formatElapsedTime = (msSinceEpoch) ->
   return "#{Math.floor weeks} weeks ago" if (months = days/31) < 2
   return "#{Math.floor months} months ago" if (years = days/365) < 2
   return "#{Math.floor years} years ago"
-
-util.asSlug = (name) ->
-  name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase()
-
-wiki?.asSlug = util.asSlug
 
 # DEFAULTS for required fields
 

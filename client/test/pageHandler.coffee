@@ -4,7 +4,6 @@ mockServer = require './mockServer.coffee'
 # Fakes for things still stuck in legacy.coffee
 # TODO: Remove these ASAP
 wiki.useLocalStorage = -> false
-wiki.addToJournal = ->
 
 describe 'pageHandler.get', ->
 
@@ -99,10 +98,9 @@ describe 'pageHandler.put', ->
 
   it 'should save an action', (done) ->
     action = {type: 'edit', id: 1, item: {id:1}}
-    wiki.addToJournal = ->
-      expect(jQuery.ajax.args[0][0].data).to.eql({action: JSON.stringify(action)})
-      done()
     pageHandler.put $('#pageHandler3'), action
+    expect(jQuery.ajax.args[0][0].data).to.eql({action: JSON.stringify(action)})
+    done()
 
   after ->
     jQuery.ajax.restore()

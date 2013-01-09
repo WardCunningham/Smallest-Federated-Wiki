@@ -3,6 +3,7 @@ pageHandler = require('./pageHandler.coffee')
 plugin = require('./plugin.coffee')
 state = require('./state.coffee')
 neighborhood = require('./neighborhood.coffee')
+addToJournal = require('./addToJournal')
 
 handleDragging = (evt, ui) ->
   itemElement = ui.item
@@ -127,7 +128,7 @@ renderPageIntoPageElement = (pageData,$page, siteFound) ->
   emitItem 0
 
   for action in page.journal
-    wiki.addToJournal $journal, action
+    addToJournal $journal, action
 
   $journal.append """
     <div class="control-buttons">
