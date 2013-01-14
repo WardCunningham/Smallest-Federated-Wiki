@@ -4,7 +4,7 @@
   window.plugins.parse = {
     emit: function(div, item) {},
     bind: function(div, item) {
-      var assemble, discard, isNumber, nextOp, print, socket, start, stats, stop, tick;
+      var assemble, discard, isNumber, nextOp, progress, socket, start, stats, stop, tick;
       div.dblclick(function() {
         return wiki.textEditor(div, item);
       });
@@ -58,6 +58,7 @@
           return stop('finished');
         }
         item.parsed += Math.round(1666666 * Math.random());
+        socket.send("counting " + item.parsed);
         div.find('table').html(stats());
         return timer = setTimeout(tick, 100);
       };
@@ -92,23 +93,24 @@
         }
       });
       if (item.state === 'starting') {
-        socket = new WebSocket('ws://' + window.document.location.host + '/system/logwatch');
-        item.state = 'running';
-        tick();
-        print = function(m) {
+        socket = new WebSocket('ws://' + window.document.location.host + '/plugin/parse');
+        if (item.state === 'starting') {
+          item.state = 'running';
+        }
+        progress = function(m) {
           item.server = m;
           return div.find('table').html(stats());
         };
         socket.onopen = function() {
-          return print("opened");
+          progress("opened");
+          return tick();
         };
         socket.onmessage = function(e) {
-          var msg;
-          msg = JSON.parse(e.data);
-          return print(wiki.resolveLinks("page [[" + msg.title + "]]"));
+          return progress(e.data);
         };
         return socket.onclose = function() {
-          return print("closed");
+          item.state = "stopped";
+          return progress("closed");
         };
       }
     }

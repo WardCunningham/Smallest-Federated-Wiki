@@ -41,6 +41,7 @@ window.plugins.parse =
       return unless item.state == 'running'
       return stop('finished') if item.parsed > 130000000
       item.parsed += Math.round(1666666*Math.random())
+      socket.send "counting #{item.parsed}"
       div.find('table').html stats()
       timer = setTimeout tick, 100
 
@@ -64,22 +65,21 @@ window.plugins.parse =
         when "starting", "running" then stop()
         when "stopped", "finished" then discard()
 
-
     if item.state == 'starting'
-      socket = new WebSocket('ws://'+window.document.location.host+'/system/logwatch')
-      item.state = 'running'
-      tick()
+      socket = new WebSocket('ws://'+window.document.location.host+'/plugin/parse')
+      item.state = 'running' if item.state is 'starting'
 
-      print = (m) ->
+      progress = (m) ->
         item.server = m
         div.find('table').html stats()
 
       socket.onopen = ->
-        print "opened"
+        progress "opened"
+        tick()
 
       socket.onmessage = (e) ->
-        msg = JSON.parse e.data
-        print wiki.resolveLinks("page [[#{msg.title}]]")
+        progress e.data
 
       socket.onclose = ->
-        print "closed"
+        item.state = "stopped"
+        progress "closed"

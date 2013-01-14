@@ -33,6 +33,7 @@ async = require 'async'
 random = require './random_id'
 defargs = require './defaultargs'
 synopsis = require '../../../client/lib/synopsis'
+pluginsFactory = require './plugins'
 
 # pageFactory can be easily replaced here by requiring your own page handler
 # factory, which gets called with the argv object, and then has get and put
@@ -85,6 +86,11 @@ module.exports = exports = (argv) ->
 
   # Tell pagehandler where to find data, and default data.
   app.pagehandler = pagehandler = pageFactory(argv)
+
+  ### Plugins ###
+  # Should replace most WebSocketServers below.
+  plugins = pluginsFactory(argv)
+  plugins.startServers({server: app})
 
   ### Sockets ###
   # General, gloabl use sockets
