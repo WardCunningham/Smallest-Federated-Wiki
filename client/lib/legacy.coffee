@@ -94,6 +94,9 @@ $ ->
           pageHandler.put div.parents('.page:first'), {type: 'remove', id: item.id}
           div.remove()
         null
+      # .bind 'paste', (e) ->
+      #   wiki.log 'textedit paste', e
+      #   wiki.log e.originalEvent.clipboardData.getData('text')
       .bind 'keydown', (e) ->
         if (e.altKey || e.ctlKey || e.metaKey) and e.which == 83 #alt-s
           textarea.focusout()
