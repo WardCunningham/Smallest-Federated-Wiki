@@ -90,7 +90,7 @@ module.exports = exports = (argv) ->
   ### Plugins ###
   # Should replace most WebSocketServers below.
   plugins = pluginsFactory(argv)
-  plugins.startServers({server: app})
+  plugins.startServers({server: app, argv})
 
   ### Sockets ###
   # General, gloabl use sockets
