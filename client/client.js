@@ -791,7 +791,7 @@ require.define("/lib/legacy.coffee",function(require,module,exports,__dirname,__
       $action = $(e.target);
       if ($action.is('.fork') && ((name = $action.data('slug')) != null)) {
         pageHandler.context = [$action.data('site')];
-        return finishClick(e, name);
+        return finishClick(e, (name.split('_'))[0]);
       } else {
         $page = $(this).parents('.page');
         slug = wiki.asSlug($page.data('data').title);

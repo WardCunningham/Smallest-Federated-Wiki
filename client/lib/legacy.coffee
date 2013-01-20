@@ -221,7 +221,7 @@ $ ->
       $action = $(e.target)
       if $action.is('.fork') and (name = $action.data('slug'))?
         pageHandler.context = [$action.data('site')]
-        finishClick e, name
+        finishClick e, (name.split '_')[0]
       else
         $page = $(this).parents('.page')
         slug = wiki.asSlug($page.data('data').title)
