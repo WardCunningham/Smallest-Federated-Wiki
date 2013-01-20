@@ -211,8 +211,9 @@ $ ->
     .delegate '.revision', 'dblclick', (e) ->
       e.preventDefault()
       $page = $(this).parents('.page')
-      rev = $page.data('rev')
-      action = $page.data('data').journal[rev]
+      page = $page.data('data')
+      rev = page.journal.length-1
+      action = page.journal[rev]
       json = JSON.stringify(action, null, 2)
       wiki.dialog "Revision #{rev}, #{action.type} action", $('<pre/>').text(json)
 

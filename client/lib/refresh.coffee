@@ -92,8 +92,9 @@ emitHeader = ($page, page) ->
       plugin.get 'favicon', (favicon) ->
         favicon.create()
 
-  if (rev = $page.attr('id').split('_rev')[1])?
-    date = page.journal[page.journal.length-1].date
+  if $page.attr('id').match /_rev/
+    rev = page.journal.length-1
+    date = page.journal[rev].date
     $page.addClass('ghost').data('rev',rev).append $ """
       <h2 class="revision">
         <span>

@@ -778,11 +778,12 @@ require.define("/lib/legacy.coffee",function(require,module,exports,__dirname,__
       pageHandler.context = [$(e.target).data('site')];
       return finishClick(e, name);
     }).delegate('.revision', 'dblclick', function(e) {
-      var $page, action, json, rev;
+      var $page, action, json, page, rev;
       e.preventDefault();
       $page = $(this).parents('.page');
-      rev = $page.data('rev');
-      action = $page.data('data').journal[rev];
+      page = $page.data('data');
+      rev = page.journal.length - 1;
+      action = page.journal[rev];
       json = JSON.stringify(action, null, 2);
       return wiki.dialog("Revision " + rev + ", " + action.type + " action", $('<pre/>').text(json));
     }).delegate('.action', 'click', function(e) {
@@ -1754,8 +1755,9 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
         });
       });
     }
-    if ((rev = $page.attr('id').split('_rev')[1]) != null) {
-      date = page.journal[page.journal.length - 1].date;
+    if ($page.attr('id').match(/_rev/)) {
+      rev = page.journal.length - 1;
+      date = page.journal[rev].date;
       return $page.addClass('ghost').data('rev', rev).append($("<h2 class=\"revision\">\n  <span>\n    " + (date != null ? util.formatDate(date) : "Revision " + rev) + "\n  </span>\n</h2>"));
     }
   };
