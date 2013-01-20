@@ -119,11 +119,15 @@ $ ->
             prefix = text.substring 0, sel.start
             middle = text.substring(sel.start, sel.end) if sel.start isnt sel.end
             suffix = text.substring(sel.end)
-            textarea.val(prefix)
+            if prefix is ''
+              textarea.val(' ')
+            else
+              textarea.val(prefix)
             textarea.focusout()
             pageElement = div.parent().parent()
             createTextElement(pageElement, div, suffix)
             createTextElement(pageElement, div, middle) if middle?
+            createTextElement(pageElement, div, '') if prefix is ''
             return false
     div.html textarea
     if caretPos?
