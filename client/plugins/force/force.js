@@ -7,15 +7,21 @@
       return wiki.getScript('/js/d3/d3.js', function() {
         return wiki.getScript('/js/d3/d3.geom.js', function() {
           return wiki.getScript('/js/d3/d3.layout.js', function() {
-            var fill, force, h, json, link, node, vis, w;
+            var candidates, data, fill, force, h, json, link, node, vis, w, who;
             div.append("<style type=\"text/css\">\n  circle.node {\n    stroke: #fff;\n    stroke-width: 1.5px;\n  }\n\n  line.link {\n    stroke: #999;\n    stroke-opacity: .6;\n  }\n</style>");
             w = 380;
             h = 230;
+            candidates = $(".item:lt(" + ($('.item').index(div)) + ")");
+            if ((who = candidates.filter(".force-source:last")).size()) {
+              data = who.get(0).forceData();
+            } else {
+              data = wiki.getData();
+            }
+            json = $.extend(true, {}, data);
+            console.log(json);
             fill = d3.scale.category20();
             vis = d3.select(div.get(0)).append("svg:svg").attr("width", w).attr("height", h);
             vis.append("svg:defs").selectAll("marker").data(["arrowhead"]).enter().append("svg:marker").attr("id", String).attr("viewBox", "0 0 10 10").attr("refX", "20").attr("refY", "5").attr("markerUnits", "strokeWidth").attr("markerWidth", "9").attr("markerHeight", "5").attr("orient", "auto").append("svg:path").attr("d", "M 0 0 L 10 5 L 0 10 z").attr("fill", "#BBBBBB");
-            json = $.extend(true, {}, wiki.getData());
-            console.log(json);
             force = d3.layout.force().charge(-120).linkDistance(30).nodes(json.nodes).links(json.links).size([w, h]).start();
             link = vis.selectAll("line.link").data(json.links).enter().append("svg:line").attr("class", "link").style("stroke-width", function(d) {
               return Math.sqrt(d.value);
@@ -35,7 +41,7 @@
             }).attr("r", 5).style("fill", function(d) {
               return fill(d.group);
             }).on("dblclick", function(d) {
-              return wiki.doInternalLink("" + d.name + " Box", div.parents('.page'));
+              return wiki.doInternalLink(d.name, div.parents('.page'));
             }).call(force.drag);
             node.append("svg:title").text(function(d, i) {
               return d.name;

@@ -19,6 +19,16 @@ window.plugins.force =
           """
           w = 380
           h = 230
+
+          candidates = $(".item:lt(#{$('.item').index(div)})")
+          if (who = candidates.filter ".force-source:last").size()
+            data = who.get(0).forceData()
+          else
+            data = wiki.getData()
+
+          json = $.extend true, {}, data
+          console.log json
+
           fill = d3.scale.category20()
 
           vis = d3.select(div.get(0))
@@ -41,9 +51,6 @@ window.plugins.force =
             .append("svg:path")
             .attr("d","M 0 0 L 10 5 L 0 10 z")
             .attr("fill", "#BBBBBB");
-
-          json = $.extend true, {}, wiki.getData()
-          console.log json
 
           force = d3.layout.force()
             .charge(-120)
@@ -75,7 +82,7 @@ window.plugins.force =
             .attr("r", 5)
             .style("fill", (d) -> fill d.group)
             .on("dblclick", (d) ->
-              wiki.doInternalLink "#{d.name} Box", div.parents('.page'))
+              wiki.doInternalLink d.name, div.parents('.page'))
             .call(force.drag)
           node.append("svg:title").text((d, i) -> d.name)
 
