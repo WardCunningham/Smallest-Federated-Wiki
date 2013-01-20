@@ -122,9 +122,13 @@ renderPageIntoPageElement = (pageData,$page, siteFound) ->
   emitItem = (i) ->
     return if i >= page.story.length
     item = page.story[i]
-    $item = $ """<div class="item #{item.type}" data-id="#{item.id}">"""
-    $story.append $item
-    plugin.do $item, item, -> emitItem i+1
+    if item?.type and item?.id
+      $item = $ """<div class="item #{item.type}" data-id="#{item.id}">"""
+      $story.append $item
+      plugin.do $item, item, -> emitItem i+1
+    else
+      $story.append $ """<div><p class="error">Can't make sense of story[#{i}]</p></div>"""
+      emitItem i+1
   emitItem 0
 
   for action in page.journal

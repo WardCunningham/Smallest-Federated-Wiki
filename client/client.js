@@ -1791,11 +1791,16 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
         return;
       }
       item = page.story[i];
-      $item = $("<div class=\"item " + item.type + "\" data-id=\"" + item.id + "\">");
-      $story.append($item);
-      return plugin["do"]($item, item, function() {
+      if ((item != null ? item.type : void 0) && (item != null ? item.id : void 0)) {
+        $item = $("<div class=\"item " + item.type + "\" data-id=\"" + item.id + "\">");
+        $story.append($item);
+        return plugin["do"]($item, item, function() {
+          return emitItem(i + 1);
+        });
+      } else {
+        $story.append($("<div><p class=\"error\">Can't make sense of story[" + i + "]</p></div>"));
         return emitItem(i + 1);
-      });
+      }
     };
     emitItem(0);
     _ref2 = page.journal;
