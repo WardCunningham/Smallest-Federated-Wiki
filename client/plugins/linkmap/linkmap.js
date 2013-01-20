@@ -5,23 +5,29 @@
   linkmap = {};
 
   forceData = function() {
-    var link, links, nodeNum, nodes, slug, slugs, source, target, _i, _len;
+    var div, i, link, links, nodeGroup, nodeNum, nodes, slug, slugs, source, target, _i, _j, _len, _len1, _ref;
     nodes = [];
     links = [];
     nodeNum = {};
+    nodeGroup = {};
+    _ref = $('.page');
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      div = _ref[_i];
+      nodeGroup[div.id] = 1;
+    }
     for (slug in linkmap) {
       nodeNum[slug] = nodes.length;
       nodes.push({
         name: slug,
-        group: 1
+        group: nodeGroup[slug] || 3
       });
     }
     for (slug in linkmap) {
       slugs = linkmap[slug];
       source = nodeNum[slug];
-      for (_i = 0, _len = slugs.length; _i < _len; _i++) {
-        link = slugs[_i];
-        if ((target = nodeNum[link]) != null) {
+      for (i = _j = 0, _len1 = slugs.length; _j < _len1; i = ++_j) {
+        link = slugs[i];
+        if (i < 4 && ((target = nodeNum[link]) != null)) {
           links.push({
             source: source,
             target: target,

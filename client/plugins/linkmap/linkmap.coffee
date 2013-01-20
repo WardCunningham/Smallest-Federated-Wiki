@@ -6,13 +6,16 @@ forceData = ->
 	nodes = []
 	links = []
 	nodeNum = {}
+	nodeGroup = {}
+	for div in $('.page')
+		nodeGroup[div.id] = 1
 	for slug of linkmap
 		nodeNum[slug] = nodes.length
-		nodes.push {name: slug, group: 1}
+		nodes.push {name: slug, group: nodeGroup[slug] || 3}
 	for slug, slugs of linkmap
 		source = nodeNum[slug]
-		for link in slugs
-			if (target = nodeNum[link])?
+		for link, i in slugs
+			if i<4 and (target = nodeNum[link])?
 				links.push({source, target, value: 6})
 	{nodes, links}
 
