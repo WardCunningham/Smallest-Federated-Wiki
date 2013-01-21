@@ -135,7 +135,7 @@
         };
         dropEvent.preventDefault();
         if ((dt = dropEvent.originalEvent.dataTransfer) != null) {
-          if ((dt.types != null) && (__indexOf.call(dt.types, 'text/uri-list') >= 0 || __indexOf.call(dt.types, 'text/x-moz-url') >= 0)) {
+          if ((dt.types != null) && (__indexOf.call(dt.types, 'text/uri-list') >= 0 || __indexOf.call(dt.types, 'text/x-moz-url') >= 0) && (__indexOf.call(dt.types, 'Files') == null)) {
             url = dt.getData('URL');
             if (found = url.match(/^http:\/\/([a-zA-Z0-9:.-]+)(\/([a-zA-Z0-9:.-]+)\/([a-z0-9-]+(_rev\d+)?))+$/)) {
               wiki.log('factory drop url', found);
