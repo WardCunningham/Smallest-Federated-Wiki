@@ -119,7 +119,8 @@
         socket.onmessage = function(e) {
           var action, count, message, _ref;
           _ref = message = JSON.parse(e.data), action = _ref.action, count = _ref.count;
-          return progress("" + action + " " + count);
+          progress("" + action + " " + count);
+          return console.log(message.tally);
         };
         return socket.onclose = function() {
           item.state = "stopped";

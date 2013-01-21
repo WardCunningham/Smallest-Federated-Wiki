@@ -85,6 +85,7 @@ window.plugins.parse =
       socket.onmessage = (e) ->
         {action, count} = message = JSON.parse e.data
         progress "#{action} #{count}"
+        console.log message.tally
 
       socket.onclose = ->
         item.state = "stopped"
