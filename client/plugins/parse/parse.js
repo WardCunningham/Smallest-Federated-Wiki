@@ -54,8 +54,7 @@
           return;
         }
         idx = $('.item').index(div);
-        peg = $(".item:lt(" + idx + ")").filter('.code');
-        return wiki.log('peg', idx, peg, peg.text());
+        return peg = $(".item:lt(" + idx + ")").filter('.code');
       };
       assemble();
       tick = function() {
@@ -87,6 +86,9 @@
         return div.find('button').text("" + (nextOp(item.state)) + " Parse");
       };
       discard = function() {
+        if (typeof socket !== "undefined" && socket !== null) {
+          socket.close();
+        }
         return wiki.removeItem(div, item);
       };
       div.find('button').click(function(event) {
@@ -115,7 +117,9 @@
           return tick();
         };
         socket.onmessage = function(e) {
-          return progress(e.data);
+          var action, count, message, _ref;
+          _ref = message = JSON.parse(e.data), action = _ref.action, count = _ref.count;
+          return progress("" + action + " " + count);
         };
         return socket.onclose = function() {
           item.state = "stopped";

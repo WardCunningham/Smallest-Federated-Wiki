@@ -7,11 +7,23 @@ startServer = (params) ->
 	socket = new WebSocketServer({server: params.server, path: '/plugin/parse'})
 
 	socket.on 'connection', (ws) ->
+		do (count=10) ->
+			ws.on 'message', (message) ->
+				console.log 'parse client says:', message
 
-    ws.on 'message', (message) ->
-      console.log 'parse client says:', message
-      ws.send message, (err) ->
-        console.log 'unable to send ws message:', err if err
+			tick = ->
+				message = """{"action": "tick", "count": #{count++}}"""
+				console.log message
+				ws.send message, (err) ->
+					if err
+						console.log 'unable to send ws message:', err
+					else if count <= 100
+						setTimeout tick, 1000
+					else
+						ws.close()
+
+			console.log 'start ticking'
+			tick()
 
 module.exports = {startServer}
 

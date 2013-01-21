@@ -20,14 +20,28 @@
       path: '/plugin/parse'
     });
     return socket.on('connection', function(ws) {
-      return ws.on('message', function(message) {
-        console.log('parse client says:', message);
-        return ws.send(message, function(err) {
-          if (err) {
-            return console.log('unable to send ws message:', err);
-          }
+      return (function(count) {
+        var tick;
+        ws.on('message', function(message) {
+          return console.log('parse client says:', message);
         });
-      });
+        tick = function() {
+          var message;
+          message = "{\"action\": \"tick\", \"count\": " + (count++) + "}";
+          console.log(message);
+          return ws.send(message, function(err) {
+            if (err) {
+              return console.log('unable to send ws message:', err);
+            } else if (count <= 100) {
+              return setTimeout(tick, 1000);
+            } else {
+              return ws.close();
+            }
+          });
+        };
+        console.log('start ticking');
+        return tick();
+      })(10);
     });
   };
 

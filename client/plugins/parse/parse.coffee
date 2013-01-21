@@ -38,7 +38,6 @@ window.plugins.parse =
       return unless item.state == undefined
       idx = $('.item').index(div)
       peg = $(".item:lt(#{idx})").filter('.code')
-      wiki.log 'peg', idx, peg, peg.text()
 
     assemble()
 
@@ -62,6 +61,7 @@ window.plugins.parse =
       div.find('button').text "#{nextOp item.state} Parse"
 
     discard = ->
+      socket?.close()
       wiki.removeItem div, item
 
     div.find('button').click (event) ->
@@ -83,7 +83,8 @@ window.plugins.parse =
         tick()
 
       socket.onmessage = (e) ->
-        progress e.data
+        {action, count} = message = JSON.parse e.data
+        progress "#{action} #{count}"
 
       socket.onclose = ->
         item.state = "stopped"
