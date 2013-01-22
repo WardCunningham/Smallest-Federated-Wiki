@@ -1804,7 +1804,18 @@ require.define("/lib/plugin.coffee",function(require,module,exports,__dirname,__
   window.plugins = {
     paragraph: {
       emit: function(div, item) {
-        return div.append("<p>" + (wiki.resolveLinks(item.text)) + "</p>");
+        var text, _i, _len, _ref, _results;
+        _ref = item.text.split(/\n\n+/);
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          text = _ref[_i];
+          if (text.match(/\S/)) {
+            _results.push(div.append("<p>" + (wiki.resolveLinks(text)) + "</p>"));
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
       },
       bind: function(div, item) {
         return div.dblclick(function() {

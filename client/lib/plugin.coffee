@@ -55,7 +55,9 @@ wiki.registerPlugin = (pluginName,pluginFn)->
 
 window.plugins =
   paragraph:
-    emit: (div, item) -> div.append "<p>#{wiki.resolveLinks(item.text)}</p>"
+    emit: (div, item) ->
+      for text in item.text.split /\n\n+/
+        div.append "<p>#{wiki.resolveLinks(text)}</p>" if text.match /\S/
     bind: (div, item) ->
       div.dblclick -> wiki.textEditor div, item, null, true
   image:
