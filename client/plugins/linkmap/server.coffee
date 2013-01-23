@@ -40,11 +40,6 @@ startServer = (params) ->
 	socket.on 'connection', (ws) ->
 		console.log 'connection established, ready to send'
 		ws.send JSON.stringify(linkmap, null, 2), (err) ->
-      console.log 'unable to send ws message:', err if err
-
-  # ws.on 'message', (message) ->
-  #   console.log 'linkmap client says:', message
-  #   ws.send message, (err) ->
-  #     console.log 'linkmap unable to send ws message:', err if err
+			console.log 'unable to send ws message:', err if err
 
 module.exports = {startServer}
