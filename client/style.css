@@ -190,6 +190,10 @@ footer {
   color: gray;
   font-size: 70%; }
 
+.twins p {
+  color: gray;
+}
+
 image.remote {
   width:16px;
   height:26px;

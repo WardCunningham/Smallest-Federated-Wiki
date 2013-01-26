@@ -117,7 +117,7 @@ renderPageIntoPageElement = (pageData,$page, siteFound) ->
 
   emitHeader $page, page
 
-  [$story, $journal, $footer] = ['story', 'journal', 'footer'].map (className) ->
+  [$twins, $story, $journal, $footer] = ['twins', 'story', 'journal', 'footer'].map (className) ->
     $("<div />").addClass(className).appendTo($page)
 
   emitItem = (i) ->
@@ -134,6 +134,40 @@ renderPageIntoPageElement = (pageData,$page, siteFound) ->
 
   for action in page.journal
     addToJournal $journal, action
+
+  pageSite = site or window.location.host
+  if (actions = page.journal?.length)? and (viewing = page.journal[actions-1]?.date)?
+    viewing = Math.floor(viewing/1000)*1000
+    [newer, same, older] = [[], [], []]
+    # {fed.wiki.org: [{slug: "happenings", title: "Happenings", date: 1358975303000, synopsis: "Changes here ..."}]}
+    for remoteSite, info of wiki.neighborhood
+      if remoteSite != pageSite and info.sitemap?
+        for item in info.sitemap
+          if item.slug == slug
+            bin = if item.date > viewing then newer
+            else if item.date < viewing then older
+            else same
+            bin.push {remoteSite, item}
+    # [remoteSite: "fed.wiki.org", item: {slug: ..., date: ...}]
+    newerFirst = (a,b) -> a.item.date < b.item.date
+    newer.sort newerFirst
+    older.sort newerFirst
+    twins = []
+    emitTwins = (bin, legend) ->
+      return unless bin.length
+      flags = for {remoteSite, item}, i in bin
+        break if i >= 8
+        """<img class="remote"
+          src="http://#{remoteSite}/favicon.png"
+          data-slug="#{slug}"
+          data-site="#{remoteSite}"
+          title="#{remoteSite}">
+        """
+      twins.push "#{flags.join '&nbsp;'} #{legend}"
+    emitTwins newer, 'newer'
+    emitTwins same, 'same'
+    emitTwins older, 'older'
+    $twins.append """<p>#{twins.join ", "}</p>""" if twins
 
   $journal.append """
     <div class="control-buttons">
