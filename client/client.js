@@ -867,12 +867,17 @@ require.define("/lib/legacy.coffee",function(require,module,exports,__dirname,__
       return $("footer form").submit();
     });
     if (($firstPage = $('.page:first')).data('serverGenerated')) {
-      return window.location = "/view/" + ($firstPage.attr('id'));
+      window.location = "/view/" + ($firstPage.attr('id'));
     } else {
       state.first();
       $('.page').each(refresh);
-      return active.set($('.page').last());
+      active.set($('.page').last());
     }
+    return $('body').on('new-neighbor-done', function(e, neighbor) {
+      return $('.page').each(function(index, element) {
+        return wiki.emitTwins($(element));
+      });
+    });
   });
 
 }).call(this);
@@ -1646,7 +1651,7 @@ require.define("/lib/plugin.coffee",function(require,module,exports,__dirname,__
 });
 
 require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
-  var addToJournal, buildPageHeader, createFactory, emitHeader, handleDragging, initAddButton, initDragging, neighborhood, pageHandler, plugin, refresh, renderPageIntoPageElement, state, util,
+  var addToJournal, buildPageHeader, createFactory, emitHeader, emitTwins, handleDragging, initAddButton, initDragging, neighborhood, pageHandler, plugin, refresh, renderPageIntoPageElement, state, util,
     __slice = [].slice;
 
   util = require('./util.coffee');
@@ -1773,8 +1778,66 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
     }
   };
 
+  emitTwins = wiki.emitTwins = function($page) {
+    var actions, bin, bins, flags, i, info, item, legend, page, remoteSite, site, slug, twins, viewing, _i, _len, _ref, _ref1, _ref2, _ref3;
+    page = $page.data('data');
+    site = $page.data('site') || window.location.host;
+    slug = wiki.asSlug(page.title);
+    if (((actions = (_ref = page.journal) != null ? _ref.length : void 0) != null) && ((viewing = (_ref1 = page.journal[actions - 1]) != null ? _ref1.date : void 0) != null)) {
+      viewing = Math.floor(viewing / 1000) * 1000;
+      bins = {
+        newer: [],
+        same: [],
+        older: []
+      };
+      _ref2 = wiki.neighborhood;
+      for (remoteSite in _ref2) {
+        info = _ref2[remoteSite];
+        if (remoteSite !== site && (info.sitemap != null)) {
+          _ref3 = info.sitemap;
+          for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
+            item = _ref3[_i];
+            if (item.slug === slug) {
+              bin = item.date > viewing ? bins.newer : item.date < viewing ? bins.older : bins.same;
+              bin.push({
+                remoteSite: remoteSite,
+                item: item
+              });
+            }
+          }
+        }
+      }
+      twins = [];
+      for (legend in bins) {
+        bin = bins[legend];
+        if (!bin.length) {
+          continue;
+        }
+        bin.sort(function(a, b) {
+          return a.item.date < b.item.date;
+        });
+        flags = (function() {
+          var _j, _len1, _ref4, _results;
+          _results = [];
+          for (i = _j = 0, _len1 = bin.length; _j < _len1; i = ++_j) {
+            _ref4 = bin[i], remoteSite = _ref4.remoteSite, item = _ref4.item;
+            if (i >= 8) {
+              break;
+            }
+            _results.push("<img class=\"remote\"\nsrc=\"http://" + remoteSite + "/favicon.png\"\ndata-slug=\"" + slug + "\"\ndata-site=\"" + remoteSite + "\"\ntitle=\"" + remoteSite + "\">");
+          }
+          return _results;
+        })();
+        twins.push("" + (flags.join('&nbsp;')) + " " + legend);
+      }
+      if (twins) {
+        return $page.find('.twins').html("<p>" + (twins.join(", ")) + "</p>");
+      }
+    }
+  };
+
   renderPageIntoPageElement = function(pageData, $page, siteFound) {
-    var $footer, $journal, $story, $twins, action, actions, addContext, bin, bins, context, emitItem, flags, i, info, item, legend, page, pageSite, remoteSite, site, slug, twins, viewing, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6;
+    var $footer, $journal, $story, $twins, action, addContext, context, emitItem, page, site, slug, _i, _j, _len, _len1, _ref, _ref1, _ref2;
     page = $.extend(util.emptyPage(), pageData);
     $page.data("data", page);
     slug = $page.attr('id');
@@ -1821,58 +1884,7 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
       action = _ref2[_j];
       addToJournal($journal, action);
     }
-    pageSite = site || window.location.host;
-    if (((actions = (_ref3 = page.journal) != null ? _ref3.length : void 0) != null) && ((viewing = (_ref4 = page.journal[actions - 1]) != null ? _ref4.date : void 0) != null)) {
-      viewing = Math.floor(viewing / 1000) * 1000;
-      bins = {
-        newer: [],
-        same: [],
-        older: []
-      };
-      _ref5 = wiki.neighborhood;
-      for (remoteSite in _ref5) {
-        info = _ref5[remoteSite];
-        if (remoteSite !== pageSite && (info.sitemap != null)) {
-          _ref6 = info.sitemap;
-          for (_k = 0, _len2 = _ref6.length; _k < _len2; _k++) {
-            item = _ref6[_k];
-            if (item.slug === slug) {
-              bin = item.date > viewing ? bins.newer : item.date < viewing ? bins.older : bins.same;
-              bin.push({
-                remoteSite: remoteSite,
-                item: item
-              });
-            }
-          }
-        }
-      }
-      twins = [];
-      for (legend in bins) {
-        bin = bins[legend];
-        if (!bin.length) {
-          continue;
-        }
-        bin.sort(function(a, b) {
-          return a.item.date < b.item.date;
-        });
-        flags = (function() {
-          var _l, _len3, _ref7, _results;
-          _results = [];
-          for (i = _l = 0, _len3 = bin.length; _l < _len3; i = ++_l) {
-            _ref7 = bin[i], remoteSite = _ref7.remoteSite, item = _ref7.item;
-            if (i >= 8) {
-              break;
-            }
-            _results.push("<img class=\"remote\"\nsrc=\"http://" + remoteSite + "/favicon.png\"\ndata-slug=\"" + slug + "\"\ndata-site=\"" + remoteSite + "\"\ntitle=\"" + remoteSite + "\">");
-          }
-          return _results;
-        })();
-        twins.push("" + (flags.join('&nbsp;')) + " " + legend);
-      }
-      if (twins) {
-        $twins.html("<p>" + (twins.join(", ")) + "</p>");
-      }
-    }
+    emitTwins($page);
     $journal.append("<div class=\"control-buttons\">\n  <a href=\"#\" class=\"button fork-page\" title=\"fork this page\">" + util.symbols['fork'] + "</a>\n  <a href=\"#\" class=\"button add-factory\" title=\"add paragraph\">" + util.symbols['add'] + "</a>\n</div>");
     return $footer.append("<a id=\"license\" href=\"http://creativecommons.org/licenses/by-sa/3.0/\">CC BY-SA 3.0</a> .\n<a class=\"show-page-source\" href=\"/" + slug + ".json?random=" + (util.randomBytes(4)) + "\" title=\"source\">JSON</a> .\n<a>" + (siteFound || 'origin') + "</a>");
   };

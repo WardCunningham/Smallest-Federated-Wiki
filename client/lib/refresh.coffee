@@ -103,6 +103,39 @@ emitHeader = ($page, page) ->
       </h2>
     """
 
+emitTwins = wiki.emitTwins = ($page) ->
+  page = $page.data 'data'
+  site = $page.data('site') or window.location.host
+  slug = wiki.asSlug page.title
+  if (actions = page.journal?.length)? and (viewing = page.journal[actions-1]?.date)?
+    viewing = Math.floor(viewing/1000)*1000
+    bins = {newer:[], same:[], older:[]}
+    # {fed.wiki.org: [{slug: "happenings", title: "Happenings", date: 1358975303000, synopsis: "Changes here ..."}]}
+    for remoteSite, info of wiki.neighborhood
+      if remoteSite != site and info.sitemap?
+        for item in info.sitemap
+          if item.slug == slug
+            bin = if item.date > viewing then bins.newer
+            else if item.date < viewing then bins.older
+            else bins.same
+            bin.push {remoteSite, item}
+    twins = []
+    # {newer:[remoteSite: "fed.wiki.org", item: {slug: ..., date: ...}, ...]}
+    for legend, bin of bins
+      continue unless bin.length
+      bin.sort (a,b) ->
+        a.item.date < b.item.date
+      flags = for {remoteSite, item}, i in bin
+        break if i >= 8
+        """<img class="remote"
+          src="http://#{remoteSite}/favicon.png"
+          data-slug="#{slug}"
+          data-site="#{remoteSite}"
+          title="#{remoteSite}">
+        """
+      twins.push "#{flags.join '&nbsp;'} #{legend}"
+    $page.find('.twins').html """<p>#{twins.join ", "}</p>""" if twins
+
 renderPageIntoPageElement = (pageData,$page, siteFound) ->
   page = $.extend(util.emptyPage(), pageData)
   $page.data("data", page)
@@ -136,35 +169,7 @@ renderPageIntoPageElement = (pageData,$page, siteFound) ->
   for action in page.journal
     addToJournal $journal, action
 
-  pageSite = site or window.location.host
-  if (actions = page.journal?.length)? and (viewing = page.journal[actions-1]?.date)?
-    viewing = Math.floor(viewing/1000)*1000
-    bins = {newer:[], same:[], older:[]}
-    # {fed.wiki.org: [{slug: "happenings", title: "Happenings", date: 1358975303000, synopsis: "Changes here ..."}]}
-    for remoteSite, info of wiki.neighborhood
-      if remoteSite != pageSite and info.sitemap?
-        for item in info.sitemap
-          if item.slug == slug
-            bin = if item.date > viewing then bins.newer
-            else if item.date < viewing then bins.older
-            else bins.same
-            bin.push {remoteSite, item}
-    twins = []
-    # {newer:[remoteSite: "fed.wiki.org", item: {slug: ..., date: ...}, ...]}
-    for legend, bin of bins
-      continue unless bin.length
-      bin.sort (a,b) ->
-        a.item.date < b.item.date
-      flags = for {remoteSite, item}, i in bin
-        break if i >= 8
-        """<img class="remote"
-          src="http://#{remoteSite}/favicon.png"
-          data-slug="#{slug}"
-          data-site="#{remoteSite}"
-          title="#{remoteSite}">
-        """
-      twins.push "#{flags.join '&nbsp;'} #{legend}"
-    $twins.html """<p>#{twins.join ", "}</p>""" if twins
+  emitTwins $page
 
   $journal.append """
     <div class="control-buttons">

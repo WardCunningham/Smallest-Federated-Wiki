@@ -277,7 +277,6 @@ $ ->
     $("footer input:first").val $(this).attr('data-provider')
     $("footer form").submit()
 
-
   if ($firstPage = $('.page:first')).data('serverGenerated')
     # if the page appears to be a server generated page, but we're running javascript then
     # redirect to the full-featured client-side version of the page.
@@ -289,4 +288,8 @@ $ ->
 
     $('.page').each refresh
     active.set($('.page').last())
+
+  $('body').on 'new-neighbor-done', (e, neighbor) ->
+    $('.page').each (index, element) ->
+      wiki.emitTwins $(element)
 
