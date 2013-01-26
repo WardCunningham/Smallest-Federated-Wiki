@@ -1774,7 +1774,7 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
   };
 
   renderPageIntoPageElement = function(pageData, $page, siteFound) {
-    var $footer, $journal, $story, $twins, action, actions, addContext, bin, context, emitItem, emitTwins, info, item, newer, newerFirst, older, page, pageSite, remoteSite, same, site, slug, twins, viewing, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7;
+    var $footer, $journal, $story, $twins, action, actions, addContext, bin, bins, context, emitItem, flags, i, info, item, legend, page, pageSite, remoteSite, site, slug, twins, viewing, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6;
     page = $.extend(util.emptyPage(), pageData);
     $page.data("data", page);
     slug = $page.attr('id');
@@ -1824,16 +1824,20 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
     pageSite = site || window.location.host;
     if (((actions = (_ref3 = page.journal) != null ? _ref3.length : void 0) != null) && ((viewing = (_ref4 = page.journal[actions - 1]) != null ? _ref4.date : void 0) != null)) {
       viewing = Math.floor(viewing / 1000) * 1000;
-      _ref5 = [[], [], []], newer = _ref5[0], same = _ref5[1], older = _ref5[2];
-      _ref6 = wiki.neighborhood;
-      for (remoteSite in _ref6) {
-        info = _ref6[remoteSite];
+      bins = {
+        newer: [],
+        same: [],
+        older: []
+      };
+      _ref5 = wiki.neighborhood;
+      for (remoteSite in _ref5) {
+        info = _ref5[remoteSite];
         if (remoteSite !== pageSite && (info.sitemap != null)) {
-          _ref7 = info.sitemap;
-          for (_k = 0, _len2 = _ref7.length; _k < _len2; _k++) {
-            item = _ref7[_k];
+          _ref6 = info.sitemap;
+          for (_k = 0, _len2 = _ref6.length; _k < _len2; _k++) {
+            item = _ref6[_k];
             if (item.slug === slug) {
-              bin = item.date > viewing ? newer : item.date < viewing ? older : same;
+              bin = item.date > viewing ? bins.newer : item.date < viewing ? bins.older : bins.same;
               bin.push({
                 remoteSite: remoteSite,
                 item: item
@@ -1842,22 +1846,20 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
           }
         }
       }
-      newerFirst = function(a, b) {
-        return a.item.date < b.item.date;
-      };
-      newer.sort(newerFirst);
-      older.sort(newerFirst);
       twins = [];
-      emitTwins = function(bin, legend) {
-        var flags, i;
+      for (legend in bins) {
+        bin = bins[legend];
         if (!bin.length) {
-          return;
+          continue;
         }
+        bin.sort(function(a, b) {
+          return a.item.date < b.item.date;
+        });
         flags = (function() {
-          var _l, _len3, _ref8, _results;
+          var _l, _len3, _ref7, _results;
           _results = [];
           for (i = _l = 0, _len3 = bin.length; _l < _len3; i = ++_l) {
-            _ref8 = bin[i], remoteSite = _ref8.remoteSite, item = _ref8.item;
+            _ref7 = bin[i], remoteSite = _ref7.remoteSite, item = _ref7.item;
             if (i >= 8) {
               break;
             }
@@ -1865,13 +1867,10 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
           }
           return _results;
         })();
-        return twins.push("" + (flags.join('&nbsp;')) + " " + legend);
-      };
-      emitTwins(newer, 'newer');
-      emitTwins(same, 'same');
-      emitTwins(older, 'older');
+        twins.push("" + (flags.join('&nbsp;')) + " " + legend);
+      }
       if (twins) {
-        $twins.append("<p>" + (twins.join(", ")) + "</p>");
+        $twins.html("<p>" + (twins.join(", ")) + "</p>");
       }
     }
     $journal.append("<div class=\"control-buttons\">\n  <a href=\"#\" class=\"button fork-page\" title=\"fork this page\">" + util.symbols['fork'] + "</a>\n  <a href=\"#\" class=\"button add-factory\" title=\"add paragraph\">" + util.symbols['add'] + "</a>\n</div>");
