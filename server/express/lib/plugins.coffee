@@ -15,8 +15,11 @@ module.exports = exports = (argv) ->
 		fs.exists server, (exists) ->
 			if exists
 				console.log 'starting plugin', plugin
-				plugins[plugin] = require server
-				plugins[plugin].startServer?(params)
+				try
+					plugins[plugin] = require server
+					plugins[plugin].startServer?(params)
+				catch e
+					console.log 'failed to start plugin', plugin, e
 
 	startServers = (params) ->
 		fs.readdir pluginsdir , (e, plugins) ->
