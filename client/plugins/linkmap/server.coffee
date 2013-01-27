@@ -24,7 +24,8 @@ findLinks = (page) ->
 
 buildmap = (pages) ->
 	fs.readdir pages, (err, names) ->
-		for slug in names?
+		return if err or !names?.length
+		for slug in names
 			if slug.match /^[a-z0-9-]+$/
 				do (slug) ->
 					fetchPage "#{pages}/#{slug}", (page) ->
