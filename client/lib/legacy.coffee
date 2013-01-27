@@ -203,7 +203,7 @@ $ ->
       pageHandler.context = $(e.target).attr('title').split(' => ')
       finishClick e, name
 
-    .delegate '.remote', 'click', (e) ->
+    .delegate 'img.remote', 'click', (e) ->
       name = $(e.target).data('slug')
       pageHandler.context = [$(e.target).data('site')]
       finishClick e, name

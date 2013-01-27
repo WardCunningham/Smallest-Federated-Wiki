@@ -227,6 +227,10 @@ p.readout {
   box-shadow: inset 0px 0px 40px 0px rgba(220,180,0,.7);
 }
 
+.page.remote {
+  box-shadow: inset 0px 0px 40px 0px rgba(0,180,220,.5);
+}
+
 .factory,
 textarea {
   font-size: inherit;

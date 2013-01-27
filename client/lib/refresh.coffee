@@ -106,6 +106,7 @@ emitHeader = ($page, page) ->
 emitTwins = wiki.emitTwins = ($page) ->
   page = $page.data 'data'
   site = $page.data('site') or window.location.host
+  site = window.location.host if site in ['view', 'origin']
   slug = wiki.asSlug page.title
   if (actions = page.journal?.length)? and (viewing = page.journal[actions-1]?.date)?
     viewing = Math.floor(viewing/1000)*1000
@@ -189,7 +190,9 @@ wiki.buildPage = (data,siteFound,$page) ->
 
   if siteFound == 'local'
     $page.addClass('local')
-  else
+  else if siteFound
+    siteFound = 'origin' if siteFound is window.location.host
+    $page.addClass('remote') unless siteFound in ['view', 'origin']
     $page.data('site', siteFound)
 
   #TODO: avoid passing siteFound

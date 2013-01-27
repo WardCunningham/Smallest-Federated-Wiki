@@ -772,7 +772,7 @@ require.define("/lib/legacy.coffee",function(require,module,exports,__dirname,__
       name = $(e.target).data('pageName');
       pageHandler.context = $(e.target).attr('title').split(' => ');
       return finishClick(e, name);
-    }).delegate('.remote', 'click', function(e) {
+    }).delegate('img.remote', 'click', function(e) {
       var name;
       name = $(e.target).data('slug');
       pageHandler.context = [$(e.target).data('site')];
@@ -1214,6 +1214,7 @@ require.define("/lib/pageHandler.coffee",function(require,module,exports,__dirna
       pageElement.find('h1 img').attr('src', '/favicon.png');
       pageElement.find('h1 a').attr('href', '/');
       pageElement.data('site', null);
+      pageElement.removeClass('remote');
       state.setUrl();
       if (action.type !== 'fork') {
         action.fork = forkFrom;
@@ -1782,6 +1783,9 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
     var actions, bin, bins, flags, i, info, item, legend, page, remoteSite, site, slug, twins, viewing, _i, _len, _ref, _ref1, _ref2, _ref3;
     page = $page.data('data');
     site = $page.data('site') || window.location.host;
+    if (site === 'view' || site === 'origin') {
+      site = window.location.host;
+    }
     slug = wiki.asSlug(page.title);
     if (((actions = (_ref = page.journal) != null ? _ref.length : void 0) != null) && ((viewing = (_ref1 = page.journal[actions - 1]) != null ? _ref1.date : void 0) != null)) {
       viewing = Math.floor(viewing / 1000) * 1000;
@@ -1892,7 +1896,13 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
   wiki.buildPage = function(data, siteFound, $page) {
     if (siteFound === 'local') {
       $page.addClass('local');
-    } else {
+    } else if (siteFound) {
+      if (siteFound === window.location.host) {
+        siteFound = 'origin';
+      }
+      if (siteFound !== 'view' && siteFound !== 'origin') {
+        $page.addClass('remote');
+      }
       $page.data('site', siteFound);
     }
     renderPageIntoPageElement(data, $page, siteFound);
