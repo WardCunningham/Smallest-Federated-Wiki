@@ -476,7 +476,6 @@ module.exports = exports = (argv) ->
       #if e then return res.e e
       if status is 404
         res.send(page, status)
-      log page
       # Using Coffee-Scripts implicit returns we assign page.story to the
       # result of a list comprehension by way of a switch expression.
       try
@@ -515,7 +514,6 @@ module.exports = exports = (argv) ->
         page.journal.push({type: "fork", site: action.fork})
         delete action.fork
       page.journal.push(action)
-      log page
       pagehandler.put(req.params[0], page, (e) ->
         if e then return res.e e
         res.send('ok')
