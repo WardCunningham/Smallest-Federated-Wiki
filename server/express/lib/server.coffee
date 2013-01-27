@@ -479,30 +479,33 @@ module.exports = exports = (argv) ->
       log page
       # Using Coffee-Scripts implicit returns we assign page.story to the
       # result of a list comprehension by way of a switch expression.
-      page.story = switch action.type
-        when 'move'
-          (stuff for stuff in page.story when item is stuff.id)[0] for item in action.order
+      try
+        page.story = switch action.type
+          when 'move'
+            ((stuff for stuff in page.story when item is stuff.id)[0] or throw('Ignoring move. Try reload.')) for item in action.order
 
-        when 'add'
-          before = 0
-          for item, index in page.story
-            if item.id is action.after
-              before = 1 + index
-          page.story[before...before] = action.item
-          page.story
+          when 'add'
+            before = 0
+            for item, index in page.story
+              if item.id is action.after
+                before = 1 + index
+            page.story[before...before] = action.item
+            page.story
 
-        when 'remove'
-          item for item in page.story when item?.id isnt action.id
+          when 'remove'
+            item for item in page.story when item?.id isnt action.id
 
-        when 'edit'
-          (if item.id is action.id then action.item else item) for item in page.story
+          when 'edit'
+            (if item.id is action.id then action.item else item) for item in page.story
 
-        when 'create', 'fork'
-          page.story or []
+          when 'create', 'fork'
+            page.story or []
 
-        else
-          log "Unfamiliar action:", action
-          page.story
+          else
+            log "Unfamiliar action:", action
+            page.story
+      catch e
+        return res.e e
 
       # Add a blank journal if it does not exist.
       # And add what happened to the journal.

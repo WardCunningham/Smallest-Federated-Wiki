@@ -290,7 +290,7 @@ class Controller < Sinatra::Base
 
     case action['type']
     when 'move'
-      page['story'] = action['order'].collect{ |id| page['story'].detect{ |item| item['id'] == id } }
+      page['story'] = action['order'].collect{ |id| page['story'].detect{ |item| item['id'] == id } || raise('Ignoring move. Try reload.') }
     when 'add'
       before = action['after'] ? 1+page['story'].index{|item| item['id'] == action['after']} : 0
       page['story'].insert before, action['item']
