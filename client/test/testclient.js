@@ -1436,7 +1436,7 @@ require.define("/test/refresh.coffee",function(require,module,exports,__dirname,
 });
 
 require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
-  var addToJournal, buildPageHeader, createFactory, emitHeader, emitTwins, handleDragging, initAddButton, initDragging, neighborhood, pageHandler, plugin, refresh, renderPageIntoPageElement, state, util,
+  var addToJournal, buildPageHeader, createFactory, emitHeader, emitTwins, handleDragging, initAddButton, initDragging, neighborhood, pageHandler, plugin, refresh, renderPageIntoPageElement, state, util, wiki,
     __slice = [].slice;
 
   util = require('./util.coffee');
@@ -1450,6 +1450,8 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
   neighborhood = require('./neighborhood.coffee');
 
   addToJournal = require('./addToJournal');
+
+  wiki = require('./wiki');
 
   handleDragging = function(evt, ui) {
     var action, before, beforeElement, destinationPageElement, equals, item, itemElement, moveFromPage, moveToPage, moveWithinPage, order, sourcePageElement, sourceSite, thisPageElement;
@@ -1533,18 +1535,19 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
   };
 
   emitHeader = function($page, page) {
-    var date, header, isRemotePage, pageHeader, rev, site;
+    var date, header, isRemotePage, pageHeader, rev, site, viewHere;
     site = $page.data('site');
     isRemotePage = (site != null) && site !== 'local' && site !== 'origin' && site !== 'view';
     header = '';
+    viewHere = wiki.asSlug(page.title) === 'welcome-visitors' ? "" : "/view/" + (wiki.asSlug(page.title));
     pageHeader = isRemotePage ? buildPageHeader({
       tooltip: site,
-      header_href: "//" + site,
+      header_href: "//" + site + "/view/welcome-visitors" + viewHere,
       favicon_src: "http://" + site + "/favicon.png",
       title: page.title
     }) : buildPageHeader({
       tooltip: location.host,
-      header_href: "/",
+      header_href: "/view/welcome-visitors" + viewHere,
       favicon_src: "/favicon.png",
       title: page.title
     });

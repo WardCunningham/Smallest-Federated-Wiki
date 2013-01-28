@@ -4,6 +4,7 @@ plugin = require('./plugin.coffee')
 state = require('./state.coffee')
 neighborhood = require('./neighborhood.coffee')
 addToJournal = require('./addToJournal')
+wiki = require('./wiki')
 
 handleDragging = (evt, ui) ->
   itemElement = ui.item
@@ -72,16 +73,18 @@ emitHeader = ($page, page) ->
   isRemotePage = site? and site != 'local' and site != 'origin' and site != 'view'
   header = ''
 
+  viewHere = if wiki.asSlug(page.title) is 'welcome-visitors' then ""
+  else "/view/#{wiki.asSlug(page.title)}"
   pageHeader = if isRemotePage
     buildPageHeader
       tooltip: site
-      header_href: "//#{site}"
+      header_href: "//#{site}/view/welcome-visitors#{viewHere}"
       favicon_src: "http://#{site}/favicon.png"
       title: page.title
   else
     buildPageHeader
       tooltip: location.host
-      header_href: "/"
+      header_href: "/view/welcome-visitors#{viewHere}"
       favicon_src: "/favicon.png"
       title: page.title
 
