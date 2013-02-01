@@ -82,6 +82,8 @@ dispatch = (state, done) ->
       when 'AVG', 'AVERAGE' then avg list
       when 'MIN', 'MINIMUM' then _.min list
       when 'MAX', 'MAXIMUM' then _.max list
+      when 'RATIO' then list[0] / list[1]
+      when 'ACCUMULATE' then (sum list) + (output[label] or input[label] or 0)
       when 'FIRST' then list[0]
       when 'PRODUCT' then _.reduce list, (p,n) -> p *= n
       when 'LOOKUP' then lookup list

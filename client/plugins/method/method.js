@@ -133,6 +133,10 @@
         case 'MAX':
         case 'MAXIMUM':
           return _.max(list);
+        case 'RATIO':
+          return list[0] / list[1];
+        case 'ACCUMULATE':
+          return (sum(list)) + (output[label] || input[label] || 0);
         case 'FIRST':
           return list[0];
         case 'PRODUCT':
