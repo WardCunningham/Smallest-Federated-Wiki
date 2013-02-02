@@ -481,21 +481,27 @@ module.exports = exports = (argv) ->
       try
         page.story = switch action.type
           when 'move'
-            ((stuff for stuff in page.story when item is stuff.id)[0] or throw('Ignoring move. Try reload.')) for item in action.order
+            action.order.map (id) ->
+              page.story.filter((para) ->
+                id == para.id
+              )[0] or throw('Ignoring move. Try reload.')
 
           when 'add'
-            before = 0
-            for item, index in page.story
-              if item.id is action.after
-                before = 1 + index
-            page.story[before...before] = action.item
+            idx = page.story.map((para) -> para.id).indexOf(action.after) + 1
+            page.story.splice(idx, 0, action.item)
             page.story
 
           when 'remove'
-            item for item in page.story when item?.id isnt action.id
+            page.story.filter (para) ->
+              para?.id != action.id
 
           when 'edit'
-            (if item.id is action.id then action.item else item) for item in page.story
+            page.story.map (para) ->
+              if para.id is action.id
+                action.item
+              else
+                para
+
 
           when 'create', 'fork'
             page.story or []
