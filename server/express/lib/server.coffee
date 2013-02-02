@@ -43,9 +43,8 @@ pageFactory = require './page'
 
 # When the server factory is first started attempt to retrieve the gitlog.
 gitlog = ''
-gitVersion = child_process.exec('git log -10 --oneline || echo no git log', (err, stdout, stderr) ->
+gitVersion = child_process.exec 'git log -10 --oneline || echo no git log', (err, stdout, stderr) ->
   gitlog = stdout
-  )
 
 # Set export objects for node and coffee to a function that generates a sfw server.
 module.exports = exports = (argv) ->
@@ -97,17 +96,16 @@ module.exports = exports = (argv) ->
   echoSocket     = new WebSocketServer({server: app, path: '/system/echo'})
   logWatchSocket = new WebSocketServer({server: app, path: '/system/logwatch'})
   counterSocket  = new WebSocketServer({server: app, path: '/system/counter'})
-  echoSocket.on('connection', (ws) ->
-    ws.on('message', (message) ->
+  echoSocket.on 'connection', (ws) ->
+    ws.on 'message', (message) ->
       log 'socktest message from client:', message
       ws.send message, (e) ->
         if e
           log 'unable to send ws message:', e
           return
-    )
-  )
-  logWatchSocket.on('connection', (ws) ->
-    logWatchSocket.on('fetch', fetchListener = (page) ->
+
+  logWatchSocket.on 'connection', (ws) ->
+    logWatchSocket.on 'fetch', fetchListener = (page) ->
       reference =
         title: page.title
         listeners: logWatchSocket.listeners('fetch').length
@@ -116,36 +114,32 @@ module.exports = exports = (argv) ->
           log 'unable to send ws message: ', e, reference
           logWatchSocket.removeListener 'fetch', fetchListener
           ws.close()
-    )
-    ws.on('message', (message) ->
+
+    ws.on 'message', (message) ->
       log 'logWatch message from client:', message
-    )
-  )
-  counterSocket.on('connection', (ws) ->
+
+  counterSocket.on 'connection', (ws) ->
     counter = spawn( path.join(__dirname, '..', 'plugins', 'counter', 'counter.js') )
-    counter.stdout.on('data', (data) ->
+    counter.stdout.on 'data', (data) ->
       ws.send data, (e) ->
         if e
           log 'client disconnected, killing child counter proc...'
           counter.kill('SIGHUP')
           return
-    )
-    counter.stderr.on('data', (data) ->
+
+    counter.stderr.on 'data', (data) ->
       ws.send 'stderr: ' + data, (e) ->
         if e
           log 'client disconnected, killing child counter proc...'
           counter.kill('SIGHUP')
           return
-    )
-    counter.on('exit', (code) ->
+
+    counter.on 'exit', (code) ->
       ws.send 'child process exited with code: ' + code, (e) ->
         if e
           log 'client disconnected, killing child counter proc...'
           counter.kill('SIGHUP')
           return
-    )
-  )
-
 
   #### Setting up Authentication ####
   # The owner of a server is simply the open id url that the wiki
@@ -157,7 +151,7 @@ module.exports = exports = (argv) ->
   # if it is return the owner, if not set the owner
   # to the id if it is provided.
   setOwner = (id, cb) ->
-    path.exists(argv.id, (exists) ->
+    path.exists argv.id, (exists) ->
       if exists
         fs.readFile(argv.id, (err, data) ->
           if err then return cb err
@@ -171,7 +165,6 @@ module.exports = exports = (argv) ->
           cb())
       else
         cb()
-    )
 
   #### Middleware ####
   #
@@ -191,24 +184,22 @@ module.exports = exports = (argv) ->
     else res.send('Access Forbidden', 403)
 
   # Simplest possible way to serialize and deserialize a user.
-  passport.serializeUser( (user, done) ->
+  passport.serializeUser (user, done) ->
     done(null, user.id)
-  )
 
-  passport.deserializeUser( (id, done) ->
+  passport.deserializeUser (id, done) ->
     done(null, {id})
-  )
 
   # Tell passport to use the OpenID strategy. And establish
   # owner as the test of id.
-  passport.use(new OpenIDstrat({
+  passport.use new OpenIDstrat {
     returnURL: "#{argv.u}/login/openid/complete"
     realm: "#{argv.u}"
     identifierField: 'identifier'
   },
-  ((id, done) ->
+  (id, done) ->
     loga id, done
-    process.nextTick( ->
+    process.nextTick ->
       if owner
         if id is owner
           done(null, {id})
@@ -218,8 +209,6 @@ module.exports = exports = (argv) ->
         setOwner id, (e) ->
           if e then return done(e)
           done(null, {id})
-    )
-  )))
 
   # Handle errors thrown by passport openid by returning the oops page
   # with the error message.
@@ -242,29 +231,28 @@ module.exports = exports = (argv) ->
     # keep it from taking down the server.
     http.get(getopts, (resp) ->
       responsedata = ''
-      resp.on('data', (chunk) ->
+      resp.on 'data', (chunk) ->
         responsedata += chunk
-      )
-      resp.on('error', (e) ->
+
+      resp.on 'error', (e) ->
         cb(e, 'Page not found', 404)
-      )
-      resp.on('end', ->
+
+      resp.on 'end', ->
         if resp.statusCode == 404
           cb(null, 'Page not found', 404)
         else if responsedata
           cb(null, JSON.parse(responsedata), resp.statusCode)
         else
           cb(null, 'Page not found', 404)
-      )
-    ).on('error', (e) ->
+
+    ).on 'error', (e) ->
       cb(e, 'Page not found', 404)
-    )
 
   #### Express configuration ####
   # Set up all the standard express server options,
   # including hbs to use handlebars/mustache templates
   # saved with a .html extension, and no layout.
-  app.configure( ->
+  app.configure ->
     app.set('views', path.join(__dirname, '..', '/views'))
     app.set('view engine', 'hbs')
     app.register('.html', hbs)
@@ -279,22 +267,19 @@ module.exports = exports = (argv) ->
     app.use(app.router)
     app.use(express.static(argv.c))
     app.use(openIDErr)
-  )
 
   ##### Set up standard environments. #####
   # In dev mode turn on console.log debugging as well as showing the stack on err.
-  app.configure('development', ->
+  app.configure 'development', ->
     app.use(express.errorHandler({ dumpExceptions: true, showStack: true }))
     argv.debug = console? and true
-  )
 
   # Show all of the options a server is using.
   log argv
 
   # Swallow errors when in production.
-  app.configure('production', ->
+  app.configure 'production', ->
     app.use(express.errorHandler())
-  )
 
   #### Routes ####
   # Routes currently make up the bulk of the Express port of
@@ -303,32 +288,28 @@ module.exports = exports = (argv) ->
 
   ##### Redirects #####
   # Common redirects that may get used throughout the routes.
-  app.redirect('index', (req, res) ->
+  app.redirect 'index', (req, res) ->
     '/view/' + argv.s
-  )
 
-  app.redirect('remotefav', (req, res) ->
+  app.redirect 'remotefav', (req, res) ->
     "http://#{req.params[0]}"
-  )
 
-  app.redirect('oops', (req, res) ->
+  app.redirect 'oops', (req, res) ->
     '/oops'
-  )
 
   ##### Get routes #####
   # Routes have mostly been kept together by http verb, with the exception
   # of the openID related routes which are at the end together.
 
-  app.get('/style.css', (req, res) ->
+  app.get '/style.css', (req, res) ->
     res.sendfile("#{argv.r}/server/express/views/style.css")
-  )
 
   # Main route for initial contact.  Allows us to
   # link into a specific set of pages, local and remote.
   # Can also be handled by the client, but it also sets up
   # the login status, and related footer html, which the client
   # relies on to know if it is logged in or not.
-  app.get(///^((/[a-zA-Z0-9:.-]+/[a-z0-9-]+(_rev\d+)?)+)/?$///, (req, res) ->
+  app.get ///^((/[a-zA-Z0-9:.-]+/[a-z0-9-]+(_rev\d+)?)+)/?$///, (req, res) ->
     urlPages = (i for i in req.params[0].split('/') by 2)[1..]
     urlLocs = (j for j in req.params[0].split('/')[1..] by 2)
     info = {
@@ -348,7 +329,6 @@ module.exports = exports = (argv) ->
         pageDiv = {page, origin: """data-site=#{urlLocs[idx]}"""}
       info.pages.push(pageDiv)
     res.render('static.html', info)
-  )
 
   app.get ////plugins/(factory/)?factory.js///, (req, res) ->
     cb = (e, catalog) ->
@@ -371,78 +351,64 @@ module.exports = exports = (argv) ->
   ###### Json Routes ######
   # Handle fetching local and remote json pages.
   # Local pages are handled by the pagehandler module.
-  app.get(///^/([a-z0-9-]+)\.json$///, cors, (req, res) ->
+  app.get ///^/([a-z0-9-]+)\.json$///, cors, (req, res) ->
     file = req.params[0]
-    pagehandler.get(file, (e, page, status) ->
+    pagehandler.get file, (e, page, status) ->
       if e then return res.e e
       logWatchSocket.emit 'fetch', page unless status
       res.json(page, status)
-    )
-  )
 
   # Remote pages use the http client to retrieve the page
   # and sends it to the client.  TODO: consider caching remote pages locally.
-  app.get(///^/remote/([a-zA-Z0-9:\.-]+)/([a-z0-9-]+)\.json$///, (req, res) ->
-    remoteGet(req.params[0], req.params[1], (e, page, status) ->
+  app.get ///^/remote/([a-zA-Z0-9:\.-]+)/([a-z0-9-]+)\.json$///, (req, res) ->
+    remoteGet req.params[0], req.params[1], (e, page, status) ->
       if e 
         log "remoteGet error:", e
         return res.e e
       res.send(page, status)
-    )
-  )
 
   ###### Favicon Routes ######
   # If favLoc doesn't exist send 404 and let the client
   # deal with it.
   favLoc = path.join(argv.status, 'favicon.png')
-  app.get('/favicon.png', cors, (req,res) ->
+  app.get '/favicon.png', cors, (req,res) ->
     res.sendfile(favLoc)
-  )
 
   # Accept favicon image posted to the server, and if it does not already exist
   # save it.
-  app.post('/favicon.png', authenticated, (req, res) ->
+  app.post '/favicon.png', authenticated, (req, res) ->
     favicon = req.body.image.replace(///^data:image/png;base64,///, "")
     buf = new Buffer(favicon, 'base64')
-    path.exists(argv.status, (exists) ->
+    path.exists argv.status, (exists) ->
       if exists
-        fs.writeFile(favLoc, buf, (e) ->
+        fs.writeFile favLoc, buf, (e) ->
           if e then return res.e e
           res.send('Favicon Saved')
-        )
+
       else
-        mkdirp(argv.status, 0777, ->
-          fs.writeFile(favLoc, buf, (e) ->
+        mkdirp argv.status, 0777, ->
+          fs.writeFile favLoc, buf, (e) ->
             if e then return res.e e
             res.send('Favicon Saved')
-          )
-        )
-    )
-  )
 
   # Redirect remote favicons to the server they are needed from.
-  app.get(///^/remote/([a-zA-Z0-9:\.-]+/favicon.png)$///, (req, res) ->
+  app.get ///^/remote/([a-zA-Z0-9:\.-]+/favicon.png)$///, (req, res) ->
     res.redirect('remotefav')
-  )
 
   ###### Meta Routes ######
   # Send an array of pages in the database via json
-  app.get('/system/slugs.json', cors, (req, res) ->
-    fs.readdir(argv.db, (e, files) ->
+  app.get '/system/slugs.json', cors, (req, res) ->
+    fs.readdir argv.db, (e, files) ->
       if e then return res.e e
       res.send(files)
-    )
-  )
 
-  app.get('/system/plugins.json', cors, (req, res) ->
-    fs.readdir(path.join(argv.c, 'plugins'), (e, files) ->
+  app.get '/system/plugins.json', cors, (req, res) ->
+    fs.readdir path.join(argv.c, 'plugins'), (e, files) ->
       if e then return res.e e
       res.send(files)
-    )
-  )
 
-  app.get('/system/sitemap.json', cors, (req, res) ->
-    fs.readdir(argv.db, (e, files) ->
+  app.get '/system/sitemap.json', cors, (req, res) ->
+    fs.readdir argv.db, (e, files) ->
       if e then return res.e e
       # used to make sure all of the files are read 
       # and processesed in the site map before responding
@@ -463,13 +429,11 @@ module.exports = exports = (argv) ->
       async.map files, doSitemap, (e, sitemap) ->
         if e then return res.e e
         res.json(sitemap.filter (item) -> if item? then true)
-    )
-  )
 
 
   ##### Put routes #####
 
-  app.put(/^\/page\/([a-z0-9-]+)\/action$/i, authenticated, (req, res) ->
+  app.put /^\/page\/([a-z0-9-]+)\/action$/i, authenticated, (req, res) ->
     action = JSON.parse(req.body.action)
     # Handle all of the possible actions to be taken on a page,
     actionCB = (e, page, status) ->
@@ -520,11 +484,10 @@ module.exports = exports = (argv) ->
         page.journal.push({type: "fork", site: action.fork})
         delete action.fork
       page.journal.push(action)
-      pagehandler.put(req.params[0], page, (e) ->
+      pagehandler.put req.params[0], page, (e) ->
         if e then return res.e e
         res.send('ok')
         log 'saved'
-      )
 
     log action
     # If the action is a fork, get the page from the remote server,
@@ -534,13 +497,13 @@ module.exports = exports = (argv) ->
     else if action.type is 'create'
       # Prevent attempt to write circular structure
       itemCopy = JSON.parse(JSON.stringify(action.item))
-      pagehandler.get(req.params[0], (e, page, status) ->
+      pagehandler.get req.params[0], (e, page, status) ->
         if e then return actionCB(e)
         unless status is 404
           res.send('Page already exists.', 409)
         else
           actionCB(null, itemCopy)
-      )
+
     else if action.type == 'fork'
       if action.item # push
         itemCopy = JSON.parse(JSON.stringify(action.item))
@@ -550,47 +513,41 @@ module.exports = exports = (argv) ->
         remoteGet(action.site, req.params[0], actionCB)
     else
       pagehandler.get(req.params[0], actionCB)
-  )
 
   ##### Routes used for openID authentication #####
   # Redirect to oops when login fails.
-  app.post('/login',
+  app.post '/login',
     passport.authenticate('openid', { failureRedirect: 'oops'}),
     (req, res) ->
       res.redirect('index')
-  )
 
   # Logout when /logout is hit with any http method.
-  app.all('/logout', (req, res) ->
+  app.all '/logout', (req, res) ->
     req.logout()
     res.redirect('index')
-  )
 
   # Route that the openID provider redirects user to after login.
-  app.get('/login/openid/complete',
+  app.get '/login/openid/complete',
     passport.authenticate('openid', { failureRedirect: 'oops'}),
     (req, res) ->
       res.redirect('index')
-  )
 
   # Return the oops page when login fails.
-  app.get('/oops', (req, res) ->
+  app.get '/oops', (req, res) ->
     res.render('oops.html', {status: 403, msg:'This is not your wiki!'})
-  )
 
   # Traditional request to / redirects to index :)
-  app.get('/', (req, res) ->
+  app.get '/', (req, res) ->
     res.redirect('index')
-  )
 
   #### Start the server ####
   # Wait to make sure owner is known before listening.
-  setOwner( null, (e) ->
+  setOwner null, (e) ->
     # Throw if you can't find the initial owner
     if e then throw e
     app.listen(argv.p, argv.o if argv.o)
     loga "Smallest Federated Wiki server listening on", app.address().port, "in mode:", app.settings.env
-  )
+
   # Return app when called, so that it can be watched for events and shutdown with .close() externally.
   app
 
