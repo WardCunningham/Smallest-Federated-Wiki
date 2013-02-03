@@ -1,4 +1,5 @@
-
+# taken from - https://github.com/rahul/js.browser-detection/blob/master/browser-detection.coffee
+# Granted under MIT license
 
 window.browser =
   initialize: (user_agent) ->
