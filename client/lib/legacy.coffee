@@ -4,6 +4,7 @@ plugin = require('./plugin.coffee')
 state = require('./state.coffee')
 active = require('./active.coffee')
 refresh = require('./refresh.coffee')
+browserdetect = require('./BrowserDetect.coffee')
 
 Array::last = ->
   this[@length - 1]
