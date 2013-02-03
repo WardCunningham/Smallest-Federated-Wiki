@@ -63,6 +63,7 @@
         } catch (err) {
           div.append("<p class='error'>" + err + "</p>");
         }
+        console.log(item.userdata);
         return wiki.pageHandler.put(pageElement, {
           type: 'edit',
           id: item.id,
@@ -84,8 +85,9 @@
         var dt, found, ignore, origin, punt, readFile, url;
         punt = function(data) {
           wiki.log('factory punt', dropEvent);
-          item.type = 'data';
-          item.text = "Unexpected Item";
+          item.type = 'paragraph';
+          item.text = "Trouble: We detected the drop but cannot yet make sense of the information provided by your browser and operating system. Try something different. If you know that your drop should have worked and you want to file a bug report you can do so on [https://github.com/WardCunningham/Smallest-Federated-Wiki/issues github]. Please Provide the json data for this paragraph, (click JSON on the bottom of this page)";
+          item.userdata = browser.meta();
           item.data = data;
           return syncEditAction();
         };
