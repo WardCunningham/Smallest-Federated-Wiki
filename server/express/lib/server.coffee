@@ -330,12 +330,7 @@ module.exports = exports = (argv) ->
       info.pages.push(pageDiv)
     res.render('static.html', info)
 
-  app.get ////plugins/(factory/)?factory.js///, (req, res) ->
-    cb = (e, catalog) ->
-      if e then return res.e e
-      res.write('window.catalog = ' + JSON.stringify(catalog) + ';')
-      fs.createReadStream(argv.c + '/plugins/meta-factory.js').pipe(res)
-
+  app.get ///system/factories.json///, (req, res) ->
     glob argv.c + '/**/factory.json', (e, files) ->
       if e then return cb(e)
       files = files.map (file) ->
@@ -346,7 +341,11 @@ module.exports = exports = (argv) ->
 
       es.concat.apply(null, files)
         .on('error', res.e)
-        .pipe(es.writeArray(cb))
+        .pipe(es.writeArray((e, body) ->
+          if e then return res.e(e)
+          res.json(body)
+        ))
+
 
   ###### Json Routes ######
   # Handle fetching local and remote json pages.
