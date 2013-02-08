@@ -332,11 +332,11 @@ module.exports = exports = (argv) ->
 
   app.get ///system/factories.json///, (req, res) ->
     glob argv.c + '/**/factory.json', (e, files) ->
-      if e then return cb(e)
+      if e then return res.e(e)
       files = files.map (file) ->
         return fs.createReadStream(file).on('error', res.e).pipe(
           JSONStream.parse([false]).on 'root', (el) ->
-            @.emit 'data', el
+            @emit 'data', el
         )
 
       es.concat.apply(null, files)
