@@ -301,9 +301,6 @@ module.exports = exports = (argv) ->
   # Routes have mostly been kept together by http verb, with the exception
   # of the openID related routes which are at the end together.
 
-  app.get '/style.css', (req, res) ->
-    res.sendfile("#{argv.r}/server/express/views/style.css")
-
   # Main route for initial contact.  Allows us to
   # link into a specific set of pages, local and remote.
   # Can also be handled by the client, but it also sets up
@@ -331,7 +328,7 @@ module.exports = exports = (argv) ->
     res.render('static.html', info)
 
   app.get ///system/factories.json///, (req, res) ->
-    glob argv.c + '/**/factory.json', (e, files) ->
+    glob path.join(argv.c, '**', 'factory.json'), (e, files) ->
       if e then return res.e(e)
       files = files.map (file) ->
         return fs.createReadStream(file).on('error', res.e).pipe(
