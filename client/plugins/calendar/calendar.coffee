@@ -1,6 +1,12 @@
 
 months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
-spans = ['DECADE', 'EARLY', 'LATE', 'YEAR', 'MONTH', 'DAY']
+spans = ['EARLY', 'LATE', 'DECADE', 'DAY', 'MONTH', 'YEAR']
+
+span = (result, span) ->
+	if (m = spans.indexOf result.span) < 0
+		result.span = span
+	else if (spans.indexOf span) < m
+		result.span = span
 
 parse = (text) ->
 	rows = []
@@ -10,15 +16,18 @@ parse = (text) ->
 		for word, i in words
 			if word.match /^\d\d\d\d$/
 				result.year = +word
+				span result, 'YEAR'
 			else if m = word.match /^(\d0)S$/
 				result.year = +m[1]+1900
-				result.span ||= 'DECADE'
+				span result, 'DECADE'
 			else if (m = spans.indexOf word) >= 0
 			  result.span = spans[m]
 			else if (m = months.indexOf word[0..2]) >= 0
 				result.month = m+1
+				span result, 'MONTH'
 			else if m = word.match /^([1-3]?[0-9])$/
 				result.day = +m[1]
+				span result, 'DAY'
 			else
 				result.label = words[i..999].join ' '
 				break
@@ -45,9 +54,19 @@ apply = (input, output, date, rows) ->
 		result.push row
 	result
 
+show = (date, span) ->
+	switch span
+		when 'YEAR' then date.getFullYear()
+		when 'DECADE' then "#{date.getFullYear()}'S"
+		when 'EARLY' then "Early #{date.getFullYear()}'S"
+		when 'LATE' then "Late #{date.getFullYear()}'S"
+		when 'MONTH' then "#{months[date.getMonth()]} #{date.getFullYear()}"
+		else "#{date.getDate()} #{months[date.getMonth()]} #{date.getFullYear()}"
+
+
 format = (rows) ->
 	for row in rows
-		"""<tr><td>#{row.date.toDateString()}<td>#{row.label}"""
+		"""<tr><td>#{show row.date, row.span}<td>#{row.label}"""
 
 module.exports = {parse, apply, format} if module?
 
