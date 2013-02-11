@@ -72,6 +72,7 @@
         animate: 'fast',
         value: 50,
         slide: function(event, ui) {
+          $item.trigger('thumb', ui.value);
           return $item.find('td:last').text("" + ui.value + "%");
         }
       });
