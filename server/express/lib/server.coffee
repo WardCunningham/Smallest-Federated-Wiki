@@ -328,20 +328,17 @@ module.exports = exports = (argv) ->
     res.render('static.html', info)
 
   app.get ///system/factories.json///, (req, res) ->
+    res.status(200)
+    res.header('Content-Type', 'application/json')
     glob path.join(argv.c, '**', 'factory.json'), (e, files) ->
       if e then return res.e(e)
       files = files.map (file) ->
-        return fs.createReadStream(file).on('error', res.e).pipe(
-          JSONStream.parse([false]).on 'root', (el) ->
-            @emit 'data', el
-        )
+        return fs.createReadStream(file).on('error', res.e).pipe(JSONStream.parse())
 
       es.concat.apply(null, files)
         .on('error', res.e)
-        .pipe(es.writeArray((e, body) ->
-          if e then return res.e(e)
-          res.json(body)
-        ))
+        .pipe(JSONStream.stringify())
+        .pipe(res)
 
 
   ###### Json Routes ######
