@@ -44,6 +44,7 @@ emit = ($item, item) ->
       animate: 'fast'
       value: 50
       slide: (event, ui) ->
+        $item.trigger 'thumb', ui.value
         $item.find('td:last').text "#{ui.value}%"
 
 bind = ($item, item) ->
