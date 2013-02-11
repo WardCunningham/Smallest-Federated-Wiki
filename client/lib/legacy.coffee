@@ -101,6 +101,11 @@ $ ->
         if (e.altKey || e.ctlKey || e.metaKey) and e.which == 83 #alt-s
           textarea.focusout()
           return false
+        if (e.altKey || e.ctlKey || e.metaKey) and e.which == 73 #alt-i
+          e.preventDefault()
+          page = $(e.target).parents('.page') unless e.shiftKey
+          doInternalLink "about #{item.type} plugin", page
+          return false
         # provides automatic new paragraphs on enter and concatenation on backspace
         if item.type is 'paragraph' 
           sel = util.getSelectionPos(textarea) # position of caret or selected text coords
