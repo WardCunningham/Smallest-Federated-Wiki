@@ -637,9 +637,17 @@ require.define("/lib/legacy.coffee",function(require,module,exports,__dirname,__
         }
         return null;
       }).bind('keydown', function(e) {
-        var middle, pageElement, prefix, prevItem, prevTextLen, sel, suffix, text;
+        var middle, page, pageElement, prefix, prevItem, prevTextLen, sel, suffix, text;
         if ((e.altKey || e.ctlKey || e.metaKey) && e.which === 83) {
           textarea.focusout();
+          return false;
+        }
+        if ((e.altKey || e.ctlKey || e.metaKey) && e.which === 73) {
+          e.preventDefault();
+          if (!e.shiftKey) {
+            page = $(e.target).parents('.page');
+          }
+          doInternalLink("about " + item.type + " plugin", page);
           return false;
         }
         if (item.type === 'paragraph') {
