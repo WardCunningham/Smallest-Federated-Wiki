@@ -1,11 +1,6 @@
 listItemHtml = (slug, page)->
   """
-    <li>
-      <a class="internal" href="#" title="local" data-page-name="#{slug}" data-site="local">
-        #{page.title}
-      </a> 
-      <button class="delete">✕</button>
-    </li>
+    <li><a class="internal" href="#" title="local" data-page-name="#{slug}" data-site="local">#{page.title}</a> <button class="delete">✕</button></li>
   """
 
 pageBundle = ->

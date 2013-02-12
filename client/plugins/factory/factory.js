@@ -11,7 +11,7 @@
         var info, menu, menuItem, name, _i, _len, _ref, _ref1;
         menu = div.find('p').append("<br>Or Choose a Plugin");
         menuItem = function(title, name) {
-          return menu.append("<li>\n  <a class=\"menu\" href=\"#\" title=\"" + title + "\">\n    " + name + "\n  </a>\n</li>");
+          return menu.append("<li><a class=\"menu\" href=\"#\" title=\"" + title + "\">" + name + "</a></li>");
         };
         if (Array.isArray(window.catalog)) {
           _ref = window.catalog;
