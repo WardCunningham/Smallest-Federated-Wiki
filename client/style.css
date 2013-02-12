@@ -184,7 +184,8 @@ footer {
 .data p,
 .chart p,
 .footer a,
-.image p {
+.image p,
+p.caption {
   text-align: center;
   margin-bottom: 0;
   color: gray;
