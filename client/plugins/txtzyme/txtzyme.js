@@ -8,24 +8,23 @@
     _ref = text.split(/\n/);
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       line = _ref[_i];
-      words = line.match(/\S+/);
-      defn[words[0]] = words[1.999];
+      words = line.split(/\s+/);
+      defn[words[0]] = words.slice(1, 1000);
     }
     return defn;
   };
 
   apply = function(defn, call) {
-    var result, word, words, _i, _len, _results;
-    result = '';
+    var result, word, words, _i, _len;
+    result = [];
     if (!(words = defn[call])) {
       return;
     }
-    _results = [];
     for (_i = 0, _len = words.length; _i < _len; _i++) {
       word = words[_i];
-      _results.push(result += word.match(/^[A-Z][A-Z0-9]*$/) ? apply(defn, word) : word);
+      result.push(word.match(/^[A-Z][A-Z0-9]*$/) ? apply(defn, word) : word);
     }
-    return _results;
+    return result.join(' ');
   };
 
   emit = function($item, item) {
@@ -35,20 +34,32 @@
       padding: ".8em",
       'margin-bottom': "5px"
     });
-    return $item.append("<p class=\"report\">\n  " + item.text + "\n</p>\n<p class=\"caption\">\n  status here\n</p>");
+    return $item.append("<p class=\"report\" style=\"white-space: pre\">" + item.text + "</p>\n<p class=\"caption\">status here</p>");
   };
 
   bind = function($item, item) {
-    var progress, rcvd, sent, socket;
+    var defn, progress, rcvd, sent, socket, tic, timer;
+    defn = parse(item.text);
+    wiki.log(defn);
     socket = new WebSocket('ws://' + window.document.location.host + '/plugin/txtzyme');
     sent = rcvd = 0;
+    tic = function() {
+      var message;
+      message = apply(defn, 'SECOND');
+      $item.find('p.report').text("SECOND " + message);
+      if (socket) {
+        socket.send(message);
+        return progress("" + (++sent) + " sent");
+      }
+    };
+    timer = setInterval(tic, 1000);
     $item.dblclick(function() {
       return wiki.textEditor($item, item);
     });
     $(".main").on('thumb', function(evt, thumb) {
       var message;
-      message = item.text.replace(/THUMB/, thumb);
-      $item.find('p.report').text(message);
+      message = apply(defn, 'THUMB');
+      $item.find('p.report').text("THUMB " + message);
       if (socket) {
         socket.send(message);
         return progress("" + (++sent) + " sent");
