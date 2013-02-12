@@ -24,7 +24,11 @@ The server is a ruby bundle. Get the bundler gem and then use it to get everythi
 	bundle update
 
 > It is probably best to use ```bundle update``` rather than ```bundle install``` so that the latest version of the
-> gems are installed. There are know problems with eventmachine not installing, and with in-line code in the PNG gem. 
+> gems are installed. There are know problems with eventmachine (0.12.10) not installing, and with in-line code in the PNG (1.2.0) gem 
+> this will be seen as an error when the server is started - if the update to the PNG gem has not been release, see [Fixed a misordered block of C code](https://github.com/bensomers/png/commit/eff179b3e5849b287251d0c33435852e8842597e) 
+> for the changes needed to the PNG gem code.
+
+
 
 Launch the server with this bundle command:
 
