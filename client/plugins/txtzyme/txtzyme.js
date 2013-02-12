@@ -3,18 +3,26 @@
   var apply, bind, emit, parse;
 
   parse = function(text) {
-    var defn, line, words, _i, _len, _ref;
+    var defn, line, prev, word, words, _i, _j, _len, _len1, _ref, _ref1;
     defn = {};
-    _ref = text.split(/\n/);
+    _ref = text.split(/\n+/);
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       line = _ref[_i];
       words = line.split(/\s+/);
-      defn[words[0]] = words.slice(1, 1000);
+      if (words[0]) {
+        defn[words[0]] = prev = words.slice(1, 1000);
+      } else {
+        _ref1 = words.slice(1, 1000);
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          word = _ref1[_j];
+          prev.push(word);
+        }
+      }
     }
     return defn;
   };
 
-  apply = function(defn, call) {
+  apply = function(defn, call, arg) {
     var result, word, words, _i, _len;
     result = [];
     if (!(words = defn[call])) {
@@ -22,10 +30,17 @@
     }
     for (_i = 0, _len = words.length; _i < _len; _i++) {
       word = words[_i];
-      result.push(word.match(/^[A-Z][A-Z0-9]*$/) ? apply(defn, word) : word);
+      result.push(word === 'NL' ? "\n" : word.match(/^[A-Z][A-Z0-9]*$/) ? apply(defn, word, arg) : word);
     }
     return result.join(' ');
   };
+
+  if (typeof module !== "undefined" && module !== null) {
+    module.exports = {
+      parse: parse,
+      apply: apply
+    };
+  }
 
   emit = function($item, item) {
     $item.css({
@@ -34,37 +49,50 @@
       padding: ".8em",
       'margin-bottom': "5px"
     });
-    return $item.append("<p class=\"report\" style=\"white-space: pre\">" + item.text + "</p>\n<p class=\"caption\">status here</p>");
+    return $item.append("<p class=\"report\" style=\"white-space: pre; white-space: pre-wrap;\">" + item.text + "</p>\n<p class=\"caption\">status here</p>");
   };
 
   bind = function($item, item) {
-    var defn, progress, rcvd, sent, socket, tic, timer;
+    var defn, progress, rcvd, sent, socket, tic, timer, trigger;
     defn = parse(item.text);
     wiki.log(defn);
     socket = new WebSocket('ws://' + window.document.location.host + '/plugin/txtzyme');
     sent = rcvd = 0;
     tic = function() {
-      var message;
-      message = apply(defn, 'SECOND');
-      $item.find('p.report').text("SECOND " + message);
-      if (socket) {
-        socket.send(message);
-        return progress("" + (++sent) + " sent");
+      var now;
+      now = new Date();
+      trigger('SECOND');
+      if (now.getSeconds()) {
+        return;
       }
+      trigger('MINUTE');
+      if (now.getMinutes()) {
+        return;
+      }
+      trigger('HOUR');
+      if (now.getHours()) {
+        return;
+      }
+      return trigger('DAY');
     };
     timer = setInterval(tic, 1000);
     $item.dblclick(function() {
       return wiki.textEditor($item, item);
     });
     $(".main").on('thumb', function(evt, thumb) {
+      return trigger('THUMB');
+    });
+    trigger = function(word) {
       var message;
-      message = apply(defn, 'THUMB');
-      $item.find('p.report').text("THUMB " + message);
+      if (!(message = apply(defn, word))) {
+        return;
+      }
+      $item.find('p.report').text("" + word + " " + message);
       if (socket) {
         socket.send(message);
         return progress("" + (++sent) + " sent");
       }
-    });
+    };
     progress = function(m) {
       wiki.log('txtzyme', m);
       return $item.find('p.caption').text(m);
@@ -81,9 +109,11 @@
     };
   };
 
-  window.plugins.txtzyme = {
-    emit: emit,
-    bind: bind
-  };
+  if (typeof window !== "undefined" && window !== null) {
+    window.plugins.txtzyme = {
+      emit: emit,
+      bind: bind
+    };
+  }
 
 }).call(this);
