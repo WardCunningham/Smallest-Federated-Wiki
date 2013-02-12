@@ -1,0 +1,36 @@
+Windows Notes
+=============
+
+These notes will help with installing and running the Smallest Federated Wiki on Windows.
+
+
+
+Install and Launch (Sinatra)
+============================
+
+The Sinstra server requires Ruby, this can be installed from [RubyInstaller for Windows](http://rubyinstaller.org/).
+As well as the Ruby Installer, you will also need the Development Kit to compile some of the Gem files. These notes 
+have been written/tested with Ruby version 1.9.3.
+
+> **N.B.** See [Development Kit](https://github.com/oneclick/rubyinstaller/wiki/Development-Kit) for installation 
+> instructions.
+
+Open a command window - ensure that Ruby, the Development Kit, and Git have all been added to the environment (there
+are scripts in the ruby and development kit directories if necessary).
+
+The server is a ruby bundle. Get the bundler gem and then use it to get everything else:
+
+	gem install bundler
+	bundle update
+
+> It is probably best to use ```bundle update``` rather than ```bundle install``` so that the latest version of the
+> gems are installed. There are know problems with eventmachine not installing, and with in-line code in the PNG gem. 
+
+Launch the server with this bundle command:
+
+	cd server/sinatra 
+	bundle exec rackup -s thin -p 1111
+
+Now go to your browser and browse your new wiki:
+
+	http://localhost:1111
