@@ -8,14 +8,14 @@ parse = (text) ->
       prev.push word for word in words[1..999]
   defn
 
-apply = (defn, call, arg) ->
+apply = (defn, call, arg, depth=0) ->
   result = []
   return unless words = defn[call]
   for word in words
     result.push if word is 'NL'
       "\n"
     else if word.match /^[A-Z][A-Z0-9]*$/
-      apply defn, word, arg
+      apply defn, word, arg, depth+1 unless depth >= 10
     else
       word
   result.join(' ')
