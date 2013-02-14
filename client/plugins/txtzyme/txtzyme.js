@@ -22,15 +22,18 @@
     return defn;
   };
 
-  apply = function(defn, call, arg) {
+  apply = function(defn, call, arg, depth) {
     var result, word, words, _i, _len;
+    if (depth == null) {
+      depth = 0;
+    }
     result = [];
     if (!(words = defn[call])) {
       return;
     }
     for (_i = 0, _len = words.length; _i < _len; _i++) {
       word = words[_i];
-      result.push(word === 'NL' ? "\n" : word.match(/^[A-Z][A-Z0-9]*$/) ? apply(defn, word, arg) : word);
+      result.push(word === 'NL' ? "\n" : word.match(/^[A-Z][A-Z0-9]*$/) ? !(depth >= 10) ? apply(defn, word, arg, depth + 1) : void 0 : word);
     }
     return result.join(' ');
   };
@@ -43,20 +46,16 @@
   }
 
   emit = function($item, item) {
-    $item.css({
-      width: "95%",
-      background: "#eee",
-      padding: ".8em",
-      'margin-bottom': "5px"
-    });
-    return $item.append("<p class=\"report\" style=\"white-space: pre; white-space: pre-wrap;\">" + item.text + "</p>\n<p class=\"caption\">status here</p>");
+    return $item.append("<div style=\"width:93%; background:#eee; padding:.8em; margin-bottom:5px;\">\n  <p class=\"report\" style=\"white-space: pre; white-space: pre-wrap;\">" + item.text + "</p>\n  <p class=\"caption\">status here</p>\n</div>");
   };
 
   bind = function($item, item) {
-    var defn, progress, rcvd, sent, socket, tic, timer, trigger;
+    var $page, defn, host, progress, rcvd, sent, socket, tic, timer, trigger;
     defn = parse(item.text);
     wiki.log(defn);
-    socket = new WebSocket('ws://' + window.document.location.host + '/plugin/txtzyme');
+    $page = $item.parents('.page:first');
+    host = $page.data('site') || location.host;
+    socket = new WebSocket("ws://" + host + "/plugin/txtzyme");
     sent = rcvd = 0;
     tic = function() {
       var now;
