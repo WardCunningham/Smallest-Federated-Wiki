@@ -23,17 +23,20 @@ apply = (defn, call, arg, depth=0) ->
 module.exports = {parse, apply} if module?
 
 emit = ($item, item) ->
-  $item.css {width:"95%", background:"#eee", padding:".8em", 'margin-bottom':"5px"}
   $item.append """
-    <p class="report" style="white-space: pre; white-space: pre-wrap;">#{item.text}</p>
-    <p class="caption">status here</p>
+    <div style="width:93%; background:#eee; padding:.8em; margin-bottom:5px;">
+      <p class="report" style="white-space: pre; white-space: pre-wrap;">#{item.text}</p>
+      <p class="caption">status here</p>
+    </div>
   """
 
 bind = ($item, item) ->
   defn = parse item.text
   wiki.log defn
 
-  socket = new WebSocket('ws://'+window.document.location.host+'/plugin/txtzyme')
+  $page = $item.parents('.page:first')
+  host = $page.data('site') or location.host
+  socket = new WebSocket("ws://#{host}/plugin/txtzyme")
   sent = rcvd = 0
 
   tic = ->
