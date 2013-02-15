@@ -3,6 +3,9 @@ Windows Notes
 
 These notes will help with installing and running the Smallest Federated Wiki on Windows.
 
+* [Install and Launch (Sinatra)](Windows.md#install-and-launch-sinatra)
+* [Install and Launch (Node.js Express)](Windows.md#install-and-launch-nodejs-express)
+
 
 
 Install and Launch (Sinatra)
@@ -29,12 +32,47 @@ The server is a ruby bundle. Get the bundler gem and then use it to get everythi
 > for the changes needed to the PNG gem code.
 
 
-
 Launch the server with this bundle command:
 
-	cd server/sinatra 
+	cd server\sinatra 
 	bundle exec rackup -s thin -p 1111
 
 Now go to your browser and browse your new wiki:
 
 	http://localhost:1111
+
+
+Install and Launch (Node.js Express)
+====================================
+
+The express server requires Node.js, if not already installed it is available from [node.js](http://nodejs.org/).
+You will also need a Visual C compiler, the current version of the Visual Studio Express is free from 
+[Visual Studio Express](www.microsoft.com/express/) - **N.B.** you will want the version for Windows Desktop.
+
+Open a command window - ensure that node, and Visual C are both on path. Also worth checking that windows\system32 is 
+not missing from the path, as that causes a know problem.
+
+Run ```npm install``` in the following directories:
+
+	client
+	client\plugins
+	client\plugins\linkmap
+	client\plugins\parse
+	server\express
+
+The server is launched by:
+
+	cd server\express
+	node bin\server.js
+
+You should not get any error messages when starting, if any new plugins are added that require installing you will get
+a message similar to:
+
+	starting plugin xxxxx
+	failed to start plugin xxxxx { [Error: Cannot find module 'ws'] code: 'MODULE_NOT_FOUND' }
+
+If that happens you just need to run ```npm install``` in that plugin's directory.
+
+Now got to your browser and browse your new wiki:
+
+	http://localhost:3000
