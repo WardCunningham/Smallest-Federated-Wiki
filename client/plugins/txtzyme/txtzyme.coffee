@@ -48,7 +48,10 @@ bind = ($item, item) ->
 
   timer = setInterval tic, 1000
 
-  $item.dblclick -> wiki.textEditor $item, item
+  $item.dblclick ->
+    clearInterval timer
+    socket?.close()
+    wiki.textEditor $item, item
 
   $(".main").on 'thumb', (evt, thumb) ->
     trigger 'THUMB'
@@ -66,6 +69,8 @@ bind = ($item, item) ->
 
   socket.onopen = ->
     progress "opened"
+    trigger 'OPEN'
+
 
   socket.onmessage = (e) ->
     progress "rcvd #{e.data}"
