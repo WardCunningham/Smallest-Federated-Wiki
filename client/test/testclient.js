@@ -3266,11 +3266,16 @@ require.define("/plugins/txtzyme/txtzyme.js",function(require,module,exports,__d
     };
     timer = setInterval(tic, 1000);
     $item.dblclick(function() {
+      clearInterval(timer);
+      if (socket != null) {
+        socket.close();
+      }
       return wiki.textEditor($item, item);
     });
     $(".main").on('thumb', function(evt, thumb) {
       return trigger('THUMB');
     });
+    trigger('OPEN');
     trigger = function(word) {
       var message;
       if (!(message = apply(defn, word))) {
