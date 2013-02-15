@@ -25,8 +25,9 @@ describe 'txtzyme plugin', ->
 		apply = (text, arg) ->
 			result = ""
 			defn = txtzyme.parse text
-			txtzyme.apply defn, 'TEST', arg, (stack, message) ->
+			txtzyme.apply defn, 'TEST', arg, (message, stack, done) ->
 				result += message
+				done()
 			result
 
 		it 'recognizes definitions', ->
@@ -36,10 +37,10 @@ describe 'txtzyme plugin', ->
 			expect(apply "TEST FOO\nFOO 0o").to.eql "0o\n"
 
 		it 'merges results', ->
-			expect(apply "TEST 1o FOO\nFOO 0o").to.eql "1o 0o\n"
+			expect(apply "TEST 1o FOO 0o\nFOO 10m").to.eql "1o 10m 0o\n"
 
 		it 'limits call depth', ->
-			expect(apply "TEST o TEST").to.eql "o o o o o o o o o o o\n"
+			expect(apply "TEST o TEST").to.eql "o o o o o o o o o o\n"
 
 		it 'handles empty definitions', ->
 			expect(apply "TEST").to.eql ""

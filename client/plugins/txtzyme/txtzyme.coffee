@@ -9,23 +9,30 @@ parse = (text) ->
   defn
 
 apply = (defn, call, arg, emit) ->
-  stack = [call]
-  result = []
-  recurse = (call, arg, depth) ->
-    return unless words = defn[call]
-    for word in words
-      if word is 'NL'
-        emit stack, "#{result.join(' ')}\n" if result.length
-        result = []
+  return unless (words = defn[call]?.slice(0))
+  do (stack = [{call, words}], result = []) ->
+    send = ->
+      return unless result.length
+      text = "#{result.join(' ')}\n"
+      result = []
+      emit text, stack, next
+    next = ->
+      return unless stack.length
+      word = stack[stack.length-1]?.words.shift()
+      if word is undefined
+        stack.pop()
+      else if word is 'NL'
+        return send()
       else if word.match /^[A-Z][A-Z0-9]*$/
-        if depth < 10
-          stack.push word
-          recurse word, arg, depth+1 unless depth >= 10
-          stack.pop()
+        if stack.length < 10 and (words = defn[word]?.slice(0))
+          stack.push {call:word, words}
       else
         result.push word
-  recurse call, arg, 0
-  emit stack, "#{result.join(' ')}\n" if result.length
+      if stack.length
+        next()
+      else
+        return send()
+    next() if words.length
 
 report = (defn) ->
   report = []
@@ -72,11 +79,13 @@ bind = ($item, item) ->
     trigger 'THUMB'
 
   trigger = (word, arg=0) ->
-    apply defn, word, arg, (stack, message) ->
-      $item.find('p.report').text "#{word} #{message}"
+    apply defn, word, arg, (message, stack, done) ->
+      todo = ("#{call} #{words.join ' '}" for {call, words} in stack).join '<br>'
+      $item.find('p.report').html "#{todo}<br>#{message}"
       if socket
         socket.send message
         progress "#{++sent} sent"
+      setTimeout done, 200
 
   progress = (m) ->
     wiki.log 'txtzyme', m
