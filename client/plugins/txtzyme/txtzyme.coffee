@@ -8,17 +8,32 @@ parse = (text) ->
       prev.push word for word in words[1..999]
   defn
 
-apply = (defn, call, arg, depth=0) ->
+apply = (defn, call, arg, emit) ->
+  stack = [call]
   result = []
-  return unless words = defn[call]
-  for word in words
-    result.push if word is 'NL'
-      "\n"
-    else if word.match /^[A-Z][A-Z0-9]*$/
-      apply defn, word, arg, depth+1 unless depth >= 10
-    else
-      word
-  result.join(' ')
+  recurse = (call, arg, depth) ->
+    return unless words = defn[call]
+    for word in words
+      if word is 'NL'
+        emit stack, "#{result.join(' ')}\n" if result.length
+        result = []
+      else if word.match /^[A-Z][A-Z0-9]*$/
+        if depth < 10
+          stack.push word
+          recurse word, arg, depth+1 unless depth >= 10
+          stack.pop()
+      else
+        result.push word
+  recurse call, arg, 0
+  emit stack, "#{result.join(' ')}\n" if result.length
+
+report = (defn) ->
+  report = []
+  for key, words of defn
+    report.push """<li class="#{key}"><span>#{key}</span>"""
+    for word in words
+      report.push """<span>#{word}</span>"""
+  report.join ' '
 
 module.exports = {parse, apply} if module?
 
@@ -56,12 +71,12 @@ bind = ($item, item) ->
   $(".main").on 'thumb', (evt, thumb) ->
     trigger 'THUMB'
 
-  trigger = (word) ->
-    return unless message = apply defn, word
-    $item.find('p.report').text "#{word} #{message}"
-    if socket
-      socket.send message
-      progress "#{++sent} sent"
+  trigger = (word, arg=0) ->
+    apply defn, word, arg, (stack, message) ->
+      $item.find('p.report').text "#{word} #{message}"
+      if socket
+        socket.send message
+        progress "#{++sent} sent"
 
   progress = (m) ->
     wiki.log 'txtzyme', m
@@ -70,7 +85,6 @@ bind = ($item, item) ->
   socket.onopen = ->
     progress "opened"
     trigger 'OPEN'
-
 
   socket.onmessage = (e) ->
     progress "rcvd #{e.data}"
