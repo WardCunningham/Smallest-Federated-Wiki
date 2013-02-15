@@ -23,42 +23,56 @@
   };
 
   apply = function(defn, call, arg, emit) {
-    var recurse, result, stack;
-    stack = [call];
-    result = [];
-    recurse = function(call, arg, depth) {
-      var word, words, _i, _len, _results;
-      if (!(words = defn[call])) {
-        return;
-      }
-      _results = [];
-      for (_i = 0, _len = words.length; _i < _len; _i++) {
-        word = words[_i];
-        if (word === 'NL') {
-          if (result.length) {
-            emit(stack, "" + (result.join(' ')) + "\n");
-          }
-          _results.push(result = []);
+    var words, _ref;
+    if (!(words = (_ref = defn[call]) != null ? _ref.slice(0) : void 0)) {
+      return;
+    }
+    return (function(stack, result) {
+      var next, send;
+      send = function() {
+        var text;
+        if (!result.length) {
+          return;
+        }
+        text = "" + (result.join(' ')) + "\n";
+        result = [];
+        return emit(text, stack, next);
+      };
+      next = function() {
+        var word, _ref1, _ref2;
+        if (!stack.length) {
+          return;
+        }
+        word = (_ref1 = stack[stack.length - 1]) != null ? _ref1.words.shift() : void 0;
+        if (word === void 0) {
+          stack.pop();
+        } else if (word === 'NL') {
+          return send();
         } else if (word.match(/^[A-Z][A-Z0-9]*$/)) {
-          if (depth < 10) {
-            stack.push(word);
-            if (!(depth >= 10)) {
-              recurse(word, arg, depth + 1);
-            }
-            _results.push(stack.pop());
-          } else {
-            _results.push(void 0);
+          if (stack.length < 10 && (words = (_ref2 = defn[word]) != null ? _ref2.slice(0) : void 0)) {
+            stack.push({
+              call: word,
+              words: words
+            });
           }
         } else {
-          _results.push(result.push(word));
+          result.push(word);
         }
+        if (stack.length) {
+          return next();
+        } else {
+          return send();
+        }
+      };
+      if (words.length) {
+        return next();
       }
-      return _results;
-    };
-    recurse(call, arg, 0);
-    if (result.length) {
-      return emit(stack, "" + (result.join(' ')) + "\n");
-    }
+    })([
+      {
+        call: call,
+        words: words
+      }
+    ], []);
   };
 
   report = function(defn) {
@@ -126,12 +140,23 @@
       if (arg == null) {
         arg = 0;
       }
-      return apply(defn, word, arg, function(stack, message) {
-        $item.find('p.report').text("" + word + " " + message);
+      return apply(defn, word, arg, function(message, stack, done) {
+        var call, todo, words;
+        todo = ((function() {
+          var _i, _len, _ref, _results;
+          _results = [];
+          for (_i = 0, _len = stack.length; _i < _len; _i++) {
+            _ref = stack[_i], call = _ref.call, words = _ref.words;
+            _results.push("" + call + " " + (words.join(' ')));
+          }
+          return _results;
+        })()).join('<br>');
+        $item.find('p.report').html("" + todo + "<br>" + message);
         if (socket) {
           socket.send(message);
-          return progress("" + (++sent) + " sent");
+          progress("" + (++sent) + " sent");
         }
+        return setTimeout(done, 200);
       });
     };
     progress = function(m) {
