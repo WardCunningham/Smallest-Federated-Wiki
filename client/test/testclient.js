@@ -3198,20 +3198,43 @@ require.define("/plugins/txtzyme/txtzyme.js",function(require,module,exports,__d
     return defn;
   };
 
-  apply = function(defn, call, arg, depth) {
-    var result, word, words, _i, _len;
-    if (depth == null) {
-      depth = 0;
-    }
+  apply = function(defn, call, arg, emit) {
+    var recurse, result, stack;
+    stack = [call];
     result = [];
-    if (!(words = defn[call])) {
-      return;
+    recurse = function(call, arg, depth) {
+      var word, words, _i, _len, _results;
+      if (!(words = defn[call])) {
+        return;
+      }
+      _results = [];
+      for (_i = 0, _len = words.length; _i < _len; _i++) {
+        word = words[_i];
+        if (word === 'NL') {
+          if (result.length) {
+            emit(stack, "" + (result.join(' ')) + "\n");
+          }
+          _results.push(result = []);
+        } else if (word.match(/^[A-Z][A-Z0-9]*$/)) {
+          if (depth < 10) {
+            stack.push(word);
+            if (!(depth >= 10)) {
+              recurse(word, arg, depth + 1);
+            }
+            _results.push(stack.pop());
+          } else {
+            _results.push(void 0);
+          }
+        } else {
+          _results.push(result.push(word));
+        }
+      }
+      return _results;
+    };
+    recurse(call, arg, 0);
+    if (result.length) {
+      return emit(stack, "" + (result.join(' ')) + "\n");
     }
-    for (_i = 0, _len = words.length; _i < _len; _i++) {
-      word = words[_i];
-      result.push(word === 'NL' ? "\n" : word.match(/^[A-Z][A-Z0-9]*$/) ? !(depth >= 10) ? apply(defn, word, arg, depth + 1) : void 0 : word);
-    }
-    return result.join(' ');
   };
 
   report = function(defn) {
@@ -3275,24 +3298,25 @@ require.define("/plugins/txtzyme/txtzyme.js",function(require,module,exports,__d
     $(".main").on('thumb', function(evt, thumb) {
       return trigger('THUMB');
     });
-    trigger('OPEN');
-    trigger = function(word) {
-      var message;
-      if (!(message = apply(defn, word))) {
-        return;
+    trigger = function(word, arg) {
+      if (arg == null) {
+        arg = 0;
       }
-      $item.find('p.report').text("" + word + " " + message);
-      if (socket) {
-        socket.send(message);
-        return progress("" + (++sent) + " sent");
-      }
+      return apply(defn, word, arg, function(stack, message) {
+        $item.find('p.report').text("" + word + " " + message);
+        if (socket) {
+          socket.send(message);
+          return progress("" + (++sent) + " sent");
+        }
+      });
     };
     progress = function(m) {
       wiki.log('txtzyme', m);
       return $item.find('p.caption').text(m);
     };
     socket.onopen = function() {
-      return progress("opened");
+      progress("opened");
+      return trigger('OPEN');
     };
     socket.onmessage = function(e) {
       return progress("rcvd " + e.data);
@@ -4019,21 +4043,25 @@ require.define("/plugins/txtzyme/test.coffee",function(require,module,exports,__
     return describe('applying', function() {
       var apply;
       apply = function(text, arg) {
-        var defn;
+        var defn, result;
+        result = "";
         defn = txtzyme.parse(text);
-        return txtzyme.apply(defn, 'TEST', arg);
+        txtzyme.apply(defn, 'TEST', arg, function(stack, message) {
+          return result += message;
+        });
+        return result;
       };
       it('recognizes definitions', function() {
-        return expect(apply("TEST 1o")).to.eql("1o");
+        return expect(apply("TEST 1o")).to.eql("1o\n");
       });
       it('calls definitions', function() {
-        return expect(apply("TEST FOO\nFOO 0o")).to.eql("0o");
+        return expect(apply("TEST FOO\nFOO 0o")).to.eql("0o\n");
       });
       it('merges results', function() {
-        return expect(apply("TEST 1o FOO\nFOO 0o")).to.eql("1o 0o");
+        return expect(apply("TEST 1o FOO\nFOO 0o")).to.eql("1o 0o\n");
       });
       it('limits call depth', function() {
-        return expect(apply("TEST o TEST")).to.eql("o o o o o o o o o o o ");
+        return expect(apply("TEST o TEST")).to.eql("o o o o o o o o o o o\n");
       });
       it('handles empty definitions', function() {
         return expect(apply("TEST")).to.eql("");
@@ -4042,7 +4070,7 @@ require.define("/plugins/txtzyme/test.coffee",function(require,module,exports,__
         return expect(apply("TEST FOO")).to.eql("");
       });
       return it('recognizes NL as newline', function() {
-        return expect(apply("TEST 100m NL 200m")).to.eql("100m \n 200m");
+        return expect(apply("TEST 100m NL 200m")).to.eql("100m\n200m\n");
       });
     });
   });
