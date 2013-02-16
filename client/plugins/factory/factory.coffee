@@ -43,7 +43,6 @@ window.plugins.factory =
           plugin.bind div, item
       catch err
         div.append "<p class='error'>#{err}</p>"
-      console.log item.userdata
       wiki.pageHandler.put pageElement, {type: 'edit', id: item.id, item: item}
 
     div.dblclick ->
@@ -56,11 +55,10 @@ window.plugins.factory =
     div.bind "drop", (dropEvent) ->
 
       punt = (data) ->
+        item.prompt = "<b>Unexpected Item</b><br>We can't make sense of the drop.<br>#{JSON.stringify data}<br>Try something else or see [[About Factory Plugin]]."
+        data.userAgent = navigator.userAgent
+        item.punt = data
         wiki.log 'factory punt', dropEvent
-        item.type = 'paragraph'
-        item.text = "Trouble: We detected the drop but cannot yet make sense of the information provided by your browser and operating system. Try something different. If you know that your drop should have worked and you want to file a bug report you can do so on [https://github.com/WardCunningham/Smallest-Federated-Wiki/issues github]. Please Provide the json data for this paragraph, (click JSON on the bottom of this page)"
-        item.userdata = browser.meta()
-        item.data = data
         syncEditAction()
 
       readFile = (file) ->
