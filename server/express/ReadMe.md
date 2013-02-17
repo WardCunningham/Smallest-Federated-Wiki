@@ -46,6 +46,10 @@ you want to the call.  A typical usage would be:
 
 And then proxy all hosts that you want pointed at a SFW to port 8080.
 
+You can also specify an optional config file with --config="path/to/conf.json",
+specify environment variables with the "wiki\_" prefix, or put options in a
+config.json file.
+
 
 ## Goals ##
 The main goal of the express port of Smallest Federated Wiki is to create a

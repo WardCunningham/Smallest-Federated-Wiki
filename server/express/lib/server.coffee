@@ -301,9 +301,6 @@ module.exports = exports = (argv) ->
   # Routes have mostly been kept together by http verb, with the exception
   # of the openID related routes which are at the end together.
 
-  app.get '/style.css', (req, res) ->
-    res.sendfile("#{argv.r}/server/express/views/style.css")
-
   # Main route for initial contact.  Allows us to
   # link into a specific set of pages, local and remote.
   # Can also be handled by the client, but it also sets up
@@ -330,23 +327,19 @@ module.exports = exports = (argv) ->
       info.pages.push(pageDiv)
     res.render('static.html', info)
 
-  app.get ////plugins/(factory/)?factory.js///, (req, res) ->
-    cb = (e, catalog) ->
-      if e then return res.e e
-      res.write('window.catalog = ' + JSON.stringify(catalog) + ';')
-      fs.createReadStream(argv.c + '/plugins/meta-factory.js').pipe(res)
-
-    glob argv.c + '/**/factory.json', (e, files) ->
-      if e then return cb(e)
+  app.get ///system/factories.json///, (req, res) ->
+    res.status(200)
+    res.header('Content-Type', 'application/json')
+    glob path.join(argv.c, '**', 'factory.json'), (e, files) ->
+      if e then return res.e(e)
       files = files.map (file) ->
-        return fs.createReadStream(file).on('error', res.e).pipe(
-          JSONStream.parse([false]).on 'root', (el) ->
-            @.emit 'data', el
-        )
+        return fs.createReadStream(file).on('error', res.e).pipe(JSONStream.parse())
 
       es.concat.apply(null, files)
         .on('error', res.e)
-        .pipe(es.writeArray(cb))
+        .pipe(JSONStream.stringify())
+        .pipe(res)
+
 
   ###### Json Routes ######
   # Handle fetching local and remote json pages.
