@@ -23,6 +23,7 @@
     })());
     fn = '/dev/cu.usbmodem12341';
     fs.open(fn, 'r+', function(err, fd) {
+      var copybuf, read, readbuf;
       if (err) {
         console.log('txtzyme open error: ', err);
       }
@@ -30,7 +31,32 @@
         fd: fd,
         fn: fn
       };
-      return console.log(tz);
+      console.log(tz);
+      readbuf = new Buffer(128);
+      copybuf = new Buffer(128);
+      read = function(remains) {
+        return fs.read(tz.fd, readbuf, remains, readbuf.length - remains, null, function(err, bytesRead, buffer) {
+          var have, i, tail, take, _i, _ref;
+          if (err) {
+            console.log('txtzyme read err ', err);
+          }
+          have = bytesRead + remains;
+          for (i = _i = _ref = have - 1; _ref <= 0 ? _i <= 0 : _i >= 0; i = _ref <= 0 ? ++_i : --_i) {
+            if (buffer[i] === 10) {
+              take = buffer.toString('ascii', 0, (tail = i + 1));
+              console.log(take);
+              remains = have - tail;
+              if (remains) {
+                buffer.copy(copybuf, 0, tail, have);
+                copybuf.copy(readbuf, 0, 0, remains);
+              }
+              return read(remains);
+            }
+          }
+          return read(have);
+        });
+      };
+      return read(0);
     });
     server = new WebSocketServer({
       server: params.server,

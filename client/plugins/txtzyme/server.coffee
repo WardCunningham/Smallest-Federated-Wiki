@@ -39,6 +39,24 @@ startServer = (params) ->
 		tz = {fd, fn}
 		console.log tz
 
+		readbuf = new Buffer 128
+		copybuf = new Buffer 128
+		read = (remains) ->
+			fs.read tz.fd, readbuf, remains, readbuf.length-remains, null, (err, bytesRead, buffer) ->
+				console.log 'txtzyme read err ', err if err
+				have = bytesRead + remains
+				for i in [have-1..0]
+					if buffer[i] is 10
+						take = buffer.toString 'ascii', 0, (tail = i+1)
+						console.log take
+						remains = have - tail
+						if remains
+							buffer.copy copybuf, 0, tail, have
+							copybuf.copy readbuf, 0, 0, remains
+						return read remains
+				read have
+		read 0
+
 
 	server = new WebSocketServer({server: params.server, path: '/plugin/txtzyme'})
 
