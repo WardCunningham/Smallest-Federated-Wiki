@@ -1758,7 +1758,7 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
     return "<h1 title=\"" + tooltip + "\"><a href=\"" + header_href + "\"><img src=\"" + favicon_src + "\" height=\"32px\" class=\"favicon\"></a> " + title + "</h1>";
   };
 
-  emitHeader = function($page, page) {
+  emitHeader = function($header, $page, page) {
     var date, header, isRemotePage, pageHeader, rev, site, viewHere;
     site = $page.data('site');
     isRemotePage = (site != null) && site !== 'local' && site !== 'origin' && site !== 'view';
@@ -1775,7 +1775,7 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
       favicon_src: "/favicon.png",
       title: page.title
     });
-    $page.append(pageHeader);
+    $header.append(pageHeader);
     if (!isRemotePage) {
       $('img.favicon', $page).error(function(e) {
         return plugin.get('favicon', function(favicon) {
@@ -1852,7 +1852,7 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
   };
 
   renderPageIntoPageElement = function(pageData, $page, siteFound) {
-    var $footer, $journal, $story, $twins, action, addContext, context, emitItem, page, site, slug, _i, _j, _len, _len1, _ref, _ref1, _ref2;
+    var $footer, $header, $journal, $story, $twins, action, addContext, context, emitItem, page, site, slug, _i, _j, _len, _len1, _ref, _ref1, _ref2;
     page = $.extend(util.emptyPage(), pageData);
     $page.data("data", page);
     slug = $page.attr('id');
@@ -1872,10 +1872,10 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
       addContext(action.site);
     }
     wiki.resolutionContext = context;
-    emitHeader($page, page);
-    _ref1 = ['twins', 'story', 'journal', 'footer'].map(function(className) {
+    _ref1 = ['twins', 'header', 'story', 'journal', 'footer'].map(function(className) {
       return $("<div />").addClass(className).appendTo($page);
-    }), $twins = _ref1[0], $story = _ref1[1], $journal = _ref1[2], $footer = _ref1[3];
+    }), $twins = _ref1[0], $header = _ref1[1], $story = _ref1[2], $journal = _ref1[3], $footer = _ref1[4];
+    emitHeader($header, $page, page);
     emitItem = function(i) {
       var $item, item;
       if (i >= page.story.length) {

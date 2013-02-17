@@ -84,6 +84,18 @@ header {
 footer {
   bottom: 0; }
 
+.twins,
+.journal,
+.footer {
+  min-height: 1em;
+  opacity: 1;
+}
+.twins:hover,
+.journal:hover,
+.footer:hover {
+  opacity: 1;
+}
+
 .story {
   padding-bottom: 5px; }
 
