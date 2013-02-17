@@ -1534,7 +1534,7 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
     return "<h1 title=\"" + tooltip + "\"><a href=\"" + header_href + "\"><img src=\"" + favicon_src + "\" height=\"32px\" class=\"favicon\"></a> " + title + "</h1>";
   };
 
-  emitHeader = function($page, page) {
+  emitHeader = function($header, $page, page) {
     var date, header, isRemotePage, pageHeader, rev, site, viewHere;
     site = $page.data('site');
     isRemotePage = (site != null) && site !== 'local' && site !== 'origin' && site !== 'view';
@@ -1551,7 +1551,7 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
       favicon_src: "/favicon.png",
       title: page.title
     });
-    $page.append(pageHeader);
+    $header.append(pageHeader);
     if (!isRemotePage) {
       $('img.favicon', $page).error(function(e) {
         return plugin.get('favicon', function(favicon) {
@@ -1628,7 +1628,7 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
   };
 
   renderPageIntoPageElement = function(pageData, $page, siteFound) {
-    var $footer, $journal, $story, $twins, action, addContext, context, emitItem, page, site, slug, _i, _j, _len, _len1, _ref, _ref1, _ref2;
+    var $footer, $header, $journal, $story, $twins, action, addContext, context, emitItem, page, site, slug, _i, _j, _len, _len1, _ref, _ref1, _ref2;
     page = $.extend(util.emptyPage(), pageData);
     $page.data("data", page);
     slug = $page.attr('id');
@@ -1648,10 +1648,10 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
       addContext(action.site);
     }
     wiki.resolutionContext = context;
-    emitHeader($page, page);
-    _ref1 = ['twins', 'story', 'journal', 'footer'].map(function(className) {
+    _ref1 = ['twins', 'header', 'story', 'journal', 'footer'].map(function(className) {
       return $("<div />").addClass(className).appendTo($page);
-    }), $twins = _ref1[0], $story = _ref1[1], $journal = _ref1[2], $footer = _ref1[3];
+    }), $twins = _ref1[0], $header = _ref1[1], $story = _ref1[2], $journal = _ref1[3], $footer = _ref1[4];
+    emitHeader($header, $page, page);
     emitItem = function(i) {
       var $item, item;
       if (i >= page.story.length) {
@@ -2726,7 +2726,7 @@ require.define("/plugins/changes/changes.js",function(require,module,exports,__d
   var constructor, listItemHtml, pageBundle;
 
   listItemHtml = function(slug, page) {
-    return "<li>\n  <a class=\"internal\" href=\"#\" title=\"local\" data-page-name=\"" + slug + "\" data-site=\"local\">\n    " + page.title + "\n  </a> \n  <button class=\"delete\">✕</button>\n</li>";
+    return "<li><a class=\"internal\" href=\"#\" title=\"local\" data-page-name=\"" + slug + "\" data-site=\"local\">" + page.title + "</a> <button class=\"delete\">✕</button></li>";
   };
 
   pageBundle = function() {
@@ -3277,13 +3277,15 @@ require.define("/plugins/txtzyme/txtzyme.js",function(require,module,exports,__d
   };
 
   bind = function($item, item) {
-    var $page, defn, host, progress, rcvd, sent, socket, tic, timer, trigger;
+    var $page, defn, host, progress, rcvd, rrept, sent, socket, srept, tic, timer, trigger;
     defn = parse(item.text);
     wiki.log(defn);
     $page = $item.parents('.page:first');
     host = $page.data('site') || location.host;
     socket = new WebSocket("ws://" + host + "/plugin/txtzyme");
     sent = rcvd = 0;
+    srept = rrept = "";
+    report = [];
     tic = function() {
       var now;
       now = new Date();
@@ -3312,6 +3314,9 @@ require.define("/plugins/txtzyme/txtzyme.js",function(require,module,exports,__d
     $(".main").on('thumb', function(evt, thumb) {
       return trigger('THUMB');
     });
+    $item.delegate('.rcvd', 'click', function() {
+      return wiki.dialog("Txtzyme Responses", "<pre>" + (report.join("\n")));
+    });
     trigger = function(word, arg) {
       if (arg == null) {
         arg = 0;
@@ -3330,21 +3335,33 @@ require.define("/plugins/txtzyme/txtzyme.js",function(require,module,exports,__d
         $item.find('p.report').html("" + todo + "<br>" + message);
         if (socket) {
           socket.send(message);
-          progress("" + (++sent) + " sent");
+          progress((srept = " " + (++sent) + " sent ") + rrept);
+          report = [];
         }
         return setTimeout(done, 200);
       });
     };
     progress = function(m) {
-      wiki.log('txtzyme', m);
-      return $item.find('p.caption').text(m);
+      return $item.find('p.caption').html(m);
     };
     socket.onopen = function() {
       progress("opened");
       return trigger('OPEN');
     };
     socket.onmessage = function(e) {
-      return progress("rcvd " + e.data);
+      var line, _i, _len, _ref, _results;
+      _ref = e.data.split(/\r?\n/);
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        line = _ref[_i];
+        if (line) {
+          progress(srept + (rrept = "<span class=rcvd> " + (++rcvd) + " rcvd " + line + " </span>"));
+          _results.push(report.push(line));
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
     };
     return socket.onclose = function() {
       progress("closed");

@@ -1,0 +1,207 @@
+{
+  "title": "More About Txtzyme",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "8f52f61981d9b579",
+      "text": "The Txtzyme language consists of single character commands strung together on a line. The interpreter reads one line and then performs all of the commands before reading another."
+    },
+    {
+      "type": "paragraph",
+      "id": "de693b2f68169899",
+      "text": "We can ask Txtzyme what commands are available on the particular version connected to any particular wiki server."
+    },
+    {
+      "type": "txtzyme",
+      "id": "bafdb5e64d92b391",
+      "text": "OPEN _What Commands are Available?_ h"
+    },
+    {
+      "type": "paragraph",
+      "id": "c9742561ccc55dd5",
+      "text": "Click <b>rcvd</b> to see the full report."
+    },
+    {
+      "type": "paragraph",
+      "id": "a6c9aa4565e71acd",
+      "text": "<h3> What Commands are Available?"
+    },
+    {
+      "type": "code",
+      "id": "18ece7374856e69d",
+      "text": "0-9\tenter number\np\tprint number\na-f\tselect pin\ni\tinput\no\toutput\nm\tmsec delay\nu\tusec delay\n{}\trepeat\nk\tloop count\n_ _\tprint words\ns\tanalog sample\nv\tprint version\nh\tprint help\nt\tpulse width"
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "item": {
+        "title": "More About Txtzyme"
+      },
+      "date": 1361088182668
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "8f52f61981d9b579"
+      },
+      "id": "8f52f61981d9b579",
+      "type": "add",
+      "date": 1361088199470
+    },
+    {
+      "type": "edit",
+      "id": "8f52f61981d9b579",
+      "item": {
+        "type": "paragraph",
+        "id": "8f52f61981d9b579",
+        "text": "The Txtzyme language consists of single character commands strung together on a line. The interpreter reads one line and then performs all of the commands before reading another. "
+      },
+      "date": 1361088347616
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN _What Version of Microcontroller?_ v"
+      },
+      "after": "8f52f61981d9b579",
+      "id": "bafdb5e64d92b391",
+      "date": 1361088366419
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN _What Commands are Available?_ h"
+      },
+      "date": 1361088414205
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "18ece7374856e69d"
+      },
+      "id": "18ece7374856e69d",
+      "type": "add",
+      "after": "bafdb5e64d92b391",
+      "date": 1361092714506
+    },
+    {
+      "type": "edit",
+      "id": "18ece7374856e69d",
+      "item": {
+        "type": "code",
+        "id": "18ece7374856e69d",
+        "text": "What Commands are Available?\nTxtzyme [+bigbuf]\n0-9\tenter number\np\tprint number\na-f\tselect pin\ni\tinput\no\toutput\nm\tmsec delay\nu\tusec delay\n{}\trepeat\nk\tloop count\n__\tprint words\ns\tanalog sample\nv\tprint version\nh\tprint help\nt\tpulse width"
+      },
+      "date": 1361092746335
+    },
+    {
+      "type": "edit",
+      "id": "18ece7374856e69d",
+      "item": {
+        "type": "code",
+        "id": "18ece7374856e69d",
+        "text": "What Commands are Available?\nTxtzyme [+bigbuf]\n0-9\tenter number\np\tprint number\na-f\tselect pin\ni\tinput\no\toutput\nm\tmsec delay\nu\tusec delay\n{}\trepeat\nk\tloop count\n_ _\tprint words\ns\tanalog sample\nv\tprint version\nh\tprint help\nt\tpulse width"
+      },
+      "date": 1361092764978
+    },
+    {
+      "type": "edit",
+      "id": "18ece7374856e69d",
+      "item": {
+        "type": "code",
+        "id": "18ece7374856e69d",
+        "text": "0-9\tenter number\np\tprint number\na-f\tselect pin\ni\tinput\no\toutput\nm\tmsec delay\nu\tusec delay\n{}\trepeat\nk\tloop count\n_ _\tprint words\ns\tanalog sample\nv\tprint version\nh\tprint help\nt\tpulse width"
+      },
+      "date": 1361092776126
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "c9742561ccc55dd5"
+      },
+      "id": "c9742561ccc55dd5",
+      "type": "add",
+      "after": "18ece7374856e69d",
+      "date": 1361092778975
+    },
+    {
+      "type": "edit",
+      "id": "c9742561ccc55dd5",
+      "item": {
+        "type": "paragraph",
+        "id": "c9742561ccc55dd5",
+        "text": "<h3> What Commands are Available?"
+      },
+      "date": 1361092798220
+    },
+    {
+      "type": "move",
+      "order": [
+        "8f52f61981d9b579",
+        "bafdb5e64d92b391",
+        "c9742561ccc55dd5",
+        "18ece7374856e69d"
+      ],
+      "id": "c9742561ccc55dd5",
+      "date": 1361092802524
+    },
+    {
+      "type": "edit",
+      "id": "8f52f61981d9b579",
+      "item": {
+        "type": "paragraph",
+        "id": "8f52f61981d9b579",
+        "text": "The Txtzyme language consists of single character commands strung together on a line. The interpreter reads one line and then performs all of the commands before reading another."
+      },
+      "date": 1361092815588
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "de693b2f68169899",
+        "text": ""
+      },
+      "id": "de693b2f68169899",
+      "type": "add",
+      "after": "8f52f61981d9b579",
+      "date": 1361092816096
+    },
+    {
+      "type": "edit",
+      "id": "de693b2f68169899",
+      "item": {
+        "type": "paragraph",
+        "id": "de693b2f68169899",
+        "text": "We can ask Txtzyme what commands are available on the particular version connected to any particular wiki server."
+      },
+      "date": 1361092877011
+    },
+    {
+      "type": "edit",
+      "id": "c9742561ccc55dd5",
+      "item": {
+        "type": "paragraph",
+        "id": "c9742561ccc55dd5",
+        "text": "Click <b>rcvd</b> to see the full report."
+      },
+      "date": 1361092903429
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "a6c9aa4565e71acd",
+        "text": "<h3> What Commands are Available?"
+      },
+      "id": "a6c9aa4565e71acd",
+      "type": "add",
+      "after": "c9742561ccc55dd5",
+      "date": 1361092903935
+    }
+  ]
+}

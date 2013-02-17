@@ -68,7 +68,7 @@ createFactory = ($page) ->
 buildPageHeader = ({title,tooltip,header_href,favicon_src})->
   """<h1 title="#{tooltip}"><a href="#{header_href}"><img src="#{favicon_src}" height="32px" class="favicon"></a> #{title}</h1>"""
 
-emitHeader = ($page, page) ->
+emitHeader = ($header, $page, page) ->
   site = $page.data('site')
   isRemotePage = site? and site != 'local' and site != 'origin' and site != 'view'
   header = ''
@@ -88,7 +88,7 @@ emitHeader = ($page, page) ->
       favicon_src: "/favicon.png"
       title: page.title
 
-  $page.append( pageHeader )
+  $header.append( pageHeader )
   
   unless isRemotePage
     $('img.favicon',$page).error (e)->
@@ -153,10 +153,10 @@ renderPageIntoPageElement = (pageData,$page, siteFound) ->
 
   wiki.resolutionContext = context
 
-  emitHeader $page, page
-
-  [$twins, $story, $journal, $footer] = ['twins', 'story', 'journal', 'footer'].map (className) ->
+  [$twins, $header, $story, $journal, $footer] = ['twins', 'header', 'story', 'journal', 'footer'].map (className) ->
     $("<div />").addClass(className).appendTo($page)
+
+  emitHeader $header, $page, page
 
   emitItem = (i) ->
     return if i >= page.story.length

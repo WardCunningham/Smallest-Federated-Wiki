@@ -101,13 +101,15 @@
   };
 
   bind = function($item, item) {
-    var $page, defn, host, progress, rcvd, sent, socket, tic, timer, trigger;
+    var $page, defn, host, progress, rcvd, rrept, sent, socket, srept, tic, timer, trigger;
     defn = parse(item.text);
     wiki.log(defn);
     $page = $item.parents('.page:first');
     host = $page.data('site') || location.host;
     socket = new WebSocket("ws://" + host + "/plugin/txtzyme");
     sent = rcvd = 0;
+    srept = rrept = "";
+    report = [];
     tic = function() {
       var now;
       now = new Date();
@@ -136,6 +138,9 @@
     $(".main").on('thumb', function(evt, thumb) {
       return trigger('THUMB');
     });
+    $item.delegate('.rcvd', 'click', function() {
+      return wiki.dialog("Txtzyme Responses", "<pre>" + (report.join("\n")));
+    });
     trigger = function(word, arg) {
       if (arg == null) {
         arg = 0;
@@ -154,21 +159,33 @@
         $item.find('p.report').html("" + todo + "<br>" + message);
         if (socket) {
           socket.send(message);
-          progress("" + (++sent) + " sent");
+          progress((srept = " " + (++sent) + " sent ") + rrept);
+          report = [];
         }
         return setTimeout(done, 200);
       });
     };
     progress = function(m) {
-      wiki.log('txtzyme', m);
-      return $item.find('p.caption').text(m);
+      return $item.find('p.caption').html(m);
     };
     socket.onopen = function() {
       progress("opened");
       return trigger('OPEN');
     };
     socket.onmessage = function(e) {
-      return progress("rcvd " + e.data);
+      var line, _i, _len, _ref, _results;
+      _ref = e.data.split(/\r?\n/);
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        line = _ref[_i];
+        if (line) {
+          progress(srept + (rrept = "<span class=rcvd> " + (++rcvd) + " rcvd " + line + " </span>"));
+          _results.push(report.push(line));
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
     };
     return socket.onclose = function() {
       progress("closed");

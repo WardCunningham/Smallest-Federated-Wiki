@@ -60,6 +60,8 @@ bind = ($item, item) ->
   host = $page.data('site') or location.host
   socket = new WebSocket("ws://#{host}/plugin/txtzyme")
   sent = rcvd = 0
+  srept = rrept = ""
+  report = []
 
   tic = ->
     now = new Date()
@@ -78,25 +80,32 @@ bind = ($item, item) ->
   $(".main").on 'thumb', (evt, thumb) ->
     trigger 'THUMB'
 
+  $item.delegate '.rcvd', 'click', ->
+    wiki.dialog "Txtzyme Responses", """<pre>#{report.join "\n"}"""
+
   trigger = (word, arg=0) ->
     apply defn, word, arg, (message, stack, done) ->
       todo = ("#{call} #{words.join ' '}" for {call, words} in stack).join '<br>'
       $item.find('p.report').html "#{todo}<br>#{message}"
       if socket
         socket.send message
-        progress "#{++sent} sent"
+        progress (srept = " #{++sent} sent ") + rrept
+        report = []
       setTimeout done, 200
 
   progress = (m) ->
-    wiki.log 'txtzyme', m
-    $item.find('p.caption').text m
+    # wiki.log 'txtzyme', m
+    $item.find('p.caption').html m
 
   socket.onopen = ->
     progress "opened"
     trigger 'OPEN'
 
   socket.onmessage = (e) ->
-    progress "rcvd #{e.data}"
+    for line in e.data.split /\r?\n/
+      if line
+        progress srept + (rrept = "<span class=rcvd> #{++rcvd} rcvd #{line} </span>")
+        report.push line
 
   socket.onclose = ->
     progress "closed"
