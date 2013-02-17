@@ -1,0 +1,300 @@
+{
+  "title": "Txtzyme Morse Code",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "85bcf17d9f2fc8d4",
+      "text": "There are a few signals that morse code operators send over and over. One is the open call CQ followed by the operators on call sign."
+    },
+    {
+      "type": "paragraph",
+      "id": "b738269fc0cfa1cc",
+      "text": "We'll generate an audio version of a CQ and trigger it once every minute. This makes a good test for our Txtzyme plugin and its low-latency communication with the server."
+    },
+    {
+      "type": "txtzyme",
+      "id": "bafdb5e64d92b391",
+      "text": "OPEN TX CALL RX\nMINUTEX TX IDENT RX\n\nCALL CQ CQ CQ DE K9OX K9OX K9OX K\nIDENT DE K9OX\n\nK9OX K N9 O X WORD\nCQ C Q WORD\nDE D E WORD\n\nC DAH DIT DAH DIT  _c_ CHAR\nQ DAH DAH DIT DAH _q_ CHAR\nD DAH DIT DIT _d_ CHAR\nE DIT _e_ CHAR\nK DAH DIT DAH _k_ CHAR\nN9 DAH DAH DAH DAH DIT _9_ CHAR\nO DAH DAH DAH _o_ CHAR\nX DAH DIT DIT DAH _x_ CHAR\n\nDIT SPKR 50 TONE\nDAH SPKR 150 TONE\nTONE  {1o500u0o500u} 50m NL\n\nWORD 300m\nCHAR 150m\n\nTX 6d 1o 500m\nRX 6d 0o 500m\n\nSPKR 4d\n"
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "item": {
+        "title": "Txtzyme Morse Code"
+      },
+      "date": 1360698892772
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "85bcf17d9f2fc8d4"
+      },
+      "id": "85bcf17d9f2fc8d4",
+      "type": "add",
+      "date": 1360698900823
+    },
+    {
+      "type": "edit",
+      "id": "85bcf17d9f2fc8d4",
+      "item": {
+        "type": "paragraph",
+        "id": "85bcf17d9f2fc8d4",
+        "text": "There are a few signals that morse code operators send over and over. One is the open call CQ followed by the operators on call sign."
+      },
+      "date": 1360699058403
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "b738269fc0cfa1cc",
+        "text": ""
+      },
+      "id": "b738269fc0cfa1cc",
+      "type": "add",
+      "after": "85bcf17d9f2fc8d4",
+      "date": 1360699058909
+    },
+    {
+      "type": "edit",
+      "id": "b738269fc0cfa1cc",
+      "item": {
+        "type": "paragraph",
+        "id": "b738269fc0cfa1cc",
+        "text": "We'll generate an audio version of a CQ and trigger it once every minute. This makes a good test for our Txtzyme plugin and its low-latency communication with the server."
+      },
+      "date": 1360699208600
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "MINUTE  5d1o CALL 5d0o\nCALL CQ CQ CQ DE K9OX K9OX K9OX K\nK9OX K N9 O X WORD\nCQ C Q WORD\nDE D E WORD\nC _c_ DAH DIT DAH DIT CHAR\nQ _q_ DAH DAH DIT DAH CHAR\nD _d_ DAH DIT DIT CHAR\nE _e_ DIT CHAR\nK _k_ DAH DIT DAH CHAR\nN9 _9_ DAH DAH DAH DAH DIT CHAR\nO _o_ DAH DAH DAH CHAR\nX _x_ DAH DIT DIT DAH CHAR\nDIT 6d 50 TONE\nDAH 6d 150 TONE\nTONE  {1o500u0o500u} 50m NL\nWORD 300m\nCHAR 150m"
+      },
+      "after": "b738269fc0cfa1cc",
+      "id": "bafdb5e64d92b391",
+      "date": 1360699231534
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "MINUTE  5d1o CALL 5d0o\nCALL CQ CQ CQ DE K9OX K9OX K9OX K\nK9OX K N9 O X WORD\nCQ C Q WORD\nDE D E WORD\n\nC _c_ DAH DIT DAH DIT CHAR\nQ _q_ DAH DAH DIT DAH CHAR\nD _d_ DAH DIT DIT CHAR\nE _e_ DIT CHAR\nK _k_ DAH DIT DAH CHAR\nN9 _9_ DAH DAH DAH DAH DIT CHAR\nO _o_ DAH DAH DAH CHAR\nX _x_ DAH DIT DIT DAH CHAR\n\nDIT 6d 50 TONE\nDAH 6d 150 TONE\nTONE  {1o500u0o500u} 50m NL\nWORD 300m\nCHAR 150m"
+      },
+      "date": 1360724933458
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "MINUTE  5d1o 500m CALL 5d0o\nCALL CQ CQ CQ DE K9OX K9OX K9OX K\nK9OX K N9 O X WORD\nCQ C Q WORD\nDE D E WORD\n\nC _c_ DAH DIT DAH DIT CHAR\nQ _q_ DAH DAH DIT DAH CHAR\nD _d_ DAH DIT DIT CHAR\nE _e_ DIT CHAR\nK _k_ DAH DIT DAH CHAR\nN9 _9_ DAH DAH DAH DAH DIT CHAR\nO _o_ DAH DAH DAH CHAR\nX _x_ DAH DIT DIT DAH CHAR\n\nDIT 6d 50 TONE\nDAH 6d 150 TONE\nTONE  {1o500u0o500u} 50m NL\nWORD 300m\nCHAR 150m"
+      },
+      "date": 1360894071644
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN  5d1o 500m CALL 5d0o\nCALL CQ CQ CQ DE K9OX K9OX K9OX K\nK9OX K N9 O X WORD\nCQ C Q WORD\nDE D E WORD\n\nC _c_ DAH DIT DAH DIT CHAR\nQ _q_ DAH DAH DIT DAH CHAR\nD _d_ DAH DIT DIT CHAR\nE _e_ DIT CHAR\nK _k_ DAH DIT DAH CHAR\nN9 _9_ DAH DAH DAH DAH DIT CHAR\nO _o_ DAH DAH DAH CHAR\nX _x_ DAH DIT DIT DAH CHAR\n\nDIT 6d 50 TONE\nDAH 6d 150 TONE\nTONE  {1o500u0o500u} 50m NL\nWORD 300m\nCHAR 150m"
+      },
+      "date": 1360912468951
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN  5d1o 500m CALL 5d0o\nCALL CQ CQ CQ DE K9OX K9OX K9OX K\nK9OX K N9 O X WORD\nCQ C Q WORD\nDE D E WORD\n\nC _c_ DAH DIT DAH DIT CHAR\nQ _q_ DAH DAH DIT DAH CHAR\nD _d_ DAH DIT DIT CHAR\nE _e_ DIT CHAR\nK _k_ DAH DIT DAH CHAR\nN9 _9_ DAH DAH DAH DAH DIT CHAR\nO _o_ DAH DAH DAH CHAR\nX _x_ DAH DIT DIT DAH CHAR\n\nDIT PIN 50 TONE\nDAH PIN 150 TONE\nTONE  {1o500u0o500u} 50m NL\nPIN 4d\nWORD 300m\nCHAR 150m"
+      },
+      "date": 1360960325062
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN  5d1o 500m CALL 5d0o\nCALL CQ CQ CQ DE K9OX K9OX K9OX K\nK9OX K N9 O X WORD\nCQ C Q WORD\nDE D E WORD\n\nC _c_ DAH DIT DAH DIT CHAR\nQ _q_ DAH DAH DIT DAH CHAR\nD _d_ DAH DIT DIT CHAR\nE _e_ DIT CHAR\nK _k_ DAH DIT DAH CHAR\nN9 _9_ DAH DAH DAH DAH DIT CHAR\nO _o_ DAH DAH DAH CHAR\nX _x_ DAH DIT DIT DAH CHAR\n\nDIT PIN 50 TONE\nDAH PIN 150 TONE\nTONE  {1o500u0o500u} 50m\nPIN 4d\nWORD 300m NL\nCHAR 150m"
+      },
+      "date": 1360960404441
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN  5d1o 500m CALL 5d0o\nCALL CQ CQ CQ DE K9OX K9OX K9OX K\nK9OX K N9 O X WORD\nCQ C Q WORD\nDE D E WORD\n\nC _c_ DAH DIT DAH DIT CHAR\nQ _q_ DAH DAH DIT DAH CHAR\nD _d_ DAH DIT DIT CHAR\nE _e_ DIT CHAR\nK _k_ DAH DIT DAH CHAR\nN9 _9_ DAH DAH DAH DAH DIT CHAR\nO _o_ DAH DAH DAH CHAR\nX _x_ DAH DIT DIT DAH CHAR\n\nDIT PIN 50 TONE\nDAH PIN 150 TONE\nTONE  {1o500u0o500u} 50m NL\nPIN 4d\nWORD 300m\nCHAR 150m"
+      },
+      "date": 1360960499407
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN  5d1o 500m CALL 5d0o\nCALL CQ CQ CQ DE K9OX K9OX K9OX K\nK9OX K N9 O X WORD\nCQ C Q WORD\nDE D E WORD\n\nC _c_ DAH DIT DAH DIT CHAR\nQ _q_ DAH DAH DIT DAH CHAR\nD _d_ DAH DIT DIT CHAR\nE _e_ DIT CHAR\nK _k_ DAH DIT DAH CHAR\nN9 _9_ DAH DAH DAH DAH DIT CHAR\nO _o_ DAH DAH DAH CHAR\nX _x_ DAH DIT DIT DAH CHAR\n\nDIT PIN 50 TONE\nDAH PIN 150 TONE\nTONE  {1o500u0o500u} 50m NL\nPIN 6d\nWORD 300m\nCHAR 150m"
+      },
+      "date": 1360960586332
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN  5d1o 500m CALL 5d0o\nCALL CQ CQ CQ DE K9OX K9OX K9OX K\nK9OX K N9 O X WORD\nCQ C Q WORD\nDE D E WORD\n\nC _c_ DAH DIT DAH DIT CHAR\nQ _q_ DAH DAH DIT DAH CHAR\nD _d_ DAH DIT DIT CHAR\nE _e_ DIT CHAR\nK _k_ DAH DIT DAH CHAR\nN9 _9_ DAH DAH DAH DAH DIT CHAR\nO _o_ DAH DAH DAH CHAR\nX _x_ DAH DIT DIT DAH CHAR\n\nDIT PIN 50 TONE\nDAH PIN 150 TONE\nTONE  {1o500u0o500u} 50m NL\nPIN 4d\nWORD 300m\nCHAR 150m"
+      },
+      "date": 1360960696521
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN  5d1o 500m CALL 5d0o\nCALL CQ CQ CQ DE K9OX K9OX K9OX K\nK9OX K N9 O X WORD\nCQ C Q WORD\nDE D E WORD\n\nC _c_ DAH DIT DAH DIT CHAR\nQ _q_ DAH DAH DIT DAH CHAR\nD _d_ DAH DIT DIT CHAR\nE _e_ DIT CHAR\nK _k_ DAH DIT DAH CHAR\nN9 _9_ DAH DAH DAH DAH DIT CHAR\nO _o_ DAH DAH DAH CHAR\nX _x_ DAH DIT DIT DAH CHAR\n\nDIT PIN 50 TONE\nDAH PIN 150 TONE\nTONE  {1o500u0o500u} 50m NL\nPIN 6d\nWORD 300m\nCHAR 150m"
+      },
+      "date": 1360971127204
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN  5d1o 500m CALL 5d0o\nCALL CQ CQ CQ DE K9OX K9OX K9OX K\nK9OX K N9 O X WORD\nCQ C Q WORD\nDE D E WORD\n\nC _c_ DAH DIT DAH DIT CHAR\nQ _q_ DAH DAH DIT DAH CHAR\nD _d_ DAH DIT DIT CHAR\nE _e_ DIT CHAR\nK _k_ DAH DIT DAH CHAR\nN9 _9_ DAH DAH DAH DAH DIT CHAR\nO _o_ DAH DAH DAH CHAR\nX _x_ DAH DIT DIT DAH CHAR\n\nDIT PIN 50 TONE\nDAH PIN 150 TONE\nTONE  {1o500u0o500u} 50m NL\nPIN 4d\nWORD 300m\nCHAR 150m"
+      },
+      "date": 1361076947564
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN  5d1o 500m CALL 5d0o\nCALL CQ CQ CQ DE K9OX K9OX K9OX K\nK9OX K N9 O X WORD\nCQ C Q WORD\nDE D E WORD\n\nC _c_ DAH DIT DAH DIT CHAR\nQ _q_ DAH DAH DIT DAH CHAR\nD _d_ DAH DIT DIT CHAR\nE _e_ DIT CHAR\nK _k_ DAH DIT DAH CHAR\nN9 _9_ DAH DAH DAH DAH DIT CHAR\nO _o_ DAH DAH DAH CHAR\nX _x_ DAH DIT DIT DAH CHAR\n\nDIT PIN 50 TONE\nDAH PIN 150 TONE\nTONE  {1o500u0o500u} 50m NL\nPIN 4d\nWORD _ _300m\nCHAR 150m"
+      },
+      "date": 1361076989566
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN  5d1o 500m CALL 5d0o\nCALL CQ CQ CQ DE K9OX K9OX K9OX K\nK9OX K N9 O X WORD\nCQ C Q WORD\nDE D E WORD\n\nC DAH DIT DAH DIT  _c_ CHAR\nQ DAH DAH DIT DAH _q_ CHAR\nD DAH DIT DIT _d_ CHAR\nE DIT _e_ CHAR\nK DAH DIT DAH _k_ CHAR\nN9 DAH DAH DAH DAH DIT _9_ CHAR\nO DAH DAH DAH _o_ CHAR\nX DAH DIT DIT DAH _x_ CHAR\n\nDIT PIN 50 TONE\nDAH PIN 150 TONE\nTONE  {1o500u0o500u} 50m NL\nPIN 4d\nWORD _ _300m\nCHAR 150m"
+      },
+      "date": 1361077188813
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN  5d1o 500m CALL 5d0o\nCALL CQ CQ CQ DE K9OX K9OX K9OX K\nK9OX K N9 O X WORD\nCQ C Q WORD\nDE D E WORD\n\nC DAH DIT DAH DIT  _c_ CHAR\nQ DAH DAH DIT DAH _q_ CHAR\nD DAH DIT DIT _d_ CHAR\nE DIT _e_ CHAR\nK DAH DIT DAH _k_ CHAR\nN9 DAH DAH DAH DAH DIT _9_ CHAR\nO DAH DAH DAH _o_ CHAR\nX DAH DIT DIT DAH _x_ CHAR\n\nDIT PIN 50 TONE\nDAH PIN 150 TONE\nTONE  {1o500u0o500u} 50m NL\nPIN 4d\nWORD 300m  _ _\nCHAR 150m"
+      },
+      "date": 1361077227597
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN  5d1o 500m CALL 5d0o h\nCALL CQ CQ CQ DE K9OX K9OX K9OX K\nK9OX K N9 O X WORD\nCQ C Q WORD\nDE D E WORD\n\nC DAH DIT DAH DIT  _c_ CHAR\nQ DAH DAH DIT DAH _q_ CHAR\nD DAH DIT DIT _d_ CHAR\nE DIT _e_ CHAR\nK DAH DIT DAH _k_ CHAR\nN9 DAH DAH DAH DAH DIT _9_ CHAR\nO DAH DAH DAH _o_ CHAR\nX DAH DIT DIT DAH _x_ CHAR\n\nDIT PIN 50 TONE\nDAH PIN 150 TONE\nTONE  {1o500u0o500u} 50m NL\nPIN 4d\nWORD 300m  _ _\nCHAR 150m"
+      },
+      "date": 1361077993277
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN  5d1o 500m CALL 5d0o\nCALL CQ CQ CQ DE K9OX K9OX K9OX K\nK9OX K N9 O X WORD\nCQ C Q WORD\nDE D E WORD\n\nC DAH DIT DAH DIT  _c_ CHAR\nQ DAH DAH DIT DAH _q_ CHAR\nD DAH DIT DIT _d_ CHAR\nE DIT _e_ CHAR\nK DAH DIT DAH _k_ CHAR\nN9 DAH DAH DAH DAH DIT _9_ CHAR\nO DAH DAH DAH _o_ CHAR\nX DAH DIT DIT DAH _x_ CHAR\n\nDIT PIN 50 TONE\nDAH PIN 150 TONE\nTONE  {1o500u0o500u} 50m NL\nPIN 4d\nWORD 300m\nCHAR 150m"
+      },
+      "date": 1361081464356
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN  TX 1o 500m CALL TX 0o\n\nCALL CQ CQ CQ DE K9OX K9OX K9OX K\nK9OX K N9 O X WORD\nCQ C Q WORD\nDE D E WORD\n\nC DAH DIT DAH DIT  _c_ CHAR\nQ DAH DAH DIT DAH _q_ CHAR\nD DAH DIT DIT _d_ CHAR\nE DIT _e_ CHAR\nK DAH DIT DAH _k_ CHAR\nN9 DAH DAH DAH DAH DIT _9_ CHAR\nO DAH DAH DAH _o_ CHAR\nX DAH DIT DIT DAH _x_ CHAR\n\nDIT SPKR 50 TONE\nDAH SPKR 150 TONE\nTONE  {1o500u0o500u} 50m NL\n\nWORD 300m\nCHAR 150m\n\nTX 6d\nSPKR 4d\n"
+      },
+      "date": 1361083163976
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN  TX 1o 500m CALL TX 0o\nMINUTE TX 1o ID TX 0o\n\nCALL CQ CQ CQ DE K9OX K9OX K9OX K\nID DE K9OX\n\nK9OX K N9 O X WORD\nCQ C Q WORD\nDE D E WORD\n\nC DAH DIT DAH DIT  _c_ CHAR\nQ DAH DAH DIT DAH _q_ CHAR\nD DAH DIT DIT _d_ CHAR\nE DIT _e_ CHAR\nK DAH DIT DAH _k_ CHAR\nN9 DAH DAH DAH DAH DIT _9_ CHAR\nO DAH DAH DAH _o_ CHAR\nX DAH DIT DIT DAH _x_ CHAR\n\nDIT SPKR 50 TONE\nDAH SPKR 150 TONE\nTONE  {1o500u0o500u} 50m NL\n\nWORD 300m\nCHAR 150m\n\nTX 6d\nSPKR 4d\n"
+      },
+      "date": 1361083411716
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN TX CALL RX\nMINUTE TX IDENT RX\n\nCALL CQ CQ CQ DE K9OX K9OX K9OX K\nIDENT DE K9OX\n\nK9OX K N9 O X WORD\nCQ C Q WORD\nDE D E WORD\n\nC DAH DIT DAH DIT  _c_ CHAR\nQ DAH DAH DIT DAH _q_ CHAR\nD DAH DIT DIT _d_ CHAR\nE DIT _e_ CHAR\nK DAH DIT DAH _k_ CHAR\nN9 DAH DAH DAH DAH DIT _9_ CHAR\nO DAH DAH DAH _o_ CHAR\nX DAH DIT DIT DAH _x_ CHAR\n\nDIT SPKR 50 TONE\nDAH SPKR 150 TONE\nTONE  {1o500u0o500u} 50m NL\n\nWORD 300m\nCHAR 150m\n\nTX 6d 1o 500m\nRX 6d 0o 500m\n\nSPKR 4d\n"
+      },
+      "date": 1361083913529
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN TX CALL RX\nMINUTEX TX IDENT RX\n\nCALL CQ CQ CQ DE K9OX K9OX K9OX K\nIDENT DE K9OX\n\nK9OX K N9 O X WORD\nCQ C Q WORD\nDE D E WORD\n\nC DAH DIT DAH DIT  _c_ CHAR\nQ DAH DAH DIT DAH _q_ CHAR\nD DAH DIT DIT _d_ CHAR\nE DIT _e_ CHAR\nK DAH DIT DAH _k_ CHAR\nN9 DAH DAH DAH DAH DIT _9_ CHAR\nO DAH DAH DAH _o_ CHAR\nX DAH DIT DIT DAH _x_ CHAR\n\nDIT SPKR 50 TONE\nDAH SPKR 150 TONE\nTONE  {1o500u0o500u} 50m NL\n\nWORD 300m\nCHAR 150m\n\nTX 6d 1o 500m\nRX 6d 0o 500m\n\nSPKR 4d\n"
+      },
+      "date": 1361084006817
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN TX CALL RX\nMINUTEX TX IDENT RX\n\nCALL CQ CQ CQ DE K9OX K9OX K9OX K\nIDENT DE K9OX\n\nK9OX K N9 O X WORD\nCQ C Q WORD\nDE D E WORD\n\nC DAH DIT DAH DIT  _c_ CHAR\nQ DAH DAH DIT DAH _q_ CHAR\nD DAH DIT DIT _d_ CHAR\nE DIT _e_ CHAR\nK DAH DIT DAH _k_ CHAR\nN9 DAH DAH DAH DAH DIT _9_ CHAR\nO DAH DAH DAH _o_ CHAR\nX DAH DIT DIT DAH _x_ CHAR\n\nDIT SPKR 25 TONE\nDAH SPKR 75 TONE\nTONE  {1o500u0o500u} 50m NL\n\nWORD 300m\nCHAR 150m\n\nTX 6d 1o 500m\nRX 6d 0o 500m\n\nSPKR 4d\n"
+      },
+      "date": 1361084262391
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN TX CALL RX\nMINUTEX TX IDENT RX\n\nCALL CQ CQ CQ DE K9OX K9OX K9OX K\nIDENT DE K9OX\n\nK9OX K N9 O X WORD\nCQ C Q WORD\nDE D E WORD\n\nC DAH DIT DAH DIT  _c_ CHAR\nQ DAH DAH DIT DAH _q_ CHAR\nD DAH DIT DIT _d_ CHAR\nE DIT _e_ CHAR\nK DAH DIT DAH _k_ CHAR\nN9 DAH DAH DAH DAH DIT _9_ CHAR\nO DAH DAH DAH _o_ CHAR\nX DAH DIT DIT DAH _x_ CHAR\n\nDIT SPKR 25 TONE\nDAH SPKR 75 TONE\nTONE  {1o500u0o500u} 50m NL\n\nWORD 300m\nCHAR 75m\n\nTX 6d 1o 500m\nRX 6d 0o 500m\n\nSPKR 4d\n"
+      },
+      "date": 1361084297078
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN TX CALL RX\nMINUTEX TX IDENT RX\n\nCALL CQ CQ CQ DE K9OX K9OX K9OX K\nIDENT DE K9OX\n\nK9OX K N9 O X WORD\nCQ C Q WORD\nDE D E WORD\n\nC DAH DIT DAH DIT  _c_ CHAR\nQ DAH DAH DIT DAH _q_ CHAR\nD DAH DIT DIT _d_ CHAR\nE DIT _e_ CHAR\nK DAH DIT DAH _k_ CHAR\nN9 DAH DAH DAH DAH DIT _9_ CHAR\nO DAH DAH DAH _o_ CHAR\nX DAH DIT DIT DAH _x_ CHAR\n\nDIT SPKR 50 TONE\nDAH SPKR 150 TONE\nTONE  {1o500u0o500u} 50m NL\n\nWORD 300m\nCHAR 150m\n\nTX 6d 1o 500m\nRX 6d 0o 500m\n\nSPKR 4d\n"
+      },
+      "date": 1361084337966
+    }
+  ]
+}

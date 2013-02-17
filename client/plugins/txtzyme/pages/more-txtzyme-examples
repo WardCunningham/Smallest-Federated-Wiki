@@ -1,0 +1,218 @@
+{
+  "title": "More Txtzyme Examples",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "bbe60414a5224e21",
+      "text": "We will show how features of Txtzyme work with features of the Txtzyme plugin to do some interesting things with little or no additional hardware."
+    },
+    {
+      "type": "paragraph",
+      "id": "e6b023bfab84bc06",
+      "text": "<h3> In Wiki"
+    },
+    {
+      "type": "paragraph",
+      "id": "6a7018752995632d",
+      "text": "[[Txtzyme Blink]] is the Hello World of microcontroller circuits. We blink once a second and whenever the <i>thumb</i> event triggers."
+    },
+    {
+      "type": "paragraph",
+      "id": "390bc70918947c1f",
+      "text": "[[Txtzyme Morse Code]] using just macro expansion with no arguments. Good test for latency since it needs to sound like music."
+    },
+    {
+      "type": "paragraph",
+      "id": "85f8d67ee338d203",
+      "text": "[[Txtzyme Oscilloscope]] where we trigger an event and then watch it happen on the analog input."
+    },
+    {
+      "type": "paragraph",
+      "id": "cd2614d3bd61f020",
+      "text": "<h3> And Beyond"
+    },
+    {
+      "type": "paragraph",
+      "id": "dd50254f375021f1",
+      "text": "Txtzyme was developed over a year with many projects reported as its strengths and limitations were explored. Txtzyme has its own wiki."
+    },
+    {
+      "type": "reference",
+      "id": "19cd449a5be16026",
+      "site": "txtzyme.com",
+      "slug": "txtzyme",
+      "title": "Txtzyme",
+      "text": "Txtzyme extends the reach of the USB bus to arbitrary electrical signals. It interprets throw-away programs encoded as single-character commands bundled into short strings transmitted to a USB enabled microcontroller."
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "item": {
+        "title": "More Txtzyme Examples"
+      },
+      "date": 1361091641679
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "4ea6de43d4ba5ffc"
+      },
+      "id": "4ea6de43d4ba5ffc",
+      "type": "add",
+      "date": 1361091649514
+    },
+    {
+      "type": "remove",
+      "id": "4ea6de43d4ba5ffc",
+      "date": 1361091659503
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "bbe60414a5224e21"
+      },
+      "id": "bbe60414a5224e21",
+      "type": "add",
+      "date": 1361091661416
+    },
+    {
+      "type": "edit",
+      "id": "bbe60414a5224e21",
+      "item": {
+        "type": "paragraph",
+        "id": "bbe60414a5224e21",
+        "text": "We will show how features of Txtzyme work with features of the Txtzyme plugin to do some interesting things with little or no additional hardware."
+      },
+      "date": 1361091772424
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "6a7018752995632d",
+        "text": "[[Txtzyme Blink]] is the Hello World of microcontroller circuits. We blink once a second and whenever the <i>thumb</i> event triggers."
+      },
+      "after": "bbe60414a5224e21",
+      "id": "6a7018752995632d",
+      "date": 1361091790388
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "390bc70918947c1f",
+        "text": "[[Txtzyme Morse Code]] using just macro expansion with no arguments. Good test for latency since it needs to sound like music."
+      },
+      "after": "6a7018752995632d",
+      "id": "390bc70918947c1f",
+      "date": 1361091796997
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "85f8d67ee338d203",
+        "text": "[[Txtzyme Oscilloscope]] where we trigger an event and then watch it happen on the analog input."
+      },
+      "after": "390bc70918947c1f",
+      "id": "85f8d67ee338d203",
+      "date": 1361091802140
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "cd2614d3bd61f020"
+      },
+      "id": "cd2614d3bd61f020",
+      "type": "add",
+      "after": "85f8d67ee338d203",
+      "date": 1361091838429
+    },
+    {
+      "type": "edit",
+      "id": "cd2614d3bd61f020",
+      "item": {
+        "type": "paragraph",
+        "id": "cd2614d3bd61f020",
+        "text": "<h3> Beyond"
+      },
+      "date": 1361091974511
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "dd50254f375021f1",
+        "text": "Txtzyme was developed over a year with many projects reported as its strengths and limitations were explored. Txtzyme has its own wiki."
+      },
+      "id": "dd50254f375021f1",
+      "type": "add",
+      "after": "cd2614d3bd61f020",
+      "date": 1361091975018
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "e6b023bfab84bc06",
+        "text": ""
+      },
+      "id": "e6b023bfab84bc06",
+      "type": "add",
+      "after": "bbe60414a5224e21",
+      "date": 1361091986966
+    },
+    {
+      "type": "edit",
+      "id": "e6b023bfab84bc06",
+      "item": {
+        "type": "paragraph",
+        "id": "e6b023bfab84bc06",
+        "text": "<h3> Wiki"
+      },
+      "date": 1361091996685
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "19cd449a5be16026"
+      },
+      "id": "19cd449a5be16026",
+      "type": "add",
+      "after": "dd50254f375021f1",
+      "date": 1361092006175
+    },
+    {
+      "type": "edit",
+      "id": "19cd449a5be16026",
+      "item": {
+        "type": "reference",
+        "id": "19cd449a5be16026",
+        "site": "txtzyme.com",
+        "slug": "txtzyme",
+        "title": "Txtzyme",
+        "text": "Txtzyme extends the reach of the USB bus to arbitrary electrical signals. It interprets throw-away programs encoded as single-character commands bundled into short strings transmitted to a USB enabled microcontroller."
+      },
+      "date": 1361092031626
+    },
+    {
+      "type": "edit",
+      "id": "e6b023bfab84bc06",
+      "item": {
+        "type": "paragraph",
+        "id": "e6b023bfab84bc06",
+        "text": "<h3> In Wiki"
+      },
+      "date": 1361092048100
+    },
+    {
+      "type": "edit",
+      "id": "cd2614d3bd61f020",
+      "item": {
+        "type": "paragraph",
+        "id": "cd2614d3bd61f020",
+        "text": "<h3> And Beyond"
+      },
+      "date": 1361092054741
+    }
+  ]
+}

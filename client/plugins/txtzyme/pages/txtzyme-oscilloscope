@@ -1,0 +1,551 @@
+{
+  "title": "Txtzyme Oscilloscope",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "fef1e50b049b7525",
+      "text": " "
+    },
+    {
+      "type": "paragraph",
+      "id": "fbc9ba030d34b880",
+      "text": "We use Txtzyme to read an analog input and report what it finds back to wiki. With a short wire on the analog input we can see the hum floating around our computers."
+    },
+    {
+      "type": "txtzyme",
+      "id": "bafdb5e64d92b391",
+      "text": "SECOND 25{8sp500u}"
+    },
+    {
+      "type": "paragraph",
+      "id": "4603ca545336f1a3",
+      "text": ""
+    },
+    {
+      "type": "paragraph",
+      "id": "ab9107bbf7920d44",
+      "text": "Click <b>rcvd</b> to see more analog samples."
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "item": {
+        "title": "Txtzyme Oscilloscope"
+      },
+      "date": 1361078260726
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "fef1e50b049b7525"
+      },
+      "id": "fef1e50b049b7525",
+      "type": "add",
+      "date": 1361078323778
+    },
+    {
+      "type": "edit",
+      "id": "fef1e50b049b7525",
+      "item": {
+        "type": "paragraph",
+        "id": "fef1e50b049b7525",
+        "text": " "
+      },
+      "date": 1361078363953
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "4603ca545336f1a3",
+        "text": ""
+      },
+      "id": "4603ca545336f1a3",
+      "type": "add",
+      "after": "fef1e50b049b7525",
+      "date": 1361078364461
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "fbc9ba030d34b880",
+        "text": ""
+      },
+      "id": "fbc9ba030d34b880",
+      "type": "add",
+      "after": "fef1e50b049b7525",
+      "date": 1361078364467
+    },
+    {
+      "type": "edit",
+      "id": "fbc9ba030d34b880",
+      "item": {
+        "type": "paragraph",
+        "id": "fbc9ba030d34b880",
+        "text": "We use Txtzyme to read an analog input and report what it finds back to wiki. "
+      },
+      "date": 1361078482679
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "PIN 6d\nTHUMB PIN 1o 5m 0o _thumb_\nSECOND PIN 1o 100m 0o 20{ _hello there cruel world hello there cruel world hello there cruel world _ }"
+      },
+      "after": "fbc9ba030d34b880",
+      "id": "bafdb5e64d92b391",
+      "date": 1361078510197
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN "
+      },
+      "date": 1361078563736
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN _hello world_"
+      },
+      "date": 1361078586173
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN h 20{8sp}"
+      },
+      "date": 1361078657966
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN 20{8sp}"
+      },
+      "date": 1361078702357
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN 60{8sp}"
+      },
+      "date": 1361078716622
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN 60{8sp10m}"
+      },
+      "date": 1361078792739
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN 60{8sp100u}"
+      },
+      "date": 1361078805980
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN 60{8sp1000u}"
+      },
+      "date": 1361078822386
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN 60{8sp2m}"
+      },
+      "date": 1361078895987
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN 60{8sp20m}"
+      },
+      "date": 1361078902947
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN 60{8sp10m}"
+      },
+      "date": 1361078917355
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN 60{8sp5m}"
+      },
+      "date": 1361078925339
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN 60{8sp2m}"
+      },
+      "date": 1361078932267
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN 60{8sp3m}"
+      },
+      "date": 1361078948402
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN 60{8sp4m}"
+      },
+      "date": 1361078955707
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN 60{8sp4m100u}"
+      },
+      "date": 1361078994243
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN 60{8sp4m300u}"
+      },
+      "date": 1361079008514
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN 60{8sp4m600u}"
+      },
+      "date": 1361079046032
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN 60{8sp4m900u}"
+      },
+      "date": 1361079053545
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN 60{8sp4m800u}"
+      },
+      "date": 1361079062905
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN 60{8sp4m700u}"
+      },
+      "date": 1361079075385
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN 60{8sp4m750u}"
+      },
+      "date": 1361079126482
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 60{8sp4m750u}"
+      },
+      "date": 1361079174095
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 60{8sp}"
+      },
+      "date": 1361079196257
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 20{8sp}"
+      },
+      "date": 1361079280960
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 30{8sp}"
+      },
+      "date": 1361079291951
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 25{8sp}"
+      },
+      "date": 1361079304517
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 25{8sp3m}"
+      },
+      "date": 1361079328567
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 25{8sp200u}"
+      },
+      "date": 1361079348390
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 25{8sp1m}"
+      },
+      "date": 1361079386237
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 25{11sp1m}"
+      },
+      "date": 1361079428310
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 25{6sp1m}"
+      },
+      "date": 1361079441109
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 25{7sp1m}"
+      },
+      "date": 1361079453421
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 25{9sp1m}"
+      },
+      "date": 1361079464165
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 25{8sp1m}"
+      },
+      "date": 1361079500725
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 25{8skp1m}"
+      },
+      "date": 1361079578179
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 11{kp}"
+      },
+      "date": 1361079621962
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 25{8sp500u}"
+      },
+      "date": 1361079660040
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 125{8sp500u}"
+      },
+      "date": 1361081568970
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 25{8sp500u}"
+      },
+      "date": 1361081918113
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 25{kp8sp500u}"
+      },
+      "date": 1361090017230
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 25{8sp500u}"
+      },
+      "date": 1361090050485
+    },
+    {
+      "type": "edit",
+      "id": "fbc9ba030d34b880",
+      "item": {
+        "type": "paragraph",
+        "id": "fbc9ba030d34b880",
+        "text": "We use Txtzyme to read an analog input and report what it finds back to wiki. With a short wire on the analog input we can see the hum floating around our computers."
+      },
+      "date": 1361092615295
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "ab9107bbf7920d44"
+      },
+      "id": "ab9107bbf7920d44",
+      "type": "add",
+      "after": "4603ca545336f1a3",
+      "date": 1361092633616
+    },
+    {
+      "type": "edit",
+      "id": "ab9107bbf7920d44",
+      "item": {
+        "type": "paragraph",
+        "id": "ab9107bbf7920d44",
+        "text": "Click <b>rcvd</b> to see more analog samples."
+      },
+      "date": 1361092662863
+    }
+  ]
+}
