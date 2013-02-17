@@ -65,6 +65,8 @@ We're proud to be forked frequently. Go ahead and fork this project now. We're g
 Install and Launch
 ==================
 
+*For help installing and running on Windows, refer to the [Windows Notes](Windows.md).*
+
 The project is distributed as a GitHub repository. You will need a git client. Learn more from GitHub:
 
 * http://help.github.com/
