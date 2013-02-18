@@ -71,7 +71,10 @@ window.plugins.parse =
         when "stopped", "finished" then discard()
 
     if item.state == 'starting'
-      socket = new WebSocket('ws://'+window.document.location.host+'/plugin/parse')
+      $page = div.parents '.page:first'
+      host = $page.data('site') or location.host
+      host = location.host if host is 'origin' or host is 'local'
+      socket = new WebSocket("ws://#{host}/plugin/parse")
       item.state = 'running' if item.state is 'starting'
 
       progress = (m) ->

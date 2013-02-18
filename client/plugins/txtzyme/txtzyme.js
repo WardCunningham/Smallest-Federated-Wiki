@@ -106,6 +106,9 @@
     wiki.log(defn);
     $page = $item.parents('.page:first');
     host = $page.data('site') || location.host;
+    if (host === 'origin' || host === 'local') {
+      host = location.host;
+    }
     socket = new WebSocket("ws://" + host + "/plugin/txtzyme");
     sent = rcvd = 0;
     srept = rrept = "";

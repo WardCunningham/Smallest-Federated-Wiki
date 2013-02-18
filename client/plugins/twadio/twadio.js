@@ -26,6 +26,9 @@
     $schedule = $item.find('div.schedule');
     $page = $item.parents('.page:first');
     host = $page.data('site') || location.host;
+    if (host === 'origin' || host === 'local') {
+      host = location.host;
+    }
     socket = new WebSocket("ws://" + host + "/plugin/twadio");
     $item.dblclick(function() {
       return wiki.textEditor($item, item);

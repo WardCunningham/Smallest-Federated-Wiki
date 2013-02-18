@@ -64,7 +64,10 @@
       return wiki.dialog("linkdata", "<pre>" + linkdata + "</pre>");
     });
     $page = $item.parents('.page:first');
-    host = $page.data('site') || window.document.location.host;
+    host = $page.data('site') || location.host;
+    if (host === 'origin' || host === 'local') {
+      host = location.host;
+    }
     socket = new WebSocket("ws://" + host + "/plugin/linkmap");
     progress = function(m) {
       return $item.append($("<p>Linkmap " + m + "</p>"));

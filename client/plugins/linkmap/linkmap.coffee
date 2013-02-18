@@ -36,7 +36,8 @@ bind = ($item, item) ->
 	$item.dblclick -> wiki.dialog "linkdata", "<pre>#{linkdata}</pre>"
 
 	$page = $item.parents('.page:first')
-	host = $page.data('site') or window.document.location.host
+	host = $page.data('site') or location.host
+	host = location.host if host is 'origin' or host is 'local'
 	socket = new WebSocket("ws://#{host}/plugin/linkmap")
 
 	progress = (m) ->

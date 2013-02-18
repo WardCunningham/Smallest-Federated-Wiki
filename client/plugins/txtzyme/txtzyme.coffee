@@ -58,6 +58,7 @@ bind = ($item, item) ->
 
   $page = $item.parents('.page:first')
   host = $page.data('site') or location.host
+  host = location.host if host is 'origin' or host is 'local'
   socket = new WebSocket("ws://#{host}/plugin/txtzyme")
   sent = rcvd = 0
   srept = rrept = ""

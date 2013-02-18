@@ -40,7 +40,7 @@
       return div.append("<div style=\"background:#eee; padding:.8em; margin-bottom:5px;\">\n  <table></table>\n  <button type=\"button\">" + (nextOp(item.state)) + " Parse</button>\n</div>");
     },
     bind: function(div, item) {
-      var assemble, discard, display, progress, socket, start, stop, tick;
+      var $page, assemble, discard, display, host, progress, socket, start, stop, tick;
       div.dblclick(function() {
         return wiki.textEditor(div, item);
       });
@@ -104,7 +104,12 @@
         }
       });
       if (item.state === 'starting') {
-        socket = new WebSocket('ws://' + window.document.location.host + '/plugin/parse');
+        $page = div.parents('.page:first');
+        host = $page.data('site') || location.host;
+        if (host === 'origin' || host === 'local') {
+          host = location.host;
+        }
+        socket = new WebSocket("ws://" + host + "/plugin/parse");
         if (item.state === 'starting') {
           item.state = 'running';
         }
