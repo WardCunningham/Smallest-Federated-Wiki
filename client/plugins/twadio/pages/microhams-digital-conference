@@ -1,0 +1,243 @@
+{
+  "title": "MicroHAMS Digital Conference",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "aaeb169757c195ff",
+      "text": "The event is scheduled for March 23, 2013 and will again be held on the Microsoft 'Studio West' campus, located in Redmond, WA. The agenda this year is a little different then previous years, rather then covering a wide variety of topics, it is very focus on digital networking. [http://www.microhams.com/softcontent.aspx?scId=58 website]"
+    },
+    {
+      "type": "paragraph",
+      "id": "5c09c82ff7fab828",
+      "text": "<h3> Special Event"
+    },
+    {
+      "type": "paragraph",
+      "id": "93cb3ac085c93220",
+      "text": "We will be broadcasting our collective notes from this conference live, via SDR on 20m psk-31. Appropriately licensed amateurs can assume the position of control operator. All attendees are welcome to create a site here for their notes to be distributed live and later on the internet."
+    },
+    {
+      "type": "paragraph",
+      "id": "8eb30337982a5a39",
+      "text": "[[SDR Control Panel]] where appropriately licensed amateurs start and stop the transmitter."
+    },
+    {
+      "type": "paragraph",
+      "id": "19b4b7eeac8187af",
+      "text": "[[Scheduled Speakers]] including links for making new pages about their talks."
+    },
+    {
+      "type": "paragraph",
+      "id": "318caecab7c6050a",
+      "text": "<h3> Additional Material"
+    },
+    {
+      "type": "paragraph",
+      "id": "a2d7c0a74c882c41",
+      "text": "Here are additional pages we've prepared before and during the conference. "
+    },
+    {
+      "type": "paragraph",
+      "id": "64dc6984773c1fbc",
+      "text": "[[Event and Speaker Notes Template]] for on-air copy."
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "item": {
+        "title": "MicroHAMS Digital Conference"
+      },
+      "date": 1360728821063
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "aaeb169757c195ff"
+      },
+      "id": "aaeb169757c195ff",
+      "type": "add",
+      "date": 1360728833467
+    },
+    {
+      "type": "edit",
+      "id": "aaeb169757c195ff",
+      "item": {
+        "type": "paragraph",
+        "id": "aaeb169757c195ff",
+        "text": "The event is scheduled for March 23, 2013 and will again be held on the Microsoft 'Studio West' campus, located in Redmond, WA. The agenda this year is a little different then previous years, rather then covering a wide variety of topics, it is very focus on digital networking."
+      },
+      "date": 1360728837209
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "5c09c82ff7fab828"
+      },
+      "id": "5c09c82ff7fab828",
+      "type": "add",
+      "after": "aaeb169757c195ff",
+      "date": 1360728851983
+    },
+    {
+      "type": "edit",
+      "id": "aaeb169757c195ff",
+      "item": {
+        "type": "paragraph",
+        "id": "aaeb169757c195ff",
+        "text": "The event is scheduled for March 23, 2013 and will again be held on the Microsoft 'Studio West' campus, located in Redmond, WA. The agenda this year is a little different then previous years, rather then covering a wide variety of topics, it is very focus on digital networking. [http://www.microhams.com/softcontent.aspx?scId=58 website]"
+      },
+      "date": 1360728861593
+    },
+    {
+      "type": "edit",
+      "id": "5c09c82ff7fab828",
+      "item": {
+        "type": "paragraph",
+        "id": "5c09c82ff7fab828",
+        "text": "<h3> Special Event"
+      },
+      "date": 1360728987028
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "8eb30337982a5a39",
+        "text": ""
+      },
+      "id": "8eb30337982a5a39",
+      "type": "add",
+      "after": "5c09c82ff7fab828",
+      "date": 1360728987534
+    },
+    {
+      "type": "edit",
+      "id": "8eb30337982a5a39",
+      "item": {
+        "type": "paragraph",
+        "id": "8eb30337982a5a39",
+        "text": "[[SDR Control Panel]] where we start and stop the transmitter."
+      },
+      "date": 1360729082048
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "64dc6984773c1fbc"
+      },
+      "id": "64dc6984773c1fbc",
+      "type": "add",
+      "after": "8eb30337982a5a39",
+      "date": 1360729104965
+    },
+    {
+      "type": "edit",
+      "id": "64dc6984773c1fbc",
+      "item": {
+        "type": "paragraph",
+        "id": "64dc6984773c1fbc",
+        "text": "[[Event and Speaker Notes Template]] for on-air copy."
+      },
+      "date": 1360729164438
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "93cb3ac085c93220",
+        "text": ""
+      },
+      "id": "93cb3ac085c93220",
+      "type": "add",
+      "after": "5c09c82ff7fab828",
+      "date": 1360729765933
+    },
+    {
+      "type": "edit",
+      "id": "93cb3ac085c93220",
+      "item": {
+        "type": "paragraph",
+        "id": "93cb3ac085c93220",
+        "text": "We will be broadcasting our collective notes from this conference live, via SDR on 20m psk-31. Appropriately licensed amateurs can assume the position of control operator. All attendees are welcome to create a site here for their notes to be distributed live and later on the internet."
+      },
+      "date": 1360730212067
+    },
+    {
+      "type": "edit",
+      "id": "8eb30337982a5a39",
+      "item": {
+        "type": "paragraph",
+        "id": "8eb30337982a5a39",
+        "text": "[[SDR Control Panel]] where appropriately licensed amateurs start and stop the transmitter."
+      },
+      "date": 1360730245482
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "19b4b7eeac8187af",
+        "text": ""
+      },
+      "id": "19b4b7eeac8187af",
+      "type": "add",
+      "after": "8eb30337982a5a39",
+      "date": 1360730293441
+    },
+    {
+      "type": "edit",
+      "id": "19b4b7eeac8187af",
+      "item": {
+        "type": "paragraph",
+        "id": "19b4b7eeac8187af",
+        "text": "[[Scheduled Speakers]] including links for making new pages about their talks."
+      },
+      "date": 1360730343535
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "318caecab7c6050a",
+        "text": ""
+      },
+      "id": "318caecab7c6050a",
+      "type": "add",
+      "after": "19b4b7eeac8187af",
+      "date": 1360731725459
+    },
+    {
+      "type": "edit",
+      "id": "318caecab7c6050a",
+      "item": {
+        "type": "paragraph",
+        "id": "318caecab7c6050a",
+        "text": "<h3> Additional Material"
+      },
+      "date": 1360731740450
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "a2d7c0a74c882c41",
+        "text": ""
+      },
+      "id": "a2d7c0a74c882c41",
+      "type": "add",
+      "after": "318caecab7c6050a",
+      "date": 1360731740955
+    },
+    {
+      "type": "edit",
+      "id": "a2d7c0a74c882c41",
+      "item": {
+        "type": "paragraph",
+        "id": "a2d7c0a74c882c41",
+        "text": "Here are additional pages we've prepared before and during the conference. "
+      },
+      "date": 1360731797000
+    },
+    {
+      "type": "fork",
+      "site": "k9ox.ham.wiki.org",
+      "date": 1360770744075
+    }
+  ]
+}
