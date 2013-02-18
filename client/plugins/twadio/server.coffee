@@ -1,6 +1,7 @@
 WebSocketServer = require('ws').Server
 fs = require 'fs'
 child = require 'child_process'
+events = require 'events'
 
 fetchPage = (path, done) ->
   text = fs.readFile path, 'utf8', (err, text) ->
@@ -8,18 +9,25 @@ fetchPage = (path, done) ->
     done JSON.parse text
 
 status = {pid: null, freq: 14.042, mode: null}
-radio = null
+radio = new events.EventEmitter()
 
-startRadio = (message) ->
-	radio = child.spawn '/usr/bin/ruby', [__dirname+'/twadio.rb', status.mode, status.freq, '0', '1', '.5', message]
-	status.pid = radio.pid
-	console.log "twadio start", radio.pid
+job = null
 
-	radio.on 'exit', (code, signal) ->
+stopJob = ->
+	job.kill 'SIGTERM' if job
+
+startJob = (message) ->
+	job = child.spawn '/usr/bin/ruby', [__dirname+'/twadio.rb', status.mode, status.freq, '0', '1', '.5', message]
+	status.pid = job.pid
+	console.log "twadio start", job.pid
+	radio.emit 'update'
+
+	job.on 'exit', (code, signal) ->
 		console.log 'twadio exit', code, signal
 		status.mode = null
 		status.pid = null
 		radio.emit 'update'
+
 
 startServer = (params) ->
 
@@ -34,21 +42,20 @@ startServer = (params) ->
 				console.log 'twadio send err:', err if err
 		update()
 
+		radio.on 'update', update
+		socket.on 'close', -> radio.removeListener 'update', update
+
 		socket.on 'message', (message) ->
 			console.log 'twadio message:', message
 			action = JSON.parse message
 			switch action.action
 				when 'stop'
-					status.mode = null
-					radio.kill 'SIGTERM'
+					stopJob()
 				when 'send'
 					status.mode = 'send'
-					startRadio "the quick brown fox jumped over the lazy dogs back"
-					radio.once 'update', -> update()
+					startJob "the quick brown fox jumped over the lazy dogs back"
 				when 'tune'
 					status.mode = 'tune'
-					startRadio "30"
-					radio.once 'update', -> update()
-			update()
+					startJob "30"
 
 module.exports = {startServer}
