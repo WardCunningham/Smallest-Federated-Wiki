@@ -1562,7 +1562,8 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
     if ($page.attr('id').match(/_rev/)) {
       rev = page.journal.length - 1;
       date = page.journal[rev].date;
-      return $page.addClass('ghost').data('rev', rev).append($("<h2 class=\"revision\">\n  <span>\n    " + (date != null ? util.formatDate(date) : "Revision " + rev) + "\n  </span>\n</h2>"));
+      $page.addClass('ghost').data('rev', rev);
+      return $header.append($("<h2 class=\"revision\">\n  <span>\n    " + (date != null ? util.formatDate(date) : "Revision " + rev) + "\n  </span>\n</h2>"));
     }
   };
 

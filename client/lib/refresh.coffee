@@ -98,7 +98,8 @@ emitHeader = ($header, $page, page) ->
   if $page.attr('id').match /_rev/
     rev = page.journal.length-1
     date = page.journal[rev].date
-    $page.addClass('ghost').data('rev',rev).append $ """
+    $page.addClass('ghost').data('rev',rev)
+    $header.append $ """
       <h2 class="revision">
         <span>
           #{if date? then util.formatDate(date) else "Revision #{rev}"}
