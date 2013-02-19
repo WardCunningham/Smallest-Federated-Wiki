@@ -8,9 +8,26 @@ parse = (text) ->
       prev.push word for word in words[1..999]
   defn
 
+value = (type, number, arg) ->
+  switch type
+    when 'A'
+      if number.length then arg[+number] else arg
+    when 'B'
+      1 & (arg >> (number or 0))
+    when 'C'
+      string = arg.toString()
+      if number < string.length
+        string.charCodeAt number
+      else
+        32
+    when 'D'
+      48 + Math.floor(+arg / (Math.pow(10, number)) % 10)
+    when ''
+      number
+
 apply = (defn, call, arg, emit) ->
   return unless (words = defn[call]?.slice(0))
-  do (stack = [{call, words}], result = []) ->
+  do (stack = [{call, arg, words}], result = []) ->
     send = ->
       return unless result.length
       text = "#{result.join(' ')}\n"
@@ -19,13 +36,17 @@ apply = (defn, call, arg, emit) ->
     next = ->
       return unless stack.length
       word = stack[stack.length-1]?.words.shift()
+      arg = stack[stack.length-1]?.arg
       if word is undefined
         stack.pop()
       else if word is 'NL'
         return send()
-      else if word.match /^[A-Z][A-Z0-9]*$/
-        if stack.length < 10 and (words = defn[word]?.slice(0))
-          stack.push {call:word, words}
+      else if m = word.match /^([ABCD])([0-9]*)$/
+        result.push value(m[1], m[2], arg)
+      else if m = word.match  /^([A-Z][A-Z0-9]*)(\/([ABCD]?)([0-9]*))?$/
+        if stack.length < 10 and (words = defn[m[1]]?.slice(0))
+          arg = value(m[3], m[4], arg) if m[2]
+          stack.push {call:word, arg, words}
       else
         result.push word
       if stack.length
@@ -54,7 +75,6 @@ emit = ($item, item) ->
 
 bind = ($item, item) ->
   defn = parse item.text
-  wiki.log defn
 
   $page = $item.parents('.page:first')
   host = $page.data('site') or location.host
@@ -66,10 +86,11 @@ bind = ($item, item) ->
 
   tic = ->
     now = new Date()
-    trigger 'SECOND'
-    return if now.getSeconds(); trigger 'MINUTE'
-    return if now.getMinutes(); trigger 'HOUR'
-    return if now.getHours(); trigger 'DAY'
+    arg = [now.getSeconds(), now.getMinutes(), now.getHours()]
+    trigger 'SECOND', arg
+    return if arg[0]; trigger 'MINUTE', arg
+    return if arg[1]; trigger 'HOUR', arg
+    return if arg[2]; trigger 'DAY', arg
 
   timer = setInterval tic, 1000
 
@@ -79,7 +100,7 @@ bind = ($item, item) ->
     wiki.textEditor $item, item
 
   $(".main").on 'thumb', (evt, thumb) ->
-    trigger 'THUMB'
+    trigger 'THUMB', thumb
 
   $item.delegate '.rcvd', 'click', ->
     wiki.dialog "Txtzyme Responses", """<pre>#{report.join "\n"}"""
