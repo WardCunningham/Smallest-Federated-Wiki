@@ -44,27 +44,62 @@
     {
       "type": "paragraph",
       "id": "135f1d15190fa48a",
-      "text": "SECOND, MINUTE, HOUR and DAY say when to run."
+      "text": "Say <b>SECOND</b>, <b>MINUTE</b>, <b>HOUR</b> and <b>DAY</b> to run repeatedly throughout the day."
     },
     {
       "type": "paragraph",
       "id": "3cfe3fbd4b43138d",
-      "text": "OPEN says run when the page is opened."
+      "text": "Say <b>OPEN</b> to run when the page is opened."
     },
     {
       "type": "paragraph",
       "id": "e2e5e2c6745c6825",
-      "text": "THUMB says run when scrubbing wiki data."
+      "text": "Say <b>THUMB</b> to run when scrubbing wiki data."
     },
     {
       "type": "paragraph",
       "id": "ac38149d1c537128",
-      "text": "NL says the program so far can run now. (NL is short for newline, the traditional Txtzyme go command.)"
+      "text": "Say <b>NL</b> to run the program so far generated. (NL is short for newline, the traditional Txtzyme go command.)"
     },
     {
       "type": "paragraph",
       "id": "6b3a397e00c20fd9",
       "text": "Other all-cap words define Txtzyme fragments that will be put together to make complete programs. When they appear first in a line it is a definition, elsewhere it is a use of the definition."
+    },
+    {
+      "type": "paragraph",
+      "id": "73ec12cb6ef2cee8",
+      "text": "<h3> Plugin Parameters"
+    },
+    {
+      "type": "paragraph",
+      "id": "3304b4410ba78341",
+      "text": "Commands run by the clock have available to them an array with [sec, min, hr] as a parameter. Say <b>A</b> to access the whole parameter or say <b>A0</b>, <b>A1</b> or <b>A2</b> to access the individual elements."
+    },
+    {
+      "type": "paragraph",
+      "id": "fb24a21431cedec6",
+      "text": "Commands run by THUMB has a key as a parameter which can be a number."
+    },
+    {
+      "type": "paragraph",
+      "id": "d2632542e802a519",
+      "text": "Numbers can be accessed as bits, <b>B0</b>, <b>B1</b>, <b>B2</b> and so on from the least significant bit."
+    },
+    {
+      "type": "paragraph",
+      "id": "b0331a8e789bc55e",
+      "text": "Numbers or strings can be accessed as characters, <b>C0</b>, <b>C1</b>, <b>C2</b> and so on from the left most character. The ASCII value of the character is returned."
+    },
+    {
+      "type": "paragraph",
+      "id": "22cfc1dd5098a268",
+      "text": "Numbers can be accessed as digits, <b>D0</b>, <b>D1</b>, <b>D2</b> and so on from the units integer postion. Digits are represented by their ASCII values."
+    },
+    {
+      "type": "paragraph",
+      "id": "4bc2e2e9c84584c3",
+      "text": "Other all-caps words refer to Txtzyme fragments that may include parameter accessors. For example <b>FOO/43</b> calls FOO and sets the parameter to 43. To specify a parameter include it after the defined name separated by a slash. <b>FOO/B3</b> passes forward one bit of the current parameter."
     }
   ],
   "journal": [
@@ -562,6 +597,335 @@
         "text": "We can read from and write to electrical circuits by running small Txtzyme programs on microcontrollers attached to federated wiki servers. This plugin extends the Txtzyme language with words for running programs and collecting results over dedicated socket connections. [https://github.com/WardCunningham/Smallest-Federated-Wiki/tree/master/client/plugins/txtzyme github]"
       },
       "date": 1361092229092
+    },
+    {
+      "type": "edit",
+      "id": "135f1d15190fa48a",
+      "item": {
+        "type": "paragraph",
+        "id": "135f1d15190fa48a",
+        "text": "Say <b>SECOND</b>, <b>MINUTE</b>, <b>HOUR</b> and <b>DAY</b> to run by the clock."
+      },
+      "date": 1361249753156
+    },
+    {
+      "type": "edit",
+      "id": "135f1d15190fa48a",
+      "item": {
+        "type": "paragraph",
+        "id": "135f1d15190fa48a",
+        "text": "Say <b>SECOND</b>, <b>MINUTE</b>, <b>HOUR</b> and <b>DAY</b> to run repeatedly throughout the day."
+      },
+      "date": 1361249787897
+    },
+    {
+      "type": "edit",
+      "id": "3cfe3fbd4b43138d",
+      "item": {
+        "type": "paragraph",
+        "id": "3cfe3fbd4b43138d",
+        "text": "Say <b>OPEN</b> to run when the page is opened."
+      },
+      "date": 1361249810137
+    },
+    {
+      "type": "edit",
+      "id": "e2e5e2c6745c6825",
+      "item": {
+        "type": "paragraph",
+        "id": "e2e5e2c6745c6825",
+        "text": "Say <b>THUMB</b> to run when scrubbing wiki data."
+      },
+      "date": 1361249846400
+    },
+    {
+      "type": "edit",
+      "id": "ac38149d1c537128",
+      "item": {
+        "type": "paragraph",
+        "id": "ac38149d1c537128",
+        "text": "Say <b>NL</b> to run the program so far generated. (NL is short for newline, the traditional Txtzyme go command.)"
+      },
+      "date": 1361249951429
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "f3f3881a1afa0b80",
+        "text": ""
+      },
+      "id": "f3f3881a1afa0b80",
+      "type": "add",
+      "after": "6b3a397e00c20fd9",
+      "date": 1361249984862
+    },
+    {
+      "type": "remove",
+      "id": "f3f3881a1afa0b80",
+      "date": 1361250007978
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "73ec12cb6ef2cee8",
+        "text": ""
+      },
+      "id": "73ec12cb6ef2cee8",
+      "type": "add",
+      "after": "6b3a397e00c20fd9",
+      "date": 1361250048724
+    },
+    {
+      "type": "edit",
+      "id": "73ec12cb6ef2cee8",
+      "item": {
+        "type": "paragraph",
+        "id": "73ec12cb6ef2cee8",
+        "text": "<h3> Parameters"
+      },
+      "date": 1361250074618
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "3304b4410ba78341",
+        "text": ""
+      },
+      "id": "3304b4410ba78341",
+      "type": "add",
+      "after": "73ec12cb6ef2cee8",
+      "date": 1361250075123
+    },
+    {
+      "type": "edit",
+      "id": "3304b4410ba78341",
+      "item": {
+        "type": "paragraph",
+        "id": "3304b4410ba78341",
+        "text": "Commands run by the clock have available to them an array with [sec, min, hr] as a parameter. Say <b>A</b> to access the whole parameter or say <b>A0</b>, <b>A1</b> or <b>A2</b> to access the individual elements."
+      },
+      "date": 1361250333042
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "fb24a21431cedec6",
+        "text": ""
+      },
+      "id": "fb24a21431cedec6",
+      "type": "add",
+      "after": "3304b4410ba78341",
+      "date": 1361250333550
+    },
+    {
+      "type": "edit",
+      "id": "fb24a21431cedec6",
+      "item": {
+        "type": "paragraph",
+        "id": "fb24a21431cedec6",
+        "text": "Commands run by THUMB has a key as a parameter which can be a number."
+      },
+      "date": 1361250443158
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "d2632542e802a519",
+        "text": ""
+      },
+      "id": "d2632542e802a519",
+      "type": "add",
+      "after": "fb24a21431cedec6",
+      "date": 1361250443664
+    },
+    {
+      "type": "edit",
+      "id": "d2632542e802a519",
+      "item": {
+        "type": "paragraph",
+        "id": "d2632542e802a519",
+        "text": "Numbers can be accessed as bits, <b>B0</b>, <b>B1</b> and so on."
+      },
+      "date": 1361250498565
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "b0331a8e789bc55e",
+        "text": ""
+      },
+      "id": "b0331a8e789bc55e",
+      "type": "add",
+      "after": "d2632542e802a519",
+      "date": 1361250499070
+    },
+    {
+      "type": "edit",
+      "id": "b0331a8e789bc55e",
+      "item": {
+        "type": "paragraph",
+        "id": "b0331a8e789bc55e",
+        "text": "Numbers or strings can be accessed as "
+      },
+      "date": 1361250537539
+    },
+    {
+      "type": "edit",
+      "id": "d2632542e802a519",
+      "item": {
+        "type": "paragraph",
+        "id": "d2632542e802a519",
+        "text": "Numbers can be accessed as bits, <b>B0</b>, <b>B1</b> and so on from the least significant bit."
+      },
+      "date": 1361250554155
+    },
+    {
+      "type": "edit",
+      "id": "b0331a8e789bc55e",
+      "item": {
+        "type": "paragraph",
+        "id": "b0331a8e789bc55e",
+        "text": "Numbers or strings can be accessed as characters, <b>C0</b>, <b>C1</b> and so on from the left most character. The ASCII value of the character is returned."
+      },
+      "date": 1361250627001
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "0c2f07ed8106a8e8",
+        "text": ""
+      },
+      "id": "0c2f07ed8106a8e8",
+      "type": "add",
+      "after": "b0331a8e789bc55e",
+      "date": 1361250627507
+    },
+    {
+      "type": "remove",
+      "id": "0c2f07ed8106a8e8",
+      "date": 1361250633624
+    },
+    {
+      "type": "edit",
+      "id": "d2632542e802a519",
+      "item": {
+        "type": "paragraph",
+        "id": "d2632542e802a519",
+        "text": "Numbers can be accessed as bits, <b>B0</b>, <b>B1</b>, <b>B2</b> and so on from the least significant bit."
+      },
+      "date": 1361250644897
+    },
+    {
+      "type": "edit",
+      "id": "b0331a8e789bc55e",
+      "item": {
+        "type": "paragraph",
+        "id": "b0331a8e789bc55e",
+        "text": "Numbers or strings can be accessed as characters, <b>C0</b>, <b>C1</b>, <b>C2</b> and so on from the left most character. The ASCII value of the character is returned."
+      },
+      "date": 1361250659400
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "22cfc1dd5098a268",
+        "text": ""
+      },
+      "id": "22cfc1dd5098a268",
+      "type": "add",
+      "after": "b0331a8e789bc55e",
+      "date": 1361250670800
+    },
+    {
+      "type": "edit",
+      "id": "22cfc1dd5098a268",
+      "item": {
+        "type": "paragraph",
+        "id": "22cfc1dd5098a268",
+        "text": "Numbers can be accessed as digits, <b>D0</b>, <b>D1</b>, <b>D2</b> and so on from the units integer postion."
+      },
+      "date": 1361250771644
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "4bc2e2e9c84584c3",
+        "text": ""
+      },
+      "id": "4bc2e2e9c84584c3",
+      "type": "add",
+      "after": "22cfc1dd5098a268",
+      "date": 1361250832021
+    },
+    {
+      "type": "edit",
+      "id": "4bc2e2e9c84584c3",
+      "item": {
+        "type": "paragraph",
+        "id": "4bc2e2e9c84584c3",
+        "text": "Other all-caps words refer to Txtzyme fragments that may include parameter accessors. To specify a parameter include it after the defined name following a slash (/). For example <b>FOO/43</b> calls FOO and sets the parameter to 43. <b>FOO/B3</b> calls FOO passing forward one bit of the current parameter."
+      },
+      "date": 1361251110724
+    },
+    {
+      "type": "edit",
+      "id": "4bc2e2e9c84584c3",
+      "item": {
+        "type": "paragraph",
+        "id": "4bc2e2e9c84584c3",
+        "text": "Other all-caps words refer to Txtzyme fragments that may include parameter accessors. To specify a parameter include it after the defined name following a slash (/). For example <b>FOO/43</b> calls FOO and sets the parameter to 43. <b>FOO/B3</b> passes forward one bit of the current parameter."
+      },
+      "date": 1361251164130
+    },
+    {
+      "type": "edit",
+      "id": "22cfc1dd5098a268",
+      "item": {
+        "type": "paragraph",
+        "id": "22cfc1dd5098a268",
+        "text": "Numbers can be accessed as digits, <b>D0</b>, <b>D1</b>, <b>D2</b> and so on from the units integer postion. Digits are represented by their ASCII values."
+      },
+      "date": 1361251218001
+    },
+    {
+      "type": "edit",
+      "id": "4bc2e2e9c84584c3",
+      "item": {
+        "type": "paragraph",
+        "id": "4bc2e2e9c84584c3",
+        "text": "Other all-caps words refer to Txtzyme fragments that may include parameter accessors. For example <b>FOO/43</b> calls FOO and sets the parameter to 43. To specify a parameter include it after the defined name separated by a slash. <b>FOO/B3</b> passes forward one bit of the current parameter."
+      },
+      "date": 1361251626710
+    },
+    {
+      "type": "edit",
+      "id": "4bc2e2e9c84584c3",
+      "item": {
+        "type": "paragraph",
+        "id": "4bc2e2e9c84584c3",
+        "text": "Other all-caps words refer to Txtzyme fragments that may include parameter accessors. For example <b>FOO/43</b> calls FOO and sets the parameter to 43. To specify a parameter include it after the defined name separated by a slash. <b>FOO/B3</b> passes forward one bit of the current parameter. <b>FOO</b> is the same as <b>FOO/A</b>."
+      },
+      "date": 1361251678724
+    },
+    {
+      "type": "edit",
+      "id": "4bc2e2e9c84584c3",
+      "item": {
+        "type": "paragraph",
+        "id": "4bc2e2e9c84584c3",
+        "text": "Other all-caps words refer to Txtzyme fragments that may include parameter accessors. For example <b>FOO/43</b> calls FOO and sets the parameter to 43. To specify a parameter include it after the defined name separated by a slash. <b>FOO/B3</b> passes forward one bit of the current parameter."
+      },
+      "date": 1361251735450
+    },
+    {
+      "type": "edit",
+      "id": "73ec12cb6ef2cee8",
+      "item": {
+        "type": "paragraph",
+        "id": "73ec12cb6ef2cee8",
+        "text": "<h3> Plugin Parameters"
+      },
+      "date": 1361252215789
     }
   ]
 }

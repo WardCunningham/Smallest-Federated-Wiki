@@ -28,6 +28,11 @@
     },
     {
       "type": "paragraph",
+      "id": "771f3ddd58a611fd",
+      "text": "[[Txtzyme HDLX-2416 Display]] has four characters with built-in character ROM and internal brightness control."
+    },
+    {
+      "type": "paragraph",
       "id": "cd2614d3bd61f020",
       "text": "<h3> And Beyond"
     },
@@ -213,6 +218,17 @@
         "text": "<h3> And Beyond"
       },
       "date": 1361092054741
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "771f3ddd58a611fd",
+        "text": "[[Txtzyme HDLX-2416 Display]] has four characters with built-in character ROM and internal brightness control."
+      },
+      "after": "85f8d67ee338d203",
+      "id": "771f3ddd58a611fd",
+      "date": 1361252364137
     }
   ]
 }
