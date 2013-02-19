@@ -136,7 +136,7 @@
   };
 
   bind = function($item, item) {
-    var $page, defn, host, progress, rcvd, rrept, sent, socket, srept, tic, timer, trigger;
+    var $page, defn, host, progress, rcvd, response, rrept, sent, socket, srept, tic, timer, trigger;
     defn = parse(item.text);
     $page = $item.parents('.page:first');
     host = $page.data('site') || location.host;
@@ -146,7 +146,7 @@
     socket = new WebSocket("ws://" + host + "/plugin/txtzyme");
     sent = rcvd = 0;
     srept = rrept = "";
-    report = [];
+    response = [];
     tic = function() {
       var arg, now;
       now = new Date();
@@ -177,7 +177,7 @@
       return trigger('THUMB', thumb);
     });
     $item.delegate('.rcvd', 'click', function() {
-      return wiki.dialog("Txtzyme Responses", "<pre>" + (report.join("\n")));
+      return wiki.dialog("Txtzyme Responses", "<pre>" + (response.join("\n")));
     });
     trigger = function(word, arg) {
       if (arg == null) {
@@ -198,7 +198,7 @@
         if (socket) {
           socket.send(message);
           progress((srept = " " + (++sent) + " sent ") + rrept);
-          report = [];
+          response = [];
         }
         return setTimeout(done, 200);
       });
@@ -218,7 +218,7 @@
         line = _ref[_i];
         if (line) {
           progress(srept + (rrept = "<span class=rcvd> " + (++rcvd) + " rcvd " + line + " </span>"));
-          _results.push(report.push(line));
+          _results.push(response.push(line));
         } else {
           _results.push(void 0);
         }

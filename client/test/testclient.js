@@ -3302,9 +3302,8 @@ require.define("/plugins/txtzyme/txtzyme.js",function(require,module,exports,__d
   };
 
   bind = function($item, item) {
-    var $page, defn, host, progress, rcvd, rrept, sent, socket, srept, tic, timer, trigger;
+    var $page, defn, host, progress, rcvd, response, rrept, sent, socket, srept, tic, timer, trigger;
     defn = parse(item.text);
-    wiki.log(defn);
     $page = $item.parents('.page:first');
     host = $page.data('site') || location.host;
     if (host === 'origin' || host === 'local') {
@@ -3313,7 +3312,7 @@ require.define("/plugins/txtzyme/txtzyme.js",function(require,module,exports,__d
     socket = new WebSocket("ws://" + host + "/plugin/txtzyme");
     sent = rcvd = 0;
     srept = rrept = "";
-    report = [];
+    response = [];
     tic = function() {
       var arg, now;
       now = new Date();
@@ -3341,11 +3340,10 @@ require.define("/plugins/txtzyme/txtzyme.js",function(require,module,exports,__d
       return wiki.textEditor($item, item);
     });
     $(".main").on('thumb', function(evt, thumb) {
-      wiki.log('thumb', thumb);
       return trigger('THUMB', thumb);
     });
     $item.delegate('.rcvd', 'click', function() {
-      return wiki.dialog("Txtzyme Responses", "<pre>" + (report.join("\n")));
+      return wiki.dialog("Txtzyme Responses", "<pre>" + (response.join("\n")));
     });
     trigger = function(word, arg) {
       if (arg == null) {
@@ -3366,7 +3364,7 @@ require.define("/plugins/txtzyme/txtzyme.js",function(require,module,exports,__d
         if (socket) {
           socket.send(message);
           progress((srept = " " + (++sent) + " sent ") + rrept);
-          report = [];
+          response = [];
         }
         return setTimeout(done, 200);
       });
