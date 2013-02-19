@@ -6,8 +6,6 @@
 
   fs = require('fs');
 
-  fs = require('fs');
-
   tz = null;
 
   sock = null;

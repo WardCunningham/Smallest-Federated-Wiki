@@ -84,7 +84,7 @@ bind = ($item, item) ->
   srept = rrept = ""
   response = []
 
-  tic = ->
+  tick = ->
     now = new Date()
     arg = [now.getSeconds(), now.getMinutes(), now.getHours()]
     trigger 'SECOND', arg
@@ -92,7 +92,13 @@ bind = ($item, item) ->
     return if arg[1]; trigger 'HOUR', arg
     return if arg[2]; trigger 'DAY', arg
 
-  timer = setInterval tic, 1000
+  timer = null
+  startTicking = ->
+    timer = setInterval tick, 1000
+    tick()
+
+  setTimeout startTicking, 1000-(new Date().getMilliseconds())
+
 
   $item.dblclick ->
     clearInterval timer
@@ -103,15 +109,19 @@ bind = ($item, item) ->
     trigger 'THUMB', thumb
 
   $item.delegate '.rcvd', 'click', ->
+
     wiki.dialog "Txtzyme Responses", """<pre>#{response.join "\n"}"""
 
   trigger = (word, arg=0) ->
     apply defn, word, arg, (message, stack, done) ->
-      todo = ("#{call} #{words.join ' '}" for {call, words} in stack).join '<br>'
-      $item.find('p.report').html "#{todo}<br>#{message}"
+      todo = ("#{call} #{words.join ' '}<br>" for {call, words} in stack).join ''
+
+      $item.find('p.report').html "#{todo}#{message}"
       if socket
         socket.send message
         progress (srept = " #{++sent} sent ") + rrept
+        if response.length
+          window.dialog.html """<pre>#{response.join "\n"}"""
         response = []
       setTimeout done, 200
 

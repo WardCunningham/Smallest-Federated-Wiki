@@ -136,7 +136,7 @@
   };
 
   bind = function($item, item) {
-    var $page, defn, host, progress, rcvd, response, rrept, sent, socket, srept, tic, timer, trigger;
+    var $page, defn, host, progress, rcvd, response, rrept, sent, socket, srept, startTicking, tick, timer, trigger;
     defn = parse(item.text);
     $page = $item.parents('.page:first');
     host = $page.data('site') || location.host;
@@ -147,7 +147,7 @@
     sent = rcvd = 0;
     srept = rrept = "";
     response = [];
-    tic = function() {
+    tick = function() {
       var arg, now;
       now = new Date();
       arg = [now.getSeconds(), now.getMinutes(), now.getHours()];
@@ -165,7 +165,12 @@
       }
       return trigger('DAY', arg);
     };
-    timer = setInterval(tic, 1000);
+    timer = null;
+    startTicking = function() {
+      timer = setInterval(tick, 1000);
+      return tick();
+    };
+    setTimeout(startTicking, 1000 - (new Date().getMilliseconds()));
     $item.dblclick(function() {
       clearInterval(timer);
       if (socket != null) {
@@ -190,14 +195,17 @@
           _results = [];
           for (_i = 0, _len = stack.length; _i < _len; _i++) {
             _ref = stack[_i], call = _ref.call, words = _ref.words;
-            _results.push("" + call + " " + (words.join(' ')));
+            _results.push("" + call + " " + (words.join(' ')) + "<br>");
           }
           return _results;
-        })()).join('<br>');
-        $item.find('p.report').html("" + todo + "<br>" + message);
+        })()).join('');
+        $item.find('p.report').html("" + todo + message);
         if (socket) {
           socket.send(message);
           progress((srept = " " + (++sent) + " sent ") + rrept);
+          if (response.length) {
+            window.dialog.html("<pre>" + (response.join("\n")));
+          }
           response = [];
         }
         return setTimeout(done, 200);
