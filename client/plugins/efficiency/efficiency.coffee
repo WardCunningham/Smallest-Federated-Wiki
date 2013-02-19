@@ -40,7 +40,7 @@ window.plugins.efficiency =
       d.drawImage(img,0,0);
       #TODO change getImageData call to use dimensions like c.width, c.height), 
       #they are currently both zero for some reason, and that triggers an exception.
-      wiki.log 'efficiency img w, h', w, h, 'c w, h ', c.width(), c.height()
+      # wiki.log 'efficiency img w, h', w, h, 'c w, h ', c.width(), c.height()
       imageData = d.getImageData(0, 0, w, h);  
       imageData.data
 
@@ -62,7 +62,7 @@ window.plugins.efficiency =
 
   getGrayLumaFromRGBT: (rgbt) ->
     numPix = rgbt.length / 4    # bytes divided by four bytes per pixel. RGB + transparency
-    wiki.log 'getGrayLumaFromRGBT numPix: ', numPix
+    # wiki.log 'getGrayLumaFromRGBT numPix: ', numPix
     lumas = []
     for i in [0..(numPix-1)]
       R = rgbt[ i * 4 + 0 ]
@@ -83,7 +83,7 @@ window.plugins.efficiency =
 
       # count the values high and low
       lumaMid = (lumaMax - lumaMin ) /2.0 + lumaMin
-      wiki.log 'lumaMin, lumaMax, lumaMid: ', lumaMin, lumaMax, lumaMid
+      # wiki.log 'lumaMin, lumaMax, lumaMid: ', lumaMin, lumaMax, lumaMid
       lumaLowCount = 0
       lumaHighCount = 0
       for l in lumas
@@ -92,7 +92,7 @@ window.plugins.efficiency =
         else
           lumaHighCount++
 
-      wiki.log 'calculateStrategy_GrayBinary: numLumas, lowCount, high count: ', numLumas, lumaLowCount, lumaHighCount
+      # wiki.log 'calculateStrategy_GrayBinary: numLumas, lowCount, high count: ', numLumas, lumaLowCount, lumaHighCount
 
       percentage = lumaHighCount/numLumas * 100
       return percentage
@@ -146,36 +146,36 @@ window.plugins.efficiency =
           if (!isNaN(low))
             lumaLowTotal += low
           else
-            wiki.log 'Found a NaN low ', low
+            # wiki.log 'Found a NaN low ', low
 
         lumaAvgLow = 0
         if (lumaLowCount > 0)
           lumaAvgLow = lumaLowTotal/lumaLowCount
 
         lumaHighTotal = 0
-        wiki.log 'lumasHigh ', lumasHigh
+        # wiki.log 'lumasHigh ', lumasHigh
         for high in lumasHigh
           if (!isNaN(high))
             lumaHighTotal += high
           else
-            wiki.log 'Found a NaN high', high
-          #wiki.log 'lumaHighTotal ', lumaHighTotal, '  high ', high
+            # wiki.log 'Found a NaN high', high
+          ## wiki.log 'lumaHighTotal ', lumaHighTotal, '  high ', high
 
         lumaAvgHigh = 0
         if (lumaHighCount > 0)
           lumaAvgHigh = lumaHighTotal/lumaHighCount
 
         # Calc new threshold ihat is the average of the two sets above
-        wiki.log 'lumaLowCount ', lumaLowCount, '  lumaHighCount ', lumaHighCount
-        wiki.log 'lumaLowTotal ', lumaLowTotal, '  lumaHighTotal ', lumaHighTotal
-        wiki.log 'lumaAvgLow ', lumaAvgLow, '  lumaAvgHigh ', lumaAvgHigh
+        # wiki.log 'lumaLowCount ', lumaLowCount, '  lumaHighCount ', lumaHighCount
+        # wiki.log 'lumaLowTotal ', lumaLowTotal, '  lumaHighTotal ', lumaHighTotal
+        # wiki.log 'lumaAvgLow ', lumaAvgLow, '  lumaAvgHigh ', lumaAvgHigh
 
         threshold = (lumaAvgHigh - lumaAvgLow) / 2  + lumaAvgLow
 
         thresholdDiff = Math.abs(threshold - thresholdInitial)
-        wiki.log 'numTries ', numTries, '  thresholdDiff ', thresholdDiff, '  thresholdInitial ', thresholdInitial, '  threshold new ', threshold
+        # wiki.log 'numTries ', numTries, '  thresholdDiff ', thresholdDiff, '  thresholdInitial ', thresholdInitial, '  threshold new ', threshold
         if (thresholdDiff <= THRESHOLD_CONVERGENCE_GOAL  or numTries > MAX_TRIES)
-          wiki.log "we're done"
+          # wiki.log "we're done"
           break  # were done iterating
         else
           thresholdInitial = threshold
