@@ -3314,6 +3314,10 @@ require.define("/plugins/txtzyme/txtzyme.js",function(require,module,exports,__d
     sent = rcvd = 0;
     srept = rrept = "";
     response = [];
+    $item.addClass('sequence-source');
+    $item.get(0).getSequenceData = function() {
+      return response;
+    };
     tick = function() {
       var arg, now;
       now = new Date();
@@ -3368,12 +3372,13 @@ require.define("/plugins/txtzyme/txtzyme.js",function(require,module,exports,__d
         })()).join('');
         $item.find('p.report').html("" + todo + message);
         if (socket) {
-          socket.send(message);
           progress((srept = " " + (++sent) + " sent ") + rrept);
           if (response.length) {
             window.dialog.html("<pre>" + (response.join("\n")));
+            $item.trigger('sequence', [response]);
           }
           response = [];
+          socket.send(message);
         }
         return setTimeout(done, 200);
       });

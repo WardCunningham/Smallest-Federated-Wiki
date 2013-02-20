@@ -83,6 +83,8 @@ bind = ($item, item) ->
   sent = rcvd = 0
   srept = rrept = ""
   response = []
+  $item.addClass 'sequence-source'
+  $item.get(0).getSequenceData = -> response
 
   tick = ->
     now = new Date()
@@ -115,14 +117,14 @@ bind = ($item, item) ->
   trigger = (word, arg=0) ->
     apply defn, word, arg, (message, stack, done) ->
       todo = ("#{call} #{words.join ' '}<br>" for {call, words} in stack).join ''
-
       $item.find('p.report').html "#{todo}#{message}"
       if socket
-        socket.send message
         progress (srept = " #{++sent} sent ") + rrept
         if response.length
           window.dialog.html """<pre>#{response.join "\n"}"""
+          $item.trigger 'sequence', [response]
         response = []
+        socket.send message
       setTimeout done, 200
 
   progress = (m) ->
