@@ -3314,10 +3314,14 @@ require.define("/plugins/txtzyme/txtzyme.js",function(require,module,exports,__d
     sent = rcvd = 0;
     srept = rrept = "";
     response = [];
-    $item.addClass('sequence-source');
-    $item.get(0).getSequenceData = function() {
-      return response;
-    };
+    if (item.text.replace(/_.*?_/g, '').match(/p/)) {
+      if (responds) {
+        $item.addClass('sequence-source');
+      }
+      $item.get(0).getSequenceData = function() {
+        return response;
+      };
+    }
     tick = function() {
       var arg, now;
       now = new Date();

@@ -83,8 +83,9 @@ bind = ($item, item) ->
   sent = rcvd = 0
   srept = rrept = ""
   response = []
-  $item.addClass 'sequence-source'
-  $item.get(0).getSequenceData = -> response
+  if item.text.replace(/_.*?_/g,'').match /p/
+    $item.addClass 'sequence-source'
+    $item.get(0).getSequenceData = -> response
 
   tick = ->
     now = new Date()

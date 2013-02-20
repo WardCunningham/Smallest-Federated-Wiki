@@ -147,10 +147,12 @@
     sent = rcvd = 0;
     srept = rrept = "";
     response = [];
-    $item.addClass('sequence-source');
-    $item.get(0).getSequenceData = function() {
-      return response;
-    };
+    if (item.text.replace(/_.*?_/g, '').match(/p/)) {
+      $item.addClass('sequence-source');
+      $item.get(0).getSequenceData = function() {
+        return response;
+      };
+    }
     tick = function() {
       var arg, now;
       now = new Date();
