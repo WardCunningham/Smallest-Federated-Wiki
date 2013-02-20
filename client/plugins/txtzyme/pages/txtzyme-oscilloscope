@@ -9,12 +9,12 @@
     {
       "type": "paragraph",
       "id": "fbc9ba030d34b880",
-      "text": "We use Txtzyme to read an analog input and report what it finds back to wiki. With a short wire on the analog input we can see the hum floating around our computers."
+      "text": "We use Txtzyme to read an analog input and report what it finds back to wiki. We'll pulse a piezoelectric speaker on pin 4d and then observe the signal it produces as it rings like a bell. [http://en.wikipedia.org/wiki/Piezoelectric_sensor wikipedia]"
     },
     {
       "type": "txtzyme",
       "id": "bafdb5e64d92b391",
-      "text": "SECOND 25{8sp500u}"
+      "text": "SECOND PULSE/A0 SAMPLE\n\nPULSE 4d 1o 50u A uu 0oi\nSAMPLE 50 {11sp 100u}"
     },
     {
       "type": "paragraph",
@@ -24,7 +24,27 @@
     {
       "type": "paragraph",
       "id": "ab9107bbf7920d44",
-      "text": "Click <b>rcvd</b> to see more analog samples."
+      "text": "The most recent sample shows in the status linke. Click <b>rcvd</b> to see more analog samples."
+    },
+    {
+      "type": "paragraph",
+      "id": "a3d51c3fe78a0ffa",
+      "text": "Try rendering with [[D3 Line]]."
+    },
+    {
+      "type": "paragraph",
+      "id": "b96abb3594fbfdf1",
+      "text": "On <b>SECOND</b> we PULSE then SAMPLE. We use the seconds argument to slowly lengthen the pulse."
+    },
+    {
+      "type": "paragraph",
+      "id": "24aee83d34d86633",
+      "text": "Say <b>PULSE/100</b> to send a 2A+50 = 250 µsec pulse. The output pin is returned to input when the pulse completes."
+    },
+    {
+      "type": "paragraph",
+      "id": "7657308ed05eb8b1",
+      "text": "Say <b>SAMPLE</b> to capture 50 samples at about 200 µsec intervals. Each Txtzyme character takes about 10 µsec to execute. We add to this an additional 100 µsec pause."
     }
   ],
   "journal": [
@@ -546,6 +566,920 @@
         "text": "Click <b>rcvd</b> to see more analog samples."
       },
       "date": 1361092662863
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 25{10sp500u}"
+      },
+      "date": 1361259907544
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 25{9sp500u}"
+      },
+      "date": 1361259959428
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 25{9sp900u}"
+      },
+      "date": 1361260211695
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 35{9sp900u}"
+      },
+      "date": 1361260223861
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 35{9sp1900u}"
+      },
+      "date": 1361260300485
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 35{9sp300u}"
+      },
+      "date": 1361260333218
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 35{9sp}"
+      },
+      "date": 1361260346506
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 35{9sp800u}"
+      },
+      "date": 1361260367168
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 35{9sp2800u}"
+      },
+      "date": 1361261288196
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 35{9sp800u}"
+      },
+      "date": 1361261331441
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 35{10sp800u}"
+      },
+      "date": 1361298072729
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN 7d 0o i\nSECOND 35{10sp800u}"
+      },
+      "date": 1361298168406
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN 7d 1o i\nSECOND 35{10sp800u}"
+      },
+      "date": 1361298176308
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN 7d 0o i\nSECOND 35{10sp800u}"
+      },
+      "date": 1361298969579
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN 7d 0o i\nSECOND 35{9sp800u}"
+      },
+      "date": 1361299002193
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 4d1oi35{8sp800u}"
+      },
+      "date": 1361299126669
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 4d0o1oi35{8sp800u}"
+      },
+      "date": 1361299156747
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 4d1o0oi35{8sp800u}"
+      },
+      "date": 1361299183025
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 4d1o50u0oi35{8sp800u}"
+      },
+      "date": 1361299203552
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 4d1o50u0oi35{8sp8000u}"
+      },
+      "date": 1361299215624
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 4d1o50u0oi35{8sp80u}"
+      },
+      "date": 1361299242944
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 4d1o50u0oi35{8sp}"
+      },
+      "date": 1361299258960
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 4d1o50u0oi35{11sp}"
+      },
+      "date": 1361299289006
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 4d1o500u0oi35{11sp}"
+      },
+      "date": 1361299447850
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 4d1o5u0oi35{11sp}"
+      },
+      "date": 1361299478649
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND 4d1o10u0oi35{11sp}"
+      },
+      "date": 1361299502391
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d1o 50u 0oi\nSAMPLE 35{11sp}"
+      },
+      "date": 1361299597134
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d1o 50u 0oi\nSAMPLE 35{11sp10u}"
+      },
+      "date": 1361299734640
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d1o 50u 0oi\nSAMPLE 35{11sp100u}"
+      },
+      "date": 1361299746175
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d1o 50u 0oi\nSAMPLE 35{11sp300u}"
+      },
+      "date": 1361299765663
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d1o 50u 0oi\nSAMPLE 35 { 11sp 300u }"
+      },
+      "date": 1361299802454
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 1o 50u 0oi\nSAMPLE 35 { 11sp 300u }"
+      },
+      "date": 1361299876294
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 1o 50u 0oi\nSAMPLE 35 { 11sp 3u }"
+      },
+      "date": 1361299890603
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 1o 50u 0oi\nSAMPLE 35 { 11sp 10u }"
+      },
+      "date": 1361299909762
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 1o 50u 0oi\nSAMPLE 35 { 11sp 100u }"
+      },
+      "date": 1361299921496
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 1o 50u 0oi\nSAMPLE 35 {11sp}"
+      },
+      "date": 1361299940185
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 1o 50u 0oi\nSAMPLE 35 {11sp 20u}"
+      },
+      "date": 1361299959384
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 1o 50u 0o     i\nSAMPLE 35 {11sp 20u}"
+      },
+      "date": 1361300076525
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 1o 50u 0oi\nSAMPLE 35 {11sp 20u}"
+      },
+      "date": 1361300101446
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "a3d51c3fe78a0ffa",
+        "text": ""
+      },
+      "id": "a3d51c3fe78a0ffa",
+      "type": "add",
+      "after": "ab9107bbf7920d44",
+      "date": 1361321177879
+    },
+    {
+      "type": "edit",
+      "id": "a3d51c3fe78a0ffa",
+      "item": {
+        "type": "paragraph",
+        "id": "a3d51c3fe78a0ffa",
+        "text": "Try rendering with [[D3 Line]]."
+      },
+      "date": 1361321188851
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 1o 50u 0oi\nSAMPLE 100 {11sp 20u}"
+      },
+      "date": 1361322724464
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 1o 50u 0oi\nSAMPLE 50 {11sp 20u}"
+      },
+      "date": 1361322744845
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 1o 50u 0oi\nSAMPLE 50 {11sp}"
+      },
+      "date": 1361327176719
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 0o 50u 1oi\nSAMPLE 50 {11sp}"
+      },
+      "date": 1361327357407
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 1o 500u 0oi\nSAMPLE 50 {11sp}"
+      },
+      "date": 1361327390701
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 1o0o1o0o1o0o1o0o1o0oi\nSAMPLE 50 {11sp}"
+      },
+      "date": 1361327438629
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 1o    0o    1o    0o    1o    0o    1o    0o    1o    0oi\nSAMPLE 50 {11sp}"
+      },
+      "date": 1361327487010
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 50{1o0o}i\nSAMPLE 50 {11sp}"
+      },
+      "date": 1361327528498
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 50{1o20u0o}i\nSAMPLE 50 {11sp}"
+      },
+      "date": 1361327566951
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 1o 40u 0oi\nSAMPLE 50 {11sp}"
+      },
+      "date": 1361327616367
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 1o 400u 0oi\nSAMPLE 50 {11sp}"
+      },
+      "date": 1361327633775
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 1o 900u 0oi\nSAMPLE 50 {11sp}"
+      },
+      "date": 1361327654733
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 1o 500u 0oi\nSAMPLE 50 {11sp}"
+      },
+      "date": 1361327669141
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 1o 400u 0oi\nSAMPLE 50 {11sp}"
+      },
+      "date": 1361327728850
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 1o 300u 0oi\nSAMPLE 50 {11sp}"
+      },
+      "date": 1361327741050
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 1o 200u 0oi\nSAMPLE 50 {11sp}"
+      },
+      "date": 1361327768033
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 1o 200u 0oi\nSAMPLE 50 {11sp100u}"
+      },
+      "date": 1361327845815
+    },
+    {
+      "type": "fork",
+      "site": "localhost:3000"
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 1o 200u 0oi\nSAMPLE 50 {11sp400u}"
+      },
+      "date": 1361371449535
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 1o 200u 0oi\nSAMPLE 50 {11sp420u}"
+      },
+      "date": 1361371502649
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 1o 200u 0oi\nSAMPLE 50 {11sp220u}"
+      },
+      "date": 1361371694347
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 1o 200u 0oi\nSAMPLE 50 {11sp}"
+      },
+      "date": 1361371717361
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 1o 200u 0oi\nSAMPLE 50 {11sp001u}"
+      },
+      "date": 1361371781214
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 1o 200u 0oi\nSAMPLE 50 {11sp201u}"
+      },
+      "date": 1361384038701
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 1o 200u 0oi\nSAMPLE 50 {11sp101u}"
+      },
+      "date": 1361384075477
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 1o 200u 0oi\nSAMPLE 50 {11sp}"
+      },
+      "date": 1361386328504
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE SAMPLE\n\nPULSE 4d 1o 300u 0oi\nSAMPLE 50 {11sp}"
+      },
+      "date": 1361386622485
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE/A0 SAMPLE\n\nPULSE 4d 1o 50u A u 0oi\nSAMPLE 50 {11sp}"
+      },
+      "date": 1361389365022
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE/A0 SAMPLE\n\nPULSE 4d 1o 50u A u 0oi\nSAMPLE 50 {11sp 100u}"
+      },
+      "date": 1361389596188
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE/A0 SAMPLE\n\nPULSE 4d 1o 50u A uu 0oi\nSAMPLE 50 {11sp 100u}"
+      },
+      "date": 1361389653341
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE/A0 SAMPLE\n\nPULSE 4d 1o 50u A uuu 0oi\nSAMPLE 50 {11sp 100u}"
+      },
+      "date": 1361389764529
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE/A0 SAMPLE\n\nPULSE 4d 1o 50u A uuu 0oi\nSAMPLE 100 {11sp 100u}"
+      },
+      "date": 1361389810456
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE/A0 SAMPLE\n\nPULSE 4d 1o 50u A uuu 0oi\nSAMPLE 100 {11sp}"
+      },
+      "date": 1361389826919
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE/A0 SAMPLE\n\nPULSE 4d 1o 50u A uu 0oi\nSAMPLE 50 {11sp}"
+      },
+      "date": 1361389950126
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "SECOND PULSE/A0 SAMPLE\n\nPULSE 4d 1o 50u A uu 0oi\nSAMPLE 50 {11sp 100u}"
+      },
+      "date": 1361389958419
+    },
+    {
+      "type": "edit",
+      "id": "fbc9ba030d34b880",
+      "item": {
+        "type": "paragraph",
+        "id": "fbc9ba030d34b880",
+        "text": "We use Txtzyme to read an analog input and report what it finds back to wiki. We'll pulse a piezoelectric speaker and then observe the signal it produces as it rings like a bell."
+      },
+      "date": 1361390146446
+    },
+    {
+      "type": "edit",
+      "id": "ab9107bbf7920d44",
+      "item": {
+        "type": "paragraph",
+        "id": "ab9107bbf7920d44",
+        "text": "The most recent sample shows in the status linke. Click <b>rcvd</b> to see more analog samples."
+      },
+      "date": 1361390192629
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "b96abb3594fbfdf1",
+        "text": ""
+      },
+      "id": "b96abb3594fbfdf1",
+      "type": "add",
+      "after": "a3d51c3fe78a0ffa",
+      "date": 1361390345832
+    },
+    {
+      "type": "edit",
+      "id": "b96abb3594fbfdf1",
+      "item": {
+        "type": "paragraph",
+        "id": "b96abb3594fbfdf1",
+        "text": "On <b>SECOND</b> we PULSE then SAMPLE."
+      },
+      "date": 1361390452893
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "a20550014209d245",
+        "text": ""
+      },
+      "id": "a20550014209d245",
+      "type": "add",
+      "after": "b96abb3594fbfdf1",
+      "date": 1361390453399
+    },
+    {
+      "type": "remove",
+      "id": "a20550014209d245",
+      "date": 1361390467573
+    },
+    {
+      "type": "edit",
+      "id": "b96abb3594fbfdf1",
+      "item": {
+        "type": "paragraph",
+        "id": "b96abb3594fbfdf1",
+        "text": "On <b>SECOND</b> we PULSE then SAMPLE. "
+      },
+      "date": 1361390474572
+    },
+    {
+      "type": "edit",
+      "id": "b96abb3594fbfdf1",
+      "item": {
+        "type": "paragraph",
+        "id": "b96abb3594fbfdf1",
+        "text": "On <b>SECOND</b> we PULSE then SAMPLE. We use the seconds argument to slowly lengthen the pulse."
+      },
+      "date": 1361390573000
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "24aee83d34d86633",
+        "text": ""
+      },
+      "id": "24aee83d34d86633",
+      "type": "add",
+      "after": "b96abb3594fbfdf1",
+      "date": 1361390573508
+    },
+    {
+      "type": "edit",
+      "id": "24aee83d34d86633",
+      "item": {
+        "type": "paragraph",
+        "id": "24aee83d34d86633",
+        "text": "Say <b>PULSE/100</b> to send a 150 µsec pulse. The output pin is returned to input when the pulse completes."
+      },
+      "date": 1361390737196
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "7657308ed05eb8b1",
+        "text": ""
+      },
+      "id": "7657308ed05eb8b1",
+      "type": "add",
+      "after": "24aee83d34d86633",
+      "date": 1361390737701
+    },
+    {
+      "type": "edit",
+      "id": "7657308ed05eb8b1",
+      "item": {
+        "type": "paragraph",
+        "id": "7657308ed05eb8b1",
+        "text": "Say <b>SAMPLE</b> to capture 50 samples at about 200 µsec intervals. Each Txtzyme character takes about 10 µsec to execute."
+      },
+      "date": 1361390951262
+    },
+    {
+      "type": "edit",
+      "id": "7657308ed05eb8b1",
+      "item": {
+        "type": "paragraph",
+        "id": "7657308ed05eb8b1",
+        "text": "Say <b>SAMPLE</b> to capture 50 samples at about 200 µsec intervals. Each Txtzyme character takes about 10 µsec to execute. We add to this an additional 100 µsec pause."
+      },
+      "date": 1361390977452
+    },
+    {
+      "type": "edit",
+      "id": "24aee83d34d86633",
+      "item": {
+        "type": "paragraph",
+        "id": "24aee83d34d86633",
+        "text": "Say <b>PULSE/100</b> to send a 250 µsec pulse. The output pin is returned to input when the pulse completes."
+      },
+      "date": 1361391012595
+    },
+    {
+      "type": "edit",
+      "id": "24aee83d34d86633",
+      "item": {
+        "type": "paragraph",
+        "id": "24aee83d34d86633",
+        "text": "Say <b>PULSE/100</b> to send a 2A+50 = 250 µsec pulse. The output pin is returned to input when the pulse completes."
+      },
+      "date": 1361391042916
+    },
+    {
+      "type": "edit",
+      "id": "fbc9ba030d34b880",
+      "item": {
+        "type": "paragraph",
+        "id": "fbc9ba030d34b880",
+        "text": "We use Txtzyme to read an analog input and report what it finds back to wiki. We'll pulse a piezoelectric speaker on pin 4d and then observe the signal it produces as it rings like a bell. [http://en.wikipedia.org/wiki/Piezoelectric_sensor wikipedia]"
+      },
+      "date": 1361391359890
     }
   ]
 }

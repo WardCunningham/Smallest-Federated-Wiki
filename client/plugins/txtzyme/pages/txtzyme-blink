@@ -4,7 +4,7 @@
     {
       "type": "paragraph",
       "id": "c98617eadc18a30a",
-      "text": "One often tests their microcomputer development process by writing a program that blinks an LED. Here we do it by defining a SECOND handler that runs that frequently."
+      "text": "One often tests their microcomputer development process by writing a program that blinks an LED. "
     },
     {
       "type": "txtzyme",
@@ -14,6 +14,16 @@
     {
       "type": "paragraph",
       "id": "00dc97b2c32289c3",
+      "text": "On <b>SECOND</b> we blink for 200 milliseconds."
+    },
+    {
+      "type": "paragraph",
+      "id": "75d11975a9ea6e31",
+      "text": " "
+    },
+    {
+      "type": "paragraph",
+      "id": "673c9f25e70ea468",
       "text": "By default Txtzyme writes to the LED on pin 6d. However, in this environment some other pin might be left selected. We set it back to 6d every time this page is opened. This naively presumes no other plugin is selecting pins. "
     },
     {
@@ -218,12 +228,22 @@
     {
       "type": "paragraph",
       "id": "ac77e64a6e8f0037",
-      "text": "We also define THUMB which executes with each  thumb event. These happen as one scrubs through data. Try scrubbing this time series to see a cascade of tiny blinks while the thumb is in motion."
+      "text": "On <b>THUMB</b> we blink for a short 5 milliseconds."
+    },
+    {
+      "type": "paragraph",
+      "id": "ed7e570d0352635d",
+      "text": "THUMB happens repeatedly as one scrubs through data. Try scrubbing this time series to see a cascade of tiny blinks while the thumb is in motion."
     },
     {
       "type": "paragraph",
       "id": "b3ad319082ae43a6",
       "text": "See also [[D3 Line]] for more thumb event handling."
+    },
+    {
+      "type": "paragraph",
+      "id": "51ce52616708dba5",
+      "text": "Say <b>BEEP</b> to play a 200 millisecond long beep through a speaker connected to pin 4d. Replace the 200m above with BEEP to hear, rather than see, the blink."
     }
   ],
   "journal": [
@@ -1063,6 +1083,326 @@
         "text": "THUMB 6d 1o 5m 0o _thumb_\nSECOND 6d 1o 200m 6d 0o _blink_\nBEEP 4d200{1o500u0o500u}"
       },
       "date": 1361084559502
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "THUMB 6d 1o 5m 0o _thumb_\nSECOND 6d 1o 200m 6d 0o _blink michael_\nBEEP 4d200{1o500u0o500u}"
+      },
+      "date": 1361129263690
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "THUMB 6d 1o 5m 0o _thumb_\nSECOND 6d 1o BEEP 6d 0o _blink michael_\nBEEP 4d200{1o500u0o500u}"
+      },
+      "date": 1361129374507
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "THUMB 6d 1o 5m 0o _thumb_\nSECOND 6d 1o BEEP 6d 0o _blink_\nBEEP 4d200{1o500u0o500u}"
+      },
+      "date": 1361129415252
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "THUMB 6d 1o 50m 0o _thumb_\nSECOND 6d 1o BEEP 6d 0o _blink_\nBEEP 4d200{1o500u0o500u}"
+      },
+      "date": 1361129499860
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "THUMB 6d 1o 50m 0o _thumb_\nSECOND 6d 1o 200m 6d 0o _blink_\nBEEP 4d200{1o500u0o500u}"
+      },
+      "date": 1361129545996
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "THUMB 6d 1o 5m 0o _thumb_\nSECOND 6d 1o 200m 6d 0o _blink_\nBEEP 4d200{1o500u0o500u}"
+      },
+      "date": 1361297531732
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "THUMB 6d 1o 5m 0o _thumb_\nSECOND 6d 1o BEEP 6d 0o _blink_\nBEEP 4d200{1o500u0o500u}"
+      },
+      "date": 1361297607058
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "THUMB 6d 1o 5m 0o _thumb_\nSECOND 6d 1o 200m 6d 0o _blink_\nBEEP 4d200{1o500u0o500u}"
+      },
+      "date": 1361297764075
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "THUMB 6d 1o 5m 0o _thumb_\nSECOND 6d 1o 200m 6d 0o _blink hello_\nBEEP 4d200{1o500u0o500u}"
+      },
+      "date": 1361302473576
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "THUMB 6d 1o 5m 0o _thumb_\nSECOND 6d 1o 200m 6d 0o _blink_\nBEEP 4d200{1o500u0o500u}"
+      },
+      "date": 1361318238102
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "THUMB 6d 1o 5m 0o _thumb_\nSECOND 6d 1o 200m 6d 0o 100{kp}\nBEEP 4d200{1o500u0o500u}"
+      },
+      "date": 1361394971238
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "THUMB 6d 1o 5m 0o _thumb_\nSECOND 6d 1o 200m 6d 0o 20{0pkp}\nBEEP 4d200{1o500u0o500u}"
+      },
+      "date": 1361395001020
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "THUMB 6d 1o 5m 0o _thumb_\nSECOND 6d 1o 200m 6d 0o\nBEEP 4d200{1o500u0o500u}"
+      },
+      "date": 1361395073626
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "THUMB 6d 1o 5m 0o _thumb_\nSECOND 6d 1o 200m 6d 0o _blink_\nBEEP 4d200{1o500u0o500u}"
+      },
+      "date": 1361395132313
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "THUMB 6d 1o 5m 0o _thumb_\nSECOND 6d 1o 200m 6d 0o _pblink_\nBEEP 4d200{1o500u0o500u}"
+      },
+      "date": 1361395520279
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "THUMB 6d 1o 5m 0o _thumb_\nSECOND 6d 1o 200m 6d 0o _blink_ 10{0pkp}\nBEEP 4d200{1o500u0o500u}"
+      },
+      "date": 1361395552926
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "THUMB 6d 1o 5m 0o _thumb_\nSECOND 6d 1o 200m 6d 0o _blink_\nBEEP 4d200{1o500u0o500u}"
+      },
+      "date": 1361395593349
+    },
+    {
+      "type": "edit",
+      "id": "c98617eadc18a30a",
+      "item": {
+        "type": "paragraph",
+        "id": "c98617eadc18a30a",
+        "text": "One often tests their microcomputer development process by writing a program that blinks an LED. "
+      },
+      "date": 1361395742777
+    },
+    {
+      "type": "edit",
+      "id": "00dc97b2c32289c3",
+      "item": {
+        "type": "paragraph",
+        "id": "00dc97b2c32289c3",
+        "text": "Here we do it by defining a <b>SECOND</b> handler that runs that frequently."
+      },
+      "date": 1361395755519
+    },
+    {
+      "type": "edit",
+      "id": "75d11975a9ea6e31",
+      "item": {
+        "type": "paragraph",
+        "id": "75d11975a9ea6e31",
+        "text": " "
+      },
+      "date": 1361395755821
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "75d11975a9ea6e31",
+        "text": " "
+      },
+      "id": "75d11975a9ea6e31",
+      "type": "add",
+      "after": "00dc97b2c32289c3",
+      "date": 1361395756024
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "673c9f25e70ea468",
+        "text": "By default Txtzyme writes to the LED on pin 6d. However, in this environment some other pin might be left selected. We set it back to 6d every time this page is opened. This naively presumes no other plugin is selecting pins. "
+      },
+      "id": "673c9f25e70ea468",
+      "type": "add",
+      "after": "75d11975a9ea6e31",
+      "date": 1361395756326
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "58806efc2bf89a4b",
+        "text": ""
+      },
+      "id": "58806efc2bf89a4b",
+      "type": "add",
+      "after": "75d11975a9ea6e31",
+      "date": 1361395756334
+    },
+    {
+      "type": "remove",
+      "id": "58806efc2bf89a4b",
+      "date": 1361395757740
+    },
+    {
+      "type": "edit",
+      "id": "00dc97b2c32289c3",
+      "item": {
+        "type": "paragraph",
+        "id": "00dc97b2c32289c3",
+        "text": "On <b>SECOND</b> we blink on for 200 milliseconds."
+      },
+      "date": 1361395870578
+    },
+    {
+      "type": "edit",
+      "id": "00dc97b2c32289c3",
+      "item": {
+        "type": "paragraph",
+        "id": "00dc97b2c32289c3",
+        "text": "On <b>SECOND</b> we blink for 200 milliseconds."
+      },
+      "date": 1361395881041
+    },
+    {
+      "type": "edit",
+      "id": "ac77e64a6e8f0037",
+      "item": {
+        "type": "paragraph",
+        "id": "ac77e64a6e8f0037",
+        "text": "On <b>THUMB</b> we blink for a short 50 milliseconds. These happen as one scrubs through data. Try scrubbing this time series to see a cascade of tiny blinks while the thumb is in motion."
+      },
+      "date": 1361395967914
+    },
+    {
+      "type": "edit",
+      "id": "ac77e64a6e8f0037",
+      "item": {
+        "type": "paragraph",
+        "id": "ac77e64a6e8f0037",
+        "text": "On <b>THUMB</b> we blink for a short 5 milliseconds. THUMB happens repeatedly as one scrubs through data. Try scrubbing this time series to see a cascade of tiny blinks while the thumb is in motion."
+      },
+      "date": 1361396017463
+    },
+    {
+      "type": "edit",
+      "id": "ac77e64a6e8f0037",
+      "item": {
+        "type": "paragraph",
+        "id": "ac77e64a6e8f0037",
+        "text": "On <b>THUMB</b> we blink for a short 5 milliseconds."
+      },
+      "date": 1361396026743
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "ed7e570d0352635d",
+        "text": "THUMB happens repeatedly as one scrubs through data. Try scrubbing this time series to see a cascade of tiny blinks while the thumb is in motion."
+      },
+      "id": "ed7e570d0352635d",
+      "type": "add",
+      "after": "ac77e64a6e8f0037",
+      "date": 1361396027249
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "51ce52616708dba5",
+        "text": ""
+      },
+      "id": "51ce52616708dba5",
+      "type": "add",
+      "after": "b3ad319082ae43a6",
+      "date": 1361396066891
+    },
+    {
+      "type": "edit",
+      "id": "51ce52616708dba5",
+      "item": {
+        "type": "paragraph",
+        "id": "51ce52616708dba5",
+        "text": "Say <b>BEEP</b> to play a 200 millisecond long beep through a speaker connected to pin 4d. Replace the 200m above with BEEP to hear, rather than see, the blink."
+      },
+      "date": 1361396252593
     }
   ]
 }
