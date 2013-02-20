@@ -208,7 +208,7 @@
     {
       "type": "txtzyme",
       "id": "bafdb5e64d92b391",
-      "text": "OPEN CLR CE/0 BL/1 COLON\n\nSECOND TICK/A0\nTICK ADR/0 CH/D0 ADR/1 CH/D1\n\nTHUMB OCT\nOCT ADR/3 CH/48 0b B16 o 1b B17 o 2b B18 o WR\n\nCOLON ADR/2 CH/58\n\nCH CUE/0 CU/1 DAT/A WR\nBRI ADR/0 CUE/0 CU/0 DAT/A WR\n\nADR 0f B0 o 1f B1 o\nDAT 0b B0 o 1b B1 o 2b B2 o 3b B3 o 1d B4 o 0d B5 o 7b B6 o\n\nCLR 7f 0o 10u 1o\nWR 4f 0o 1o\nCUE 6f A o\nCU 5f A o\nCE 5b A o 6b A o\nBL 2d A o\n"
+      "text": "OPEN 6d0o CLR CE/0 BL/1 DIM/5 COLON \n\nSECOND TICK/A0\nTICK ADR/0 CHR/D0 ADR/1 CHR/D1\n\nTHUMB OCT\nOCT ADR/3 CHR/48 0b B16 o 1b B17 o 2b B18 o WR\n\nCOLON ADR/2 CHR/58\n\nCHR CUE/0 CU/1 DAT/A WR\nDIM ADR/0 CUE/0 CU/0 DAT/0 3b B0 o 1d B1 o 0d B2 o WR\n\nADR 0f B0 o 1f B1 o\nDAT 0b B0 o 1b B1 o 2b B2 o 3b B3 o 1d B4 o 0d B5 o 7b B6 o\n\nCLR 7f 0o 10u 1o\nWR 4f 0o 1o\nCUE 6f A o\nCU 5f A o\nCE 5b A o 6b A o\nBL 2d A o\n"
     },
     {
       "type": "paragraph",
@@ -243,12 +243,12 @@
     {
       "type": "paragraph",
       "id": "4d2d6e4270577322",
-      "text": "Say <b>CH</b> to write a character, 7-bit ascii."
+      "text": "Say <b>CHR</b> to write a character, 7-bit ascii."
     },
     {
       "type": "paragraph",
       "id": "18a70f73617237e1",
-      "text": "Say <b>BRI</b> to adjust display brightness, 0-7."
+      "text": "Say <b>DIM</b> to adjust brightness, 0 bright through 7 dim."
     },
     {
       "type": "paragraph",
@@ -1714,6 +1714,292 @@
         "text": "On <b>OPEN</b> clears the display, adds colon."
       },
       "date": 1361248824206
+    },
+    {
+      "type": "move",
+      "order": [
+        "bafdb5e64d92b391",
+        "0948ffff60983085",
+        "f94fba950cb2e66c",
+        "8f57e52f5043338c",
+        "ef635480c8a9765f",
+        "5099a83f08bad61c",
+        "99d9797f149cd96d",
+        "ece9f58774d15a3d",
+        "7b8d0ce2f0aa85b4",
+        "4d2d6e4270577322",
+        "18a70f73617237e1",
+        "0a1780149bd6b09e",
+        "38b9c00cafbf4871"
+      ],
+      "id": "bafdb5e64d92b391",
+      "date": 1361298214063
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN CLR CE/0 BL/1 COLON\n\nSECOND TICK/A0\nTICK ADR/0 CH/D0 ADR/1 CH/D1\n\nTHUMB OCT\nOCT ADR/3 CH/48 0b B16 o 1b B17 o 2b B18 o WR\n\nCOLON ADR/2 CH/59\n\nCH CUE/0 CU/1 DAT/A WR\nBRI ADR/0 CUE/0 CU/0 DAT/A WR\n\nADR 0f B0 o 1f B1 o\nDAT 0b B0 o 1b B1 o 2b B2 o 3b B3 o 1d B4 o 0d B5 o 7b B6 o\n\nCLR 7f 0o 10u 1o\nWR 4f 0o 1o\nCUE 6f A o\nCU 5f A o\nCE 5b A o 6b A o\nBL 2d A o\n"
+      },
+      "date": 1361311469961
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN CLR CE/0 BL/1 COLON\n\nSECOND TICK/A0\nTICK ADR/0 CH/D0 ADR/1 CH/D1\n\nTHUMB OCT\nOCT ADR/3 CH/48 0b B16 o 1b B17 o 2b B18 o WR\n\nCOLON ADR/2 CH/58\n\nCH CUE/0 CU/1 DAT/A WR\nBRI ADR/0 CUE/0 CU/0 DAT/A WR\n\nADR 0f B0 o 1f B1 o\nDAT 0b B0 o 1b B1 o 2b B2 o 3b B3 o 1d B4 o 0d B5 o 7b B6 o\n\nCLR 7f 0o 10u 1o\nWR 4f 0o 1o\nCUE 6f A o\nCU 5f A o\nCE 5b A o 6b A o\nBL 2d A o\n"
+      },
+      "date": 1361311482616
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "8059595cf5818acf"
+      },
+      "id": "8059595cf5818acf",
+      "type": "add",
+      "after": "38b9c00cafbf4871",
+      "date": 1361311642806
+    },
+    {
+      "type": "move",
+      "order": [
+        "0948ffff60983085",
+        "f94fba950cb2e66c",
+        "bafdb5e64d92b391",
+        "8f57e52f5043338c",
+        "ef635480c8a9765f",
+        "5099a83f08bad61c",
+        "99d9797f149cd96d",
+        "ece9f58774d15a3d",
+        "7b8d0ce2f0aa85b4",
+        "4d2d6e4270577322",
+        "18a70f73617237e1",
+        "0a1780149bd6b09e",
+        "38b9c00cafbf4871",
+        "8059595cf5818acf"
+      ],
+      "id": "bafdb5e64d92b391",
+      "date": 1361318505348
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN CLR CE/0 BL/1 BRI/0 COLON\n\nSECOND TICK/A0\nTICK ADR/0 CH/D0 ADR/1 CH/D1\n\nTHUMB OCT\nOCT ADR/3 CH/48 0b B16 o 1b B17 o 2b B18 o WR\n\nCOLON ADR/2 CH/58\n\nCH CUE/0 CU/1 DAT/A WR\nBRI ADR/0 CUE/0 CU/0 DAT/A WR\n\nADR 0f B0 o 1f B1 o\nDAT 0b B0 o 1b B1 o 2b B2 o 3b B3 o 1d B4 o 0d B5 o 7b B6 o\n\nCLR 7f 0o 10u 1o\nWR 4f 0o 1o\nCUE 6f A o\nCU 5f A o\nCE 5b A o 6b A o\nBL 2d A o\n"
+      },
+      "date": 1361383206922
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN CLR CE/0 BL/1 BRI/1 COLON\n\nSECOND TICK/A0\nTICK ADR/0 CH/D0 ADR/1 CH/D1\n\nTHUMB OCT\nOCT ADR/3 CH/48 0b B16 o 1b B17 o 2b B18 o WR\n\nCOLON ADR/2 CH/58\n\nCH CUE/0 CU/1 DAT/A WR\nBRI ADR/0 CUE/0 CU/0 DAT/A WR\n\nADR 0f B0 o 1f B1 o\nDAT 0b B0 o 1b B1 o 2b B2 o 3b B3 o 1d B4 o 0d B5 o 7b B6 o\n\nCLR 7f 0o 10u 1o\nWR 4f 0o 1o\nCUE 6f A o\nCU 5f A o\nCE 5b A o 6b A o\nBL 2d A o\n"
+      },
+      "date": 1361383215791
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN CLR CE/0 BL/1 COLON\n\nSECOND TICK/A0\nTICK ADR/0 CH/D0 ADR/1 CH/D1\n\nTHUMB OCT\nOCT ADR/3 CH/48 0b B16 o 1b B17 o 2b B18 o WR\n\nCOLON ADR/2 CH/58\n\nCH CUE/0 CU/1 DAT/A WR\nBRI ADR/0 CUE/0 CU/0 DAT/A WR\n\nADR 0f B0 o 1f B1 o\nDAT 0b B0 o 1b B1 o 2b B2 o 3b B3 o 1d B4 o 0d B5 o 7b B6 o\n\nCLR 7f 0o 10u 1o\nWR 4f 0o 1o\nCUE 6f A o\nCU 5f A o\nCE 5b A o 6b A o\nBL 2d A o\n"
+      },
+      "date": 1361383224711
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN CLR CE/0 BL/1 BRI/1 COLON \n\nSECOND TICK/A0\nTICK ADR/0 CH/D0 ADR/1 CH/D1\n\nTHUMB OCT\nOCT ADR/3 CH/48 0b B16 o 1b B17 o 2b B18 o WR\n\nCOLON ADR/2 CH/58\n\nCH CUE/0 CU/1 DAT/A WR\nBRI ADR/0 CUE/0 CU/0 DAT/A WR\n\nADR 0f B0 o 1f B1 o\nDAT 0b B0 o 1b B1 o 2b B2 o 3b B3 o 1d B4 o 0d B5 o 7b B6 o\n\nCLR 7f 0o 10u 1o\nWR 4f 0o 1o\nCUE 6f A o\nCU 5f A o\nCE 5b A o 6b A o\nBL 2d A o\n"
+      },
+      "date": 1361401142656
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN CLR CE/0 BL/1 BRI/0 COLON \n\nSECOND TICK/A0\nTICK ADR/0 CH/D0 ADR/1 CH/D1\n\nTHUMB OCT\nOCT ADR/3 CH/48 0b B16 o 1b B17 o 2b B18 o WR\n\nCOLON ADR/2 CH/58\n\nCH CUE/0 CU/1 DAT/A WR\nBRI ADR/0 CUE/0 CU/0 DAT/A WR\n\nADR 0f B0 o 1f B1 o\nDAT 0b B0 o 1b B1 o 2b B2 o 3b B3 o 1d B4 o 0d B5 o 7b B6 o\n\nCLR 7f 0o 10u 1o\nWR 4f 0o 1o\nCUE 6f A o\nCU 5f A o\nCE 5b A o 6b A o\nBL 2d A o\n"
+      },
+      "date": 1361401153479
+    },
+    {
+      "type": "edit",
+      "id": "18a70f73617237e1",
+      "item": {
+        "type": "paragraph",
+        "id": "18a70f73617237e1",
+        "text": "Say <b>BRI</b> to adjust display brightness, "
+      },
+      "date": 1361401394887
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN CLR CE/0 BL/1 BRI/7 COLON \n\nSECOND TICK/A0\nTICK ADR/0 CH/D0 ADR/1 CH/D1\n\nTHUMB OCT\nOCT ADR/3 CH/48 0b B16 o 1b B17 o 2b B18 o WR\n\nCOLON ADR/2 CH/58\n\nCH CUE/0 CU/1 DAT/A WR\nBRI ADR/0 CUE/0 CU/0 DAT/0  WR\n\nADR 0f B0 o 1f B1 o\nDAT 0b B0 o 1b B1 o 2b B2 o 3b B3 o 1d B4 o 0d B5 o 7b B6 o\n\nCLR 7f 0o 10u 1o\nWR 4f 0o 1o\nCUE 6f A o\nCU 5f A o\nCE 5b A o 6b A o\nBL 2d A o\n"
+      },
+      "date": 1361401629792
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN CLR CE/0 BL/1 BRI/7 COLON \n\nSECOND TICK/A0\nTICK ADR/0 CH/D0 ADR/1 CH/D1\n\nTHUMB OCT\nOCT ADR/3 CH/48 0b B16 o 1b B17 o 2b B18 o WR\n\nCOLON ADR/2 CH/58\n\nCH CUE/0 CU/1 DAT/A WR\nBRI ADR/0 CUE/0 CU/0 DAT/0 3b B0 o 1d B1 o 0d B2 o WR\n\nADR 0f B0 o 1f B1 o\nDAT 0b B0 o 1b B1 o 2b B2 o 3b B3 o 1d B4 o 0d B5 o 7b B6 o\n\nCLR 7f 0o 10u 1o\nWR 4f 0o 1o\nCUE 6f A o\nCU 5f A o\nCE 5b A o 6b A o\nBL 2d A o\n"
+      },
+      "date": 1361401704721
+    },
+    {
+      "type": "edit",
+      "id": "18a70f73617237e1",
+      "item": {
+        "type": "paragraph",
+        "id": "18a70f73617237e1",
+        "text": "Say <b>BRI</b> to adjust display brightness, 0 through 7, brightest to dimest."
+      },
+      "date": 1361401837212
+    },
+    {
+      "type": "edit",
+      "id": "18a70f73617237e1",
+      "item": {
+        "type": "paragraph",
+        "id": "18a70f73617237e1",
+        "text": "Say <b>BRI</b> to adjust display brightness, 0 brightest through 7 dimest."
+      },
+      "date": 1361401884689
+    },
+    {
+      "type": "edit",
+      "id": "18a70f73617237e1",
+      "item": {
+        "type": "paragraph",
+        "id": "18a70f73617237e1",
+        "text": "Say <b>BRI</b> to adjust display brightness, 0 brigh through 7 dim."
+      },
+      "date": 1361401907665
+    },
+    {
+      "type": "edit",
+      "id": "18a70f73617237e1",
+      "item": {
+        "type": "paragraph",
+        "id": "18a70f73617237e1",
+        "text": "Say <b>BRI</b> to adjust brightness, 0 brigh through 7 dim."
+      },
+      "date": 1361401917008
+    },
+    {
+      "type": "edit",
+      "id": "18a70f73617237e1",
+      "item": {
+        "type": "paragraph",
+        "id": "18a70f73617237e1",
+        "text": "Say <b>DIM</b> to adjust brightness, 0 bright through 7 dim."
+      },
+      "date": 1361402241743
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN CLR CE/0 BL/1 DIM/7 COLON \n\nSECOND TICK/A0\nTICK ADR/0 CH/D0 ADR/1 CH/D1\n\nTHUMB OCT\nOCT ADR/3 CH/48 0b B16 o 1b B17 o 2b B18 o WR\n\nCOLON ADR/2 CH/58\n\nCH CUE/0 CU/1 DAT/A WR\nDIM ADR/0 CUE/0 CU/0 DAT/0 3b B0 o 1d B1 o 0d B2 o WR\n\nADR 0f B0 o 1f B1 o\nDAT 0b B0 o 1b B1 o 2b B2 o 3b B3 o 1d B4 o 0d B5 o 7b B6 o\n\nCLR 7f 0o 10u 1o\nWR 4f 0o 1o\nCUE 6f A o\nCU 5f A o\nCE 5b A o 6b A o\nBL 2d A o\n"
+      },
+      "date": 1361402262079
+    },
+    {
+      "type": "edit",
+      "id": "4d2d6e4270577322",
+      "item": {
+        "type": "paragraph",
+        "id": "4d2d6e4270577322",
+        "text": "Say <b>CHR</b> to write a character, 7-bit ascii."
+      },
+      "date": 1361402285542
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN CLR CE/0 BL/1 DIM/7 COLON \n\nSECOND TICK/A0\nTICK ADR/0 CHR/D0 ADR/1 CHR/D1\n\nTHUMB OCT\nOCT ADR/3 CHR/48 0b B16 o 1b B17 o 2b B18 o WR\n\nCOLON ADR/2 CHR/58\n\nCHR CUE/0 CU/1 DAT/A WR\nDIM ADR/0 CUE/0 CU/0 DAT/0 3b B0 o 1d B1 o 0d B2 o WR\n\nADR 0f B0 o 1f B1 o\nDAT 0b B0 o 1b B1 o 2b B2 o 3b B3 o 1d B4 o 0d B5 o 7b B6 o\n\nCLR 7f 0o 10u 1o\nWR 4f 0o 1o\nCUE 6f A o\nCU 5f A o\nCE 5b A o 6b A o\nBL 2d A o\n"
+      },
+      "date": 1361402354092
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN CLR CE/0 BL/1 DIM/6 COLON \n\nSECOND TICK/A0\nTICK ADR/0 CHR/D0 ADR/1 CHR/D1\n\nTHUMB OCT\nOCT ADR/3 CHR/48 0b B16 o 1b B17 o 2b B18 o WR\n\nCOLON ADR/2 CHR/58\n\nCHR CUE/0 CU/1 DAT/A WR\nDIM ADR/0 CUE/0 CU/0 DAT/0 3b B0 o 1d B1 o 0d B2 o WR\n\nADR 0f B0 o 1f B1 o\nDAT 0b B0 o 1b B1 o 2b B2 o 3b B3 o 1d B4 o 0d B5 o 7b B6 o\n\nCLR 7f 0o 10u 1o\nWR 4f 0o 1o\nCUE 6f A o\nCU 5f A o\nCE 5b A o 6b A o\nBL 2d A o\n"
+      },
+      "date": 1361402369548
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN CLR CE/0 BL/1 DIM/3 COLON \n\nSECOND TICK/A0\nTICK ADR/0 CHR/D0 ADR/1 CHR/D1\n\nTHUMB OCT\nOCT ADR/3 CHR/48 0b B16 o 1b B17 o 2b B18 o WR\n\nCOLON ADR/2 CHR/58\n\nCHR CUE/0 CU/1 DAT/A WR\nDIM ADR/0 CUE/0 CU/0 DAT/0 3b B0 o 1d B1 o 0d B2 o WR\n\nADR 0f B0 o 1f B1 o\nDAT 0b B0 o 1b B1 o 2b B2 o 3b B3 o 1d B4 o 0d B5 o 7b B6 o\n\nCLR 7f 0o 10u 1o\nWR 4f 0o 1o\nCUE 6f A o\nCU 5f A o\nCE 5b A o 6b A o\nBL 2d A o\n"
+      },
+      "date": 1361402378955
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN CLR CE/0 BL/1 DIM/5 COLON \n\nSECOND TICK/A0\nTICK ADR/0 CHR/D0 ADR/1 CHR/D1\n\nTHUMB OCT\nOCT ADR/3 CHR/48 0b B16 o 1b B17 o 2b B18 o WR\n\nCOLON ADR/2 CHR/58\n\nCHR CUE/0 CU/1 DAT/A WR\nDIM ADR/0 CUE/0 CU/0 DAT/0 3b B0 o 1d B1 o 0d B2 o WR\n\nADR 0f B0 o 1f B1 o\nDAT 0b B0 o 1b B1 o 2b B2 o 3b B3 o 1d B4 o 0d B5 o 7b B6 o\n\nCLR 7f 0o 10u 1o\nWR 4f 0o 1o\nCUE 6f A o\nCU 5f A o\nCE 5b A o 6b A o\nBL 2d A o\n"
+      },
+      "date": 1361402399119
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN d60o CLR CE/0 BL/1 DIM/5 COLON \n\nSECOND TICK/A0\nTICK ADR/0 CHR/D0 ADR/1 CHR/D1\n\nTHUMB OCT\nOCT ADR/3 CHR/48 0b B16 o 1b B17 o 2b B18 o WR\n\nCOLON ADR/2 CHR/58\n\nCHR CUE/0 CU/1 DAT/A WR\nDIM ADR/0 CUE/0 CU/0 DAT/0 3b B0 o 1d B1 o 0d B2 o WR\n\nADR 0f B0 o 1f B1 o\nDAT 0b B0 o 1b B1 o 2b B2 o 3b B3 o 1d B4 o 0d B5 o 7b B6 o\n\nCLR 7f 0o 10u 1o\nWR 4f 0o 1o\nCUE 6f A o\nCU 5f A o\nCE 5b A o 6b A o\nBL 2d A o\n"
+      },
+      "date": 1361402531055
+    },
+    {
+      "type": "edit",
+      "id": "bafdb5e64d92b391",
+      "item": {
+        "type": "txtzyme",
+        "id": "bafdb5e64d92b391",
+        "text": "OPEN 6d0o CLR CE/0 BL/1 DIM/5 COLON \n\nSECOND TICK/A0\nTICK ADR/0 CHR/D0 ADR/1 CHR/D1\n\nTHUMB OCT\nOCT ADR/3 CHR/48 0b B16 o 1b B17 o 2b B18 o WR\n\nCOLON ADR/2 CHR/58\n\nCHR CUE/0 CU/1 DAT/A WR\nDIM ADR/0 CUE/0 CU/0 DAT/0 3b B0 o 1d B1 o 0d B2 o WR\n\nADR 0f B0 o 1f B1 o\nDAT 0b B0 o 1b B1 o 2b B2 o 3b B3 o 1d B4 o 0d B5 o 7b B6 o\n\nCLR 7f 0o 10u 1o\nWR 4f 0o 1o\nCUE 6f A o\nCU 5f A o\nCE 5b A o 6b A o\nBL 2d A o\n"
+      },
+      "date": 1361402548422
+    },
+    {
+      "type": "remove",
+      "id": "8059595cf5818acf",
+      "date": 1361402659146
     }
   ]
 }
