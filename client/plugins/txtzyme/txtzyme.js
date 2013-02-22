@@ -136,7 +136,7 @@
   };
 
   bind = function($item, item) {
-    var $page, defn, host, progress, rcvd, response, rrept, sent, socket, srept, startTicking, tick, timer, trigger;
+    var $page, defn, frame, host, progress, rcvd, response, rrept, sent, socket, srept, startTicking, tick, timer, trigger;
     defn = parse(item.text);
     $page = $item.parents('.page:first');
     host = $page.data('site') || location.host;
@@ -153,10 +153,17 @@
         return response;
       };
     }
+    frame = 0;
     tick = function() {
       var arg, now;
+      frame = frame % 40 + 1;
       now = new Date();
-      arg = [now.getSeconds(), now.getMinutes(), now.getHours()];
+      arg = [frame, now.getSeconds(), now.getMinutes(), now.getHours()];
+      trigger('FRAME', arg);
+      if (frame !== 1) {
+        return;
+      }
+      arg.shift();
       trigger('SECOND', arg);
       if (arg[0]) {
         return;
@@ -173,7 +180,7 @@
     };
     timer = null;
     startTicking = function() {
-      timer = setInterval(tick, 1000);
+      timer = setInterval(tick, 25);
       return tick();
     };
     setTimeout(startTicking, 1000 - (new Date().getMilliseconds()));

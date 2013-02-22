@@ -3303,7 +3303,7 @@ require.define("/plugins/txtzyme/txtzyme.js",function(require,module,exports,__d
   };
 
   bind = function($item, item) {
-    var $page, defn, host, progress, rcvd, response, rrept, sent, socket, srept, startTicking, tick, timer, trigger;
+    var $page, defn, frame, host, progress, rcvd, response, rrept, sent, socket, srept, startTicking, tick, timer, trigger;
     defn = parse(item.text);
     $page = $item.parents('.page:first');
     host = $page.data('site') || location.host;
@@ -3320,8 +3320,14 @@ require.define("/plugins/txtzyme/txtzyme.js",function(require,module,exports,__d
         return response;
       };
     }
+    frame = 1;
     tick = function() {
       var arg, now;
+      frame = frame % 40 + 1;
+      trigger('FRAME', frame);
+      if (frame !== 1) {
+        return;
+      }
       now = new Date();
       arg = [now.getSeconds(), now.getMinutes(), now.getHours()];
       trigger('SECOND', arg);
@@ -3340,7 +3346,7 @@ require.define("/plugins/txtzyme/txtzyme.js",function(require,module,exports,__d
     };
     timer = null;
     startTicking = function() {
-      timer = setInterval(tick, 1000);
+      timer = setInterval(tick, 25);
       return tick();
     };
     setTimeout(startTicking, 1000 - (new Date().getMilliseconds()));
