@@ -1,0 +1,369 @@
+{
+  "title": "About Linkmap Plugin",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "cbed269155f9e810",
+      "text": "This plugin will ask the server to create a map of all its pages and the links between them. [https://github.com/WardCunningham/Smallest-Federated-Wiki/tree/master/client/plugins/linkmap github]"
+    },
+    {
+      "type": "linkmap",
+      "id": "84512f4360077c52"
+    },
+    {
+      "type": "paragraph",
+      "id": "bcf2f0e5ec4f39f2",
+      "text": "This plugin uses websockets to communicate with its server-side half. This anticipates long running, low latency, continuous updates but does not choose to offer this yet."
+    },
+    {
+      "type": "paragraph",
+      "id": "6a1b97aaf55ec0e1",
+      "text": "<h3> Results"
+    },
+    {
+      "type": "paragraph",
+      "id": "355c3c826cc6b6be",
+      "text": "The client-side will report counts when it gets a successful report from the server. Double-click the plugin to see the server's report in json."
+    },
+    {
+      "type": "code",
+      "id": "368cc7dc44c2b51f",
+      "text": "Starting Linkmap\nLinkmap opened\nLinkmap 187 nodes, 140 links\nLinkmap closed"
+    },
+    {
+      "type": "paragraph",
+      "id": "90a582b84f2d8ce2",
+      "text": "The plugin makes reformatted details of the report available to other pages for further visualization. We currently restrict links to the first four on any page."
+    },
+    {
+      "type": "paragraph",
+      "id": "9f5b9040015d595d",
+      "text": "See [[Linkmap Network Diagram]]."
+    },
+    {
+      "type": "paragraph",
+      "id": "8b98198bbd2ff061",
+      "text": "If something goes wrong establishing the websocket connection then one will see an abbreviated report. The most likely cause is talking to a server that doesn't support server-side plugins. "
+    },
+    {
+      "type": "code",
+      "id": "0a5b9c8c9e195586",
+      "text": "Starting Linkmap\nLinkmap closed"
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "item": {
+        "title": "About Linkmap Plugin"
+      },
+      "date": 1361549913934
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "cbed269155f9e810",
+        "text": "This plugin will ask the server to create a map of all its pages and the links between them."
+      },
+      "id": "cbed269155f9e810",
+      "date": 1361549939094
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "linkmap",
+        "id": "84512f4360077c52"
+      },
+      "after": "cbed269155f9e810",
+      "id": "84512f4360077c52",
+      "date": 1361549948428
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "bcf2f0e5ec4f39f2"
+      },
+      "id": "bcf2f0e5ec4f39f2",
+      "type": "add",
+      "after": "84512f4360077c52",
+      "date": 1361550007255
+    },
+    {
+      "type": "edit",
+      "id": "bcf2f0e5ec4f39f2",
+      "item": {
+        "type": "paragraph",
+        "id": "bcf2f0e5ec4f39f2",
+        "text": "This plugin uses websockets to communicate with its server-side half. This anticipates long running, low latency, continuous updates but does not choose to offer this yet."
+      },
+      "date": 1361550291371
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "6a1b97aaf55ec0e1"
+      },
+      "id": "6a1b97aaf55ec0e1",
+      "type": "add",
+      "after": "bcf2f0e5ec4f39f2",
+      "date": 1361550294556
+    },
+    {
+      "type": "edit",
+      "id": "6a1b97aaf55ec0e1",
+      "item": {
+        "type": "paragraph",
+        "id": "6a1b97aaf55ec0e1",
+        "text": "<h3> Results"
+      },
+      "date": 1361550333275
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "355c3c826cc6b6be",
+        "text": ""
+      },
+      "id": "355c3c826cc6b6be",
+      "type": "add",
+      "after": "6a1b97aaf55ec0e1",
+      "date": 1361550333780
+    },
+    {
+      "type": "edit",
+      "id": "355c3c826cc6b6be",
+      "item": {
+        "type": "paragraph",
+        "id": "355c3c826cc6b6be",
+        "text": "The client-side will report counts when it gets a successful report from the server. It also makes details of the report available to other pages for further visualization. See [[Network Diagram]]."
+      },
+      "date": 1361550478164
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "8b98198bbd2ff061",
+        "text": ""
+      },
+      "id": "8b98198bbd2ff061",
+      "type": "add",
+      "after": "355c3c826cc6b6be",
+      "date": 1361550478668
+    },
+    {
+      "type": "edit",
+      "id": "8b98198bbd2ff061",
+      "item": {
+        "type": "paragraph",
+        "id": "8b98198bbd2ff061",
+        "text": "If something goes wrong establishing the websocket connection then one will see an abbreviated report. The most likely cause is talking to a server that doesn't support server-side plugins. "
+      },
+      "date": 1361550592322
+    },
+    {
+      "type": "edit",
+      "id": "355c3c826cc6b6be",
+      "item": {
+        "type": "paragraph",
+        "id": "355c3c826cc6b6be",
+        "text": "The client-side will report counts when it gets a successful report from the server. It also makes details of the report available to other pages for further visualization."
+      },
+      "date": 1361550598578
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "9f5b9040015d595d",
+        "text": "See [[Network Diagram]]."
+      },
+      "id": "9f5b9040015d595d",
+      "type": "add",
+      "after": "355c3c826cc6b6be",
+      "date": 1361550599083
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "368cc7dc44c2b51f"
+      },
+      "id": "368cc7dc44c2b51f",
+      "type": "add",
+      "after": "8b98198bbd2ff061",
+      "date": 1361550606728
+    },
+    {
+      "type": "edit",
+      "id": "368cc7dc44c2b51f",
+      "item": {
+        "type": "code",
+        "id": "368cc7dc44c2b51f",
+        "text": "Starting Linkmap\n\nLinkmap opened\n\nLinkmap 187 nodes, 140 links\n\nLinkmap closed\n"
+      },
+      "date": 1361550613112
+    },
+    {
+      "type": "move",
+      "order": [
+        "cbed269155f9e810",
+        "84512f4360077c52",
+        "bcf2f0e5ec4f39f2",
+        "6a1b97aaf55ec0e1",
+        "355c3c826cc6b6be",
+        "368cc7dc44c2b51f",
+        "9f5b9040015d595d",
+        "8b98198bbd2ff061"
+      ],
+      "id": "368cc7dc44c2b51f",
+      "date": 1361550625279
+    },
+    {
+      "type": "edit",
+      "id": "368cc7dc44c2b51f",
+      "item": {
+        "type": "code",
+        "id": "368cc7dc44c2b51f",
+        "text": "Starting Linkmap\nLinkmap opened\nLinkmap 187 nodes, 140 links\nLinkmap closed"
+      },
+      "date": 1361550638809
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "0a5b9c8c9e195586"
+      },
+      "id": "0a5b9c8c9e195586",
+      "type": "add",
+      "after": "8b98198bbd2ff061",
+      "date": 1361550690241
+    },
+    {
+      "type": "edit",
+      "id": "0a5b9c8c9e195586",
+      "item": {
+        "type": "code",
+        "id": "0a5b9c8c9e195586",
+        "text": "Starting Linkmap\nLinkmap closed"
+      },
+      "date": 1361550698542
+    },
+    {
+      "type": "edit",
+      "id": "355c3c826cc6b6be",
+      "item": {
+        "type": "paragraph",
+        "id": "355c3c826cc6b6be",
+        "text": "The client-side will report counts when it gets a successful report from the server. It also makes details of the report available to other pages for further visualization. Double-click to see the text of this report."
+      },
+      "date": 1361550781697
+    },
+    {
+      "type": "edit",
+      "id": "355c3c826cc6b6be",
+      "item": {
+        "type": "paragraph",
+        "id": "355c3c826cc6b6be",
+        "text": "The client-side will report counts when it gets a successful report from the server. It also makes details of the report available to other pages for further visualization."
+      },
+      "date": 1361550834832
+    },
+    {
+      "type": "edit",
+      "id": "355c3c826cc6b6be",
+      "item": {
+        "type": "paragraph",
+        "id": "355c3c826cc6b6be",
+        "text": "The client-side will report counts when it gets a successful report from the server. Double-click to see the server's report in json."
+      },
+      "date": 1361550897288
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "90a582b84f2d8ce2",
+        "text": " It also makes details of the report available to other pages for further visualization."
+      },
+      "id": "90a582b84f2d8ce2",
+      "type": "add",
+      "after": "355c3c826cc6b6be",
+      "date": 1361550897794
+    },
+    {
+      "type": "edit",
+      "id": "90a582b84f2d8ce2",
+      "item": {
+        "type": "paragraph",
+        "id": "90a582b84f2d8ce2",
+        "text": "The plugin makes details of the report available to other pages for further visualization."
+      },
+      "date": 1361550925732
+    },
+    {
+      "type": "move",
+      "order": [
+        "cbed269155f9e810",
+        "84512f4360077c52",
+        "bcf2f0e5ec4f39f2",
+        "6a1b97aaf55ec0e1",
+        "355c3c826cc6b6be",
+        "368cc7dc44c2b51f",
+        "90a582b84f2d8ce2",
+        "9f5b9040015d595d",
+        "8b98198bbd2ff061",
+        "0a5b9c8c9e195586"
+      ],
+      "id": "90a582b84f2d8ce2",
+      "date": 1361550929254
+    },
+    {
+      "type": "edit",
+      "id": "90a582b84f2d8ce2",
+      "item": {
+        "type": "paragraph",
+        "id": "90a582b84f2d8ce2",
+        "text": "The plugin makes reformatted details of the report available to other pages for further visualization."
+      },
+      "date": 1361550940316
+    },
+    {
+      "type": "edit",
+      "id": "90a582b84f2d8ce2",
+      "item": {
+        "type": "paragraph",
+        "id": "90a582b84f2d8ce2",
+        "text": "The plugin makes reformatted details of the report available to other pages for further visualization. We currently restrict links to the first four on any page."
+      },
+      "date": 1361551037874
+    },
+    {
+      "type": "edit",
+      "id": "cbed269155f9e810",
+      "item": {
+        "type": "paragraph",
+        "id": "cbed269155f9e810",
+        "text": "This plugin will ask the server to create a map of all its pages and the links between them. [https://github.com/WardCunningham/Smallest-Federated-Wiki/tree/master/client/plugins/linkmap github]"
+      },
+      "date": 1361551140736
+    },
+    {
+      "type": "edit",
+      "id": "355c3c826cc6b6be",
+      "item": {
+        "type": "paragraph",
+        "id": "355c3c826cc6b6be",
+        "text": "The client-side will report counts when it gets a successful report from the server. Double-click the plugin to see the server's report in json."
+      },
+      "date": 1361551180590
+    },
+    {
+      "type": "edit",
+      "id": "9f5b9040015d595d",
+      "item": {
+        "type": "paragraph",
+        "id": "9f5b9040015d595d",
+        "text": "See [[Linkmap Network Diagram]]."
+      },
+      "date": 1361551756906
+    }
+  ]
+}

@@ -87,9 +87,14 @@ bind = ($item, item) ->
     $item.addClass 'sequence-source'
     $item.get(0).getSequenceData = -> response
 
+  frame = 0
   tick = ->
+    frame = frame%40 + 1
     now = new Date()
-    arg = [now.getSeconds(), now.getMinutes(), now.getHours()]
+    arg = [frame, now.getSeconds(), now.getMinutes(), now.getHours()]
+    trigger 'FRAME', arg
+    return unless frame is 1
+    arg.shift()
     trigger 'SECOND', arg
     return if arg[0]; trigger 'MINUTE', arg
     return if arg[1]; trigger 'HOUR', arg
@@ -97,7 +102,7 @@ bind = ($item, item) ->
 
   timer = null
   startTicking = ->
-    timer = setInterval tick, 1000
+    timer = setInterval tick, 25
     tick()
 
   setTimeout startTicking, 1000-(new Date().getMilliseconds())

@@ -1,0 +1,87 @@
+{
+  "title": "Linkmap Network Diagram",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "66ca1c57720d32e5",
+      "text": "Here we render a force layout network diagram of a wiki's pages and links between pages as reported by the Linkmap plugin. See [[About Force Plugin]]"
+    },
+    {
+      "type": "force",
+      "id": "41cae7d03b2f6c4a"
+    },
+    {
+      "type": "paragraph",
+      "id": "3636121a301564f6",
+      "text": "The Linkmap plugin edits the server-reported data to make the display here more pleasing for large networks. A better approach might be to make this diagram user configurable or even interactive."
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "item": {
+        "title": "Linkmap Network Diagram"
+      },
+      "date": 1361551761909
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "66ca1c57720d32e5"
+      },
+      "id": "66ca1c57720d32e5",
+      "type": "add",
+      "date": 1361551804229
+    },
+    {
+      "type": "edit",
+      "id": "66ca1c57720d32e5",
+      "item": {
+        "type": "paragraph",
+        "id": "66ca1c57720d32e5",
+        "text": "Here we render a force layout network diagram of a wiki's pages and links between pages as reported by the Linkmap plugin. "
+      },
+      "date": 1361551906926
+    },
+    {
+      "type": "edit",
+      "id": "66ca1c57720d32e5",
+      "item": {
+        "type": "paragraph",
+        "id": "66ca1c57720d32e5",
+        "text": "Here we render a force layout network diagram of a wiki's pages and links between pages as reported by the Linkmap plugin. See [[About Force Plugin]]"
+      },
+      "date": 1361551929261
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "force",
+        "id": "41cae7d03b2f6c4a"
+      },
+      "after": "66ca1c57720d32e5",
+      "id": "41cae7d03b2f6c4a",
+      "date": 1361551937331
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "3636121a301564f6"
+      },
+      "id": "3636121a301564f6",
+      "type": "add",
+      "after": "41cae7d03b2f6c4a",
+      "date": 1361551960595
+    },
+    {
+      "type": "edit",
+      "id": "3636121a301564f6",
+      "item": {
+        "type": "paragraph",
+        "id": "3636121a301564f6",
+        "text": "The Linkmap plugin edits the server-reported data to make the display here more pleasing for large networks. A better approach might be to make this diagram user configurable or even interactive."
+      },
+      "date": 1361552190069
+    }
+  ]
+}
