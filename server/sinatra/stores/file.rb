@@ -7,7 +7,9 @@ class FileStore < Store
       File.read path if File.exist? path
     end
 
-    alias_method :get_blob, :get_text
+    def get_blob(path)
+      File.binread path if File.exist? path
+    end
 
     ### PUT
 
