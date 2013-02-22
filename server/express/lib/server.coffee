@@ -151,7 +151,7 @@ module.exports = exports = (argv) ->
   # if it is return the owner, if not set the owner
   # to the id if it is provided.
   setOwner = (id, cb) ->
-    path.exists argv.id, (exists) ->
+    fs.exists argv.id, (exists) ->
       if exists
         fs.readFile(argv.id, (err, data) ->
           if err then return cb err
@@ -372,7 +372,7 @@ module.exports = exports = (argv) ->
   app.post '/favicon.png', authenticated, (req, res) ->
     favicon = req.body.image.replace(///^data:image/png;base64,///, "")
     buf = new Buffer(favicon, 'base64')
-    path.exists argv.status, (exists) ->
+    fs.exists argv.status, (exists) ->
       if exists
         fs.writeFile favLoc, buf, (e) ->
           if e then return res.e e
