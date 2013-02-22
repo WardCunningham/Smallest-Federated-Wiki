@@ -3320,16 +3320,17 @@ require.define("/plugins/txtzyme/txtzyme.js",function(require,module,exports,__d
         return response;
       };
     }
-    frame = 1;
+    frame = 0;
     tick = function() {
       var arg, now;
       frame = frame % 40 + 1;
-      trigger('FRAME', frame);
+      now = new Date();
+      arg = [frame, now.getSeconds(), now.getMinutes(), now.getHours()];
+      trigger('FRAME', arg);
       if (frame !== 1) {
         return;
       }
-      now = new Date();
-      arg = [now.getSeconds(), now.getMinutes(), now.getHours()];
+      arg.shift();
       trigger('SECOND', arg);
       if (arg[0]) {
         return;
