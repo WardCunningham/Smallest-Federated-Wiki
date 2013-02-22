@@ -379,7 +379,7 @@ module.exports = exports = (argv) ->
           res.send('Favicon Saved')
 
       else
-        mkdirp argv.status, 0777, ->
+        mkdirp argv.status, ->
           fs.writeFile favLoc, buf, (e) ->
             if e then return res.e e
             res.send('Favicon Saved')
