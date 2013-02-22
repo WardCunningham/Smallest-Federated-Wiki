@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "coffee-script": "*",
-    "express": "~2.5",
+    "express": "*",
     "mkdirp": "*",
     "optimist": "*",
     "passport": "*",
