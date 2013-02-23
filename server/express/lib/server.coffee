@@ -48,9 +48,9 @@ gitVersion = child_process.exec 'git log -10 --oneline || echo no git log', (err
 
 # Set export objects for node and coffee to a function that generates a sfw server.
 module.exports = exports = (argv) ->
+  logWatchSocket = null
   # Create the main application object, app.
   app = express()
-  server = http.createServer(app)
 
   # defaultargs.coffee exports a function that takes the argv object
   # that is passed in and then does its
@@ -87,60 +87,6 @@ module.exports = exports = (argv) ->
   # Tell pagehandler where to find data, and default data.
   app.pagehandler = pagehandler = pageFactory(argv)
 
-  ### Plugins ###
-  # Should replace most WebSocketServers below.
-  plugins = pluginsFactory(argv)
-  plugins.startServers({server: server, argv})
-
-  ### Sockets ###
-  # General, gloabl use sockets
-  echoSocket     = new WebSocketServer({server: server, path: '/system/echo'})
-  logWatchSocket = new WebSocketServer({server: server, path: '/system/logwatch'})
-  counterSocket  = new WebSocketServer({server: server, path: '/system/counter'})
-  echoSocket.on 'connection', (ws) ->
-    ws.on 'message', (message) ->
-      log 'socktest message from client:', message
-      ws.send message, (e) ->
-        if e
-          log 'unable to send ws message:', e
-          return
-
-  logWatchSocket.on 'connection', (ws) ->
-    logWatchSocket.on 'fetch', fetchListener = (page) ->
-      reference =
-        title: page.title
-        listeners: logWatchSocket.listeners('fetch').length
-      ws.send JSON.stringify(reference), (e) ->
-        if e
-          log 'unable to send ws message: ', e, reference
-          logWatchSocket.removeListener 'fetch', fetchListener
-          ws.close()
-
-    ws.on 'message', (message) ->
-      log 'logWatch message from client:', message
-
-  counterSocket.on 'connection', (ws) ->
-    counter = spawn( path.join(__dirname, '..', 'plugins', 'counter', 'counter.js') )
-    counter.stdout.on 'data', (data) ->
-      ws.send data, (e) ->
-        if e
-          log 'client disconnected, killing child counter proc...'
-          counter.kill('SIGHUP')
-          return
-
-    counter.stderr.on 'data', (data) ->
-      ws.send 'stderr: ' + data, (e) ->
-        if e
-          log 'client disconnected, killing child counter proc...'
-          counter.kill('SIGHUP')
-          return
-
-    counter.on 'exit', (code) ->
-      ws.send 'child process exited with code: ' + code, (e) ->
-        if e
-          log 'client disconnected, killing child counter proc...'
-          counter.kill('SIGHUP')
-          return
 
   #### Setting up Authentication ####
   # The owner of a server is simply the open id url that the wiki
@@ -538,9 +484,63 @@ module.exports = exports = (argv) ->
   setOwner null, (e) ->
     # Throw if you can't find the initial owner
     if e then throw e
-    app.listen argv.p, argv.o, ->
+    server = app.listen argv.p, argv.o, ->
       app.emit 'listening'
       loga "Smallest Federated Wiki server listening on", argv.p, "in mode:", app.settings.env
+    ### Plugins ###
+    # Should replace most WebSocketServers below.
+    plugins = pluginsFactory(argv)
+    plugins.startServers({server: server, argv})
+
+    ### Sockets ###
+    # General, gloabl use sockets
+    echoSocket     = new WebSocketServer({server: server, path: '/system/echo'})
+    logWatchSocket = new WebSocketServer({server: server, path: '/system/logwatch'})
+    counterSocket  = new WebSocketServer({server: server, path: '/system/counter'})
+    echoSocket.on 'connection', (ws) ->
+      ws.on 'message', (message) ->
+        log 'socktest message from client:', message
+        ws.send message, (e) ->
+          if e
+            log 'unable to send ws message:', e
+            return
+
+    logWatchSocket.on 'connection', (ws) ->
+      logWatchSocket.on 'fetch', fetchListener = (page) ->
+        reference =
+          title: page.title
+          listeners: logWatchSocket.listeners('fetch').length
+        ws.send JSON.stringify(reference), (e) ->
+          if e
+            log 'unable to send ws message: ', e, reference
+            logWatchSocket.removeListener 'fetch', fetchListener
+            ws.close()
+
+      ws.on 'message', (message) ->
+        log 'logWatch message from client:', message
+
+    counterSocket.on 'connection', (ws) ->
+      counter = spawn( path.join(__dirname, '..', 'plugins', 'counter', 'counter.js') )
+      counter.stdout.on 'data', (data) ->
+        ws.send data, (e) ->
+          if e
+            log 'client disconnected, killing child counter proc...'
+            counter.kill('SIGHUP')
+            return
+
+      counter.stderr.on 'data', (data) ->
+        ws.send 'stderr: ' + data, (e) ->
+          if e
+            log 'client disconnected, killing child counter proc...'
+            counter.kill('SIGHUP')
+            return
+
+      counter.on 'exit', (code) ->
+        ws.send 'child process exited with code: ' + code, (e) ->
+          if e
+            log 'client disconnected, killing child counter proc...'
+            counter.kill('SIGHUP')
+            return
 
   # Return app when called, so that it can be watched for events and shutdown with .close() externally.
   app
