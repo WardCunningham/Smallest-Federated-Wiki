@@ -23,7 +23,6 @@ express = require 'express'
 hbs = require 'hbs'
 passportImport = require 'passport'
 OpenIDstrat = require('passport-openid').Strategy
-WebSocketServer = require('ws').Server
 glob = require 'glob'
 es = require 'event-stream'
 JSONStream = require 'JSONStream'
@@ -48,7 +47,6 @@ gitVersion = child_process.exec 'git log -10 --oneline || echo no git log', (err
 
 # Set export objects for node and coffee to a function that generates a sfw server.
 module.exports = exports = (argv) ->
-  logWatchSocket = null
   # Create the main application object, app.
   app = express()
 
@@ -291,7 +289,6 @@ module.exports = exports = (argv) ->
     file = req.params[0]
     pagehandler.get file, (e, page, status) ->
       if e then return res.e e
-      logWatchSocket.emit 'fetch', page unless status
       res.send(status or 200, page)
 
   # Remote pages use the http client to retrieve the page
@@ -466,7 +463,7 @@ module.exports = exports = (argv) ->
 
   # Route that the openID provider redirects user to after login.
   app.get '/login/openid/complete',
-    passport.authenticate('openid', { failureRedirect: 'oops'}),
+    passport.authenticate('openid', { failureRedirect: oops}),
     (req, res) ->
       res.redirect(index)
 
@@ -491,56 +488,6 @@ module.exports = exports = (argv) ->
     # Should replace most WebSocketServers below.
     plugins = pluginsFactory(argv)
     plugins.startServers({server: server, argv})
-
-    ### Sockets ###
-    # General, gloabl use sockets
-    echoSocket     = new WebSocketServer({server: server, path: '/system/echo'})
-    logWatchSocket = new WebSocketServer({server: server, path: '/system/logwatch'})
-    counterSocket  = new WebSocketServer({server: server, path: '/system/counter'})
-    echoSocket.on 'connection', (ws) ->
-      ws.on 'message', (message) ->
-        log 'socktest message from client:', message
-        ws.send message, (e) ->
-          if e
-            log 'unable to send ws message:', e
-            return
-
-    logWatchSocket.on 'connection', (ws) ->
-      logWatchSocket.on 'fetch', fetchListener = (page) ->
-        reference =
-          title: page.title
-          listeners: logWatchSocket.listeners('fetch').length
-        ws.send JSON.stringify(reference), (e) ->
-          if e
-            log 'unable to send ws message: ', e, reference
-            logWatchSocket.removeListener 'fetch', fetchListener
-            ws.close()
-
-      ws.on 'message', (message) ->
-        log 'logWatch message from client:', message
-
-    counterSocket.on 'connection', (ws) ->
-      counter = spawn( path.join(__dirname, '..', 'plugins', 'counter', 'counter.js') )
-      counter.stdout.on 'data', (data) ->
-        ws.send data, (e) ->
-          if e
-            log 'client disconnected, killing child counter proc...'
-            counter.kill('SIGHUP')
-            return
-
-      counter.stderr.on 'data', (data) ->
-        ws.send 'stderr: ' + data, (e) ->
-          if e
-            log 'client disconnected, killing child counter proc...'
-            counter.kill('SIGHUP')
-            return
-
-      counter.on 'exit', (code) ->
-        ws.send 'child process exited with code: ' + code, (e) ->
-          if e
-            log 'client disconnected, killing child counter proc...'
-            counter.kill('SIGHUP')
-            return
 
   # Return app when called, so that it can be watched for events and shutdown with .close() externally.
   app
