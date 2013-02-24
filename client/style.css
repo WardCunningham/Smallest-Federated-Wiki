@@ -4,6 +4,9 @@
 a {
   text-decoration: none; }
 
+a img {
+  border: 0; }
+
 body {
   top: 0;
   left: 0;
