@@ -24,22 +24,27 @@
     {
       "type": "paragraph",
       "id": "b84a12070f977ee4",
-      "text": "FREQ in MHz with 1 Hz resolution. e.g. 14.072025\n"
+      "text": "Say <b>FREQ</b> in MHz with 1 Hz resolution. e.g. 14.072025\n"
     },
     {
       "type": "paragraph",
       "id": "5b4824f9b8b09d4e",
-      "text": "PHASE in degrees is neutral at 0.0 with a typical range of -20.0 to 20.0."
+      "text": "Say <b>PHASE</b> in degrees is neutral at 0.0 with a typical range of -20.0 to 20.0."
     },
     {
       "type": "paragraph",
       "id": "ee32b7272e1f958b",
-      "text": "BALANCE is neutral at 1.0 with a typical range of 0.5 to 1.5. Phase and balance may be obtained from HDSDR channel skew calibration for TX."
+      "text": "Say <b>BALANCE</b> is neutral at 1.0 with a typical range of 0.5 to 1.5. Phase and balance may be obtained from HDSDR channel skew calibration for TX."
     },
     {
       "type": "paragraph",
       "id": "fb5d7d2b4a5fc67d",
-      "text": "LEVEL is linear with max at 1.0 and mute at 0.0. Do not use levels higher than 0.5 to avoid clipping due to phase and balance adjustments.\n"
+      "text": "Say <b>LEVEL</b> is linear with max at 1.0 and mute at 0.0. Do not use levels higher than 0.5 to avoid clipping due to phase and balance adjustments.\n"
+    },
+    {
+      "type": "paragraph",
+      "id": "03d69396f926e93e",
+      "text": "See the [[SDR Control Panel]] for an example of the plugin. It will show a status of 'closed' if it cannot connect to a radio."
     }
   ],
   "journal": [
@@ -300,6 +305,67 @@
         "text": "Double-click the plugin to reconfigure the transmitter for broadcasts initiated from this particular page. Keywords in all-caps are followed by a single number."
       },
       "date": 1361213657598
+    },
+    {
+      "type": "edit",
+      "id": "b84a12070f977ee4",
+      "item": {
+        "type": "paragraph",
+        "id": "b84a12070f977ee4",
+        "text": "Say <b>FREQ</b> in MHz with 1 Hz resolution. e.g. 14.072025\n"
+      },
+      "date": 1361221267591
+    },
+    {
+      "type": "edit",
+      "id": "5b4824f9b8b09d4e",
+      "item": {
+        "type": "paragraph",
+        "id": "5b4824f9b8b09d4e",
+        "text": "Say <b>PHASE</b> in degrees is neutral at 0.0 with a typical range of -20.0 to 20.0."
+      },
+      "date": 1361221279341
+    },
+    {
+      "type": "edit",
+      "id": "ee32b7272e1f958b",
+      "item": {
+        "type": "paragraph",
+        "id": "ee32b7272e1f958b",
+        "text": "Say <b>BALANCE</b> is neutral at 1.0 with a typical range of 0.5 to 1.5. Phase and balance may be obtained from HDSDR channel skew calibration for TX."
+      },
+      "date": 1361221294047
+    },
+    {
+      "type": "edit",
+      "id": "fb5d7d2b4a5fc67d",
+      "item": {
+        "type": "paragraph",
+        "id": "fb5d7d2b4a5fc67d",
+        "text": "Say <b>LEVEL</b> is linear with max at 1.0 and mute at 0.0. Do not use levels higher than 0.5 to avoid clipping due to phase and balance adjustments.\n"
+      },
+      "date": 1361221316068
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "03d69396f926e93e",
+        "text": ""
+      },
+      "id": "03d69396f926e93e",
+      "type": "add",
+      "after": "fb5d7d2b4a5fc67d",
+      "date": 1361221422524
+    },
+    {
+      "type": "edit",
+      "id": "03d69396f926e93e",
+      "item": {
+        "type": "paragraph",
+        "id": "03d69396f926e93e",
+        "text": "See the [[SDR Control Panel]] for an example of the plugin. It will show a status of 'closed' if it cannot connect to a radio."
+      },
+      "date": 1361221510681
     }
   ]
 }
