@@ -19,7 +19,12 @@
     {
       "type": "metabolism",
       "id": "59d569972b7bce9c",
-      "text": "USE Compendium of Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eating\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling 20 mph\nREMAINDER\nSUM"
+      "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+    },
+    {
+      "type": "paragraph",
+      "id": "c18aa8e70baacb38",
+      "text": "Try rendering these numbers in a [[D3 Radar Chart]]. Compare with [[Metabolic Goals]]."
     },
     {
       "type": "paragraph",
@@ -824,6 +829,1019 @@
         "text": "Tip: Guess activity names. The calculator adds footnotes to your names to help you make them specific. You can also double-click the source data and search it with your browser's find command."
       },
       "date": 1336271176390
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eating\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336626579540
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activitiesx\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eating\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336626613680
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eating\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336626648755
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activitiesx\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eating\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336626810047
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eating\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336626875120
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eating\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336632542511
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activity\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eating\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336632592142
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eating\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336632604406
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USEx Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eating\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336669364878
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eating\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336669617897
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eating occupational\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336671422862
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eating\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336671443480
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eating occupation\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336671464507
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eating\n2 mumbling\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336672051979
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eating\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336681418090
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eating\n.5 driving automobile\n.75 slow bicycling\n.2 running\nREMAINDER\nSUM"
+      },
+      "date": 1336681549416
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eating\n.5 driving automobile\n.75 slow bicycling\n.2 running 10 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336681600100
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activitiesx\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eating\n.5 driving automobile\n.75 slow bicycling\n.2 running 10 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336964801665
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat\n^*&^*^\n.5 driving automobile\n.75 slow bicycling\n.2 running 10 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336965749982
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "SUM\nUSE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat\n^*&^*^\n.5 driving automobile\n.75 slow bicycling\n.2 running 10 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336966007496
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat\n\n.5 driving automobile\n.75 slow bicycling\n.2 running 10 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336967734448
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat\n.5 driving automobile\n.75 slow bicycling\n.2 running 10 mph\nREMAINDER\nSUM"
+      },
+      "date": 1336967740805
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 resting\n8 computer office work\n1 reading newspaper\n2 sitting eat\n.5 driving automobile\n.75 slow bicycling\n.2 running 10 mph\nREMAINDER\nSUM"
+      },
+      "date": 1337106829653
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 z-time\n8 computer office work\n1 reading newspaper\n2 sitting eat\n.5 driving automobile\n.75 slow bicycling\n.2 running 10 mph\nREMAINDER\nSUM"
+      },
+      "date": 1337106902948
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat\n.5 driving automobile\n.75 slow bicycling\n.2 running 10 mph\nREMAINDER\nSUM"
+      },
+      "date": 1337108274876
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat\n.5 driving automobile\n.75 slow bicycling\n.2 bicycle racing\nREMAINDER\nSUM"
+      },
+      "date": 1337108290173
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1337108304320
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing 20 mph\nREMAINDER\nSUM"
+      },
+      "date": 1337108325942
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1337108340871
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing very fast\nREMAINDER\nSUM"
+      },
+      "date": 1337108387533
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1337108395004
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat\n.5 driving automobile\n.75 slow bicycling\n.2 judo\nREMAINDER\nSUM"
+      },
+      "date": 1337116086331
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper fast\n2 sitting eat\n.5 driving automobile\n.75 slow bicycling\n.2 judo\nREMAINDER\nSUM"
+      },
+      "date": 1337116217641
+    },
+    {
+      "type": "move",
+      "order": [
+        "670af95d041dcc2e",
+        "59d569972b7bce9c",
+        "e257119666b5025f",
+        "c9d166cf63089fcd",
+        "27fd769cd75beb3f",
+        "27e495c217038df7",
+        "75d94f22755d1436",
+        "d0a61b8466dbcb56"
+      ],
+      "id": "59d569972b7bce9c",
+      "date": 1337116705441
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat\n.5 driving automobile\n.75 slow bicycling\n.2 judo\nREMAINDER\nSUM"
+      },
+      "date": 1337131598929
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat movie\n.5 driving automobile\n.75 slow bicycling\n.2 judo\nREMAINDER\nSUM"
+      },
+      "date": 1337138435298
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat coffee shop\n.5 driving automobile\n.75 slow bicycling\n.2 judo\nREMAINDER\nSUM"
+      },
+      "date": 1337138453849
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat coffee shop\n.5 driving automobile\n.75 slow bicycling\n.2 bicycle racing\nREMAINDER\nSUM"
+      },
+      "date": 1337138896554
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat coffee shop\n.5 driving automobile\n.75 slow bicycling\n.2 bicycle raceing\nREMAINDER\nSUM"
+      },
+      "date": 1337138911138
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat coffee shop\n.5 driving automobile\n.75 slow bicycling\n.2 bicycle\nREMAINDER\nSUM"
+      },
+      "date": 1337138920161
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat coffee shop\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1337138933422
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n.5 judo\n2 sitting eat coffee shop\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1337192045883
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat coffee shop\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1337193834733
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1337193843013
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat reunion\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1337361046794
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1337361056366
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat reunion\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1337470540972
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat dorkbot\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1337470570428
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1337470633361
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat reunion\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1337661519463
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat dorkbot\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1337661531639
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1338151700646
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "c18aa8e70baacb38"
+      },
+      "id": "c18aa8e70baacb38",
+      "type": "add",
+      "after": "d0a61b8466dbcb56",
+      "date": 1338151731074
+    },
+    {
+      "type": "edit",
+      "id": "c18aa8e70baacb38",
+      "item": {
+        "type": "paragraph",
+        "id": "c18aa8e70baacb38",
+        "text": "Try rendering these numbers in a [[D3 Radar Chart]]."
+      },
+      "date": 1338151763045
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing"
+      },
+      "date": 1338158303791
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "023e7230e6a555d9",
+        "text": "\nREMAINDER\nSUM"
+      },
+      "id": "023e7230e6a555d9",
+      "type": "add",
+      "after": "59d569972b7bce9c",
+      "date": 1338158304302
+    },
+    {
+      "type": "remove",
+      "id": "023e7230e6a555d9",
+      "date": 1338158313716
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "5fa53a4acc128c68",
+        "text": ""
+      },
+      "id": "5fa53a4acc128c68",
+      "type": "add",
+      "after": "59d569972b7bce9c",
+      "date": 1338158316706
+    },
+    {
+      "type": "remove",
+      "id": "5fa53a4acc128c68",
+      "date": 1338158319971
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1338158332739
+    },
+    {
+      "type": "edit",
+      "id": "c18aa8e70baacb38",
+      "item": {
+        "type": "paragraph",
+        "id": "c18aa8e70baacb38",
+        "text": "Try rendering these numbers in a [[D3 Radar Chart]]. Compare with [[Metabolic Goals]]."
+      },
+      "date": 1338160591422
+    },
+    {
+      "type": "remove",
+      "id": "59d569972b7bce9c",
+      "date": 1338160599437
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "after": "c9d166cf63089fcd",
+      "id": "59d569972b7bce9c",
+      "date": 1338160621623
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat reunion\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1338331132695
+    },
+    {
+      "type": "move",
+      "order": [
+        "670af95d041dcc2e",
+        "e257119666b5025f",
+        "c9d166cf63089fcd",
+        "d0a61b8466dbcb56",
+        "59d569972b7bce9c",
+        "27fd769cd75beb3f",
+        "27e495c217038df7",
+        "75d94f22755d1436",
+        "c18aa8e70baacb38"
+      ],
+      "id": "d0a61b8466dbcb56",
+      "date": 1338404688451
+    },
+    {
+      "type": "move",
+      "order": [
+        "670af95d041dcc2e",
+        "e257119666b5025f",
+        "c9d166cf63089fcd",
+        "59d569972b7bce9c",
+        "27fd769cd75beb3f",
+        "27e495c217038df7",
+        "75d94f22755d1436",
+        "c18aa8e70baacb38",
+        "d0a61b8466dbcb56"
+      ],
+      "id": "d0a61b8466dbcb56",
+      "date": 1338404702575
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1338410890620
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat reunion\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1338410968785
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat fluent\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1338411083773
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1338502909733
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat reunion\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1338503002752
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat reunion\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing 14\nREMAINDER\nSUM"
+      },
+      "date": 1338503030906
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat reunion\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing 144\nREMAINDER\nSUM"
+      },
+      "date": 1338503047988
+    },
+    {
+      "type": "move",
+      "order": [
+        "670af95d041dcc2e",
+        "e257119666b5025f",
+        "c9d166cf63089fcd",
+        "59d569972b7bce9c",
+        "c18aa8e70baacb38",
+        "27fd769cd75beb3f",
+        "27e495c217038df7",
+        "75d94f22755d1436",
+        "d0a61b8466dbcb56"
+      ],
+      "id": "c18aa8e70baacb38",
+      "date": 1338684127678
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing 144\nREMAINDER\nSUM"
+      },
+      "date": 1338688887901
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat reunion\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing 144\nREMAINDER\nSUM"
+      },
+      "date": 1338688914570
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat reunion\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1338688925680
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat reunion\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing 14\nREMAINDER\nSUM"
+      },
+      "date": 1338688950112
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat reunion\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing 144\nREMAINDER\nSUM"
+      },
+      "date": 1338688958943
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1338926940644
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat reunion\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1338927015830
+    },
+    {
+      "type": "move",
+      "order": [
+        "670af95d041dcc2e",
+        "e257119666b5025f",
+        "c9d166cf63089fcd",
+        "59d569972b7bce9c",
+        "c18aa8e70baacb38",
+        "27fd769cd75beb3f",
+        "75d94f22755d1436",
+        "27e495c217038df7",
+        "d0a61b8466dbcb56"
+      ],
+      "id": "75d94f22755d1436",
+      "date": 1339895179251
+    },
+    {
+      "type": "move",
+      "order": [
+        "670af95d041dcc2e",
+        "e257119666b5025f",
+        "c9d166cf63089fcd",
+        "59d569972b7bce9c",
+        "c18aa8e70baacb38",
+        "27fd769cd75beb3f",
+        "27e495c217038df7",
+        "75d94f22755d1436",
+        "d0a61b8466dbcb56"
+      ],
+      "id": "27e495c217038df7",
+      "date": 1339895234033
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1340476483543
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat reunion\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1340479237584
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1342649396371
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat reunion\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1342649439999
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat union\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1342649452860
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat unionx\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1342649460591
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1342649480130
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat reunion\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1343706346117
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat reunionx\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1343706366746
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1343706490579
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat retreat\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1345053914513
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat watching tv\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1345053986276
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1345328008758
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat reunion\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1350074532604
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat meetups\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1350074562407
+    },
+    {
+      "type": "edit",
+      "id": "59d569972b7bce9c",
+      "item": {
+        "type": "metabolism",
+        "id": "59d569972b7bce9c",
+        "text": "USE Physical Activities\n8 sleeping\n8 computer office work\n1 reading newspaper\n2 sitting eat\n.5 driving automobile\n.75 slow bicycling\n.2 bicycling racing\nREMAINDER\nSUM"
+      },
+      "date": 1354983125615
     }
   ]
 }

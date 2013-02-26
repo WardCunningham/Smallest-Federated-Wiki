@@ -7,6 +7,16 @@
       "type": "paragraph"
     },
     {
+      "type": "paragraph",
+      "id": "7f31b2ee4b63e5f4",
+      "text": "See Also [[Recent Changes]]"
+    },
+    {
+      "type": "paragraph",
+      "id": "595fb0ed9e0dff9b",
+      "text": "See Also [[Recent Submissions]]"
+    },
+    {
       "text": "<h3>Your Changes",
       "id": "20d07f5b9d9a59c7",
       "type": "paragraph"
@@ -328,6 +338,48 @@
         "text": "If you make local changes to another site, you may be able to offer those changes to the site owner. Follow the instructions at [[Submit Changes]]. The owner and others can see your contributions in [[Recent Submissions]]."
       },
       "date": 1354092062714
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "7f31b2ee4b63e5f4",
+        "text": ""
+      },
+      "id": "7f31b2ee4b63e5f4",
+      "type": "add",
+      "after": "ed7bf3c8b951a090",
+      "date": 1355267948893
+    },
+    {
+      "type": "edit",
+      "id": "7f31b2ee4b63e5f4",
+      "item": {
+        "type": "paragraph",
+        "id": "7f31b2ee4b63e5f4",
+        "text": "See Also [[Recent Changes]]"
+      },
+      "date": 1355267962127
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "595fb0ed9e0dff9b",
+        "text": ""
+      },
+      "id": "595fb0ed9e0dff9b",
+      "type": "add",
+      "after": "7f31b2ee4b63e5f4",
+      "date": 1355267962632
+    },
+    {
+      "type": "edit",
+      "id": "595fb0ed9e0dff9b",
+      "item": {
+        "type": "paragraph",
+        "id": "595fb0ed9e0dff9b",
+        "text": "See Also [[Recent Submissions]]"
+      },
+      "date": 1355267978110
     }
   ]
 }
