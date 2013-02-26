@@ -1,0 +1,657 @@
+{
+  "title": "About Paragraph Plugin",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "d39480c1b0c1763a",
+      "text": "Most items in a story are paragraphs. Double click a Factory to make a paragraph. Press return (enter) when editing a paragraph to make a new paragraph."
+    },
+    {
+      "type": "paragraph",
+      "id": "adad3d221285a0e2",
+      "text": "Enter an empty paragraph to remove the item."
+    },
+    {
+      "type": "paragraph",
+      "id": "0e120200bb596656",
+      "text": "<h3> Markup"
+    },
+    {
+      "type": "paragraph",
+      "id": "63c74600fa219aa4",
+      "text": "Write <b>[ [ Page Titles ] ]</b> inside of double square brackets to make an internal link to a new wiki page. "
+    },
+    {
+      "type": "paragraph",
+      "id": "689302a33cb62a5e",
+      "text": "Write <b>[ http://example.com/webpage.html webpage ]</b> inside single square brackets to make an external link to another web page. Include a second field that specifies how the link is to appear in the rendered text."
+    },
+    {
+      "type": "paragraph",
+      "id": "5196ca687c4fdb24",
+      "text": "<h3> Links"
+    },
+    {
+      "type": "paragraph",
+      "id": "b377b34feb54f5ed",
+      "text": "By convention external links are represented by single lower-case words that identify what kind of page one will find when clicking the link. "
+    },
+    {
+      "type": "paragraph",
+      "id": "6d203d9357bfabdb",
+      "text": "<b>wikipedia</b> for a Wikipedia article."
+    },
+    {
+      "type": "paragraph",
+      "id": "bc7687321dc5f876",
+      "text": "<b>post</b> for a blog or other social media post"
+    },
+    {
+      "type": "paragraph",
+      "id": "3cdf3d59e3d07879",
+      "text": "<b>github</b> for source code on GitHub"
+    },
+    {
+      "type": "paragraph",
+      "id": "e74e5ddb9c99ba0c",
+      "text": "<b>webpage</b> for an otherwise undistinguished web page"
+    },
+    {
+      "type": "paragraph",
+      "id": "b9e8000ee0532f56",
+      "text": "<h3> Paste"
+    },
+    {
+      "type": "paragraph",
+      "id": "832d7010b16f7ede",
+      "text": "If text is pasted that includes blank lines then blank lines will be rendered in the output. Otherwise newlines and other superfluous whitespace is ignored."
+    },
+    {
+      "type": "paragraph",
+      "id": "187be247ebc4710f",
+      "text": "<h3> HTML"
+    },
+    {
+      "type": "paragraph",
+      "id": "50a110988626716f",
+      "text": "We do accept HTML but discourage its use."
+    },
+    {
+      "type": "paragraph",
+      "id": "91307627f8d6b13b",
+      "text": "We expect bold and italic markup will be accepted."
+    },
+    {
+      "type": "paragraph",
+      "id": "a147ed207074ff1f",
+      "text": "We expect headings will be accepted. We use h3 only."
+    },
+    {
+      "type": "paragraph",
+      "id": "a147d447337c6223",
+      "text": "We expect sub and super markup will be accepted."
+    },
+    {
+      "type": "paragraph",
+      "id": "b99e2a6c9d8c856c",
+      "text": "We regret that less-than symbols and other characters that appear to be html do not properly render yet. Soon."
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "item": {
+        "title": "About Paragraph Plugin"
+      },
+      "date": 1361754800953
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "d39480c1b0c1763a"
+      },
+      "id": "d39480c1b0c1763a",
+      "type": "add",
+      "date": 1361754820914
+    },
+    {
+      "type": "edit",
+      "id": "d39480c1b0c1763a",
+      "item": {
+        "type": "paragraph",
+        "id": "d39480c1b0c1763a",
+        "text": "Most items in a story are paragraphs. Double click a Factory to make a paragraph. Press return (enter) when editing a paragraph to make a new paragraph."
+      },
+      "date": 1361754963018
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "0e120200bb596656",
+        "text": ""
+      },
+      "id": "0e120200bb596656",
+      "type": "add",
+      "after": "d39480c1b0c1763a",
+      "date": 1361754963530
+    },
+    {
+      "type": "edit",
+      "id": "0e120200bb596656",
+      "item": {
+        "type": "paragraph",
+        "id": "0e120200bb596656",
+        "text": "<h3> Markup"
+      },
+      "date": 1361754969247
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "63c74600fa219aa4",
+        "text": ""
+      },
+      "id": "63c74600fa219aa4",
+      "type": "add",
+      "after": "0e120200bb596656",
+      "date": 1361754969754
+    },
+    {
+      "type": "edit",
+      "id": "63c74600fa219aa4",
+      "item": {
+        "type": "paragraph",
+        "id": "63c74600fa219aa4",
+        "text": "Write [ [ Page Titles ] ] inside of double square brackets to make a link to a new wiki page. "
+      },
+      "date": 1361755079496
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "689302a33cb62a5e",
+        "text": ""
+      },
+      "id": "689302a33cb62a5e",
+      "type": "add",
+      "after": "63c74600fa219aa4",
+      "date": 1361755080001
+    },
+    {
+      "type": "edit",
+      "id": "689302a33cb62a5e",
+      "item": {
+        "type": "paragraph",
+        "id": "689302a33cb62a5e",
+        "text": "Write [ http://example.com/webpage.html webpage ] inside single square brackets to make an external link to another web page. Include a second field that specifies how the link is to appear in the rendered text."
+      },
+      "date": 1361755281176
+    },
+    {
+      "type": "edit",
+      "id": "63c74600fa219aa4",
+      "item": {
+        "type": "paragraph",
+        "id": "63c74600fa219aa4",
+        "text": "Write <b>[ [ Page Titles ] ]</b> inside of double square brackets to make a link to a new wiki page. "
+      },
+      "date": 1361755296204
+    },
+    {
+      "type": "edit",
+      "id": "689302a33cb62a5e",
+      "item": {
+        "type": "paragraph",
+        "id": "689302a33cb62a5e",
+        "text": "Write <b>[ http://example.com/webpage.html webpage ]</b> inside single square brackets to make an external link to another web page. Include a second field that specifies how the link is to appear in the rendered text."
+      },
+      "date": 1361755310355
+    },
+    {
+      "type": "edit",
+      "id": "63c74600fa219aa4",
+      "item": {
+        "type": "paragraph",
+        "id": "63c74600fa219aa4",
+        "text": "Write <b>[ [ Page Titles ] ]</b> inside of double square brackets to make an internal link to a new wiki page. "
+      },
+      "date": 1361755324994
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "b377b34feb54f5ed",
+        "text": ""
+      },
+      "id": "b377b34feb54f5ed",
+      "type": "add",
+      "after": "689302a33cb62a5e",
+      "date": 1361755365967
+    },
+    {
+      "type": "edit",
+      "id": "b377b34feb54f5ed",
+      "item": {
+        "type": "paragraph",
+        "id": "b377b34feb54f5ed",
+        "text": "By convention external links are represented by single lower-case words that identify what kind of page one will find when clicking the link. "
+      },
+      "date": 1361755427565
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "b3cf62a29cfc771a"
+      },
+      "id": "b3cf62a29cfc771a",
+      "type": "add",
+      "after": "b377b34feb54f5ed",
+      "date": 1361755430385
+    },
+    {
+      "type": "edit",
+      "id": "b3cf62a29cfc771a",
+      "item": {
+        "type": "code",
+        "id": "b3cf62a29cfc771a",
+        "text": "webpage"
+      },
+      "date": 1361755437798
+    },
+    {
+      "type": "remove",
+      "id": "b3cf62a29cfc771a",
+      "date": 1361755444758
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "e74e5ddb9c99ba0c"
+      },
+      "id": "e74e5ddb9c99ba0c",
+      "type": "add",
+      "after": "b377b34feb54f5ed",
+      "date": 1361755447729
+    },
+    {
+      "type": "edit",
+      "id": "e74e5ddb9c99ba0c",
+      "item": {
+        "type": "paragraph",
+        "id": "e74e5ddb9c99ba0c",
+        "text": "webpage — an otherwise undistinguished web page"
+      },
+      "date": 1361755503480
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "bc7687321dc5f876",
+        "text": ""
+      },
+      "id": "bc7687321dc5f876",
+      "type": "add",
+      "after": "e74e5ddb9c99ba0c",
+      "date": 1361755503985
+    },
+    {
+      "type": "edit",
+      "id": "bc7687321dc5f876",
+      "item": {
+        "type": "paragraph",
+        "id": "bc7687321dc5f876",
+        "text": "post — a blog or other social media post"
+      },
+      "date": 1361755532487
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "3cdf3d59e3d07879",
+        "text": ""
+      },
+      "id": "3cdf3d59e3d07879",
+      "type": "add",
+      "after": "bc7687321dc5f876",
+      "date": 1361755532997
+    },
+    {
+      "type": "edit",
+      "id": "3cdf3d59e3d07879",
+      "item": {
+        "type": "paragraph",
+        "id": "3cdf3d59e3d07879",
+        "text": "github — typically source code on GitHub"
+      },
+      "date": 1361755623080
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "6d203d9357bfabdb",
+        "text": ""
+      },
+      "id": "6d203d9357bfabdb",
+      "type": "add",
+      "after": "3cdf3d59e3d07879",
+      "date": 1361755623584
+    },
+    {
+      "type": "edit",
+      "id": "6d203d9357bfabdb",
+      "item": {
+        "type": "paragraph",
+        "id": "6d203d9357bfabdb",
+        "text": "<b>wikipedia</b> for a Wikipedia article."
+      },
+      "date": 1361755650088
+    },
+    {
+      "type": "edit",
+      "id": "e74e5ddb9c99ba0c",
+      "item": {
+        "type": "paragraph",
+        "id": "e74e5ddb9c99ba0c",
+        "text": "<b>webpage</b> for an otherwise undistinguished web page"
+      },
+      "date": 1361755670199
+    },
+    {
+      "type": "edit",
+      "id": "bc7687321dc5f876",
+      "item": {
+        "type": "paragraph",
+        "id": "bc7687321dc5f876",
+        "text": "<b>post</b> for a blog or other social media post"
+      },
+      "date": 1361755682787
+    },
+    {
+      "type": "edit",
+      "id": "3cdf3d59e3d07879",
+      "item": {
+        "type": "paragraph",
+        "id": "3cdf3d59e3d07879",
+        "text": "<b>github</b> for source code on GitHub"
+      },
+      "date": 1361755715333
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "5196ca687c4fdb24",
+        "text": ""
+      },
+      "id": "5196ca687c4fdb24",
+      "type": "add",
+      "after": "689302a33cb62a5e",
+      "date": 1361755748897
+    },
+    {
+      "type": "edit",
+      "id": "5196ca687c4fdb24",
+      "item": {
+        "type": "paragraph",
+        "id": "5196ca687c4fdb24",
+        "text": "<h3> Links"
+      },
+      "date": 1361755755299
+    },
+    {
+      "type": "move",
+      "order": [
+        "d39480c1b0c1763a",
+        "0e120200bb596656",
+        "63c74600fa219aa4",
+        "689302a33cb62a5e",
+        "5196ca687c4fdb24",
+        "b377b34feb54f5ed",
+        "6d203d9357bfabdb",
+        "e74e5ddb9c99ba0c",
+        "bc7687321dc5f876",
+        "3cdf3d59e3d07879"
+      ],
+      "id": "6d203d9357bfabdb",
+      "date": 1361755788292
+    },
+    {
+      "type": "move",
+      "order": [
+        "d39480c1b0c1763a",
+        "0e120200bb596656",
+        "63c74600fa219aa4",
+        "689302a33cb62a5e",
+        "5196ca687c4fdb24",
+        "b377b34feb54f5ed",
+        "6d203d9357bfabdb",
+        "bc7687321dc5f876",
+        "e74e5ddb9c99ba0c",
+        "3cdf3d59e3d07879"
+      ],
+      "id": "bc7687321dc5f876",
+      "date": 1361755791739
+    },
+    {
+      "type": "move",
+      "order": [
+        "d39480c1b0c1763a",
+        "0e120200bb596656",
+        "63c74600fa219aa4",
+        "689302a33cb62a5e",
+        "5196ca687c4fdb24",
+        "b377b34feb54f5ed",
+        "6d203d9357bfabdb",
+        "bc7687321dc5f876",
+        "3cdf3d59e3d07879",
+        "e74e5ddb9c99ba0c"
+      ],
+      "id": "3cdf3d59e3d07879",
+      "date": 1361755797402
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "187be247ebc4710f",
+        "text": ""
+      },
+      "id": "187be247ebc4710f",
+      "type": "add",
+      "after": "e74e5ddb9c99ba0c",
+      "date": 1361755838134
+    },
+    {
+      "type": "edit",
+      "id": "187be247ebc4710f",
+      "item": {
+        "type": "paragraph",
+        "id": "187be247ebc4710f",
+        "text": "<h3> HTML"
+      },
+      "date": 1361755846438
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "50a110988626716f",
+        "text": ""
+      },
+      "id": "50a110988626716f",
+      "type": "add",
+      "after": "187be247ebc4710f",
+      "date": 1361755846942
+    },
+    {
+      "type": "edit",
+      "id": "50a110988626716f",
+      "item": {
+        "type": "paragraph",
+        "id": "50a110988626716f",
+        "text": "We do accept HTML but discourage its use."
+      },
+      "date": 1361755896540
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "91307627f8d6b13b",
+        "text": ""
+      },
+      "id": "91307627f8d6b13b",
+      "type": "add",
+      "after": "50a110988626716f",
+      "date": 1361755897044
+    },
+    {
+      "type": "edit",
+      "id": "91307627f8d6b13b",
+      "item": {
+        "type": "paragraph",
+        "id": "91307627f8d6b13b",
+        "text": "We expect bold and italic markup will be accepted."
+      },
+      "date": 1361755940225
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "a147ed207074ff1f",
+        "text": ""
+      },
+      "id": "a147ed207074ff1f",
+      "type": "add",
+      "after": "91307627f8d6b13b",
+      "date": 1361755940730
+    },
+    {
+      "type": "edit",
+      "id": "a147ed207074ff1f",
+      "item": {
+        "type": "paragraph",
+        "id": "a147ed207074ff1f",
+        "text": "We expect headings will be accepted. We use h3 only."
+      },
+      "date": 1361755976601
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "a147d447337c6223",
+        "text": ""
+      },
+      "id": "a147d447337c6223",
+      "type": "add",
+      "after": "a147ed207074ff1f",
+      "date": 1361755986240
+    },
+    {
+      "type": "edit",
+      "id": "a147d447337c6223",
+      "item": {
+        "type": "paragraph",
+        "id": "a147d447337c6223",
+        "text": "We expect sub and super markup will be accepted."
+      },
+      "date": 1361756007119
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "b99e2a6c9d8c856c",
+        "text": ""
+      },
+      "id": "b99e2a6c9d8c856c",
+      "type": "add",
+      "after": "a147d447337c6223",
+      "date": 1361756022263
+    },
+    {
+      "type": "edit",
+      "id": "b99e2a6c9d8c856c",
+      "item": {
+        "type": "paragraph",
+        "id": "b99e2a6c9d8c856c",
+        "text": "We regret that less-than symbols and other characters that appear to be html do not properly render yet. Soon."
+      },
+      "date": 1361756092672
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "b9e8000ee0532f56",
+        "text": ""
+      },
+      "id": "b9e8000ee0532f56",
+      "type": "add",
+      "after": "e74e5ddb9c99ba0c",
+      "date": 1361756507307
+    },
+    {
+      "type": "edit",
+      "id": "b9e8000ee0532f56",
+      "item": {
+        "type": "paragraph",
+        "id": "b9e8000ee0532f56",
+        "text": "<h3> Paste"
+      },
+      "date": 1361756513444
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "832d7010b16f7ede",
+        "text": ""
+      },
+      "id": "832d7010b16f7ede",
+      "type": "add",
+      "after": "b9e8000ee0532f56",
+      "date": 1361756513948
+    },
+    {
+      "type": "edit",
+      "id": "832d7010b16f7ede",
+      "item": {
+        "type": "paragraph",
+        "id": "832d7010b16f7ede",
+        "text": "If text is pasted that includes blank lines then blank lines will be rendered in the output. Otherwise newlines and other superfluous whitespace is ignored."
+      },
+      "date": 1361756621972
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "03a1870c5f134b9b",
+        "text": ""
+      },
+      "id": "03a1870c5f134b9b",
+      "type": "add",
+      "after": "832d7010b16f7ede",
+      "date": 1361756622482
+    },
+    {
+      "type": "remove",
+      "id": "03a1870c5f134b9b",
+      "date": 1361756637274
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "adad3d221285a0e2",
+        "text": ""
+      },
+      "id": "adad3d221285a0e2",
+      "type": "add",
+      "after": "d39480c1b0c1763a",
+      "date": 1361757107769
+    },
+    {
+      "type": "edit",
+      "id": "adad3d221285a0e2",
+      "item": {
+        "type": "paragraph",
+        "id": "adad3d221285a0e2",
+        "text": "Enter an empty paragraph to remove the item."
+      },
+      "date": 1361757130714
+    }
+  ]
+}
