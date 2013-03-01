@@ -144,7 +144,6 @@
                 }
                 return _results;
               })();
-              wiki.log(data);
               vis.selectAll('circle.line').data(data).transition().attr("cy", function(d) {
                 return y(d.y);
               });
