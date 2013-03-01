@@ -145,10 +145,10 @@
                 return _results;
               })();
               wiki.log(data);
-              vis.selectAll('circle.line').data(data).attr("cy", function(d) {
+              vis.selectAll('circle.line').data(data).transition().attr("cy", function(d) {
                 return y(d.y);
               });
-              return vis.selectAll('path').data([data]).attr("d", line);
+              return vis.selectAll('path').data([data]).transition().attr("d", line);
             });
           }
         });

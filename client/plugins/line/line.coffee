@@ -109,8 +109,10 @@ window.plugins.line =
             wiki.log data
             vis.selectAll('circle.line')
               .data(data)
+              .transition()
               .attr("cy", (d) -> y(d.y))
             vis.selectAll('path')
               .data([data])
+              .transition()
               .attr("d", line);
 
