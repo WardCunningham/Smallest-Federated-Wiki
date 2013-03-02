@@ -106,11 +106,12 @@ window.plugins.line =
         if choice
           $(choice).on 'sequence', (e, sequence) ->
             data = ({x:xx,y:+yy} for yy,xx in sequence)
-            wiki.log data
             vis.selectAll('circle.line')
               .data(data)
+              .transition()
               .attr("cy", (d) -> y(d.y))
             vis.selectAll('path')
               .data([data])
+              .transition()
               .attr("d", line);
 
