@@ -1,4 +1,4 @@
-createSynopsis = require './synopsis.coffee'
+createSynopsis = require './synopsis'
 
 wiki = { createSynopsis }
 
