@@ -1,6 +1,6 @@
 mocha.setup('bdd')
 
-window.wiki = require('./lib/wiki')
+window.wiki = require('./lib/wiki.coffee')
 
 require('./test/util.coffee')
 require('./test/active.coffee')
