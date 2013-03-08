@@ -13,15 +13,18 @@
 		%script(type="text/javascript" src="/js/jquery-migrate-1.1.1.min.js")
 		%script(type="text/javascript" src="/js/jquery-ui-1.10.1.custom.min.js")
 		%link(type="text/css" href="/js/jquery-ui-1.10.1.custom.min.css" rel="stylesheet")
-		%script(type="text/javascript" src="/js/modernizr.custom.71960.js")
+		%script(type="text/javascript" src="/js/modernizr.custom.63710.js")
 		%script(type="text/javascript" src="/js/underscore-min.js")
 		%script(type="text/javascript" src="/client.js")
 		:javascript
-			Modernizr.load({
+			Modernizr.load([
+			{
 			  test: Modernizr.cors,
-			  nope: '/js/jquery.ie.cors.js'
-			});
-		
+			  nope: '/js/jquery.ie.cors.js'},
+			{
+			  test: Modernizr.json,
+			  nope: '/js/json3.min.js'}
+			]);
 		%meta(name="apple-mobile-web-app-capable" content="yes")
 		%meta(name="apple-mobile-web-app-status-bar-style" content="black")
 		%meta(name="apple-mobile-web-app-title" content="SF Wiki")
