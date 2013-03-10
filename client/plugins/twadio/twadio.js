@@ -6,7 +6,8 @@
     var defn;
     return defn = {
       freq: 14.042,
-      tune: 30
+      tune: 30,
+      sufix: 'Notes'
     };
   };
 
@@ -17,7 +18,7 @@
   };
 
   bind = function($item, item) {
-    var $page, $schedule, $send, $tune, defn, host, progress, request, socket, status;
+    var $page, $schedule, $send, $tune, defn, each, host, payload, progress, request, schedule, select, socket, status;
     defn = parse(item.text);
     status = {};
     wiki.log(defn);
@@ -36,8 +37,56 @@
     progress = function(m) {
       return $item.find('p.caption').html(m);
     };
+    schedule = [];
+    select = function(sufix) {
+      var each, elem, _i, _len, _ref, _results;
+      schedule = [];
+      _ref = $('.page');
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        elem = _ref[_i];
+        each = $(elem).data('data');
+        if (each.title.match(/Notes$/i)) {
+          _results.push(schedule.push(each));
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
+    };
+    select('Notes');
+    $schedule.html(schedule.length ? ((function() {
+      var _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = schedule.length; _i < _len; _i++) {
+        each = schedule[_i];
+        _results.push(each.title);
+      }
+      return _results;
+    })()).join('<br/>') : "<i>We look left for pages to transmit.<br>None found with required sufix 'Notes'.</i>");
+    payload = function() {
+      var result, _i, _j, _len, _len1, _ref;
+      select('Notes');
+      result = [];
+      for (_i = 0, _len = schedule.length; _i < _len; _i++) {
+        each = schedule[_i];
+        wiki.log('each', each);
+        result.push(each.title);
+        _ref = each.story;
+        for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
+          item = _ref[_j];
+          if (item.type === 'paragraph') {
+            result.push(item.text);
+          }
+        }
+      }
+      return result.join("\n");
+    };
     request = function(action) {
       var message;
+      if (action.action === 'send') {
+        action.text = payload();
+      }
       progress("send " + (message = JSON.stringify(action)));
       if (socket) {
         return socket.send(message);

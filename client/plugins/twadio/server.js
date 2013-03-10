@@ -36,8 +36,8 @@
     }
   };
 
-  startJob = function(message) {
-    job = child.spawn('/usr/bin/ruby', [__dirname + '/twadio.rb', status.mode, status.freq, '0', '1', '.5', message]);
+  startJob = function(text) {
+    job = child.spawn('/usr/bin/ruby', [__dirname + '/twadio.rb', status.mode, status.freq, '0', '1', '.5', text]);
     status.pid = job.pid;
     console.log("twadio start", job.pid);
     radio.emit('update');
@@ -88,7 +88,7 @@
             return stopJob();
           case 'send':
             status.mode = 'send';
-            return startJob("the quick brown fox jumped over the lazy dogs back");
+            return startJob(action.text);
           case 'tune':
             status.mode = 'tune';
             return startJob("30");

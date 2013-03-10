@@ -16,8 +16,8 @@ job = null
 stopJob = ->
 	job.kill 'SIGTERM' if job
 
-startJob = (message) ->
-	job = child.spawn '/usr/bin/ruby', [__dirname+'/twadio.rb', status.mode, status.freq, '0', '1', '.5', message]
+startJob = (text) ->
+	job = child.spawn '/usr/bin/ruby', [__dirname+'/twadio.rb', status.mode, status.freq, '0', '1', '.5', text]
 	status.pid = job.pid
 	console.log "twadio start", job.pid
 	radio.emit 'update'
@@ -53,7 +53,7 @@ startServer = (params) ->
 					stopJob()
 				when 'send'
 					status.mode = 'send'
-					startJob "the quick brown fox jumped over the lazy dogs back"
+					startJob action.text
 				when 'tune'
 					status.mode = 'tune'
 					startJob "30"
