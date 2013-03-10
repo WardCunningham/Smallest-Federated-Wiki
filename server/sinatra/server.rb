@@ -149,16 +149,6 @@ class Controller < Sinatra::Base
     haml :view, :locals => {:pages => [ {:id => identity['root']} ]}
   end
 
-  # get %r{^/plugins/factory(/factory)?.js$} do
-  #   catalog = Dir.glob(File.join(APP_ROOT, "client/plugins/*/factory.json")).collect do |info|
-  #     begin
-  #       JSON.parse(File.read(info))
-  #     rescue
-  #     end
-  #   end.reject {|info| info.nil?}
-  #   "window.catalog = #{JSON.generate(catalog)};" + File.read(File.join(APP_ROOT, "client/plugins/meta-factory.js"))
-  # end
-
   get %r{^/data/([\w -]+)$} do |search|
     content_type 'application/json'
     cross_origin
