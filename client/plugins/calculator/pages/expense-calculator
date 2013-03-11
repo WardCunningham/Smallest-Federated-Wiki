@@ -3,18 +3,8 @@
   "story": [
     {
       "type": "paragraph",
-      "id": "68e40426c4013222",
-      "text": "I wrote this calculator when I volunteered to work out the expenses for our 1981 ski trip to Jackson Hole. I wasn't even sure how to approach the calculation so I just started writing facts into a file. Pretty soon I realized that if I could just sum the groups and then bring those sums into other groups then I'd pretty much have it."
-    },
-    {
-      "type": "paragraph",
-      "id": "12ec901ddce36ee9",
-      "text": "I wrote a small AWK script to do just that and print a report. I finished the script and the report together. See the script [http://c2.com/doc/expense here]. I've translated the script to CoffeeScript and bundled it as a  [https://github.com/WardCunningham/Smallest-Federated-Wiki/blob/master/client/plugins/calculator.coffee wiki plugin] to render this page."
-    },
-    {
-      "type": "calculator",
-      "id": "7904ee4f9c2036ae",
-      "text": "Jackson Hole Expenses\nFebruary, '81\n\nCal Diller ...\n\n71.25  Cowboy Steak House\n24  M/M\n26  Mexican\n60  Lift Tickets\n13.50  Pizza\n-------\nCAL\n\nBill Pooley ...\n\n48 * 3  Lift Tickets\n14.04  Breakfast\n368.16  Room\n29.31  Drinks\n-------\nBILL\n\nWard Cunningham ...\n\n14.73  Gas\n14.2\n13.86\n17\n14.5\n13.76\n-------\nGAS  Total Gas\n\n15  Blue Lion\n48  Lift\n30.55  Anthonys\n69.24  Alpenhof\nGAS  Total Gas\n-------\nWARD\n\n\nTotal Shared Expenses ...\n\nCAL  Cal Diller\nBILL  Bill Pooley\nWARD  Ward Cunningham\n-------\nTOTAL / 3\n-------\nSHARE  Individual Share\n\n\nIndividual Balances ...\n\nBILL  Bill's Expenses\nSHARE DB\n-------\nSUM\n3.86  Telephone, Cal\n6.01  Telephone, Ward\n-------\nDB  Due Bill\n\n\nCAL  Cal's Expenses\nSHARE DB\n-------\nSUM\n3.86 DB  Telephone\n-------\nDC  Due Cal\n\n\nWARD  Ward's Expenses\nSHARE DB\n-------\nSUM\n6.01 DB  Telephone\n-------\nDW  Due Ward\n\n\nDoublechecking ...\n\nDB\nDC\nDW\n-------\nERROR  Unaccounted Funds\n"
+      "id": "a763828089b2c465",
+      "text": "See [[About Calculator Plugin]]."
     }
   ],
   "journal": [
@@ -296,6 +286,106 @@
         "id": "7904ee4f9c2036ae",
         "text": "Jackson Hole Expenses\nFebruary, '81\n\nCal Diller ...\n\n71.25  Cowboy Steak House\n24  M/M\n26  Mexican\n60  Lift Tickets\n13.50  Pizza\n-------\nCAL\n\nBill Pooley ...\n\n48 * 3  Lift Tickets\n14.04  Breakfast\n368.16  Room\n29.31  Drinks\n-------\nBILL\n\nWard Cunningham ...\n\n14.73  Gas\n14.2\n13.86\n17\n14.5\n13.76\n-------\nGAS  Total Gas\n\n15  Blue Lion\n48  Lift\n30.55  Anthonys\n69.24  Alpenhof\nGAS  Total Gas\n-------\nWARD\n\n\nTotal Shared Expenses ...\n\nCAL  Cal Diller\nBILL  Bill Pooley\nWARD  Ward Cunningham\n-------\nTOTAL / 3\n-------\nSHARE  Individual Share\n\n\nIndividual Balances ...\n\nBILL  Bill's Expenses\nSHARE DB\n-------\nSUM\n3.86  Telephone, Cal\n6.01  Telephone, Ward\n-------\nDB  Due Bill\n\n\nCAL  Cal's Expenses\nSHARE DB\n-------\nSUM\n3.86 DB  Telephone\n-------\nDC  Due Cal\n\n\nWARD  Ward's Expenses\nSHARE DB\n-------\nSUM\n6.01 DB  Telephone\n-------\nDW  Due Ward\n\n\nDoublechecking ...\n\nDB\nDC\nDW\n-------\nERROR  Unaccounted Funds\n"
       }
+    },
+    {
+      "type": "edit",
+      "id": "12ec901ddce36ee9",
+      "item": {
+        "type": "paragraph",
+        "id": "12ec901ddce36ee9",
+        "text": "I wrote a small AWK script to do just that and print a report. I finished the script and the report together. See the script [http://c2.com/doc/expense here]."
+      },
+      "date": 1362960029389
+    },
+    {
+      "type": "move",
+      "order": [
+        "68e40426c4013222",
+        "7904ee4f9c2036ae",
+        "12ec901ddce36ee9"
+      ],
+      "id": "7904ee4f9c2036ae",
+      "date": 1362960220210
+    },
+    {
+      "type": "move",
+      "order": [
+        "7904ee4f9c2036ae",
+        "68e40426c4013222",
+        "12ec901ddce36ee9"
+      ],
+      "id": "7904ee4f9c2036ae",
+      "date": 1362960236878
+    },
+    {
+      "type": "remove",
+      "id": "7904ee4f9c2036ae",
+      "date": 1362960252739
+    },
+    {
+      "type": "edit",
+      "id": "68e40426c4013222",
+      "item": {
+        "type": "paragraph",
+        "id": "68e40426c4013222",
+        "text": "I wrote this calculator when I volunteered to work out the expenses for our 1981 ski trip to Jackson Hole. I wasn't even sure how to approach the calculation so I just started writing facts into a file."
+      },
+      "date": 1362960301807
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "c60a0f9d368d082c",
+        "text": "Pretty soon I realized that if I could just sum the groups and then bring those sums into other groups then I'd pretty much have it."
+      },
+      "id": "c60a0f9d368d082c",
+      "type": "add",
+      "after": "68e40426c4013222",
+      "date": 1362960302314
+    },
+    {
+      "type": "remove",
+      "id": "12ec901ddce36ee9",
+      "date": 1362960321994
+    },
+    {
+      "type": "edit",
+      "id": "c60a0f9d368d082c",
+      "item": {
+        "type": "paragraph",
+        "id": "c60a0f9d368d082c",
+        "text": "Pretty soon I realized that if I could just sum the groups and then bring those sums into other groups then I'd pretty much have it. I wrote a small AWK script to do just that and print a report. I finished the script and the report together. See the script [http://c2.com/doc/expense here]."
+      },
+      "date": 1362960324369
+    },
+    {
+      "type": "remove",
+      "id": "68e40426c4013222",
+      "date": 1362960332179
+    },
+    {
+      "type": "remove",
+      "id": "c60a0f9d368d082c",
+      "date": 1362960337140
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "a763828089b2c465"
+      },
+      "id": "a763828089b2c465",
+      "type": "add",
+      "date": 1362960381381
+    },
+    {
+      "type": "edit",
+      "id": "a763828089b2c465",
+      "item": {
+        "type": "paragraph",
+        "id": "a763828089b2c465",
+        "text": "See [[About Calculator Plugin]]."
+      },
+      "date": 1362960395352
     }
   ]
 }
