@@ -1,14 +1,12 @@
 # Smallest Federated Wiki Node.js Express Server #
 ## Setup ##
 
-If it is not already, install node v0.6.x: on Linux download the source from
+If it is not already, install node v0.8.x: on Linux download the source from
 [GitHub](https://github.com/joyent/node), on windows get the installer from
 the [main node.js site](http://nodejs.org).  Mac users should be able to
 choose either.  Once node is installed come back to this directory and run:
 
 	npm install
-
-Set the production flag to not install the development dependencies.
 
 ## Newest Docs ##
 The most up to date node server specific documentation is in the source
@@ -17,18 +15,6 @@ code, in a way that is best viewed when processed with
 only be an install how to, with most other docs being in the source code
 of logically placed files, that is then generated into wiki pages and checked
 in to default-data.
-
-## Usage patterns ##
-There are two ways to use the node server.
-You can either run it from the command line using the executable script
-file `server/express/bin/server.js` or you can `require('server/express')`
-from another node program, and then call it passing in the options you want to
-start the server.  To get started with the first method check out the
-command line options:
-
-	./bin/server.js -h
-
-To get started with the second pattern checkout lib/farm.coffee as an example.
 
 ## Launching the Node/Express Server ##
 To run in the default development mode at localhost:3000 just execute:
@@ -46,10 +32,17 @@ you want to the call.  A typical usage would be:
 
 And then proxy all hosts that you want pointed at a SFW to port 8080.
 
-You can also specify an optional config file with --config="path/to/conf.json",
-specify environment variables with the "wiki\_" prefix, or put options in a
-config.json file.
+### Options ###
 
+Options for the server can be passed in many ways:
+
+* As command line flags
+* As a configuration JSON file specified with --config
+* As env vars prefixed with `wiki_`
+* As a config.json file in the express folder or above.
+
+Higher in the list takes precedence.
+The server will then try to guess all unspecified options.
 
 ## Goals ##
 The main goal of the express port of Smallest Federated Wiki is to create a

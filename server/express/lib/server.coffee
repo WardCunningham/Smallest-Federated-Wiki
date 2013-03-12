@@ -23,7 +23,6 @@ express = require 'express'
 hbs = require 'hbs'
 passportImport = require 'passport'
 OpenIDstrat = require('passport-openid').Strategy
-WebSocketServer = require('ws').Server
 glob = require 'glob'
 es = require 'event-stream'
 JSONStream = require 'JSONStream'
@@ -49,7 +48,7 @@ gitVersion = child_process.exec 'git log -10 --oneline || echo no git log', (err
 # Set export objects for node and coffee to a function that generates a sfw server.
 module.exports = exports = (argv) ->
   # Create the main application object, app.
-  app = express.createServer()
+  app = express()
 
   # defaultargs.coffee exports a function that takes the argv object
   # that is passed in and then does its
@@ -86,60 +85,6 @@ module.exports = exports = (argv) ->
   # Tell pagehandler where to find data, and default data.
   app.pagehandler = pagehandler = pageFactory(argv)
 
-  ### Plugins ###
-  # Should replace most WebSocketServers below.
-  plugins = pluginsFactory(argv)
-  plugins.startServers({server: app, argv})
-
-  ### Sockets ###
-  # General, gloabl use sockets
-  echoSocket     = new WebSocketServer({server: app, path: '/system/echo'})
-  logWatchSocket = new WebSocketServer({server: app, path: '/system/logwatch'})
-  counterSocket  = new WebSocketServer({server: app, path: '/system/counter'})
-  echoSocket.on 'connection', (ws) ->
-    ws.on 'message', (message) ->
-      log 'socktest message from client:', message
-      ws.send message, (e) ->
-        if e
-          log 'unable to send ws message:', e
-          return
-
-  logWatchSocket.on 'connection', (ws) ->
-    logWatchSocket.on 'fetch', fetchListener = (page) ->
-      reference =
-        title: page.title
-        listeners: logWatchSocket.listeners('fetch').length
-      ws.send JSON.stringify(reference), (e) ->
-        if e
-          log 'unable to send ws message: ', e, reference
-          logWatchSocket.removeListener 'fetch', fetchListener
-          ws.close()
-
-    ws.on 'message', (message) ->
-      log 'logWatch message from client:', message
-
-  counterSocket.on 'connection', (ws) ->
-    counter = spawn( path.join(__dirname, '..', 'plugins', 'counter', 'counter.js') )
-    counter.stdout.on 'data', (data) ->
-      ws.send data, (e) ->
-        if e
-          log 'client disconnected, killing child counter proc...'
-          counter.kill('SIGHUP')
-          return
-
-    counter.stderr.on 'data', (data) ->
-      ws.send 'stderr: ' + data, (e) ->
-        if e
-          log 'client disconnected, killing child counter proc...'
-          counter.kill('SIGHUP')
-          return
-
-    counter.on 'exit', (code) ->
-      ws.send 'child process exited with code: ' + code, (e) ->
-        if e
-          log 'client disconnected, killing child counter proc...'
-          counter.kill('SIGHUP')
-          return
 
   #### Setting up Authentication ####
   # The owner of a server is simply the open id url that the wiki
@@ -151,7 +96,7 @@ module.exports = exports = (argv) ->
   # if it is return the owner, if not set the owner
   # to the id if it is provided.
   setOwner = (id, cb) ->
-    path.exists argv.id, (exists) ->
+    fs.exists argv.id, (exists) ->
       if exists
         fs.readFile(argv.id, (err, data) ->
           if err then return cb err
@@ -215,7 +160,8 @@ module.exports = exports = (argv) ->
   openIDErr = (err, req, res, next) ->
     log err
     if err.message[0..5] is 'OpenID'
-      res.render('oops.html', {status: 401, msg:err.message})
+      res.statusCode = 401
+      res.render('oops.html', {msg:err.message})
     else
       next(err)
 
@@ -254,8 +200,8 @@ module.exports = exports = (argv) ->
   # saved with a .html extension, and no layout.
   app.configure ->
     app.set('views', path.join(__dirname, '..', '/views'))
-    app.set('view engine', 'hbs')
-    app.register('.html', hbs)
+    app.set('view engine', 'html')
+    app.engine('html', hbs.__express)
     app.set('view options', layout: false)
     app.use(express.cookieParser())
     app.use(express.bodyParser())
@@ -288,14 +234,9 @@ module.exports = exports = (argv) ->
 
   ##### Redirects #####
   # Common redirects that may get used throughout the routes.
-  app.redirect 'index', (req, res) ->
-    '/view/' + argv.s
+  index = '/view/' + argv.s
 
-  app.redirect 'remotefav', (req, res) ->
-    "http://#{req.params[0]}"
-
-  app.redirect 'oops', (req, res) ->
-    '/oops'
+  oops = '/oops'
 
   ##### Get routes #####
   # Routes have mostly been kept together by http verb, with the exception
@@ -348,8 +289,7 @@ module.exports = exports = (argv) ->
     file = req.params[0]
     pagehandler.get file, (e, page, status) ->
       if e then return res.e e
-      logWatchSocket.emit 'fetch', page unless status
-      res.json(page, status)
+      res.send(status or 200, page)
 
   # Remote pages use the http client to retrieve the page
   # and sends it to the client.  TODO: consider caching remote pages locally.
@@ -358,7 +298,7 @@ module.exports = exports = (argv) ->
       if e 
         log "remoteGet error:", e
         return res.e e
-      res.send(page, status)
+      res.send(status or 200, page)
 
   ###### Favicon Routes ######
   # If favLoc doesn't exist send 404 and let the client
@@ -372,21 +312,23 @@ module.exports = exports = (argv) ->
   app.post '/favicon.png', authenticated, (req, res) ->
     favicon = req.body.image.replace(///^data:image/png;base64,///, "")
     buf = new Buffer(favicon, 'base64')
-    path.exists argv.status, (exists) ->
+    fs.exists argv.status, (exists) ->
       if exists
         fs.writeFile favLoc, buf, (e) ->
           if e then return res.e e
           res.send('Favicon Saved')
 
       else
-        mkdirp argv.status, 0777, ->
+        mkdirp argv.status, ->
           fs.writeFile favLoc, buf, (e) ->
             if e then return res.e e
             res.send('Favicon Saved')
 
   # Redirect remote favicons to the server they are needed from.
   app.get ///^/remote/([a-zA-Z0-9:\.-]+/favicon.png)$///, (req, res) ->
-    res.redirect('remotefav')
+    remotefav = "http://#{req.params[0]}"
+
+    res.redirect(remotefav)
 
   ###### Meta Routes ######
   # Send an array of pages in the database via json
@@ -510,36 +452,42 @@ module.exports = exports = (argv) ->
   ##### Routes used for openID authentication #####
   # Redirect to oops when login fails.
   app.post '/login',
-    passport.authenticate('openid', { failureRedirect: 'oops'}),
+    passport.authenticate('openid', { failureRedirect: oops}),
     (req, res) ->
-      res.redirect('index')
+      res.redirect(index)
 
   # Logout when /logout is hit with any http method.
   app.all '/logout', (req, res) ->
     req.logout()
-    res.redirect('index')
+    res.redirect(index)
 
   # Route that the openID provider redirects user to after login.
   app.get '/login/openid/complete',
-    passport.authenticate('openid', { failureRedirect: 'oops'}),
+    passport.authenticate('openid', { failureRedirect: oops}),
     (req, res) ->
-      res.redirect('index')
+      res.redirect(index)
 
   # Return the oops page when login fails.
   app.get '/oops', (req, res) ->
-    res.render('oops.html', {status: 403, msg:'This is not your wiki!'})
+    res.statusCode = 403
+    res.render('oops.html', {msg:'This is not your wiki!'})
 
   # Traditional request to / redirects to index :)
   app.get '/', (req, res) ->
-    res.redirect('index')
+    res.redirect(index)
 
   #### Start the server ####
   # Wait to make sure owner is known before listening.
   setOwner null, (e) ->
     # Throw if you can't find the initial owner
     if e then throw e
-    app.listen(argv.p, argv.o if argv.o)
-    loga "Smallest Federated Wiki server listening on", app.address().port, "in mode:", app.settings.env
+    server = app.listen argv.p, argv.o, ->
+      app.emit 'listening'
+      loga "Smallest Federated Wiki server listening on", argv.p, "in mode:", app.settings.env
+    ### Plugins ###
+    # Should replace most WebSocketServers below.
+    plugins = pluginsFactory(argv)
+    plugins.startServers({server: server, argv})
 
   # Return app when called, so that it can be watched for events and shutdown with .close() externally.
   app
