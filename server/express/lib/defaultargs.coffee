@@ -4,6 +4,11 @@
 path = require 'path'
 
 module.exports = (argv) ->
+  argv or= {}
+  argv.r or= path.join(__dirname, '..', '..', '..')
+  argv.F or= 40000
+  argv.p or= 3000
+  argv.s or= 'welcome-visitors'
   argv.d or= path.join(argv.r, 'data')
   argv.c or= path.join(argv.r, 'client')
   argv.db or= path.join(argv.d, 'pages')

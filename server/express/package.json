@@ -7,14 +7,14 @@
     "sfw-noded": "./bin/server.js"
   },
   "dependencies": {
-    "coffee-script": "~1.2",
-    "express": "~2.5",
-    "mkdirp": "~0.3",
-    "optimist": "~0.3",
-    "passport": "~0.1.5",
-    "passport-openid": "~0.1.1",
-    "hbs": "~1.0.1",
-    "bouncy": "~1.1",
+    "coffee-script": "*",
+    "express": "*",
+    "mkdirp": "*",
+    "optimist": "*",
+    "passport": "*",
+    "passport-openid": "*",
+    "hbs": "*",
+    "bouncy": "*",
     "ws": "*",
     "event-stream": "*",
     "JSONStream": "*",
@@ -32,7 +32,7 @@
     "should": "*"
   },
   "engines": { 
-    "node": "~0.6" 
+    "node": "~0.8" 
   },
   "repository": {
     "type": "git",
