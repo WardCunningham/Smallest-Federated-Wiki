@@ -1,0 +1,102 @@
+{
+  "title": "Recent Changes",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "435d07cf9bf34a70",
+      "text": "Here we list neighborhood pages with those most recently changed listed first. See also [[Local Changes]]."
+    },
+    {
+      "type": "activity",
+      "id": "e9e9f102158e1382"
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "item": {
+        "title": "Recent Changes"
+      },
+      "date": 1362950343274
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "435d07cf9bf34a70"
+      },
+      "id": "435d07cf9bf34a70",
+      "type": "add",
+      "date": 1362950345345
+    },
+    {
+      "type": "edit",
+      "id": "435d07cf9bf34a70",
+      "item": {
+        "type": "paragraph",
+        "id": "435d07cf9bf34a70",
+        "text": "Here we list pages in our neighborhood with those most recently changed listed first."
+      },
+      "date": 1362950531998
+    },
+    {
+      "item": {
+        "type": "activity",
+        "id": "e9e9f102158e1382"
+      },
+      "id": "e9e9f102158e1382",
+      "type": "add",
+      "after": "435d07cf9bf34a70",
+      "date": 1362950534228
+    },
+    {
+      "type": "edit",
+      "id": "435d07cf9bf34a70",
+      "item": {
+        "type": "paragraph",
+        "id": "435d07cf9bf34a70",
+        "text": "Here we list pages in our neighborhood with those most recently changed listed first. See also [[Local Changes]]."
+      },
+      "date": 1362955045154
+    },
+    {
+      "type": "edit",
+      "id": "435d07cf9bf34a70",
+      "item": {
+        "type": "paragraph",
+        "id": "435d07cf9bf34a70",
+        "text": "Here we list pages in our neighborhood with those most recently changed listed first. See [[Local Changes]]."
+      },
+      "date": 1362955511449
+    },
+    {
+      "type": "edit",
+      "id": "435d07cf9bf34a70",
+      "item": {
+        "type": "paragraph",
+        "id": "435d07cf9bf34a70",
+        "text": "Here we list neighborhood pages with those most recently changed listed first. See [[More About Activity Plugin]."
+      },
+      "date": 1362955622067
+    },
+    {
+      "type": "edit",
+      "id": "435d07cf9bf34a70",
+      "item": {
+        "type": "paragraph",
+        "id": "435d07cf9bf34a70",
+        "text": "Here we list neighborhood pages with those most recently changed listed first. See [[More About Activity Plugin]]."
+      },
+      "date": 1362955629705
+    },
+    {
+      "type": "edit",
+      "id": "435d07cf9bf34a70",
+      "item": {
+        "type": "paragraph",
+        "id": "435d07cf9bf34a70",
+        "text": "Here we list neighborhood pages with those most recently changed listed first. See also [[Local Changes]]."
+      },
+      "date": 1362955694011
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 parse = (text) ->
-	defn = {freq: 14.042, tune: 30}
+	defn = {freq: 14.042, tune: 30, sufix: 'Notes'}
 
 emit = ($item, item) ->
 	defn = parse item.text
@@ -31,12 +31,37 @@ bind = ($item, item) ->
 	socket = new WebSocket("ws://#{host}/plugin/twadio")
 
 	$item.dblclick ->
-	  wiki.textEditor $item, item
+		wiki.textEditor $item, item
 
 	progress = (m) ->
-	  $item.find('p.caption').html m
+		$item.find('p.caption').html m
+
+	schedule = []
+
+	select = (sufix) ->
+		schedule = []
+		for elem in $('.page')
+			each = $(elem).data('data')
+			schedule.push each if (each.title).match(/Notes$/i)
+
+	select 'Notes'
+	$schedule.html if schedule.length
+		(each.title for each in schedule).join('<br/>')
+	else
+		"<i>We look left for pages to transmit.<br>None found with required sufix 'Notes'.</i>"
+
+	payload = ->
+		select 'Notes'
+		result = []
+		for each in schedule
+			wiki.log 'each', each
+			result.push each.title
+			for item in each.story
+				result.push item.text if item.type is 'paragraph'
+		result.join "\n"
 
 	request = (action) ->
+		action.text = payload() if action.action is 'send'
 		progress "send #{message = JSON.stringify action}"
 		socket.send message if socket
 
@@ -44,7 +69,7 @@ bind = ($item, item) ->
 	$tune.on 'click', -> request {action: if status.mode is 'tune' then 'stop' else 'tune'}
 
 	socket.onopen = ->
-	  progress "opened"
+		progress "opened"
 
 	socket.onmessage = (e) ->
 		progress "message #{e.data}"
@@ -53,7 +78,7 @@ bind = ($item, item) ->
 		$tune.html if status.mode is 'tune' then 'Stop' else 'Tune'
 
 	socket.onclose = ->
-	  progress "closed"
-	  socket = null
+		progress "closed"
+		socket = null
 
 window.plugins.twadio = {emit, bind} if window?
