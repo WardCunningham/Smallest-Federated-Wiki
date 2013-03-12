@@ -4,6 +4,9 @@
 a {
   text-decoration: none; }
 
+a img {
+  border: 0; }
+
 body {
   top: 0;
   left: 0;
@@ -209,7 +212,7 @@ p.caption {
 
 image.remote {
   width:16px;
-  height:26px;
+  height:16px;
 }
 
 p.readout {

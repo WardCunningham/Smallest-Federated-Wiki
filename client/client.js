@@ -331,6 +331,47 @@ exports.extname = function(path) {
   return splitPathRe.exec(path)[3] || '';
 };
 
+exports.relative = function(from, to) {
+  from = exports.resolve(from).substr(1);
+  to = exports.resolve(to).substr(1);
+
+  function trim(arr) {
+    var start = 0;
+    for (; start < arr.length; start++) {
+      if (arr[start] !== '') break;
+    }
+
+    var end = arr.length - 1;
+    for (; end >= 0; end--) {
+      if (arr[end] !== '') break;
+    }
+
+    if (start > end) return [];
+    return arr.slice(start, end - start + 1);
+  }
+
+  var fromParts = trim(from.split('/'));
+  var toParts = trim(to.split('/'));
+
+  var length = Math.min(fromParts.length, toParts.length);
+  var samePartsLength = length;
+  for (var i = 0; i < length; i++) {
+    if (fromParts[i] !== toParts[i]) {
+      samePartsLength = i;
+      break;
+    }
+  }
+
+  var outputParts = [];
+  for (var i = samePartsLength; i < fromParts.length; i++) {
+    outputParts.push('..');
+  }
+
+  outputParts = outputParts.concat(toParts.slice(samePartsLength));
+
+  return outputParts.join('/');
+};
+
 });
 
 require.define("__browserify_process",function(require,module,exports,__dirname,__filename,process,global){var process = module.exports = {};
@@ -343,7 +384,7 @@ process.nextTick = (function () {
     ;
 
     if (canSetImmediate) {
-        return window.setImmediate;
+        return function (f) { return window.setImmediate(f) };
     }
 
     if (canPost) {
@@ -1262,10 +1303,10 @@ require.define("/lib/state.coffee",function(require,module,exports,__dirname,__f
   state.urlPages = function() {
     var i;
     return ((function() {
-      var _i, _len, _ref, _results, _step;
+      var _i, _len, _ref, _results;
       _ref = $(location).attr('pathname').split('/');
       _results = [];
-      for (_i = 0, _len = _ref.length, _step = 2; _i < _len; _i += _step) {
+      for (_i = 0, _len = _ref.length; _i < _len; _i += 2) {
         i = _ref[_i];
         _results.push(i);
       }
@@ -1280,10 +1321,10 @@ require.define("/lib/state.coffee",function(require,module,exports,__dirname,__f
   };
 
   state.urlLocs = function() {
-    var j, _i, _len, _ref, _results, _step;
+    var j, _i, _len, _ref, _results;
     _ref = $(location).attr('pathname').split('/').slice(1);
     _results = [];
-    for (_i = 0, _len = _ref.length, _step = 2; _i < _len; _i += _step) {
+    for (_i = 0, _len = _ref.length; _i < _len; _i += 2) {
       j = _ref[_i];
       _results.push(j);
     }
