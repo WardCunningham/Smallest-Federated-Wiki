@@ -1,7 +1,7 @@
-util = require('./util')
-state = require('./state')
-revision = require('./revision')
-addToJournal = require('./addToJournal')
+util = require('./util.coffee')
+state = require('./state.coffee')
+revision = require('./revision.coffee')
+addToJournal = require('./addToJournal.coffee')
 
 module.exports = pageHandler = {}
 

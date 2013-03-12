@@ -8,8 +8,8 @@
     "browserify": "1.17.3"
   },
   "scripts": {
-    "test": "./node_modules/.bin/browserify testclient.coffee ./plugins/*/test.coffee -o test/testclient.js",
-    "start": "./node_modules/.bin/browserify client.coffee -o client.js"
+    "test": "./node_modules/.bin/browserify -c 'coffee -sc' testclient.coffee ./plugins/*/test.coffee > test/testclient.js",
+    "start": "./node_modules/.bin/browserify -c 'coffee -sc' client.coffee > client.js"
   },
   "devDependencies": {
     "mocha": "*",

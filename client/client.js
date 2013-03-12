@@ -395,7 +395,7 @@ require.define("/lib/wiki.coffee",function(require,module,exports,__dirname,__fi
   var createSynopsis, wiki,
     __slice = [].slice;
 
-  createSynopsis = require('./synopsis');
+  createSynopsis = require('./synopsis.coffee');
 
   wiki = {
     createSynopsis: createSynopsis
@@ -1024,13 +1024,13 @@ require.define("/lib/util.coffee",function(require,module,exports,__dirname,__fi
 require.define("/lib/pageHandler.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
   var addToJournal, pageFromLocalStorage, pageHandler, pushToLocal, pushToServer, recursiveGet, revision, state, util;
 
-  util = require('./util');
+  util = require('./util.coffee');
 
-  state = require('./state');
+  state = require('./state.coffee');
 
-  revision = require('./revision');
+  revision = require('./revision.coffee');
 
-  addToJournal = require('./addToJournal');
+  addToJournal = require('./addToJournal.coffee');
 
   module.exports = pageHandler = {};
 
@@ -1249,7 +1249,7 @@ require.define("/lib/state.coffee",function(require,module,exports,__dirname,__f
   var active, state,
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  active = require('./active');
+  active = require('./active.coffee');
 
   module.exports = state = {};
 
@@ -1490,7 +1490,7 @@ require.define("/lib/revision.coffee",function(require,module,exports,__dirname,
 require.define("/lib/addToJournal.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
   var util;
 
-  util = require('./util');
+  util = require('./util.coffee');
 
   module.exports = function(journalElement, action) {
     var actionElement, actionTitle, controls, pageElement, prev;
@@ -1673,9 +1673,9 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
 
   neighborhood = require('./neighborhood.coffee');
 
-  addToJournal = require('./addToJournal');
+  addToJournal = require('./addToJournal.coffee');
 
-  wiki = require('./wiki');
+  wiki = require('./wiki.coffee');
 
   handleDragging = function(evt, ui) {
     var action, before, beforeElement, destinationPageElement, equals, item, itemElement, moveFromPage, moveToPage, moveWithinPage, order, sourcePageElement, sourceSite, thisPageElement;
@@ -2172,9 +2172,9 @@ require.define("/lib/neighborhood.coffee",function(require,module,exports,__dirn
 require.define("/lib/search.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
   var active, createSearch, util;
 
-  util = require('./util');
+  util = require('./util.coffee');
 
-  active = require('./active');
+  active = require('./active.coffee');
 
   createSearch = function(_arg) {
     var neighborhood, performSearch;
@@ -2227,7 +2227,7 @@ require.define("/lib/search.coffee",function(require,module,exports,__dirname,__
 
 require.define("/client.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
 
-  window.wiki = require('./lib/wiki');
+  window.wiki = require('./lib/wiki.coffee');
 
   require('./lib/legacy.coffee');
 

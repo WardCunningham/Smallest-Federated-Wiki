@@ -1,4 +1,4 @@
-util = require './util'
+util = require './util.coffee'
 
 module.exports = (journalElement, action) ->
   pageElement = journalElement.parents('.page:first')
