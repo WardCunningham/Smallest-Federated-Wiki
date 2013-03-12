@@ -3929,48 +3929,48 @@ require.define("/plugins/report/test.coffee",function(require,module,exports,__d
         issue = report.parse("WEEKLY")[0];
         date = new Date(2012, 12 - 1, 25, 3, 4, 5);
         count = function(i) {
-          return report.advance(date, issue, i).toString();
+          return JSON.stringify(report.advance(date, issue, i));
         };
-        expect(count(-1)).to.contain("Sun Dec 16 2012 00:00:00");
-        expect(count(0)).to.contain("Sun Dec 23 2012 00:00:00");
-        expect(count(1)).to.contain("Sun Dec 30 2012 00:00:00");
-        return expect(count(2)).to.contain("Sun Jan 06 2013 00:00:00");
+        expect(count(-1)).to.contain("2012-12-16T00:00:00.000");
+        expect(count(0)).to.contain("2012-12-23T00:00:00.000");
+        expect(count(1)).to.contain("2012-12-30T00:00:00.000");
+        return expect(count(2)).to.contain("2013-01-06T00:00:00.000");
       });
       it('handles weeks with offsets (noon > now)', function() {
         var count, date, issue;
         issue = report.parse("WEEKLY TUESDAY NOON")[0];
         date = new Date(2012, 12 - 1, 25, 3, 4, 5);
         count = function(i) {
-          return report.advance(date, issue, i).toString();
+          return JSON.stringify(report.advance(date, issue, i));
         };
-        expect(count(-1)).to.contain("Tue Dec 11 2012 12:00:00");
-        expect(count(0)).to.contain("Tue Dec 18 2012 12:00:00");
-        expect(count(1)).to.contain("Tue Dec 25 2012 12:00:00");
-        return expect(count(2)).to.contain("Tue Jan 01 2013 12:00:00");
+        expect(count(-1)).to.contain("2012-12-11T12:00:00.000");
+        expect(count(0)).to.contain("2012-12-18T12:00:00.000");
+        expect(count(1)).to.contain("2012-12-25T12:00:00.000");
+        return expect(count(2)).to.contain("2013-01-01T12:00:00.000");
       });
       it('handles years with offsets (march < now)', function() {
         var count, date, issue;
         issue = report.parse("YEARLY MARCH FRIDAY EVENING")[0];
         date = new Date(2012, 12 - 1, 25, 3, 4, 5);
         count = function(i) {
-          return report.advance(date, issue, i).toString();
+          return JSON.stringify(report.advance(date, issue, i));
         };
-        expect(count(-1)).to.contain("Fri Mar 04 2011 18:00:00");
-        expect(count(0)).to.contain("Fri Mar 02 2012 18:00:00");
-        expect(count(1)).to.contain("Fri Mar 01 2013 18:00:00");
-        return expect(count(2)).to.contain("Fri Mar 07 2014 18:00:00");
+        expect(count(-1)).to.contain("2011-03-04T18:00:00.000");
+        expect(count(0)).to.contain("2012-03-02T18:00:00.000");
+        expect(count(1)).to.contain("2013-03-01T18:00:00.000");
+        return expect(count(2)).to.contain("2014-03-07T18:00:00.000");
       });
       return it('handles election day (election > now)', function() {
         var count, date, issue;
         issue = report.parse("YEARLY NOVEMBER MONDAY TUESDAY MORNING")[0];
         date = new Date(2016, 1, 2, 3, 4, 5);
         count = function(i) {
-          return report.advance(date, issue, i).toString();
+          return JSON.stringify(report.advance(date, issue, i));
         };
-        expect(count(-1)).to.contain("Tue Nov 04 2014 06:00:00");
-        expect(count(0)).to.contain("Tue Nov 03 2015 06:00:00");
-        expect(count(1)).to.contain("Tue Nov 08 2016 06:00:00");
-        return expect(count(2)).to.contain("Tue Nov 07 2017 06:00:00");
+        expect(count(-1)).to.contain("2014-11-04T06:00:00.000");
+        expect(count(0)).to.contain("2015-11-03T06:00:00.000");
+        expect(count(1)).to.contain("2016-11-08T06:00:00.000");
+        return expect(count(2)).to.contain("2017-11-07T06:00:00.000");
       });
     });
   });
