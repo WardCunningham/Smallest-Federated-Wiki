@@ -3,8 +3,8 @@ pageHandler = require('./pageHandler.coffee')
 plugin = require('./plugin.coffee')
 state = require('./state.coffee')
 neighborhood = require('./neighborhood.coffee')
-addToJournal = require('./addToJournal')
-wiki = require('./wiki')
+addToJournal = require('./addToJournal.coffee')
+wiki = require('./wiki.coffee')
 
 handleDragging = (evt, ui) ->
   itemElement = ui.item

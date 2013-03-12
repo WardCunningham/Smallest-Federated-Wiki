@@ -1,4 +1,4 @@
-active = require('./active')
+active = require('./active.coffee')
 
 module.exports = state = {}
 
