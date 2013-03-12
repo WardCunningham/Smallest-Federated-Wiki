@@ -29,35 +29,35 @@ describe 'report plugin', ->
 		it 'handles weeks', ->
 			[issue] = report.parse "WEEKLY"
 			date = new Date 2012, 12-1, 25, 3, 4, 5
-			count = (i) -> JSON.stringify(report.advance(date, issue, i))
-			expect(count -1).to.contain "2012-12-16T00:00:00.000"
-			expect(count 0).to.contain "2012-12-23T00:00:00.000"
-			expect(count 1).to.contain "2012-12-30T00:00:00.000"
-			expect(count 2).to.contain "2013-01-06T00:00:00.000"
+			count = (i) -> report.advance(date, issue, i)
+			expect(count -1).to.eql new Date 2012, 12-1, 16
+			expect(count 0).to.eql new Date 2012, 12-1, 23
+			expect(count 1).to.eql new Date 2012, 12-1, 30
+			expect(count 2).to.eql new Date 2013, 1-1, 6
 
 		it 'handles weeks with offsets (noon > now)', ->
 			[issue] = report.parse "WEEKLY TUESDAY NOON"
 			date = new Date 2012, 12-1, 25, 3, 4, 5
-			count = (i) -> JSON.stringify(report.advance(date, issue, i))
-			expect(count -1).to.contain "2012-12-11T12:00:00.000"
-			expect(count 0).to.contain "2012-12-18T12:00:00.000"
-			expect(count 1).to.contain "2012-12-25T12:00:00.000"
-			expect(count 2).to.contain "2013-01-01T12:00:00.000"
+			count = (i) -> report.advance(date, issue, i)
+			expect(count -1).to.eql new Date 2012, 12-1, 11, 12
+			expect(count 0).to.eql new Date 2012, 12-1, 18, 12
+			expect(count 1).to.eql new Date 2012, 12-1, 25, 12
+			expect(count 2).to.eql new Date 2013, 1-1, 1, 12
 
 		it 'handles years with offsets (march < now)', ->
 			[issue] = report.parse "YEARLY MARCH FRIDAY EVENING"
 			date = new Date 2012, 12-1, 25, 3, 4, 5
-			count = (i) -> JSON.stringify(report.advance(date, issue, i))
-			expect(count -1).to.contain "2011-03-04T18:00:00.000"
-			expect(count 0).to.contain "2012-03-02T18:00:00.000"
-			expect(count 1).to.contain "2013-03-01T18:00:00.000"
-			expect(count 2).to.contain "2014-03-07T18:00:00.000"
+			count = (i) -> report.advance(date, issue, i)
+			expect(count -1).to.eql new Date 2011, 3-1, 4, 18
+			expect(count 0).to.eql new Date 2012, 3-1, 2, 18
+			expect(count 1).to.eql new Date 2013, 3-1, 1, 18
+			expect(count 2).to.eql new Date 2014, 3-1, 7, 18
 
 		it 'handles election day (election > now)', ->
 			[issue] = report.parse "YEARLY NOVEMBER MONDAY TUESDAY MORNING"
 			date = new Date 2016, 1, 2, 3, 4, 5
-			count = (i) -> JSON.stringify(report.advance(date, issue, i))
-			expect(count -1).to.contain "2014-11-04T06:00:00.000"
-			expect(count 0).to.contain "2015-11-03T06:00:00.000"
-			expect(count 1).to.contain "2016-11-08T06:00:00.000"
-			expect(count 2).to.contain "2017-11-07T06:00:00.000"
+			count = (i) -> report.advance(date, issue, i)
+			expect(count -1).to.eql new Date 2014, 11-1, 4, 6
+			expect(count 0).to.eql new Date 2015, 11-1, 3, 6
+			expect(count 1).to.eql new Date 2016, 11-1, 8, 6
+			expect(count 2).to.eql new Date 2017, 11-1, 7, 6

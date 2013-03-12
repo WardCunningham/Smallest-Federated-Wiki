@@ -331,47 +331,6 @@ exports.extname = function(path) {
   return splitPathRe.exec(path)[3] || '';
 };
 
-exports.relative = function(from, to) {
-  from = exports.resolve(from).substr(1);
-  to = exports.resolve(to).substr(1);
-
-  function trim(arr) {
-    var start = 0;
-    for (; start < arr.length; start++) {
-      if (arr[start] !== '') break;
-    }
-
-    var end = arr.length - 1;
-    for (; end >= 0; end--) {
-      if (arr[end] !== '') break;
-    }
-
-    if (start > end) return [];
-    return arr.slice(start, end - start + 1);
-  }
-
-  var fromParts = trim(from.split('/'));
-  var toParts = trim(to.split('/'));
-
-  var length = Math.min(fromParts.length, toParts.length);
-  var samePartsLength = length;
-  for (var i = 0; i < length; i++) {
-    if (fromParts[i] !== toParts[i]) {
-      samePartsLength = i;
-      break;
-    }
-  }
-
-  var outputParts = [];
-  for (var i = samePartsLength; i < fromParts.length; i++) {
-    outputParts.push('..');
-  }
-
-  outputParts = outputParts.concat(toParts.slice(samePartsLength));
-
-  return outputParts.join('/');
-};
-
 });
 
 require.define("__browserify_process",function(require,module,exports,__dirname,__filename,process,global){var process = module.exports = {};
@@ -384,7 +343,7 @@ process.nextTick = (function () {
     ;
 
     if (canSetImmediate) {
-        return function (f) { return window.setImmediate(f) };
+        return window.setImmediate;
     }
 
     if (canPost) {
@@ -1210,10 +1169,10 @@ require.define("/lib/state.coffee",function(require,module,exports,__dirname,__f
   state.urlPages = function() {
     var i;
     return ((function() {
-      var _i, _len, _ref, _results;
+      var _i, _len, _ref, _results, _step;
       _ref = $(location).attr('pathname').split('/');
       _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i += 2) {
+      for (_i = 0, _len = _ref.length, _step = 2; _i < _len; _i += _step) {
         i = _ref[_i];
         _results.push(i);
       }
@@ -1228,10 +1187,10 @@ require.define("/lib/state.coffee",function(require,module,exports,__dirname,__f
   };
 
   state.urlLocs = function() {
-    var j, _i, _len, _ref, _results;
+    var j, _i, _len, _ref, _results, _step;
     _ref = $(location).attr('pathname').split('/').slice(1);
     _results = [];
-    for (_i = 0, _len = _ref.length; _i < _len; _i += 2) {
+    for (_i = 0, _len = _ref.length, _step = 2; _i < _len; _i += _step) {
       j = _ref[_i];
       _results.push(j);
     }
@@ -3929,48 +3888,48 @@ require.define("/plugins/report/test.coffee",function(require,module,exports,__d
         issue = report.parse("WEEKLY")[0];
         date = new Date(2012, 12 - 1, 25, 3, 4, 5);
         count = function(i) {
-          return JSON.stringify(report.advance(date, issue, i));
+          return report.advance(date, issue, i);
         };
-        expect(count(-1)).to.contain("2012-12-16T00:00:00.000");
-        expect(count(0)).to.contain("2012-12-23T00:00:00.000");
-        expect(count(1)).to.contain("2012-12-30T00:00:00.000");
-        return expect(count(2)).to.contain("2013-01-06T00:00:00.000");
+        expect(count(-1)).to.eql(new Date(2012, 12 - 1, 16));
+        expect(count(0)).to.eql(new Date(2012, 12 - 1, 23));
+        expect(count(1)).to.eql(new Date(2012, 12 - 1, 30));
+        return expect(count(2)).to.eql(new Date(2013, 1 - 1, 6));
       });
       it('handles weeks with offsets (noon > now)', function() {
         var count, date, issue;
         issue = report.parse("WEEKLY TUESDAY NOON")[0];
         date = new Date(2012, 12 - 1, 25, 3, 4, 5);
         count = function(i) {
-          return JSON.stringify(report.advance(date, issue, i));
+          return report.advance(date, issue, i);
         };
-        expect(count(-1)).to.contain("2012-12-11T12:00:00.000");
-        expect(count(0)).to.contain("2012-12-18T12:00:00.000");
-        expect(count(1)).to.contain("2012-12-25T12:00:00.000");
-        return expect(count(2)).to.contain("2013-01-01T12:00:00.000");
+        expect(count(-1)).to.eql(new Date(2012, 12 - 1, 11, 12));
+        expect(count(0)).to.eql(new Date(2012, 12 - 1, 18, 12));
+        expect(count(1)).to.eql(new Date(2012, 12 - 1, 25, 12));
+        return expect(count(2)).to.eql(new Date(2013, 1 - 1, 1, 12));
       });
       it('handles years with offsets (march < now)', function() {
         var count, date, issue;
         issue = report.parse("YEARLY MARCH FRIDAY EVENING")[0];
         date = new Date(2012, 12 - 1, 25, 3, 4, 5);
         count = function(i) {
-          return JSON.stringify(report.advance(date, issue, i));
+          return report.advance(date, issue, i);
         };
-        expect(count(-1)).to.contain("2011-03-04T18:00:00.000");
-        expect(count(0)).to.contain("2012-03-02T18:00:00.000");
-        expect(count(1)).to.contain("2013-03-01T18:00:00.000");
-        return expect(count(2)).to.contain("2014-03-07T18:00:00.000");
+        expect(count(-1)).to.eql(new Date(2011, 3 - 1, 4, 18));
+        expect(count(0)).to.eql(new Date(2012, 3 - 1, 2, 18));
+        expect(count(1)).to.eql(new Date(2013, 3 - 1, 1, 18));
+        return expect(count(2)).to.eql(new Date(2014, 3 - 1, 7, 18));
       });
       return it('handles election day (election > now)', function() {
         var count, date, issue;
         issue = report.parse("YEARLY NOVEMBER MONDAY TUESDAY MORNING")[0];
         date = new Date(2016, 1, 2, 3, 4, 5);
         count = function(i) {
-          return JSON.stringify(report.advance(date, issue, i));
+          return report.advance(date, issue, i);
         };
-        expect(count(-1)).to.contain("2014-11-04T06:00:00.000");
-        expect(count(0)).to.contain("2015-11-03T06:00:00.000");
-        expect(count(1)).to.contain("2016-11-08T06:00:00.000");
-        return expect(count(2)).to.contain("2017-11-07T06:00:00.000");
+        expect(count(-1)).to.eql(new Date(2014, 11 - 1, 4, 6));
+        expect(count(0)).to.eql(new Date(2015, 11 - 1, 3, 6));
+        expect(count(1)).to.eql(new Date(2016, 11 - 1, 8, 6));
+        return expect(count(2)).to.eql(new Date(2017, 11 - 1, 7, 6));
       });
     });
   });
