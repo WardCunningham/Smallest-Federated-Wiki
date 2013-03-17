@@ -5,14 +5,16 @@ tz = null
 sock = null
 
 txtzymeDevice = (done) ->
-	result = null
-	fs.readdir '/dev', (err, files) ->
-		done err if err
-		for file in files
-			result = file if file.match /^ttyACM/
-			result = file if file.match /^cu.usbmodem1234/
-		return done null, "/dev/#{result}" if result
-		done "can't find txtzyme device"
+    result = null
+    if process.platform == "win32"
+        return done "on windows..."
+    fs.readdir '/dev', (err, files) ->
+        done err if err
+        for file in files
+            result = file if file.match /^ttyACM/
+            result = file if file.match /^cu.usbmodem1234/
+        return done null, "/dev/#{result}" if result
+        done "can't find txtzyme device"
 
 startServer = (params) ->
 
