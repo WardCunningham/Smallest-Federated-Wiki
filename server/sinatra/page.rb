@@ -36,7 +36,7 @@ class Page
       if page
         page
       elsif File.exist?(default_path)
-        put name, FileStore.get_page(default_path)
+        FileStore.get_page(default_path)
       elsif (path = plugin_page_path name)
         FileStore.get_page(path)
       else

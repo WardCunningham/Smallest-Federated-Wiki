@@ -52,7 +52,7 @@ module.exports = exports = (argv) ->
           defloc = path.join(argv.r, 'default-data', 'pages', file)
           fs.exists(defloc, (exists) ->
             if exists
-              load_parse_copy(defloc, file, cb)
+              load_parse(defloc, cb)
             else
               plugindir = path.join(argv.r, 'client', 'plugins')
               fs.readdir(plugindir , (e, plugins) ->
