@@ -40,7 +40,7 @@ class Page
       elsif (path = plugin_page_path name)
         FileStore.get_page(path)
       else
-        put name, {'title'=>name,'story'=>[{'type'=>'factory', 'id'=>RandomId.generate}]}
+        halt 404
       end
     end
 
