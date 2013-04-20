@@ -17,10 +17,6 @@
 					%p= resolve_links(item['caption'])
 				- else
 					%p.error= type
-	.journal
-		- ( page['journal'] || [] ).each do |item|
-			%span{:class => ['action', item['type']], "data-item-id" => item['id'] }
-				= item['type'][0..0]
 	.footer
 		%a{:id => "license", :href => "http://creativecommons.org/licenses/by-sa/3.0/"} CC BY-SA 3.0
 		='.'
