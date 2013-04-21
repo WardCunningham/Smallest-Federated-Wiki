@@ -1529,9 +1529,12 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
   };
 
   buildPageHeader = function(_arg) {
-    var favicon_src, header_href, title, tooltip;
-    title = _arg.title, tooltip = _arg.tooltip, header_href = _arg.header_href, favicon_src = _arg.favicon_src;
-    return "<h1 title=\"" + tooltip + "\"><a href=\"" + header_href + "\"><img src=\"" + favicon_src + "\" height=\"32px\" class=\"favicon\"></a> " + title + "</h1>";
+    var favicon_src, header_href, page, tooltip;
+    page = _arg.page, tooltip = _arg.tooltip, header_href = _arg.header_href, favicon_src = _arg.favicon_src;
+    if (page.plugin) {
+      tooltip += "\n" + page.plugin + " plugin";
+    }
+    return "<h1 title=\"" + tooltip + "\"><a href=\"" + header_href + "\"><img src=\"" + favicon_src + "\" height=\"32px\" class=\"favicon\"></a> " + page.title + "</h1>";
   };
 
   emitHeader = function($header, $page, page) {
@@ -1544,12 +1547,12 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
       tooltip: site,
       header_href: "//" + site + "/view/welcome-visitors" + viewHere,
       favicon_src: "http://" + site + "/favicon.png",
-      title: page.title
+      page: page
     }) : buildPageHeader({
       tooltip: location.host,
       header_href: "/view/welcome-visitors" + viewHere,
       favicon_src: "/favicon.png",
-      title: page.title
+      page: page
     });
     $header.append(pageHeader);
     if (!isRemotePage) {
@@ -1692,6 +1695,9 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
         $page.addClass('remote');
       }
       $page.data('site', siteFound);
+    }
+    if (data.plugin != null) {
+      $page.addClass('plugin');
     }
     renderPageIntoPageElement(data, $page, siteFound);
     state.setUrl();

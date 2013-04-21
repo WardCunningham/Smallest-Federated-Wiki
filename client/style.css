@@ -239,6 +239,10 @@ p.readout {
     box-shadow: 2px 1px 24px rgba(0, 0, 0, 0.4);
     z-index: 10; }
 
+.page.plugin {
+  box-shadow: inset 0px 0px 40px 0px rgba(0,220,0,.5);
+}
+
 .page.local {
   box-shadow: inset 0px 0px 40px 0px rgba(220,180,0,.7);
 }
