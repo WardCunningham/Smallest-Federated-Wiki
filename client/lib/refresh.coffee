@@ -187,7 +187,7 @@ renderPageIntoPageElement = (pageData,$page, siteFound) ->
   $footer.append """
     <a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> .
     <a class="show-page-source" href="/#{slug}.json?random=#{util.randomBytes(4)}" title="source">JSON</a> .
-    <a>#{siteFound || 'origin'}</a>
+    <a href= "//#{siteFound || location.host}/#{slug}.html">#{siteFound || location.host}</a>
   """
 
 
