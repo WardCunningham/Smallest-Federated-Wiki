@@ -12,6 +12,8 @@ events = require 'events'
 # Export a function that generates a page handler
 # when called with options object.
 module.exports = exports = (argv) ->
+  mkdirp argv.db, (e) ->
+    if e then throw e
 
   #### Private utility methods. ####
   load_parse = (loc, cb) ->
