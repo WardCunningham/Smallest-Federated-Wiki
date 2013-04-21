@@ -155,6 +155,7 @@ renderPageIntoPageElement = (pageData,$page, siteFound) ->
 
   wiki.resolutionContext = context
 
+  $page.empty()
   [$twins, $header, $story, $journal, $footer] = ['twins', 'header', 'story', 'journal', 'footer'].map (className) ->
     $("<div />").addClass(className).appendTo($page)
 

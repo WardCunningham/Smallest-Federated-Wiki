@@ -541,7 +541,7 @@ require.define("/lib/legacy.coffee",function(require,module,exports,__dirname,__
   };
 
   $(function() {
-    var $firstPage, LEFTARROW, RIGHTARROW, createTextElement, doInternalLink, finishClick, getTemplate, sleep, textEditor;
+    var LEFTARROW, RIGHTARROW, createTextElement, doInternalLink, finishClick, getTemplate, sleep, textEditor;
     window.dialog = $('<div></div>').html('This dialog will show every time!').dialog({
       autoOpen: false,
       title: 'Basic Dialog',
@@ -874,13 +874,9 @@ require.define("/lib/legacy.coffee",function(require,module,exports,__dirname,__
       $("footer input:first").val($(this).attr('data-provider'));
       return $("footer form").submit();
     });
-    if (($firstPage = $('.page:first')).data('serverGenerated')) {
-      window.location = "/view/" + ($firstPage.attr('id'));
-    } else {
-      state.first();
-      $('.page').each(refresh);
-      active.set($('.page').last());
-    }
+    state.first();
+    $('.page').each(refresh);
+    active.set($('.page').last());
     return $('body').on('new-neighbor-done', function(e, neighbor) {
       return $('.page').each(function(index, element) {
         return wiki.emitTwins($(element));
@@ -1876,6 +1872,7 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
       addContext(action.site);
     }
     wiki.resolutionContext = context;
+    $page.empty();
     _ref1 = ['twins', 'header', 'story', 'journal', 'footer'].map(function(className) {
       return $("<div />").addClass(className).appendTo($page);
     }), $twins = _ref1[0], $header = _ref1[1], $story = _ref1[2], $journal = _ref1[3], $footer = _ref1[4];
