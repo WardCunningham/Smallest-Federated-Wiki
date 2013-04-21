@@ -12,9 +12,6 @@
 				- when 'image'
 					%img{:src => item['url']}
 					%p= resolve_links(item['caption'])
-				- when 'chart'
-					%p.readout= item['data'].last.last || "0.0"
-					%p= resolve_links(item['caption'])
 				- else
 					%p.error= type
 	.footer
