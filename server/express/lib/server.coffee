@@ -27,11 +27,13 @@ glob = require 'glob'
 es = require 'event-stream'
 JSONStream = require 'JSONStream'
 async = require 'async'
+f = require('flates')
 
 # Local files
 random = require './random_id'
 defargs = require './defaultargs'
 synopsis = require '../../../client/lib/synopsis'
+wiki = require '../../../client/lib/wiki'
 pluginsFactory = require './plugins'
 
 # pageFactory can be easily replaced here by requiring your own page handler
@@ -39,6 +41,18 @@ pluginsFactory = require './plugins'
 # methods that accept the same arguments and callbacks. That would be the
 # easiest way to use the Smallest Federated Wiki with a database backend.
 pageFactory = require './page'
+
+render = (page) ->
+  return f.h1(
+    f.a({href: '/', style: 'text-decoration: none'},
+      f.img({height: '32px', src: '/favicon.png'})) +
+      ' ' + page.title) +
+    f.div {class: "story"},
+      page.story.map((story) ->
+        if story.type is 'paragraph'
+          f.div {class: "item paragraph"}, f.p(story.text)
+        else f.div {class: "item error"}, f.p(story.type)
+      ).join('\n')
 
 # Set export objects for node and coffee to a function that generates a sfw server.
 module.exports = exports = (argv) ->
@@ -229,7 +243,7 @@ module.exports = exports = (argv) ->
 
   ##### Redirects #####
   # Common redirects that may get used throughout the routes.
-  index = '/view/' + argv.s
+  index = argv.s + '.html'
 
   oops = '/oops'
 
@@ -261,6 +275,21 @@ module.exports = exports = (argv) ->
         pageDiv = {page, origin: """data-site=#{urlLocs[idx]}"""}
       info.pages.push(pageDiv)
     res.render('static.html', info)
+
+  app.get ///([a-z0-9-]+)\.html$///, (req, res) ->
+    file = req.params[0]
+    log(file)
+    pagehandler.get file, (e, page, status) ->
+      if e then return res.e e
+      if status is 404
+        return res.send page, status
+      info = {}
+      info.pages = [
+          page: file
+          generated: """data-server-generated=true"""
+          story: wiki.resolveLinks(render(page))
+        ]
+      res.render('static.html', info)
 
   app.get ///system/factories.json///, (req, res) ->
     res.status(200)
