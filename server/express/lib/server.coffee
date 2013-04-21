@@ -40,11 +40,6 @@ pluginsFactory = require './plugins'
 # easiest way to use the Smallest Federated Wiki with a database backend.
 pageFactory = require './page'
 
-# When the server factory is first started attempt to retrieve the gitlog.
-gitlog = ''
-gitVersion = child_process.exec 'git log -10 --oneline || echo no git log', (err, stdout, stderr) ->
-  gitlog = stdout
-
 # Set export objects for node and coffee to a function that generates a sfw server.
 module.exports = exports = (argv) ->
   # Create the main application object, app.
@@ -258,7 +253,6 @@ module.exports = exports = (argv) ->
           'logout'
         else 'login'
       else 'claim'
-      gitlog
     }
     for page, idx in urlPages
       if urlLocs[idx] is 'view'
