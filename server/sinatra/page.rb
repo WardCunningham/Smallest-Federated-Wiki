@@ -38,7 +38,9 @@ class Page
       elsif File.exist?(default_path)
         FileStore.get_page(default_path)
       elsif (path = plugin_page_path name)
-        FileStore.get_page(path)
+        page = FileStore.get_page(path)
+        page['plugin'] = path.match(/plugins\/(.*?)\/pages/)[1]
+        page
       else
         halt 404
       end

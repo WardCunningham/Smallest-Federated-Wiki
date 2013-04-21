@@ -19,6 +19,8 @@ module.exports = exports = (argv) ->
       if err then cb(err)
       try 
         page = JSON.parse(data)
+        if m = loc.match /plugins\/(.+?)\/pages/
+          page.plugin = m[1]
       catch e
         return cb(e)
       cb(null, page)
