@@ -282,13 +282,12 @@ $ ->
     $("footer input:first").val $(this).attr('data-provider')
     $("footer form").submit()
 
-  # CODE that gets the web page application started
-  state.first()
-
-  $('.page').each refresh
-  active.set($('.page').last())
-
   $('body').on 'new-neighbor-done', (e, neighbor) ->
     $('.page').each (index, element) ->
       wiki.emitTwins $(element)
+
+  $ ->
+    state.first()
+    $('.page').each refresh
+    active.set($('.page').last())
 

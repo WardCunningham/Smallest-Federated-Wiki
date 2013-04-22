@@ -461,11 +461,15 @@ require.define("/lib/wiki.coffee",function(require,module,exports,__dirname,__fi
   };
 
   wiki.createPage = function(name, loc) {
+    var $page, site;
     if (loc && loc !== 'view') {
-      return $("<div/>").attr('id', name).attr('data-site', loc).addClass("page");
-    } else {
-      return $("<div/>").attr('id', name).addClass("page");
+      site = loc;
     }
+    $page = $("<div class=\"page\" id=\"" + name + "\">\n  <div class=\"twins\"> <p> </p> </div>\n  <div class=\"header\">\n    <h1> <img class=\"favicon\" src=\"" + (site ? "//" + site : "") + "/favicon.png\" height=\"32px\"> " + name + " </h1>\n  </div>\n</div>");
+    if (site) {
+      $page.find('.page').attr('data-site', site);
+    }
+    return $page;
   };
 
   wiki.getItem = function(element) {

@@ -461,11 +461,15 @@ require.define("/lib/wiki.coffee",function(require,module,exports,__dirname,__fi
   };
 
   wiki.createPage = function(name, loc) {
+    var $page, site;
     if (loc && loc !== 'view') {
-      return $("<div/>").attr('id', name).attr('data-site', loc).addClass("page");
-    } else {
-      return $("<div/>").attr('id', name).addClass("page");
+      site = loc;
     }
+    $page = $("<div class=\"page\" id=\"" + name + "\">\n  <div class=\"twins\"> <p> </p> </div>\n  <div class=\"header\">\n    <h1> <img class=\"favicon\" src=\"" + (site ? "//" + site : "") + "/favicon.png\" height=\"32px\"> " + name + " </h1>\n  </div>\n</div>");
+    if (site) {
+      $page.find('.page').attr('data-site', site);
+    }
+    return $page;
   };
 
   wiki.getItem = function(element) {
@@ -874,13 +878,15 @@ require.define("/lib/legacy.coffee",function(require,module,exports,__dirname,__
       $("footer input:first").val($(this).attr('data-provider'));
       return $("footer form").submit();
     });
-    state.first();
-    $('.page').each(refresh);
-    active.set($('.page').last());
-    return $('body').on('new-neighbor-done', function(e, neighbor) {
+    $('body').on('new-neighbor-done', function(e, neighbor) {
       return $('.page').each(function(index, element) {
         return wiki.emitTwins($(element));
       });
+    });
+    return $(function() {
+      state.first();
+      $('.page').each(refresh);
+      return active.set($('.page').last());
     });
   });
 
