@@ -10,8 +10,8 @@
 				- when 'paragraph'
 					%p= resolve_links(item['text'])
 				- when 'image'
-					%img{:src => item['url']}
-					%p= resolve_links(item['caption'])
+					%img{:src => item['url'], :class => 'thumbnail'}
+					%p= resolve_links(item['text'] || item['caption'] || 'uploaded image')
 				- else
 					%p.error= type
 	.footer

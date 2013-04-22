@@ -51,6 +51,10 @@ render = (page) ->
       page.story.map((story) ->
         if story.type is 'paragraph'
           f.div {class: "item paragraph"}, f.p(story.text)
+        else if story.type is 'image'
+          f.div {class: "item image"},
+            f.img({class: "thumbnail", src: story.url}) +
+            f.p(story.text or story.caption or 'uploaded image')
         else f.div {class: "item error"}, f.p(story.type)
       ).join('\n')
 
