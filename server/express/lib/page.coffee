@@ -12,6 +12,8 @@ events = require 'events'
 # Export a function that generates a page handler
 # when called with options object.
 module.exports = exports = (argv) ->
+  mkdirp argv.db, (e) ->
+    if e then throw e
 
   #### Private utility methods. ####
   load_parse = (loc, cb) ->
@@ -19,6 +21,8 @@ module.exports = exports = (argv) ->
       if err then cb(err)
       try 
         page = JSON.parse(data)
+        if m = loc.match /plugins\/(.+?)\/pages/
+          page.plugin = m[1]
       catch e
         return cb(e)
       cb(null, page)
@@ -52,7 +56,7 @@ module.exports = exports = (argv) ->
           defloc = path.join(argv.r, 'default-data', 'pages', file)
           fs.exists(defloc, (exists) ->
             if exists
-              load_parse_copy(defloc, file, cb)
+              load_parse(defloc, cb)
             else
               plugindir = path.join(argv.r, 'client', 'plugins')
               fs.readdir(plugindir , (e, plugins) ->

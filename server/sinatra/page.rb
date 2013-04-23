@@ -36,11 +36,13 @@ class Page
       if page
         page
       elsif File.exist?(default_path)
-        put name, FileStore.get_page(default_path)
+        FileStore.get_page(default_path)
       elsif (path = plugin_page_path name)
-        FileStore.get_page(path)
+        page = FileStore.get_page(path)
+        page['plugin'] = path.match(/plugins\/(.*?)\/pages/)[1]
+        page
       else
-        put name, {'title'=>name,'story'=>[{'type'=>'factory', 'id'=>RandomId.generate}]}
+        halt 404
       end
     end
 

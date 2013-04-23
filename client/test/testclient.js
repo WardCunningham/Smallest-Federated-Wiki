@@ -502,11 +502,15 @@ require.define("/lib/wiki.coffee",function(require,module,exports,__dirname,__fi
   };
 
   wiki.createPage = function(name, loc) {
+    var $page, site;
     if (loc && loc !== 'view') {
-      return $("<div/>").attr('id', name).attr('data-site', loc).addClass("page");
-    } else {
-      return $("<div/>").attr('id', name).addClass("page");
+      site = loc;
     }
+    $page = $("<div class=\"page\" id=\"" + name + "\">\n  <div class=\"twins\"> <p> </p> </div>\n  <div class=\"header\">\n    <h1> <img class=\"favicon\" src=\"" + (site ? "//" + site : "") + "/favicon.png\" height=\"32px\"> " + name + " </h1>\n  </div>\n</div>");
+    if (site) {
+      $page.find('.page').attr('data-site', site);
+    }
+    return $page;
   };
 
   wiki.getItem = function(element) {
@@ -1570,9 +1574,12 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
   };
 
   buildPageHeader = function(_arg) {
-    var favicon_src, header_href, title, tooltip;
-    title = _arg.title, tooltip = _arg.tooltip, header_href = _arg.header_href, favicon_src = _arg.favicon_src;
-    return "<h1 title=\"" + tooltip + "\"><a href=\"" + header_href + "\"><img src=\"" + favicon_src + "\" height=\"32px\" class=\"favicon\"></a> " + title + "</h1>";
+    var favicon_src, header_href, page, tooltip;
+    page = _arg.page, tooltip = _arg.tooltip, header_href = _arg.header_href, favicon_src = _arg.favicon_src;
+    if (page.plugin) {
+      tooltip += "\n" + page.plugin + " plugin";
+    }
+    return "<h1 title=\"" + tooltip + "\"><a href=\"" + header_href + "\"><img src=\"" + favicon_src + "\" height=\"32px\" class=\"favicon\"></a> " + page.title + "</h1>";
   };
 
   emitHeader = function($header, $page, page) {
@@ -1585,12 +1592,12 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
       tooltip: site,
       header_href: "//" + site + "/view/welcome-visitors" + viewHere,
       favicon_src: "http://" + site + "/favicon.png",
-      title: page.title
+      page: page
     }) : buildPageHeader({
       tooltip: location.host,
       header_href: "/view/welcome-visitors" + viewHere,
       favicon_src: "/favicon.png",
-      title: page.title
+      page: page
     });
     $header.append(pageHeader);
     if (!isRemotePage) {
@@ -1690,6 +1697,7 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
       addContext(action.site);
     }
     wiki.resolutionContext = context;
+    $page.empty();
     _ref1 = ['twins', 'header', 'story', 'journal', 'footer'].map(function(className) {
       return $("<div />").addClass(className).appendTo($page);
     }), $twins = _ref1[0], $header = _ref1[1], $story = _ref1[2], $journal = _ref1[3], $footer = _ref1[4];
@@ -1719,7 +1727,7 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
     }
     emitTwins($page);
     $journal.append("<div class=\"control-buttons\">\n  <a href=\"#\" class=\"button fork-page\" title=\"fork this page\">" + util.symbols['fork'] + "</a>\n  <a href=\"#\" class=\"button add-factory\" title=\"add paragraph\">" + util.symbols['add'] + "</a>\n</div>");
-    return $footer.append("<a id=\"license\" href=\"http://creativecommons.org/licenses/by-sa/3.0/\">CC BY-SA 3.0</a> .\n<a class=\"show-page-source\" href=\"/" + slug + ".json?random=" + (util.randomBytes(4)) + "\" title=\"source\">JSON</a> .\n<a>" + (siteFound || 'origin') + "</a>");
+    return $footer.append("<a id=\"license\" href=\"http://creativecommons.org/licenses/by-sa/3.0/\">CC BY-SA 3.0</a> .\n<a class=\"show-page-source\" href=\"/" + slug + ".json?random=" + (util.randomBytes(4)) + "\" title=\"source\">JSON</a> .\n<a href= \"//" + (siteFound || location.host) + "/" + slug + ".html\">" + (siteFound || location.host) + "</a>");
   };
 
   wiki.buildPage = function(data, siteFound, $page) {
@@ -1733,6 +1741,9 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
         $page.addClass('remote');
       }
       $page.data('site', siteFound);
+    }
+    if (data.plugin != null) {
+      $page.addClass('plugin');
     }
     renderPageIntoPageElement(data, $page, siteFound);
     state.setUrl();

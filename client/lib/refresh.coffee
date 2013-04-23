@@ -65,8 +65,9 @@ createFactory = ($page) ->
   before = wiki.getItem(beforeElement)
   pageHandler.put $page, {item: item, id: item.id, type: "add", after: before?.id}
 
-buildPageHeader = ({title,tooltip,header_href,favicon_src})->
-  """<h1 title="#{tooltip}"><a href="#{header_href}"><img src="#{favicon_src}" height="32px" class="favicon"></a> #{title}</h1>"""
+buildPageHeader = ({page,tooltip,header_href,favicon_src})->
+  tooltip += "\n#{page.plugin} plugin" if page.plugin
+  """<h1 title="#{tooltip}"><a href="#{header_href}"><img src="#{favicon_src}" height="32px" class="favicon"></a> #{page.title}</h1>"""
 
 emitHeader = ($header, $page, page) ->
   site = $page.data('site')
@@ -80,13 +81,13 @@ emitHeader = ($header, $page, page) ->
       tooltip: site
       header_href: "//#{site}/view/welcome-visitors#{viewHere}"
       favicon_src: "http://#{site}/favicon.png"
-      title: page.title
+      page: page
   else
     buildPageHeader
       tooltip: location.host
       header_href: "/view/welcome-visitors#{viewHere}"
       favicon_src: "/favicon.png"
-      title: page.title
+      page: page
 
   $header.append( pageHeader )
   
@@ -154,6 +155,7 @@ renderPageIntoPageElement = (pageData,$page, siteFound) ->
 
   wiki.resolutionContext = context
 
+  $page.empty()
   [$twins, $header, $story, $journal, $footer] = ['twins', 'header', 'story', 'journal', 'footer'].map (className) ->
     $("<div />").addClass(className).appendTo($page)
 
@@ -186,7 +188,7 @@ renderPageIntoPageElement = (pageData,$page, siteFound) ->
   $footer.append """
     <a id="license" href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> .
     <a class="show-page-source" href="/#{slug}.json?random=#{util.randomBytes(4)}" title="source">JSON</a> .
-    <a>#{siteFound || 'origin'}</a>
+    <a href= "//#{siteFound || location.host}/#{slug}.html">#{siteFound || location.host}</a>
   """
 
 
@@ -198,6 +200,8 @@ wiki.buildPage = (data,siteFound,$page) ->
     siteFound = 'origin' if siteFound is window.location.host
     $page.addClass('remote') unless siteFound in ['view', 'origin']
     $page.data('site', siteFound)
+  if data.plugin?
+    $page.addClass('plugin')
 
   #TODO: avoid passing siteFound
   renderPageIntoPageElement( data, $page, siteFound )

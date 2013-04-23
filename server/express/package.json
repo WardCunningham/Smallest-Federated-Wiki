@@ -20,7 +20,8 @@
     "JSONStream": "*",
     "async": "*",
     "config-chain": "*",
-    "glob": "*"
+    "glob": "*",
+    "flates": "0.0.5"
   },
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha",
@@ -31,8 +32,8 @@
     "mocha": "*",
     "should": "*"
   },
-  "engines": { 
-    "node": "~0.8" 
+  "engines": {
+    "node": "~0.8"
   },
   "repository": {
     "type": "git",

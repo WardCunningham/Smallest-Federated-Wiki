@@ -40,10 +40,17 @@ wiki.getDataNodes = (vis) ->
     $(who)
 
 wiki.createPage = (name, loc) ->
-  if loc and loc isnt 'view'
-    $("<div/>").attr('id', name).attr('data-site', loc).addClass("page")
-  else
-    $("<div/>").attr('id', name).addClass("page")
+  site = loc if loc and loc isnt 'view'
+  $page = $ """
+    <div class="page" id="#{name}">
+      <div class="twins"> <p> </p> </div>
+      <div class="header">
+        <h1> <img class="favicon" src="#{ if site then "//#{site}" else "" }/favicon.png" height="32px"> #{name} </h1>
+      </div>
+    </div>
+  """
+  $page.find('.page').attr('data-site', site) if site
+  $page
 
 wiki.getItem = (element) ->
   $(element).data("item") or $(element).data('staticItem') if $(element).length > 0

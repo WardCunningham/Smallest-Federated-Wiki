@@ -146,7 +146,7 @@ class Controller < Sinatra::Base
   end
 
   get '/' do
-    haml :view, :locals => {:pages => [ {:id => identity['root']} ]}
+    redirect "/#{identity['root']}.html"
   end
 
   get %r{^/data/([\w -]+)$} do |search|
