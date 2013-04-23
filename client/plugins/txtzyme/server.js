@@ -13,6 +13,9 @@
   txtzymeDevice = function(done) {
     var result;
     result = null;
+    if (process.platform === "win32") {
+      return done("on windows...");
+    }
     return fs.readdir('/dev', function(err, files) {
       var file, _i, _len;
       if (err) {
