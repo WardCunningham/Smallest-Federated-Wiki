@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="no-js">
   <head>
     <title>Smallest Federated Wiki</title>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
@@ -7,11 +7,14 @@
     <link id='favicon' href='/favicon.png' rel='icon' type='image/png'>
     <link href='/style.css' rel='stylesheet' type='text/css'>
     <!-- <link href='/theme/granite.css' rel='stylesheet' type='text/css'> -->
-    <script src='/js/jquery-1.7.1.min.js' type='text/javascript'></script>
+    <script src='/js/jquery-1.9.1.min.js' type='text/javascript'></script>
+    <script src='/js/jquery-migrate-1.1.1.min.js' type='text/javascript'></script>
     <script src='/js/jquery-ui-1.10.1.custom.min.js' type='text/javascript'></script>
     <link href='/js/jquery-ui-1.10.1.custom.min.css' rel='stylesheet' type='text/css'>
+    <script src='/js/modernizr.custom.63710.js' type='text/javascript'></script>
     <script src='/js/underscore-min.js' type='text/javascript'></script>
     <script src='/client.js' type='text/javascript'></script>
+    <script>Modernizr.load([{test: Modernizr.cors, nope: '/js/jquery.ie.cors.js'}]);</script>
   </head>
   <body>
     <section class='main'>
