@@ -18,7 +18,7 @@ module.exports = exports = (argv) ->
   #### Private utility methods. ####
   load_parse = (loc, cb) ->
     fs.readFile(loc, (err, data) ->
-      if err then cb(err)
+      return cb(err) if err
       try 
         page = JSON.parse(data)
         if m = loc.match /plugins\/(.+?)\/pages/
