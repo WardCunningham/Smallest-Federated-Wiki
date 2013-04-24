@@ -5,9 +5,13 @@
 #### Requires ####
 fs = require 'fs'
 path = require 'path'
-mkdirp = require 'mkdirp'
-random_id = require './random_id'
 events = require 'events'
+
+mkdirp = require 'mkdirp'
+async = require 'async'
+
+random_id = require './random_id'
+synopsis = require '../../../client/lib/synopsis'
 
 # Export a function that generates a page handler
 # when called with options object.
@@ -138,5 +142,27 @@ module.exports = exports = (argv) ->
   itself.put =  (file, page, cb) ->
       queue.push({file, page, cb})
       serial(queue.shift()) unless working
+
+  itself.pages = (cb) ->
+    fs.readdir argv.db, (e, files) ->
+      return cb(e) if e
+      # used to make sure all of the files are read 
+      # and processesed in the site map before responding
+      doSitemap = (file, cb) ->
+        itself.get file, (e, page, status) ->
+          return cb() if file.match /^\./
+          if e 
+            console.log 'Problem building sitemap:', file, 'e: ', e
+            return cb() # Ignore errors in the pagehandler get.
+          cb null, {
+            slug     : file
+            title    : page.title
+            date     : page.journal and page.journal.length > 0 and page.journal.pop().date
+            synopsis : synopsis(page)
+          }
+
+      async.map files, doSitemap, (e, sitemap) ->
+        return cb(e) if e
+        cb null, sitemap.filter (item) -> if item? then true 
 
   itself

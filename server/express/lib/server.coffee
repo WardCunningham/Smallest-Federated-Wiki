@@ -32,7 +32,6 @@ f = require('flates')
 # Local files
 random = require './random_id'
 defargs = require './defaultargs'
-synopsis = require '../../../client/lib/synopsis'
 wiki = require '../../../client/lib/wiki'
 pluginsFactory = require './plugins'
 
@@ -40,7 +39,7 @@ pluginsFactory = require './plugins'
 # factory, which gets called with the argv object, and then has get and put
 # methods that accept the same arguments and callbacks.
 # Currently './page' and './leveldb' are provided.
-pageFactory = require './page'
+pageFactory = require './leveldb'
 
 render = (page) ->
   return f.h1(
@@ -370,28 +369,9 @@ module.exports = exports = (argv) ->
       res.send(files)
 
   app.get '/system/sitemap.json', cors, (req, res) ->
-    fs.readdir argv.db, (e, files) ->
-      if e then return res.e e
-      # used to make sure all of the files are read 
-      # and processesed in the site map before responding
-      numFiles = files.length
-      doSitemap = (file, cb) ->
-        pagehandler.get file, (e, page, status) ->
-          return cb() if file.match /^\./
-          if e 
-            log 'Problem building sitemap:', file, 'e: ', e
-            return cb() # Ignore errors in the pagehandler get.
-          cb null, {
-            slug     : file
-            title    : page.title
-            date     : page.journal and page.journal.length > 0 and page.journal.pop().date
-            synopsis : synopsis(page)
-          }
-
-      async.map files, doSitemap, (e, sitemap) ->
-        if e then return res.e e
-        res.json(sitemap.filter (item) -> if item? then true)
-
+    pagehandler.pages (e, sitemap) ->
+      return res.e(e) if e
+      res.json(sitemap)
 
   ##### Put routes #####
 

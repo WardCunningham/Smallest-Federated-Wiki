@@ -44,6 +44,9 @@ Options for the server can be passed in many ways:
 Higher in the list takes precedence.
 The server will then try to guess all unspecified options.
 
+You can also switch datastores to leveldb from flatfiles by
+switching require('./page') to require('./leveldb') in lib/server.js.
+
 ## Goals ##
 The main goal of the express port of Smallest Federated Wiki is to create a
 SFW server that is fully compatible with the reference server, with a focus

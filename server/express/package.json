@@ -32,6 +32,9 @@
     "mocha": "*",
     "should": "*"
   },
+  "optionalDependencies": {
+    "levelup": "*"
+  },
   "engines": {
     "node": "~0.8"
   },
