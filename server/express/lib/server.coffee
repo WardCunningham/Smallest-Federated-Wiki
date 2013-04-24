@@ -39,7 +39,7 @@ pluginsFactory = require './plugins'
 # factory, which gets called with the argv object, and then has get and put
 # methods that accept the same arguments and callbacks.
 # Currently './page' and './leveldb' are provided.
-pageFactory = require './leveldb'
+pageFactory = require './page'
 
 render = (page) ->
   return f.h1(
