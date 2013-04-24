@@ -38,8 +38,8 @@ pluginsFactory = require './plugins'
 
 # pageFactory can be easily replaced here by requiring your own page handler
 # factory, which gets called with the argv object, and then has get and put
-# methods that accept the same arguments and callbacks. That would be the
-# easiest way to use the Smallest Federated Wiki with a database backend.
+# methods that accept the same arguments and callbacks.
+# Currently './page' and './leveldb' are provided.
 pageFactory = require './page'
 
 render = (page) ->
