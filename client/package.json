@@ -5,7 +5,7 @@
   "private": true,
   "dependencies": {
     "coffee-script": "*",
-    "browserify": "1.17.3"
+    "browserify": "*"
   },
   "scripts": {
     "test": "./node_modules/.bin/browserify -c 'coffee -sc' testclient.coffee ./plugins/*/test.coffee > test/testclient.js",
