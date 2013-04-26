@@ -5,6 +5,7 @@
   "private": true,
   "dependencies": {
     "coffee-script": "~1.2",
+    "event-stream": "*",
     "ws": "*"
   },
   "engines": {
