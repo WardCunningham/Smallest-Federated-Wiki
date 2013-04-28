@@ -6,10 +6,12 @@ parse = (text) ->
   program = {}
   for line in text.split /\n/
     words = line.match /\S+/g
-    if words[0] is 'FOLD'
+    if words is null or words.length < 1
+      # ignore it
+    else if words[0] is 'FOLD'
       program.find = words[1..999].join ' '
     else if words[0] is 'WATCH'
-      program.apply = words[1..999].join ' '
+      program.watch = words[1..999].join ' '
     else if words[0] is 'SLIDE'
       program.slide = words[1..999].join ' '
     else
@@ -25,13 +27,13 @@ find = (program, page) ->
       else if parsing and item.type is 'paragraph'
         if links = item.text.match /\[\[.*?\]\]/g
           for link in links
-            titles.push link.substr(2, link.length-4)
+            titles.push {title: link.substr(2, link.length-4)}
   titles
 
 format = (program, titles) ->
   rows = []
   rows.push """<tr><td><p class="error">#{program.error.line} <span title="#{program.error.message}">*""" if program.error
-  rows.push """<tr><td>#{title}<td style="text-align:right;">50""" for title in titles
+  rows.push """<tr><td>#{title.title}<td style="text-align:right;">50""" for title in titles
   rows.join "\n"
 
 # translate to functional form (excel)
@@ -60,7 +62,7 @@ generate = (context, text) ->
       emitrow context, "can't parse '#{line}'"
 
 compile = (program, titles, done) ->
-  fetch = ($.getJSON "/#{wiki.asSlug title}.json" for title in titles)
+  fetch = ($.getJSON "/#{wiki.asSlug title.title}.json" for title in titles)
   $.when(fetch...).then (xhrs...) ->
     context = {ops:[], vars:{}}
     if program.slide
@@ -75,11 +77,47 @@ compile = (program, titles, done) ->
     done context.ops.join("\n")
 
 code = ($item, item, done) ->
-  debugger
   program = parse item.text
   page = $item.parents('.page').data('data')
   titles = find program, page
   compile program, titles, done
+
+prefetch = (titles, done) ->
+  fetch = ($.getJSON "/#{wiki.asSlug title.title}.json" for title in titles)
+  $.when(fetch...).then (xhrs...) ->
+    for i in [0..titles.length-1]
+      title = titles[i]
+      xhr = xhrs[i]
+      title.items =[]
+      for item in xhr[0].story
+        switch item.type
+          when 'method' then title.items.push(item)
+    done titles
+
+performMethod = (state, done) ->
+  if state.methods.length > 0
+    state.plugin.eval state, state.methods.shift(), state.input, (state, output) ->
+       state.output = output
+       _.extend state.input, output
+       performMethod state, done
+  else
+    return done state
+
+performTitle = (state, done) ->
+  if state.titles.length > 0
+    state.methods = (item for item in state.titles[0].items)
+    performMethod state, (state) ->
+      value = state.input[state.program.watch or state.program.slide]
+      state.titles[0].row.find('td:last').text value.toFixed 2
+      state.titles.shift()
+      performTitle state, done
+  else
+    return done state
+
+recalculate = (program, input, titles, done) ->
+  wiki.getPlugin 'method', (plugin) ->
+    state = {program, plugin, input, titles:(t for t in titles), errors:[]}
+    performTitle state, done
 
 # render in the wiki page
 
@@ -110,14 +148,21 @@ emit = ($item, item) ->
       value: Math.abs(nominal)
       max: Math.abs(nominal)*2
       slide: (event, ui) ->
-        output[program.slide] = ui.value * sign
-        $item.trigger 'thumb', ui.value * sign
-        $item.find('tr:first td:last').text "#{ui.value * sign}"
+        input[program.slide] = output[program.slide] = value = ui.value * sign
+        $item.find('tr:first td:last').text value
+        recalculate program, input, titles, ->
+          $item.trigger 'thumb', ui.value * sign
   $item.append """
     <table style="width:100%; background:#eee; padding:.8em; margin-bottom:5px;">
       <tr><td>#{program.slide}<td style="text-align:right;">50
-      #{format program, titles}
     </table>"""
+  for title in titles
+    title.row = row = $ """<tr><td>#{title.title}<td style="text-align:right;">"""
+    $item.find('table').append title.row
+  prefetch titles, (titles) ->
+    input[program.slide] = nominal
+    recalculate program, input, titles, ->
+      console.log 'emit/prefetch/recalculate complete'
 
 bind = ($item, item) ->
   $item.find('table').dblclick -> wiki.textEditor $item, item
