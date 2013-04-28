@@ -1,3 +1,6 @@
+# txtzyme device uses teensy's usb serial
+# http://www.pjrc.com/teensy/usb_serial.html 
+
 WebSocketServer = require('ws').Server
 fs = require 'fs'
 es = require 'event-stream'
@@ -5,7 +8,7 @@ es = require 'event-stream'
 txtzymeDevice = (done) ->
     result = null
     if process.platform == "win32"
-        return done "on windows..."
+        return done "on windows..." # find com port?
     fs.readdir '/dev', (err, files) ->
         done err if err
         for file in files
@@ -39,9 +42,5 @@ startServer = (params) ->
 
 			socket.on 'message', (message) ->
 				toDevice.write(message)
-
-
-		# ws.send JSON.stringify(linkmap, null, 2), (err) ->
-		# 	console.log 'unable to send ws message:', err if err
 
 module.exports = {startServer}
