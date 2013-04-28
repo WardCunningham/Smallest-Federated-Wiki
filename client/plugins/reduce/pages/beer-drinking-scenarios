@@ -1,0 +1,1046 @@
+{
+  "title": "Beer Drinking Scenarios",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "234e86b1e5b3ddc0",
+      "text": "We consider numerous ways to share and consume a limited supply of beer. We can open a sequence of pages to explore a particular scenario, adjust parameters of that scenario and then document the scenario with hyperlinks to the chosen strategies."
+    },
+    {
+      "type": "paragraph",
+      "id": "feb1526c046d97de",
+      "text": "<h3> Choices"
+    },
+    {
+      "type": "paragraph",
+      "id": "b5eff63b6de2eeb6",
+      "text": "Here we list the choices for the scenario we will analyze. The order and number of choices will influence the outcomes. "
+    },
+    {
+      "type": "pagefold",
+      "id": "d51c1c00ffb46842",
+      "text": "Chosen Beer Drinking Strategies"
+    },
+    {
+      "type": "paragraph",
+      "id": "5aedd8f6576397f8",
+      "text": "[[Drink Beer Similarly]] to the previous drinkers."
+    },
+    {
+      "type": "paragraph",
+      "id": "2a8fb19fffdd899a",
+      "text": "[[Drink Beer Slowly]] passing one around at a time."
+    },
+    {
+      "type": "pagefold",
+      "id": "fc8c21fc5f885b84",
+      "text": "Unused Strategies"
+    },
+    {
+      "type": "paragraph",
+      "id": "d60a2c0abfe3fc99",
+      "text": "[[Drink Beer in Proportion]] to the number available."
+    },
+    {
+      "type": "paragraph",
+      "id": "f5dd8aebe273185e",
+      "text": "<h3> Analysis"
+    },
+    {
+      "type": "paragraph",
+      "id": "f2e1b1be56c8ef28",
+      "text": "We'll adjust two parameters, the initial number of beers and the preferred consumption rate with these defaults."
+    },
+    {
+      "type": "method",
+      "id": "3543667c4bbcfdac",
+      "text": "100 Bottles of Beer\n-10 Take a Few Down"
+    },
+    {
+      "type": "paragraph",
+      "id": "3dd0d271c40c78b8",
+      "text": "We'll use the Reduce Plugin's slider to adjust the initial supply of beer. We then watch the supply dwindle as the scenario progresses."
+    },
+    {
+      "type": "reduce",
+      "id": "5ac115c459fe6e88",
+      "text": "FOLD Chosen Beer Drinking Strategies\nWATCH Bottles of Beer\nSLIDE Bottles of Beer"
+    },
+    {
+      "type": "paragraph",
+      "id": "11d847693d9b7ce3",
+      "text": "Some drinking strategies look to others to pace consumption. We adjust that guidance and watch the choices made for each."
+    },
+    {
+      "type": "reduce",
+      "id": "70cc2d9eaca1433c",
+      "text": "FOLD Chosen Beer Drinking Strategies\nSLIDE Take a Few Down"
+    },
+    {
+      "type": "paragraph",
+      "id": "8c00d06e41e93b9f",
+      "text": "<h3> Notes"
+    },
+    {
+      "type": "paragraph",
+      "id": "ea7b712cc25a9beb",
+      "text": "This example shows how the Reduce plugin supports exploring parameter sensitivity in multiple dimensions. See  [[About Reduce Plugin]]."
+    },
+    {
+      "type": "paragraph",
+      "id": "cd9d1768026d8f7e",
+      "text": "This plugin cooperates with Method plugins on scenario pages. The context we create for each is similar to but not the same as that created by simpley browsing pages. See [[About Method Plugin]]."
+    },
+    {
+      "type": "paragraph",
+      "id": "1cebd0dd7832ef09",
+      "text": " "
+    },
+    {
+      "type": "paragraph",
+      "id": "a9897734267fd736",
+      "text": "This plugin has some similarity to the Rollup plugin which also also retrieves and evaluates off-screen pages. Rollup is happy to aggregate independent calculations from many pages while Reduce is more about repeating calculations on a few pages while varying parameters. See [[About Rollup Plugin]]."
+    },
+    {
+      "type": "paragraph",
+      "id": "b14f12bff0f9d04e",
+      "text": ""
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "item": {
+        "title": "Beer Drinking Scenarios"
+      },
+      "date": 1367109384820
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "234e86b1e5b3ddc0"
+      },
+      "id": "234e86b1e5b3ddc0",
+      "type": "add",
+      "date": 1367109390259
+    },
+    {
+      "type": "edit",
+      "id": "234e86b1e5b3ddc0",
+      "item": {
+        "type": "paragraph",
+        "id": "234e86b1e5b3ddc0",
+        "text": "We consider numerous ways to share and consume a limited supply of beer. We can open a sequence of pages to explore a particular scenario, adjust parameters of that scenario and then document the scenario with hyperlinks to the chosen strategies."
+      },
+      "date": 1367109770252
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "f2e1b1be56c8ef28"
+      },
+      "id": "f2e1b1be56c8ef28",
+      "type": "add",
+      "after": "234e86b1e5b3ddc0",
+      "date": 1367109786684
+    },
+    {
+      "type": "edit",
+      "id": "f2e1b1be56c8ef28",
+      "item": {
+        "type": "paragraph",
+        "id": "f2e1b1be56c8ef28",
+        "text": "We consider two parameters, the initial number of beers and the preferred consumption rate."
+      },
+      "date": 1367109833212
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "3543667c4bbcfdac"
+      },
+      "id": "3543667c4bbcfdac",
+      "type": "add",
+      "after": "f2e1b1be56c8ef28",
+      "date": 1367109835822
+    },
+    {
+      "type": "edit",
+      "id": "3543667c4bbcfdac",
+      "item": {
+        "type": "method",
+        "id": "3543667c4bbcfdac",
+        "text": "99 Bottles of Beer\n-1 Take a Few Down"
+      },
+      "date": 1367109857516
+    },
+    {
+      "type": "edit",
+      "id": "3543667c4bbcfdac",
+      "item": {
+        "type": "method",
+        "id": "3543667c4bbcfdac",
+        "text": "99 Bottles of Beer\n-10 Take a Few Down"
+      },
+      "date": 1367109872323
+    },
+    {
+      "type": "edit",
+      "id": "3543667c4bbcfdac",
+      "item": {
+        "type": "method",
+        "id": "3543667c4bbcfdac",
+        "text": "100 Bottles of Beer\n-10 Take a Few Down"
+      },
+      "date": 1367109894026
+    },
+    {
+      "type": "edit",
+      "id": "f2e1b1be56c8ef28",
+      "item": {
+        "type": "paragraph",
+        "id": "f2e1b1be56c8ef28",
+        "text": "We consider two parameters, the initial number of beers and the preferred consumption rate. These become our default assumptions."
+      },
+      "date": 1367109923872
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "3dd0d271c40c78b8"
+      },
+      "id": "3dd0d271c40c78b8",
+      "type": "add",
+      "after": "3543667c4bbcfdac",
+      "date": 1367109968932
+    },
+    {
+      "type": "edit",
+      "id": "3dd0d271c40c78b8",
+      "item": {
+        "type": "paragraph",
+        "id": "3dd0d271c40c78b8",
+        "text": "We'll use the Reduce plugin's slider to adjust the initial supply of beer. We then watch the supply dwindle as the scenario progresses."
+      },
+      "date": 1367110108347
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "reduce",
+        "id": "5ac115c459fe6e88",
+        "text": "FOLD Included Pages\nWATCH Bottles of Beer\nSLIDE Bottles of Beer"
+      },
+      "after": "3dd0d271c40c78b8",
+      "id": "5ac115c459fe6e88",
+      "date": 1367110122740
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "11d847693d9b7ce3"
+      },
+      "id": "11d847693d9b7ce3",
+      "type": "add",
+      "after": "5ac115c459fe6e88",
+      "date": 1367110153170
+    },
+    {
+      "type": "edit",
+      "id": "11d847693d9b7ce3",
+      "item": {
+        "type": "paragraph",
+        "id": "11d847693d9b7ce3",
+        "text": "Some drinking strategies look to others to pace consumption. We adjust that guidance and watch the choices made for each."
+      },
+      "date": 1367110297252
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "reduce",
+        "id": "70cc2d9eaca1433c",
+        "text": "FOLD Included Pages\nSLIDE Bottles of Beer"
+      },
+      "after": "11d847693d9b7ce3",
+      "id": "70cc2d9eaca1433c",
+      "date": 1367110305309
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "b5eff63b6de2eeb6"
+      },
+      "id": "b5eff63b6de2eeb6",
+      "type": "add",
+      "after": "70cc2d9eaca1433c",
+      "date": 1367110485321
+    },
+    {
+      "type": "edit",
+      "id": "b5eff63b6de2eeb6",
+      "item": {
+        "type": "paragraph",
+        "id": "b5eff63b6de2eeb6",
+        "text": "Here we list the choices for the scenario we will analyze. The order and number of choices will influence the outcomes. "
+      },
+      "date": 1367110718875
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "d51c1c00ffb46842"
+      },
+      "id": "d51c1c00ffb46842",
+      "type": "add",
+      "after": "b5eff63b6de2eeb6",
+      "date": 1367110723684
+    },
+    {
+      "type": "edit",
+      "id": "d51c1c00ffb46842",
+      "item": {
+        "type": "pagefold",
+        "id": "d51c1c00ffb46842",
+        "text": "Chosen Beer Drinking Stratiges"
+      },
+      "date": 1367110754695
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "fc8c21fc5f885b84"
+      },
+      "id": "fc8c21fc5f885b84",
+      "type": "add",
+      "after": "d51c1c00ffb46842",
+      "date": 1367110769247
+    },
+    {
+      "type": "edit",
+      "id": "fc8c21fc5f885b84",
+      "item": {
+        "type": "pagefold",
+        "id": "fc8c21fc5f885b84",
+        "text": "Unused Strategies in Kind or Number "
+      },
+      "date": 1367110874890
+    },
+    {
+      "type": "edit",
+      "id": "fc8c21fc5f885b84",
+      "item": {
+        "type": "pagefold",
+        "id": "fc8c21fc5f885b84",
+        "text": "Unused Strategies"
+      },
+      "date": 1367110892979
+    },
+    {
+      "type": "edit",
+      "id": "d51c1c00ffb46842",
+      "item": {
+        "type": "pagefold",
+        "id": "d51c1c00ffb46842",
+        "text": "Chosen Beer Drinking Strategies"
+      },
+      "date": 1367110908203
+    },
+    {
+      "type": "edit",
+      "id": "5ac115c459fe6e88",
+      "item": {
+        "type": "reduce",
+        "id": "5ac115c459fe6e88",
+        "text": "FOLD Chosen Beer Drinking Strategies\nWATCH Bottles of Beer\nSLIDE Bottles of Beer"
+      },
+      "date": 1367110919414
+    },
+    {
+      "type": "edit",
+      "id": "70cc2d9eaca1433c",
+      "item": {
+        "type": "reduce",
+        "id": "70cc2d9eaca1433c",
+        "text": "FOLD Chosen Beer Drinking Strategies\nSLIDE Bottles of Beer"
+      },
+      "date": 1367110928077
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "d60a2c0abfe3fc99",
+        "text": "[[Drink Beer in Proportion]]"
+      },
+      "after": "d51c1c00ffb46842",
+      "id": "d60a2c0abfe3fc99",
+      "date": 1367110945467
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "5aedd8f6576397f8",
+        "text": "[[Drink Beer Similarly]]"
+      },
+      "after": "d60a2c0abfe3fc99",
+      "id": "5aedd8f6576397f8",
+      "date": 1367110952201
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "paragraph",
+        "id": "2a8fb19fffdd899a",
+        "text": "[[Drink Beer Slowly]]"
+      },
+      "after": "d51c1c00ffb46842",
+      "id": "2a8fb19fffdd899a",
+      "date": 1367110956339
+    },
+    {
+      "type": "move",
+      "order": [
+        "234e86b1e5b3ddc0",
+        "f2e1b1be56c8ef28",
+        "3543667c4bbcfdac",
+        "3dd0d271c40c78b8",
+        "5ac115c459fe6e88",
+        "11d847693d9b7ce3",
+        "70cc2d9eaca1433c",
+        "b5eff63b6de2eeb6",
+        "d51c1c00ffb46842",
+        "5aedd8f6576397f8",
+        "2a8fb19fffdd899a",
+        "d60a2c0abfe3fc99",
+        "fc8c21fc5f885b84"
+      ],
+      "id": "5aedd8f6576397f8",
+      "date": 1367110961840
+    },
+    {
+      "type": "move",
+      "order": [
+        "234e86b1e5b3ddc0",
+        "f2e1b1be56c8ef28",
+        "3543667c4bbcfdac",
+        "3dd0d271c40c78b8",
+        "5ac115c459fe6e88",
+        "11d847693d9b7ce3",
+        "70cc2d9eaca1433c",
+        "b5eff63b6de2eeb6",
+        "d51c1c00ffb46842",
+        "5aedd8f6576397f8",
+        "2a8fb19fffdd899a",
+        "fc8c21fc5f885b84",
+        "d60a2c0abfe3fc99"
+      ],
+      "id": "d60a2c0abfe3fc99",
+      "date": 1367110983962
+    },
+    {
+      "type": "edit",
+      "id": "f2e1b1be56c8ef28",
+      "item": {
+        "type": "paragraph",
+        "id": "f2e1b1be56c8ef28",
+        "text": "We'll adjust two parameters, the initial number of beers and the preferred consumption rate. These become our default assumptions."
+      },
+      "date": 1367111054552
+    },
+    {
+      "type": "edit",
+      "id": "f2e1b1be56c8ef28",
+      "item": {
+        "type": "paragraph",
+        "id": "f2e1b1be56c8ef28",
+        "text": "We'll adjust two parameters, the initial number of beers and the preferred consumption rate. We start with default assumptions."
+      },
+      "date": 1367111115821
+    },
+    {
+      "type": "edit",
+      "id": "f2e1b1be56c8ef28",
+      "item": {
+        "type": "paragraph",
+        "id": "f2e1b1be56c8ef28",
+        "text": "We'll adjust two parameters, the initial number of beers and the preferred consumption rate with these defaults."
+      },
+      "date": 1367111154563
+    },
+    {
+      "type": "edit",
+      "id": "3dd0d271c40c78b8",
+      "item": {
+        "type": "paragraph",
+        "id": "3dd0d271c40c78b8",
+        "text": "We'll use the Reduce Plugin's slider to adjust the initial supply of beer. We then watch the supply dwindle as the scenario progresses."
+      },
+      "date": 1367111167291
+    },
+    {
+      "type": "edit",
+      "id": "2a8fb19fffdd899a",
+      "item": {
+        "type": "paragraph",
+        "id": "2a8fb19fffdd899a",
+        "text": "[[Drink Beer Slowly]] passing one around at a time."
+      },
+      "date": 1367111248689
+    },
+    {
+      "type": "edit",
+      "id": "5aedd8f6576397f8",
+      "item": {
+        "type": "paragraph",
+        "id": "5aedd8f6576397f8",
+        "text": "[[Drink Beer Similarly]] to the previous drinkers."
+      },
+      "date": 1367111268111
+    },
+    {
+      "type": "edit",
+      "id": "d60a2c0abfe3fc99",
+      "item": {
+        "type": "paragraph",
+        "id": "d60a2c0abfe3fc99",
+        "text": "[[Drink Beer in Proportion]] to those available."
+      },
+      "date": 1367111285439
+    },
+    {
+      "type": "edit",
+      "id": "d60a2c0abfe3fc99",
+      "item": {
+        "type": "paragraph",
+        "id": "d60a2c0abfe3fc99",
+        "text": "[[Drink Beer in Proportion]] to the number available."
+      },
+      "date": 1367111293511
+    },
+    {
+      "type": "move",
+      "order": [
+        "234e86b1e5b3ddc0",
+        "f2e1b1be56c8ef28",
+        "3543667c4bbcfdac",
+        "b5eff63b6de2eeb6",
+        "3dd0d271c40c78b8",
+        "5ac115c459fe6e88",
+        "11d847693d9b7ce3",
+        "70cc2d9eaca1433c",
+        "d51c1c00ffb46842",
+        "5aedd8f6576397f8",
+        "2a8fb19fffdd899a",
+        "fc8c21fc5f885b84",
+        "d60a2c0abfe3fc99"
+      ],
+      "id": "b5eff63b6de2eeb6",
+      "date": 1367111714113
+    },
+    {
+      "type": "move",
+      "order": [
+        "234e86b1e5b3ddc0",
+        "f2e1b1be56c8ef28",
+        "3543667c4bbcfdac",
+        "b5eff63b6de2eeb6",
+        "d51c1c00ffb46842",
+        "3dd0d271c40c78b8",
+        "5ac115c459fe6e88",
+        "11d847693d9b7ce3",
+        "70cc2d9eaca1433c",
+        "5aedd8f6576397f8",
+        "2a8fb19fffdd899a",
+        "fc8c21fc5f885b84",
+        "d60a2c0abfe3fc99"
+      ],
+      "id": "d51c1c00ffb46842",
+      "date": 1367111717835
+    },
+    {
+      "type": "move",
+      "order": [
+        "234e86b1e5b3ddc0",
+        "f2e1b1be56c8ef28",
+        "3543667c4bbcfdac",
+        "b5eff63b6de2eeb6",
+        "d51c1c00ffb46842",
+        "5aedd8f6576397f8",
+        "3dd0d271c40c78b8",
+        "5ac115c459fe6e88",
+        "11d847693d9b7ce3",
+        "70cc2d9eaca1433c",
+        "2a8fb19fffdd899a",
+        "fc8c21fc5f885b84",
+        "d60a2c0abfe3fc99"
+      ],
+      "id": "5aedd8f6576397f8",
+      "date": 1367111721961
+    },
+    {
+      "type": "move",
+      "order": [
+        "234e86b1e5b3ddc0",
+        "f2e1b1be56c8ef28",
+        "3543667c4bbcfdac",
+        "b5eff63b6de2eeb6",
+        "d51c1c00ffb46842",
+        "5aedd8f6576397f8",
+        "2a8fb19fffdd899a",
+        "3dd0d271c40c78b8",
+        "5ac115c459fe6e88",
+        "11d847693d9b7ce3",
+        "70cc2d9eaca1433c",
+        "fc8c21fc5f885b84",
+        "d60a2c0abfe3fc99"
+      ],
+      "id": "2a8fb19fffdd899a",
+      "date": 1367111725862
+    },
+    {
+      "type": "move",
+      "order": [
+        "234e86b1e5b3ddc0",
+        "f2e1b1be56c8ef28",
+        "3543667c4bbcfdac",
+        "b5eff63b6de2eeb6",
+        "d51c1c00ffb46842",
+        "5aedd8f6576397f8",
+        "2a8fb19fffdd899a",
+        "fc8c21fc5f885b84",
+        "3dd0d271c40c78b8",
+        "5ac115c459fe6e88",
+        "11d847693d9b7ce3",
+        "70cc2d9eaca1433c",
+        "d60a2c0abfe3fc99"
+      ],
+      "id": "fc8c21fc5f885b84",
+      "date": 1367111743896
+    },
+    {
+      "type": "move",
+      "order": [
+        "234e86b1e5b3ddc0",
+        "f2e1b1be56c8ef28",
+        "3543667c4bbcfdac",
+        "b5eff63b6de2eeb6",
+        "d51c1c00ffb46842",
+        "5aedd8f6576397f8",
+        "2a8fb19fffdd899a",
+        "fc8c21fc5f885b84",
+        "d60a2c0abfe3fc99",
+        "3dd0d271c40c78b8",
+        "5ac115c459fe6e88",
+        "11d847693d9b7ce3",
+        "70cc2d9eaca1433c"
+      ],
+      "id": "d60a2c0abfe3fc99",
+      "date": 1367111748438
+    },
+    {
+      "type": "move",
+      "order": [
+        "234e86b1e5b3ddc0",
+        "f2e1b1be56c8ef28",
+        "b5eff63b6de2eeb6",
+        "d51c1c00ffb46842",
+        "5aedd8f6576397f8",
+        "2a8fb19fffdd899a",
+        "fc8c21fc5f885b84",
+        "d60a2c0abfe3fc99",
+        "3543667c4bbcfdac",
+        "3dd0d271c40c78b8",
+        "5ac115c459fe6e88",
+        "11d847693d9b7ce3",
+        "70cc2d9eaca1433c"
+      ],
+      "id": "3543667c4bbcfdac",
+      "date": 1367111876198
+    },
+    {
+      "type": "move",
+      "order": [
+        "234e86b1e5b3ddc0",
+        "b5eff63b6de2eeb6",
+        "d51c1c00ffb46842",
+        "5aedd8f6576397f8",
+        "2a8fb19fffdd899a",
+        "fc8c21fc5f885b84",
+        "d60a2c0abfe3fc99",
+        "f2e1b1be56c8ef28",
+        "3543667c4bbcfdac",
+        "3dd0d271c40c78b8",
+        "5ac115c459fe6e88",
+        "11d847693d9b7ce3",
+        "70cc2d9eaca1433c"
+      ],
+      "id": "f2e1b1be56c8ef28",
+      "date": 1367111883512
+    },
+    {
+      "type": "edit",
+      "id": "70cc2d9eaca1433c",
+      "item": {
+        "type": "reduce",
+        "id": "70cc2d9eaca1433c",
+        "text": "FOLD Chosen Beer Drinking Strategies\nSLIDE Take a Few Down"
+      },
+      "date": 1367112234248
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "feb1526c046d97de",
+        "text": ""
+      },
+      "id": "feb1526c046d97de",
+      "type": "add",
+      "after": "b5eff63b6de2eeb6",
+      "date": 1367113099139
+    },
+    {
+      "type": "edit",
+      "id": "feb1526c046d97de",
+      "item": {
+        "type": "paragraph",
+        "id": "feb1526c046d97de",
+        "text": "<h3> Choices"
+      },
+      "date": 1367113105793
+    },
+    {
+      "type": "move",
+      "order": [
+        "234e86b1e5b3ddc0",
+        "feb1526c046d97de",
+        "b5eff63b6de2eeb6",
+        "d51c1c00ffb46842",
+        "5aedd8f6576397f8",
+        "2a8fb19fffdd899a",
+        "fc8c21fc5f885b84",
+        "d60a2c0abfe3fc99",
+        "f2e1b1be56c8ef28",
+        "3543667c4bbcfdac",
+        "3dd0d271c40c78b8",
+        "5ac115c459fe6e88",
+        "11d847693d9b7ce3",
+        "70cc2d9eaca1433c"
+      ],
+      "id": "feb1526c046d97de",
+      "date": 1367113110315
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "f5dd8aebe273185e",
+        "text": ""
+      },
+      "id": "f5dd8aebe273185e",
+      "type": "add",
+      "after": "d60a2c0abfe3fc99",
+      "date": 1367113132871
+    },
+    {
+      "type": "edit",
+      "id": "f5dd8aebe273185e",
+      "item": {
+        "type": "paragraph",
+        "id": "f5dd8aebe273185e",
+        "text": "<h3> Analysis"
+      },
+      "date": 1367113139006
+    },
+    {
+      "type": "move",
+      "order": [
+        "234e86b1e5b3ddc0",
+        "feb1526c046d97de",
+        "b5eff63b6de2eeb6",
+        "d51c1c00ffb46842",
+        "5aedd8f6576397f8",
+        "2a8fb19fffdd899a",
+        "fc8c21fc5f885b84",
+        "d60a2c0abfe3fc99",
+        "f5dd8aebe273185e",
+        "f2e1b1be56c8ef28",
+        "3543667c4bbcfdac",
+        "3dd0d271c40c78b8",
+        "5ac115c459fe6e88",
+        "70cc2d9eaca1433c",
+        "11d847693d9b7ce3"
+      ],
+      "id": "70cc2d9eaca1433c",
+      "date": 1367113815705
+    },
+    {
+      "type": "move",
+      "order": [
+        "234e86b1e5b3ddc0",
+        "feb1526c046d97de",
+        "b5eff63b6de2eeb6",
+        "d51c1c00ffb46842",
+        "5aedd8f6576397f8",
+        "2a8fb19fffdd899a",
+        "fc8c21fc5f885b84",
+        "d60a2c0abfe3fc99",
+        "f5dd8aebe273185e",
+        "f2e1b1be56c8ef28",
+        "3543667c4bbcfdac",
+        "3dd0d271c40c78b8",
+        "5ac115c459fe6e88",
+        "11d847693d9b7ce3",
+        "70cc2d9eaca1433c"
+      ],
+      "id": "11d847693d9b7ce3",
+      "date": 1367113824895
+    },
+    {
+      "type": "edit",
+      "id": "3543667c4bbcfdac",
+      "item": {
+        "type": "method",
+        "id": "3543667c4bbcfdac",
+        "text": "100 Bottles of Beer\n10 Take a Few Down"
+      },
+      "date": 1367113865661
+    },
+    {
+      "type": "edit",
+      "id": "3543667c4bbcfdac",
+      "item": {
+        "type": "method",
+        "id": "3543667c4bbcfdac",
+        "text": "100 Bottles of Beer\n-10 Take a Few Down"
+      },
+      "date": 1367114495155
+    },
+    {
+      "type": "edit",
+      "id": "3543667c4bbcfdac",
+      "item": {
+        "type": "method",
+        "id": "3543667c4bbcfdac",
+        "text": "99 Bottles of Beer\n-10 Take a Few Down"
+      },
+      "date": 1367115071449
+    },
+    {
+      "type": "edit",
+      "id": "3543667c4bbcfdac",
+      "item": {
+        "type": "method",
+        "id": "3543667c4bbcfdac",
+        "text": "100 Bottles of Beer\n-10 Take a Few Down"
+      },
+      "date": 1367115116639
+    },
+    {
+      "type": "move",
+      "order": [
+        "234e86b1e5b3ddc0",
+        "feb1526c046d97de",
+        "b5eff63b6de2eeb6",
+        "d51c1c00ffb46842",
+        "5aedd8f6576397f8",
+        "2a8fb19fffdd899a",
+        "d60a2c0abfe3fc99",
+        "fc8c21fc5f885b84",
+        "f5dd8aebe273185e",
+        "f2e1b1be56c8ef28",
+        "3543667c4bbcfdac",
+        "3dd0d271c40c78b8",
+        "5ac115c459fe6e88",
+        "11d847693d9b7ce3",
+        "70cc2d9eaca1433c"
+      ],
+      "id": "d60a2c0abfe3fc99",
+      "date": 1367116513711
+    },
+    {
+      "type": "move",
+      "order": [
+        "234e86b1e5b3ddc0",
+        "feb1526c046d97de",
+        "b5eff63b6de2eeb6",
+        "d51c1c00ffb46842",
+        "5aedd8f6576397f8",
+        "2a8fb19fffdd899a",
+        "fc8c21fc5f885b84",
+        "d60a2c0abfe3fc99",
+        "f5dd8aebe273185e",
+        "f2e1b1be56c8ef28",
+        "3543667c4bbcfdac",
+        "3dd0d271c40c78b8",
+        "5ac115c459fe6e88",
+        "11d847693d9b7ce3",
+        "70cc2d9eaca1433c"
+      ],
+      "id": "d60a2c0abfe3fc99",
+      "date": 1367116531958
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "8c00d06e41e93b9f"
+      },
+      "id": "8c00d06e41e93b9f",
+      "type": "add",
+      "after": "70cc2d9eaca1433c",
+      "date": 1367120383102
+    },
+    {
+      "type": "edit",
+      "id": "8c00d06e41e93b9f",
+      "item": {
+        "type": "paragraph",
+        "id": "8c00d06e41e93b9f",
+        "text": "<h3> Notes"
+      },
+      "date": 1367120389820
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "ea7b712cc25a9beb",
+        "text": ""
+      },
+      "id": "ea7b712cc25a9beb",
+      "type": "add",
+      "after": "8c00d06e41e93b9f",
+      "date": 1367120390327
+    },
+    {
+      "type": "edit",
+      "id": "ea7b712cc25a9beb",
+      "item": {
+        "type": "paragraph",
+        "id": "ea7b712cc25a9beb",
+        "text": "This is an example supplementing the documentation  [[About Reduce Plugin]]."
+      },
+      "date": 1367120537384
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "c954e6100f1c2c46",
+        "text": ""
+      },
+      "id": "c954e6100f1c2c46",
+      "type": "add",
+      "after": "ea7b712cc25a9beb",
+      "date": 1367120537890
+    },
+    {
+      "type": "remove",
+      "id": "c954e6100f1c2c46",
+      "date": 1367120550608
+    },
+    {
+      "type": "edit",
+      "id": "ea7b712cc25a9beb",
+      "item": {
+        "type": "paragraph",
+        "id": "ea7b712cc25a9beb",
+        "text": "This example shows how the Reduce plugin supports exploring parameter sensitivity in multiple dimensions. See  [[About Reduce Plugin]]."
+      },
+      "date": 1367120647373
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "447d28ddd37b7d26",
+        "text": ""
+      },
+      "id": "447d28ddd37b7d26",
+      "type": "add",
+      "after": "ea7b712cc25a9beb",
+      "date": 1367120655021
+    },
+    {
+      "type": "remove",
+      "id": "447d28ddd37b7d26",
+      "date": 1367120876122
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "cd9d1768026d8f7e",
+        "text": ""
+      },
+      "id": "cd9d1768026d8f7e",
+      "type": "add",
+      "after": "ea7b712cc25a9beb",
+      "date": 1367120878321
+    },
+    {
+      "type": "edit",
+      "id": "cd9d1768026d8f7e",
+      "item": {
+        "type": "paragraph",
+        "id": "cd9d1768026d8f7e",
+        "text": "This plugin cooperates with Method plugins on scenario pages. The context we create for each is similar to but not the same as that created by simpley browsing pages. See [[About Method Plugin]]."
+      },
+      "date": 1367121336399
+    },
+    {
+      "type": "edit",
+      "id": "1cebd0dd7832ef09",
+      "item": {
+        "type": "paragraph",
+        "id": "1cebd0dd7832ef09",
+        "text": " "
+      },
+      "date": 1367121336574
+    },
+    {
+      "type": "remove",
+      "id": "b14f12bff0f9d04e",
+      "date": 1367121336580
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "1cebd0dd7832ef09",
+        "text": " "
+      },
+      "id": "1cebd0dd7832ef09",
+      "type": "add",
+      "after": "cd9d1768026d8f7e",
+      "date": 1367121336905
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "b14f12bff0f9d04e",
+        "text": ""
+      },
+      "id": "b14f12bff0f9d04e",
+      "type": "add",
+      "after": "1cebd0dd7832ef09",
+      "date": 1367121337080
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "a9897734267fd736",
+        "text": ""
+      },
+      "id": "a9897734267fd736",
+      "type": "add",
+      "after": "1cebd0dd7832ef09",
+      "date": 1367121337086
+    },
+    {
+      "type": "edit",
+      "id": "a9897734267fd736",
+      "item": {
+        "type": "paragraph",
+        "id": "a9897734267fd736",
+        "text": "This plugin has some similarity to the Rollup plugin which also also retrieves and evaluates off-screen pages. Rollup is happy to aggregate independent calculations from many pages while Reduce is more about repeating calculations on a few pages while varying parameters. See [[About Rollup Plugin]]."
+      },
+      "date": 1367121564665
+    }
+  ]
+}
