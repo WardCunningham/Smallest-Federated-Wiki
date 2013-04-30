@@ -5,6 +5,8 @@ WebSocketServer = require('ws').Server
 fs = require 'fs'
 es = require 'event-stream'
 
+delay = (done) -> setTimeout done, 1000
+
 txtzymeDevice = (done) ->
     result = null
     if process.platform == "win32"
@@ -18,29 +20,38 @@ txtzymeDevice = (done) ->
         done "can't find txtzyme device"
 
 startServer = (params) ->
-
-	server = new WebSocketServer({server: params.server, path: '/plugin/txtzyme'})
-
+	console.log "startServer"
 	txtzymeDevice (err, fn) ->
-		return console.log err if err
+		if err
+			console.log err
+			delay -> startServer params
+			return
 
 		toDevice = fs.createWriteStream fn
 		toDevice.on 'error', (err) ->
-			console.log "trouble writing txtzyme to #{fn}"
+			console.log "trouble writing txtzyme to #{fn}, err #{err}"
+			server.close()
+			toDevice.end()
+			delay -> startServer params
 
 		rawDevice = fs.createReadStream(fn)
 		rawDevice.on 'error', (err) ->
 			console.log "trouble reading txtzyme from #{fn}"
 		fromDevice = rawDevice.pipe(es.split())
 
+		server = new WebSocketServer({server: params.server, path: '/plugin/txtzyme'})
 		server.on 'connection', (socket) ->
 			console.log 'connection established, listening'
 
-			fromDevice.on 'data', (line) ->
+			fromDevice.on 'data', uplink = (line) ->
 				socket.send line, (err) ->
 					return console.log 'txtzyme send err', err if err
 
-			socket.on 'message', (message) ->
+			socket.on 'message', downlink = (message) ->
 				toDevice.write(message)
+
+			socket.on 'close', (code, message) ->
+				console.log "txtzyme socket closed, #{code} #{message}"
+				fromDevice.removeListener 'data', uplink
 
 module.exports = {startServer}
