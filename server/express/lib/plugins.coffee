@@ -19,7 +19,7 @@ module.exports = exports = (argv) ->
 					plugins[plugin] = require server
 					plugins[plugin].startServer?(params)
 				catch e
-					console.log 'failed to start plugin', plugin, e
+					console.log 'failed to start plugin', plugin, e?.stack or e
 
 	startServers = (params) ->
 		fs.readdir pluginsdir , (e, plugins) ->
