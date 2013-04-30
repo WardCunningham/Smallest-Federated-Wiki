@@ -275,7 +275,7 @@
         }
       });
     }
-    $item.append("<table style=\"width:100%; background:#eee; padding:.8em; margin-bottom:5px;\">\n  <tr><td>" + program.slide + "<td style=\"text-align:right;\">50\n</table>");
+    $item.append("<table style=\"width:100%; background:#eee; padding:.8em; margin-bottom:5px;\">\n  <tr><td>" + program.slide + "<td style=\"text-align:right;\">" + nominal + "\n</table>");
     for (_j = 0, _len1 = titles.length; _j < _len1; _j++) {
       title = titles[_j];
       title.row = row = $("<tr><td>" + title.title + "<td style=\"text-align:right;\">");

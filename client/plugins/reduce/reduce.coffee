@@ -154,7 +154,7 @@ emit = ($item, item) ->
           $item.trigger 'thumb', ui.value * sign
   $item.append """
     <table style="width:100%; background:#eee; padding:.8em; margin-bottom:5px;">
-      <tr><td>#{program.slide}<td style="text-align:right;">50
+      <tr><td>#{program.slide}<td style="text-align:right;">#{nominal}
     </table>"""
   for title in titles
     title.row = row = $ """<tr><td>#{title.title}<td style="text-align:right;">"""
