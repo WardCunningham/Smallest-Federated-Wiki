@@ -82,10 +82,11 @@ bind = ($item, item) ->
   socket = new WebSocket("ws://#{host}/plugin/txtzyme")
   sent = rcvd = 0
   srept = rrept = ""
-  response = []
+  oldresponse = response = []
   if item.text.replace(/_.*?_/g,'').match /p/
     $item.addClass 'sequence-source'
-    $item.get(0).getSequenceData = -> response
+    $item.get(0).getSequenceData = ->
+      if response.length then response else oldresponse
 
   frame = 0
   tick = ->
@@ -117,7 +118,6 @@ bind = ($item, item) ->
     trigger 'THUMB', thumb
 
   $item.delegate '.rcvd', 'click', ->
-
     wiki.dialog "Txtzyme Responses", """<pre>#{response.join "\n"}"""
 
   trigger = (word, arg=0) ->

@@ -136,7 +136,7 @@
   };
 
   bind = function($item, item) {
-    var $page, defn, frame, host, progress, rcvd, response, rrept, sent, socket, srept, startTicking, tick, timer, trigger;
+    var $page, defn, frame, host, oldresponse, progress, rcvd, response, rrept, sent, socket, srept, startTicking, tick, timer, trigger;
     defn = parse(item.text);
     $page = $item.parents('.page:first');
     host = $page.data('site') || location.host;
@@ -146,11 +146,15 @@
     socket = new WebSocket("ws://" + host + "/plugin/txtzyme");
     sent = rcvd = 0;
     srept = rrept = "";
-    response = [];
+    oldresponse = response = [];
     if (item.text.replace(/_.*?_/g, '').match(/p/)) {
       $item.addClass('sequence-source');
       $item.get(0).getSequenceData = function() {
-        return response;
+        if (response.length) {
+          return response;
+        } else {
+          return oldresponse;
+        }
       };
     }
     frame = 0;
