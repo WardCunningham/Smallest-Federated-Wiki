@@ -6,6 +6,7 @@
   "dependencies": {
     "coffee-script": "*",
     "browserify": ">=2.13.2",
+    "underscore": "*",
     "coffeeify": "*"
   },
   "scripts": {
@@ -15,7 +16,10 @@
   "devDependencies": {
     "mocha": "*",
     "sinon": "*",
-    "expect": "*"
+    "expect.js": "*"
+  },
+  "testling": {
+    "harness": "mocha"
   },
   "engines": {
     "node": ">=0.8.0"

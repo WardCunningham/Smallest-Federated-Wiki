@@ -1,4 +1,6 @@
-plugin = require('../lib/plugin.coffee')
+plugin = require '../lib/plugin.coffee'
+sinon = require 'sinon'
+expect = require 'expect.js'
 
 describe 'plugin', ->
   fakeDeferred = undefined

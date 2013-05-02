@@ -1,4 +1,6 @@
 util = require('./util.coffee')
+wiki = require './wiki.coffee'
+
 module.exports = plugin = {}
 
 # TODO: Remove these methods from wiki object?
