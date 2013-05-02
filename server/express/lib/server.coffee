@@ -279,9 +279,11 @@ module.exports = exports = (argv) ->
       info.pages.push(pageDiv)
     res.render('static.html', info)
 
-  app.get ///([a-z0-9-]+)\.html$///, (req, res) ->
+  app.get ///([a-z0-9-]+)\.html$///, (req, res, next) ->
     file = req.params[0]
     log(file)
+    if file is 'runtests'
+      return next()
     pagehandler.get file, (e, page, status) ->
       if e then return res.e e
       if status is 404
