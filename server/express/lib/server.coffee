@@ -297,7 +297,7 @@ module.exports = exports = (argv) ->
   app.get ///system/factories.json///, (req, res) ->
     res.status(200)
     res.header('Content-Type', 'application/json')
-    glob path.join(argv.c, 'plugins', '**', 'factory.json'), (e, files) ->
+    glob path.join(argv.c, 'plugins', '*', 'factory.json'), (e, files) ->
       if e then return res.e(e)
       files = files.map (file) ->
         return fs.createReadStream(file).on('error', res.e).pipe(JSONStream.parse())
