@@ -1,5 +1,6 @@
-util = require('./util.coffee')
-active = require('./active.coffee')
+wiki = require './wiki.coffee'
+util = require './util.coffee'
+active = require './active.coffee'
 
 createSearch = ({neighborhood})->
   performSearch = (searchQuery)->

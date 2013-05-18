@@ -1,7 +1,10 @@
-util = require('./util.coffee')
-state = require('./state.coffee')
-revision = require('./revision.coffee')
-addToJournal = require('./addToJournal.coffee')
+_ = require 'underscore'
+
+wiki = require './wiki.coffee'
+util = require './util.coffee'
+state = require './state.coffee'
+revision = require './revision.coffee'
+addToJournal = require './addToJournal.coffee'
 
 module.exports = pageHandler = {}
 

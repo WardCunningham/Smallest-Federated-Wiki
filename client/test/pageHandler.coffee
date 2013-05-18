@@ -1,3 +1,8 @@
+_ = require 'underscore'
+expect = require 'expect.js'
+sinon = require 'sinon'
+
+wiki = require '../lib/wiki.coffee'
 pageHandler = require '../lib/pageHandler.coffee'
 mockServer = require './mockServer.coffee'
 
