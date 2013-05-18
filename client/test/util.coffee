@@ -1,4 +1,5 @@
-util = require('../lib/util.coffee')
+wiki = require '../lib/wiki.coffee'
+util = require '../lib/util.coffee'
 
 timezoneOffset = ->
   ((new Date(1333843344000)).getTimezoneOffset() * 60)

@@ -1,3 +1,7 @@
+expect = require 'expect.js'
+_ = require 'underscore'
+
+wiki = require '../lib/wiki.coffee'
 neighborhood = require '../lib/neighborhood.coffee'
 
 describe 'neighborhood', ->

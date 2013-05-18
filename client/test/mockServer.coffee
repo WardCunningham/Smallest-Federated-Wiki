@@ -1,3 +1,5 @@
+sinon = require 'sinon'
+
 simulatePageNotFound = ->
   xhrFor404 = {
     status: 404

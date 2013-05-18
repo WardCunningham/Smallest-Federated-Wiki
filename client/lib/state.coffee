@@ -1,4 +1,5 @@
-active = require('./active.coffee')
+wiki = require './wiki.coffee'
+active = require './active.coffee'
 
 module.exports = state = {}
 

@@ -5,19 +5,24 @@
   "private": true,
   "dependencies": {
     "coffee-script": "*",
-    "browserify": "*"
+    "browserify": ">=2.13.2",
+    "underscore": "*",
+    "coffeeify": "*"
   },
   "scripts": {
-    "test": "./node_modules/.bin/browserify -c 'coffee -sc' testclient.coffee ./plugins/*/test.coffee > test/testclient.js",
-    "start": "./node_modules/.bin/browserify -c 'coffee -sc' client.coffee > client.js"
+    "test": "browserify -t coffeeify testclient.coffee ./plugins/*/test.coffee --debug > test/testclient.js",
+    "start": "browserify -t coffeeify client.coffee --debug > client.js"
   },
   "devDependencies": {
     "mocha": "*",
     "sinon": "*",
-    "expect": "*"
+    "expect.js": "*"
+  },
+  "testling": {
+    "harness": "mocha"
   },
   "engines": {
-    "node": "~0.6"
+    "node": ">=0.8.0"
   },
   "repository": {
     "type": "git",
