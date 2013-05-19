@@ -1,3 +1,4 @@
+wiki = require './wiki.coffee'
 module.exports = wiki.util = util = {}
 
 util.symbols =

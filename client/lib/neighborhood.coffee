@@ -1,6 +1,9 @@
-active = require('./active.coffee')
-util = require('./util.coffee')
-createSearch = require('./search.coffee')
+_ = require 'underscore'
+
+wiki = require './wiki.coffee'
+active = require './active.coffee'
+util = require './util.coffee'
+createSearch = require './search.coffee'
 
 module.exports = neighborhood = {}
 

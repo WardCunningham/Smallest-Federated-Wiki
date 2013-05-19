@@ -31,9 +31,9 @@ while (sleep 1) {
   $old = $new;
   print `clear; date`;
   say('client.');
-  run('./node_modules/.bin/browserify client.coffee -o client.js');
+  run('./node_modules/.bin/browserify -t coffeeify client.coffee --debug > client.js');
   say('test.');
-  run('./node_modules/.bin/browserify testclient.coffee ./plugins/*/test.coffee -o test/testclient.js');
+  run('./node_modules/.bin/browserify -t coffeeify testclient.coffee ./plugins/*/test.coffee --debug > test/testclient.js');
   say('plugins.');
   run('./node_modules/.bin/coffee -c ./plugins/*.coffee');
   run('./node_modules/.bin/coffee -c ./plugins/*/*.coffee');
