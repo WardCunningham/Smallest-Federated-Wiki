@@ -223,7 +223,7 @@ $ ->
       json = JSON.stringify(action, null, 2)
       wiki.dialog "Revision #{rev}, #{action.type} action", $('<pre/>').text(json)
 
-    .delegate '.action', 'click', (e) ->
+    .delegate '.action', 'hover', (e) ->
       e.preventDefault()
       $action = $(e.target)
       if $action.is('.fork') and (name = $action.data('slug'))?
