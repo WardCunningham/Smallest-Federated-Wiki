@@ -288,12 +288,19 @@ module.exports = exports = (argv) ->
       if e then return res.e e
       if status is 404
         return res.send page, status
-      info = {}
-      info.pages = [
-          page: file
-          generated: """data-server-generated=true"""
-          story: wiki.resolveLinks(render(page))
-        ]
+      info = {
+      	pages: [
+      	  page: file
+      	  generated: """data-server-generated=true"""
+      	  story: wiki.resolveLinks(render(page))
+      	]
+      	authenticated: req.isAuthenticated()
+      	loginStatus: if owner
+      	  if req.isAuthenticated()
+      	    'logout'
+      	  else 'login'
+      	else 'claim'
+      }
       res.render('static.html', info)
 
   app.get ///system/factories.json///, (req, res) ->
