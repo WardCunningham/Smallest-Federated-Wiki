@@ -18,32 +18,12 @@
     {
       "type": "paragraph",
       "id": "e831ca2889775c09",
-      "text": "This has several advantages over clustering nearby datum into a single composite dot. "
-    },
-    {
-      "type": "paragraph",
-      "id": "2fe8a87072529356",
-      "text": "• color and area remain available for coding additional parameters"
-    },
-    {
-      "type": "paragraph",
-      "id": "35fd87dc1e6f2557",
-      "text": "• non-circular clusters result when two clusters are of medium proximity"
-    },
-    {
-      "type": "paragraph",
-      "id": "186b61b5588e1dbc",
-      "text": "• individual marks can be added or removed as datasets evolve over time."
+      "text": "This has several advantages over clustering nearby datum into a single composite dot. [[More About Pushpin Plugin]]."
     },
     {
       "type": "paragraph",
       "id": "188a263d45929ccd",
       "text": "See [https://github.com/WardCunningham/Smallest-Federated-Wiki/blob/master/client/plugins/pushpin GitHub] for plugin source."
-    },
-    {
-      "type": "paragraph",
-      "id": "9345bceac8399efb",
-      "text": "See [http://localhost/~wcunningham/emerge/d3/examples/factories/map.html Original Demo] on localhost/~wcunningham."
     }
   ],
   "journal": [
@@ -284,6 +264,36 @@
       ],
       "id": "188a263d45929ccd",
       "date": 1350604580008
+    },
+    {
+      "type": "remove",
+      "id": "2fe8a87072529356",
+      "date": 1365357867073
+    },
+    {
+      "type": "remove",
+      "id": "35fd87dc1e6f2557",
+      "date": 1365357871744
+    },
+    {
+      "type": "remove",
+      "id": "186b61b5588e1dbc",
+      "date": 1365357876247
+    },
+    {
+      "type": "remove",
+      "id": "9345bceac8399efb",
+      "date": 1365357890820
+    },
+    {
+      "type": "edit",
+      "id": "e831ca2889775c09",
+      "item": {
+        "type": "paragraph",
+        "id": "e831ca2889775c09",
+        "text": "This has several advantages over clustering nearby datum into a single composite dot. [[More About Pushpin Plugin]]."
+      },
+      "date": 1365357930684
     }
   ]
 }
