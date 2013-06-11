@@ -171,12 +171,7 @@
 
       frame = frame % 40 + 1;
       now = new Date();
-      arg = [frame, now.getSeconds(), now.getMinutes(), now.getHours()];
-      trigger('FRAME', arg);
-      if (frame !== 1) {
-        return;
-      }
-      arg.shift();
+      arg = [now.getSeconds(), now.getMinutes(), now.getHours()];
       trigger('SECOND', arg);
       if (arg[0]) {
         return;
