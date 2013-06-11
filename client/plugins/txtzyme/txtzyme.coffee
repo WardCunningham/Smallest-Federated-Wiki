@@ -92,10 +92,7 @@ bind = ($item, item) ->
   tick = ->
     frame = frame%40 + 1
     now = new Date()
-    arg = [frame, now.getSeconds(), now.getMinutes(), now.getHours()]
-    trigger 'FRAME', arg
-    return unless frame is 1
-    arg.shift()
+    arg = [now.getSeconds(), now.getMinutes(), now.getHours()]
     trigger 'SECOND', arg
     return if arg[0]; trigger 'MINUTE', arg
     return if arg[1]; trigger 'HOUR', arg
