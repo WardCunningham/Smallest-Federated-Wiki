@@ -14,6 +14,7 @@
 fs = require 'fs'
 path = require 'path'
 http = require 'http'
+https = require 'https'
 child_process = require 'child_process'
 spawn = child_process.spawn
 
@@ -26,6 +27,7 @@ es = require 'event-stream'
 JSONStream = require 'JSONStream'
 async = require 'async'
 f = require('flates')
+qs = require('qs')
 
 # Local files
 random = require './random_id'
@@ -168,6 +170,7 @@ module.exports = exports = (argv) ->
     app.use(express.methodOverride())
     app.use(express.session({ secret: 'notsecret'}))
 
+    # TODO make a persona library
     app.use (req, res, next) ->
       console.log 'wiring up isAuthenticated'
       req.isAuthenticated = ->
@@ -351,10 +354,14 @@ module.exports = exports = (argv) ->
       return res.e(e) if e
       res.json(sitemap)
 
-
+  #TODO: define fail?
+  # when username doesn't match, return ajax code which causes page to redirect
   app.post '/persona_login', cors, (req, res) ->
-    qs = require 'qs'
-    https = require 'https'
+
+    sent = false
+    fail = ->
+      res.send "FAIL", 401  unless sent
+      sent = true    
 
     postBody = qs.stringify(
       assertion: req.body.assertion
@@ -391,7 +398,7 @@ module.exports = exports = (argv) ->
               req.session.email = verified.email
             else
               console.log 'Expected ', owner, ' but got ', verified.email
-              return fail()
+              return originalRes.send JSON.stringify {status: 'wrong-address', email: verified.email }
 
             originalRes.send JSON.stringify {status: 'okay', email: verified.email }
           else

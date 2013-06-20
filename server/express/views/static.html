@@ -24,14 +24,13 @@
       {{/pages}}
     </section>
     <footer class={{loginStatus}}>
-        <div id="user-email"></div>
-        <button id="persona-login-btn">Login with your Email</button>
-        <button id="persona-logout-btn">Sign out</button>
-      </form>
       <span>
         Search:
         <input class='search' name='search' type='text'>
       </span>
+      <div id="user-email"></div>
+      <img src="/images/email_sign_in_blue.png" id="persona-login-btn" alt="Sign in with your Email" />
+      <button id="persona-logout-btn">Sign out</button>
       <span class='neighborhood'></span>
     </footer>
   <script>
@@ -39,13 +38,6 @@
    TODO
 * Externalize JS and convert to coffee
 */
-
-console.log('wiring up ', $('#persona-logout-btn').length);
-$('#persona-logout-btn').click(function(e) {
-  alert('hey');
-  e.preventDefault();
-  navigator.id.logout();
-});
 
 $('#user-email').hide();
 $('#persona-login-btn').hide();
@@ -73,7 +65,10 @@ navigator.id.watch({
         $('#persona-logout-btn').show();
       } else {
         // Verification failed
-        navigator.id.logout();        
+        navigator.id.logout();
+        if ('wrong-address' === verified.status) {
+          window.location = '/oops';
+        }
       }
     });
   },
@@ -102,9 +97,13 @@ navigator.id.watch({
 
 $('#persona-login-btn').click(function(e) {
   e.preventDefault();
-  console.log('button clicked');
   navigator.id.request({});
 });
+$('#persona-logout-btn').click(function(e) {
+  e.preventDefault();
+  navigator.id.logout();
+});
+
   </script>
   </body>
 </html>

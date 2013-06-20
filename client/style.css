@@ -44,7 +44,7 @@ footer {
   z-index: 1000;
   color: #ccdcd2; }
  
-footer form {
+footer form, #user-email {
   display: inline;
 }
 
