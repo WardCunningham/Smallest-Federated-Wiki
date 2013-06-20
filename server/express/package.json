@@ -21,7 +21,8 @@
     "async": "*",
     "config-chain": "*",
     "glob": "*",
-    "flates": "0.0.5"
+    "flates": "0.0.5",
+    "qs": "*"
   },
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha",

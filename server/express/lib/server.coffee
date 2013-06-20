@@ -21,8 +21,6 @@ spawn = child_process.spawn
 mkdirp = require 'mkdirp'
 express = require 'express'
 hbs = require 'hbs'
-passportImport = require 'passport'
-OpenIDstrat = require('passport-openid').Strategy
 glob = require 'glob'
 es = require 'event-stream'
 JSONStream = require 'JSONStream'
@@ -91,9 +89,6 @@ module.exports = exports = (argv) ->
         log "Allready fired", error
     next()
 
-  # Construct authentication handler.
-  passport = new passportImport.Passport()
-
   # Tell pagehandler where to find data, and default data.
   app.pagehandler = pagehandler = pageFactory(argv)
 
@@ -129,53 +124,6 @@ module.exports = exports = (argv) ->
   cors = (req, res, next) ->
     res.header('Access-Control-Allow-Origin', '*')
     next()
-
-
-  # If claimed, make sure that an action can only be taken
-  # by the owner, and returns 403 if someone else tries.
-  authenticated = (req, res, next) ->
-    unless owner
-      next()
-    else if req.isAuthenticated() and req.user.id is owner
-      next()
-    else res.send('Access Forbidden', 403)
-
-  # Simplest possible way to serialize and deserialize a user.
-  passport.serializeUser (user, done) ->
-    done(null, user.id)
-
-  passport.deserializeUser (id, done) ->
-    done(null, {id})
-
-  # Tell passport to use the OpenID strategy. And establish
-  # owner as the test of id.
-  passport.use new OpenIDstrat {
-    returnURL: "#{argv.u}/login/openid/complete"
-    realm: "#{argv.u}"
-    identifierField: 'identifier'
-  },
-  (id, done) ->
-    loga id, done
-    process.nextTick ->
-      if owner
-        if id is owner
-          done(null, {id})
-        else
-          done(null, false)
-      else
-        setOwner id, (e) ->
-          if e then return done(e)
-          done(null, {id})
-
-  # Handle errors thrown by passport openid by returning the oops page
-  # with the error message.
-  openIDErr = (err, req, res, next) ->
-    log err
-    if err.message[0..5] is 'OpenID'
-      res.statusCode = 401
-      res.render('oops.html', {msg:err.message})
-    else
-      next(err)
 
 
   remoteGet = (remote, slug, cb) ->
@@ -219,12 +167,17 @@ module.exports = exports = (argv) ->
     app.use(express.bodyParser())
     app.use(express.methodOverride())
     app.use(express.session({ secret: 'notsecret'}))
-    app.use(passport.initialize())
-    app.use(passport.session())
+
+    app.use (req, res, next) ->
+      console.log 'wiring up isAuthenticated'
+      req.isAuthenticated = ->
+        console.log 'isAuthenticated? owner=', owner, req.session, req.session.email and owner is req.session.email
+        req.session.email and owner is req.session.email
+      next()
+
     app.use(errorHandler)
     app.use(app.router)
     app.use(express.static(argv.c))
-    app.use(openIDErr)
 
   ##### Set up standard environments. #####
   # In dev mode turn on console.log debugging as well as showing the stack on err.
@@ -262,9 +215,11 @@ module.exports = exports = (argv) ->
   app.get ///^((/[a-zA-Z0-9:.-]+/[a-z0-9-]+(_rev\d+)?)+)/?$///, (req, res) ->
     urlPages = (i for i in req.params[0].split('/') by 2)[1..]
     urlLocs = (j for j in req.params[0].split('/')[1..] by 2)
+    console.log 'req.session', req.session
     info = {
       pages: []
       authenticated: req.isAuthenticated()
+      owner: owner
       loginStatus: if owner
         if req.isAuthenticated()
           'logout'
@@ -342,6 +297,20 @@ module.exports = exports = (argv) ->
   app.get '/favicon.png', cors, (req,res) ->
     res.sendfile(favLoc)
 
+  # AOK
+  authenticated = (req, res, next) ->
+    # console.log 'authenticated middleware running'
+    # console.log req.session
+    if req.isAuthenticated()
+      console.log 'authorized'
+      next()
+    else
+      console.log 'rejecting', req.path
+      res.send(403)
+
+  app.get '/foo', authenticated, (req, res) ->
+    res.send('hey')
+
   # Accept favicon image posted to the server, and if it does not already exist
   # save it.
   app.post '/favicon.png', authenticated, (req, res) ->
@@ -381,6 +350,68 @@ module.exports = exports = (argv) ->
     pagehandler.pages (e, sitemap) ->
       return res.e(e) if e
       res.json(sitemap)
+
+
+  app.post '/persona_login', cors, (req, res) ->
+    qs = require 'qs'
+    https = require 'https'
+
+    postBody = qs.stringify(
+      assertion: req.body.assertion
+      audience: "http://localhost:3000"
+    )
+    opts =
+      host: "verifier.login.persona.org"
+      port: 443
+      path: "/verify"
+      method: "POST"
+      headers:
+        "Content-Length": postBody.length
+        "Content-Type": "application/x-www-form-urlencoded"
+
+    console.log 'opts', opts
+
+    d = ''
+    originalRes = res
+    verifier = https.request opts, (res) ->
+      if 200 is res.statusCode
+        res.setEncoding "utf8"
+        res.on "data", (data) ->
+          d += data
+
+        res.on "end", (a, b, c) ->
+          verified = JSON.parse(d)
+          console.log "verifier says " + d
+          if "okay" is verified.status and !!verified.email
+            if owner is ''
+              setOwner verified.email, ->
+                console.log 'Owner was not claimed, setting owner'
+            else if owner is verified.email
+              console.log 'Welcome back! Creating session'
+              req.session.email = verified.email
+            else
+              console.log 'Expected ', owner, ' but got ', verified.email
+              return fail()
+
+            originalRes.send JSON.stringify {status: 'okay', email: verified.email }
+          else
+            fail()
+
+      else
+        console.log "STATUS: " + res.statusCode
+        console.log "HEADERS: " + JSON.stringify(res.headers)
+        fail()
+
+    verifier.write postBody
+    verifier.on "error", (e) ->
+      console.error e
+      fail()
+
+    verifier.end()
+
+
+  app.post '/persona_logout', cors, (req, res) ->
+    delete req.session.email
 
   ##### Put routes #####
 
@@ -464,24 +495,6 @@ module.exports = exports = (argv) ->
         remoteGet(action.site, req.params[0], actionCB)
     else
       pagehandler.get(req.params[0], actionCB)
-
-  ##### Routes used for openID authentication #####
-  # Redirect to oops when login fails.
-  app.post '/login',
-    passport.authenticate('openid', { failureRedirect: oops}),
-    (req, res) ->
-      res.redirect(index)
-
-  # Logout when /logout is hit with any http method.
-  app.all '/logout', (req, res) ->
-    req.logout()
-    res.redirect(index)
-
-  # Route that the openID provider redirects user to after login.
-  app.get '/login/openid/complete',
-    passport.authenticate('openid', { failureRedirect: oops}),
-    (req, res) ->
-      res.redirect(index)
 
   # Return the oops page when login fails.
   app.get '/oops', (req, res) ->

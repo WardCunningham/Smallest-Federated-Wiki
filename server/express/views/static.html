@@ -13,6 +13,7 @@
     <link href='/js/jquery-ui-1.10.1.custom.min.css' rel='stylesheet' type='text/css'>
     <script src='/js/modernizr.custom.63710.js' type='text/javascript'></script>
     <script src='/js/underscore-min.js' type='text/javascript'></script>
+    <script src="https://login.persona.org/include.js"></script>
     <script src='/client.js' type='text/javascript'></script>
     <script>Modernizr.load([{test: Modernizr.cors, nope: '/js/jquery.ie.cors.js'}]);</script>
   </head>
@@ -23,23 +24,9 @@
       {{/pages}}
     </section>
     <footer class={{loginStatus}}>
-      {{#authenticated}}
-      <form action='/logout' method='POST'>
-        <input type='submit' value={{loginStatus}}>
-      {{/authenticated}}
-      {{^authenticated}}
-      <form action='/login' method='POST'>
-        OpenID:
-        <input name='identifier' type='text'>
-        <input type='submit' value={{loginStatus}}>
-        or use:
-        <span class='provider'>
-          <input data-provider='https://www.google.com/accounts/o8/id' title='google' type='button' value='G'>
-          <input data-provider='https://me.yahoo.com' title='yahoo' type='button' value='Y'>
-          <input data-provider='https://www.aol.com' title='aol' type='button' value='A'>
-          <input data-provider='http://www.livejournal.com/openid/server.bml' title='livejournal' type='button' value='L'>
-        </span>
-      {{/authenticated}}
+        <div id="user-email"></div>
+        <button id="persona-login-btn">Login with your Email</button>
+        <button id="persona-logout-btn">Sign out</button>
       </form>
       <span>
         Search:
@@ -47,5 +34,77 @@
       </span>
       <span class='neighborhood'></span>
     </footer>
+  <script>
+  /*
+   TODO
+* Externalize JS and convert to coffee
+*/
+
+console.log('wiring up ', $('#persona-logout-btn').length);
+$('#persona-logout-btn').click(function(e) {
+  alert('hey');
+  e.preventDefault();
+  navigator.id.logout();
+});
+
+$('#user-email').hide();
+$('#persona-login-btn').hide();
+$('#persona-logout-btn').hide();
+
+navigator.id.watch({
+{{#authenticated}}
+// Ya logged in
+  loggedInUser: '{{owner}}',
+{{/authenticated}}
+{{^authenticated}}
+// Nope
+    loggedInUser: null,
+{{/authenticated}}
+
+  onlogin: function(assertion) {
+    console.log('assertion=', assertion);
+    $.post('/persona_login', { assertion: assertion }, function(verified) {
+      verified = JSON.parse(verified);
+      console.log(verified);
+      if ('okay' === verified.status) {
+        $('#user-email').text(verified.email)
+                        .show();
+        $('#persona-login-btn').hide();
+        $('#persona-logout-btn').show();
+      } else {
+        // Verification failed
+        navigator.id.logout();        
+      }
+    });
+  },
+  onlogout: function() {
+    console.log('logging out');
+    $.post('/persona_logout');
+    $('#user-email').hide();
+    $('#persona-login-btn').show();
+    $('#persona-logout-btn').hide();
+  },
+  onmatch: function() {
+    console.log('It is safe to render the UI');
+{{#authenticated}}
+    $('#user-email').text('{{owner}}')
+                    .show();
+    $('#persona-login-btn').hide();
+    $('#persona-logout-btn').show();
+{{/authenticated}}
+{{^authenticated}}
+    $('#user-email').hide();
+    $('#persona-login-btn').show();
+    $('#persona-logout-btn').hide();
+{{/authenticated}}
+  }
+});
+
+$('#persona-login-btn').click(function(e) {
+  e.preventDefault();
+  console.log('button clicked');
+  navigator.id.request({});
+});
+  </script>
   </body>
 </html>
