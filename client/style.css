@@ -44,9 +44,11 @@ footer {
   z-index: 1000;
   color: #ccdcd2; }
  
-footer form, #user-email {
+footer form, .footer-item {
   display: inline;
 }
+
+.footer-item { margin-left: 8px; }
 
 .neighbor {
   float: right;

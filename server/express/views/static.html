@@ -28,82 +28,14 @@
         Search:
         <input class='search' name='search' type='text'>
       </span>
-      <div id="user-email"></div>
+      <div id="user-email" class="footer-item"></div>
       <img src="/images/email_sign_in_blue.png" id="persona-login-btn" alt="Sign in with your Email" />
-      <button id="persona-logout-btn">Sign out</button>
+      <button id="persona-logout-btn" class="footer-item">Sign out</button>
       <span class='neighborhood'></span>
     </footer>
   <script>
-  /*
-   TODO
-* Externalize JS and convert to coffee
-*/
-
-$('#user-email').hide();
-$('#persona-login-btn').hide();
-$('#persona-logout-btn').hide();
-
-navigator.id.watch({
-{{#authenticated}}
-// Ya logged in
-  loggedInUser: '{{owner}}',
-{{/authenticated}}
-{{^authenticated}}
-// Nope
-    loggedInUser: null,
-{{/authenticated}}
-
-  onlogin: function(assertion) {
-    console.log('assertion=', assertion);
-    $.post('/persona_login', { assertion: assertion }, function(verified) {
-      verified = JSON.parse(verified);
-      console.log(verified);
-      if ('okay' === verified.status) {
-        $('#user-email').text(verified.email)
-                        .show();
-        $('#persona-login-btn').hide();
-        $('#persona-logout-btn').show();
-      } else {
-        // Verification failed
-        navigator.id.logout();
-        if ('wrong-address' === verified.status) {
-          window.location = '/oops';
-        }
-      }
-    });
-  },
-  onlogout: function() {
-    console.log('logging out');
-    $.post('/persona_logout');
-    $('#user-email').hide();
-    $('#persona-login-btn').show();
-    $('#persona-logout-btn').hide();
-  },
-  onmatch: function() {
-    console.log('It is safe to render the UI');
-{{#authenticated}}
-    $('#user-email').text('{{owner}}')
-                    .show();
-    $('#persona-login-btn').hide();
-    $('#persona-logout-btn').show();
-{{/authenticated}}
-{{^authenticated}}
-    $('#user-email').hide();
-    $('#persona-login-btn').show();
-    $('#persona-logout-btn').hide();
-{{/authenticated}}
-  }
-});
-
-$('#persona-login-btn').click(function(e) {
-  e.preventDefault();
-  navigator.id.request({});
-});
-$('#persona-logout-btn').click(function(e) {
-  e.preventDefault();
-  navigator.id.logout();
-});
-
+var owner = {{#authenticated}}'{{owner}}'{{/authenticated}}{{^authenticated}}null{{/authenticated}};
+wiki.persona(owner);
   </script>
   </body>
 </html>
