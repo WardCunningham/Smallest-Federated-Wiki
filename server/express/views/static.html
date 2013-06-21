@@ -34,7 +34,13 @@
       <span class='neighborhood'></span>
     </footer>
   <script>
-var owner = {{#authenticated}}'{{owner}}'{{/authenticated}}{{^authenticated}}null{{/authenticated}};
+var owner =
+  {{#authenticated}}
+    '{{owner}}';
+  {{/authenticated}}
+  {{^authenticated}}
+    null;
+  {{/authenticated}}
 wiki.persona(owner);
   </script>
   </body>
