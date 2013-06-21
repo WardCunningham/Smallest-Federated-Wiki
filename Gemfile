@@ -18,7 +18,6 @@ gem "memcache-client", :require => 'memcache'
 group :development do
   gem 'ruby-debug', :require => 'ruby-debug', :platform => :mri_18
   gem 'ruby-debug19', :require => 'ruby-debug19', :platform => :mri_19
-  gem "heroku"
 end
 
 group :test do
