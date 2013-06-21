@@ -12,6 +12,7 @@ module.exports = (owner) ->
         verified = JSON.parse(verified)
         console.log verified
         if "okay" is verified.status
+          console.log('Setting email to ' + verified.email)
           $("#user-email").text(verified.email).show()
           $("#persona-login-btn").hide()
           $("#persona-logout-btn").show()
@@ -32,7 +33,7 @@ module.exports = (owner) ->
     onmatch: ->
       console.log "It is safe to render the UI"
       if owner
-        $("#user-email").text("{{owner}}").show()
+        $("#user-email").text(owner).show()
         $("#persona-login-btn").hide()
         $("#persona-logout-btn").show()
       else
