@@ -172,9 +172,8 @@ module.exports = exports = (argv) ->
 
     # TODO make a persona library
     app.use (req, res, next) ->
-      console.log 'wiring up isAuthenticated'
       req.isAuthenticated = ->
-        console.log 'isAuthenticated? owner=', owner, req.session, req.session.email and owner is req.session.email
+        log 'isAuthenticated? owner=', owner, req.session, req.session.email and owner is req.session.email
         req.session.email and owner is req.session.email
       next()
 
@@ -311,9 +310,6 @@ module.exports = exports = (argv) ->
       console.log 'rejecting', req.path
       res.send(403)
 
-  app.get '/foo', authenticated, (req, res) ->
-    res.send('hey')
-
   # Accept favicon image posted to the server, and if it does not already exist
   # save it.
   app.post '/favicon.png', authenticated, (req, res) ->
@@ -354,10 +350,7 @@ module.exports = exports = (argv) ->
       return res.e(e) if e
       res.json(sitemap)
 
-  #TODO: define fail?
-  # when username doesn't match, return ajax code which causes page to redirect
   app.post '/persona_login', cors, (req, res) ->
-
     sent = false
     fail = ->
       res.send "FAIL", 401  unless sent
@@ -365,7 +358,7 @@ module.exports = exports = (argv) ->
 
     postBody = qs.stringify(
       assertion: req.body.assertion
-      audience: "http://localhost:3000"
+      audience: argv.u
     )
     opts =
       host: "verifier.login.persona.org"
@@ -375,8 +368,6 @@ module.exports = exports = (argv) ->
       headers:
         "Content-Length": postBody.length
         "Content-Type": "application/x-www-form-urlencoded"
-
-    console.log 'opts', opts
 
     d = ''
     originalRes = res
@@ -388,16 +379,15 @@ module.exports = exports = (argv) ->
 
         res.on "end", (a, b, c) ->
           verified = JSON.parse(d)
-          console.log "verifier says " + d
           if "okay" is verified.status and !!verified.email
             if owner is ''
               setOwner verified.email, ->
-                console.log 'Owner was not claimed, setting owner'
+                loga 'Owner was not claimed, setting owner'
             else if owner is verified.email
-              console.log 'Welcome back! Creating session'
+              log 'Welcome back! Creating session'
               req.session.email = verified.email
             else
-              console.log 'Expected ', owner, ' but got ', verified.email
+              log 'Expected ', owner, ' but got ', verified.email
               return originalRes.send JSON.stringify {status: 'wrong-address', email: verified.email }
 
             originalRes.send JSON.stringify {status: 'okay', email: verified.email }
@@ -405,13 +395,13 @@ module.exports = exports = (argv) ->
             fail()
 
       else
-        console.log "STATUS: " + res.statusCode
-        console.log "HEADERS: " + JSON.stringify(res.headers)
+        log "STATUS: " + res.statusCode
+        log "HEADERS: " + JSON.stringify(res.headers)
         fail()
 
     verifier.write postBody
     verifier.on "error", (e) ->
-      console.error e
+      loga e
       fail()
 
     verifier.end()
