@@ -3,8 +3,6 @@ window.wiki = require('./lib/wiki.coffee');
 
 require('./lib/legacy.coffee');
 
-'k';
-
 
 },{"./lib/wiki.coffee":2,"./lib/legacy.coffee":3}],2:[function(require,module,exports){
 var createSynopsis, wiki,
@@ -825,7 +823,122 @@ window.plugins = {
 };
 
 
-},{"./util.coffee":5,"./wiki.coffee":2}],6:[function(require,module,exports){
+},{"./util.coffee":5,"./wiki.coffee":2}],8:[function(require,module,exports){
+var active, state, wiki,
+  __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+wiki = require('./wiki.coffee');
+
+active = require('./active.coffee');
+
+module.exports = state = {};
+
+state.pagesInDom = function() {
+  return $.makeArray($(".page").map(function(_, el) {
+    return el.id;
+  }));
+};
+
+state.urlPages = function() {
+  var i;
+  return ((function() {
+    var _i, _len, _ref, _results;
+    _ref = $(location).attr('pathname').split('/');
+    _results = [];
+    for (_i = 0, _len = _ref.length; _i < _len; _i += 2) {
+      i = _ref[_i];
+      _results.push(i);
+    }
+    return _results;
+  })()).slice(1);
+};
+
+state.locsInDom = function() {
+  return $.makeArray($(".page").map(function(_, el) {
+    return $(el).data('site') || 'view';
+  }));
+};
+
+state.urlLocs = function() {
+  var j, _i, _len, _ref, _results;
+  _ref = $(location).attr('pathname').split('/').slice(1);
+  _results = [];
+  for (_i = 0, _len = _ref.length; _i < _len; _i += 2) {
+    j = _ref[_i];
+    _results.push(j);
+  }
+  return _results;
+};
+
+state.setUrl = function() {
+  var idx, locs, page, pages, url, _ref;
+  document.title = (_ref = $('.page:last').data('data')) != null ? _ref.title : void 0;
+  if (history && history.pushState) {
+    locs = state.locsInDom();
+    pages = state.pagesInDom();
+    url = ((function() {
+      var _i, _len, _results;
+      _results = [];
+      for (idx = _i = 0, _len = pages.length; _i < _len; idx = ++_i) {
+        page = pages[idx];
+        _results.push("/" + ((locs != null ? locs[idx] : void 0) || 'view') + "/" + page);
+      }
+      return _results;
+    })()).join('');
+    if (url !== $(location).attr('pathname')) {
+      return history.pushState(null, null, url);
+    }
+  }
+};
+
+state.show = function(e) {
+  var idx, name, newLocs, newPages, old, oldLocs, oldPages, previous, _i, _len, _ref;
+  oldPages = state.pagesInDom();
+  newPages = state.urlPages();
+  oldLocs = state.locsInDom();
+  newLocs = state.urlLocs();
+  if (!location.pathname || location.pathname === '/') {
+    return;
+  }
+  previous = $('.page').eq(0);
+  for (idx = _i = 0, _len = newPages.length; _i < _len; idx = ++_i) {
+    name = newPages[idx];
+    if (name !== oldPages[idx]) {
+      old = $('.page').eq(idx);
+      if (old) {
+        old.remove();
+      }
+      wiki.createPage(name, newLocs[idx]).insertAfter(previous).each(wiki.refresh);
+    }
+    previous = $('.page').eq(idx);
+  }
+  previous.nextAll().remove();
+  active.set($('.page').last());
+  return document.title = (_ref = $('.page:last').data('data')) != null ? _ref.title : void 0;
+};
+
+state.first = function() {
+  var firstUrlLocs, firstUrlPages, idx, oldPages, urlPage, _i, _len, _results;
+  state.setUrl();
+  firstUrlPages = state.urlPages();
+  firstUrlLocs = state.urlLocs();
+  oldPages = state.pagesInDom();
+  _results = [];
+  for (idx = _i = 0, _len = firstUrlPages.length; _i < _len; idx = ++_i) {
+    urlPage = firstUrlPages[idx];
+    if (__indexOf.call(oldPages, urlPage) < 0) {
+      if (urlPage !== '') {
+        _results.push(wiki.createPage(urlPage, firstUrlLocs[idx]).appendTo('.main'));
+      } else {
+        _results.push(void 0);
+      }
+    }
+  }
+  return _results;
+};
+
+
+},{"./wiki.coffee":2,"./active.coffee":9}],6:[function(require,module,exports){
 var addToJournal, pageFromLocalStorage, pageHandler, pushToLocal, pushToServer, recursiveGet, revision, state, util, wiki, _;
 
 _ = require('underscore');
@@ -1050,122 +1163,373 @@ pageHandler.put = function(pageElement, action) {
 };
 
 
-},{"./wiki.coffee":2,"./util.coffee":5,"./state.coffee":8,"./revision.coffee":11,"./addToJournal.coffee":12,"underscore":13}],8:[function(require,module,exports){
-var active, state, wiki,
-  __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+},{"./wiki.coffee":2,"./util.coffee":5,"./state.coffee":8,"./revision.coffee":11,"./addToJournal.coffee":12,"underscore":13}],10:[function(require,module,exports){
+var addToJournal, buildPageHeader, createFactory, emitHeader, emitTwins, handleDragging, initAddButton, initDragging, neighborhood, pageHandler, plugin, refresh, renderPageIntoPageElement, state, util, wiki, _,
+  __slice = [].slice;
+
+_ = require('underscore');
+
+util = require('./util.coffee');
+
+pageHandler = require('./pageHandler.coffee');
+
+plugin = require('./plugin.coffee');
+
+state = require('./state.coffee');
+
+neighborhood = require('./neighborhood.coffee');
+
+addToJournal = require('./addToJournal.coffee');
 
 wiki = require('./wiki.coffee');
 
-active = require('./active.coffee');
-
-module.exports = state = {};
-
-state.pagesInDom = function() {
-  return $.makeArray($(".page").map(function(_, el) {
-    return el.id;
-  }));
-};
-
-state.urlPages = function() {
-  var i;
-  return ((function() {
-    var _i, _len, _ref, _results;
-    _ref = $(location).attr('pathname').split('/');
-    _results = [];
-    for (_i = 0, _len = _ref.length; _i < _len; _i += 2) {
-      i = _ref[_i];
-      _results.push(i);
+handleDragging = function(evt, ui) {
+  var action, before, beforeElement, destinationPageElement, equals, item, itemElement, moveFromPage, moveToPage, moveWithinPage, order, sourcePageElement, sourceSite, thisPageElement;
+  itemElement = ui.item;
+  item = wiki.getItem(itemElement);
+  thisPageElement = $(this).parents('.page:first');
+  sourcePageElement = itemElement.data('pageElement');
+  sourceSite = sourcePageElement.data('site');
+  destinationPageElement = itemElement.parents('.page:first');
+  equals = function(a, b) {
+    return a && b && a.get(0) === b.get(0);
+  };
+  moveWithinPage = !sourcePageElement || equals(sourcePageElement, destinationPageElement);
+  moveFromPage = !moveWithinPage && equals(thisPageElement, sourcePageElement);
+  moveToPage = !moveWithinPage && equals(thisPageElement, destinationPageElement);
+  if (moveFromPage) {
+    if (sourcePageElement.hasClass('ghost') || sourcePageElement.attr('id') === destinationPageElement.attr('id')) {
+      return;
     }
-    return _results;
-  })()).slice(1);
-};
-
-state.locsInDom = function() {
-  return $.makeArray($(".page").map(function(_, el) {
-    return $(el).data('site') || 'view';
-  }));
-};
-
-state.urlLocs = function() {
-  var j, _i, _len, _ref, _results;
-  _ref = $(location).attr('pathname').split('/').slice(1);
-  _results = [];
-  for (_i = 0, _len = _ref.length; _i < _len; _i += 2) {
-    j = _ref[_i];
-    _results.push(j);
   }
-  return _results;
+  action = moveWithinPage ? (order = $(this).children().map(function(_, value) {
+    return $(value).attr('data-id');
+  }).get(), {
+    type: 'move',
+    order: order
+  }) : moveFromPage ? (wiki.log('drag from', sourcePageElement.find('h1').text()), {
+    type: 'remove'
+  }) : moveToPage ? (itemElement.data('pageElement', thisPageElement), beforeElement = itemElement.prev('.item'), before = wiki.getItem(beforeElement), {
+    type: 'add',
+    item: item,
+    after: before != null ? before.id : void 0
+  }) : void 0;
+  action.id = item.id;
+  return pageHandler.put(thisPageElement, action);
 };
 
-state.setUrl = function() {
-  var idx, locs, page, pages, url, _ref;
-  document.title = (_ref = $('.page:last').data('data')) != null ? _ref.title : void 0;
-  if (history && history.pushState) {
-    locs = state.locsInDom();
-    pages = state.pagesInDom();
-    url = ((function() {
-      var _i, _len, _results;
-      _results = [];
-      for (idx = _i = 0, _len = pages.length; _i < _len; idx = ++_i) {
-        page = pages[idx];
-        _results.push("/" + ((locs != null ? locs[idx] : void 0) || 'view') + "/" + page);
+initDragging = function($page) {
+  var $story;
+  $story = $page.find('.story');
+  return $story.sortable({
+    connectWith: '.page .story'
+  }).on("sortupdate", handleDragging);
+};
+
+initAddButton = function($page) {
+  return $page.find(".add-factory").live("click", function(evt) {
+    if ($page.hasClass('ghost')) {
+      return;
+    }
+    evt.preventDefault();
+    return createFactory($page);
+  });
+};
+
+createFactory = function($page) {
+  var before, beforeElement, item, itemElement;
+  item = {
+    type: "factory",
+    id: util.randomBytes(8)
+  };
+  itemElement = $("<div />", {
+    "class": "item factory"
+  }).data('item', item).attr('data-id', item.id);
+  itemElement.data('pageElement', $page);
+  $page.find(".story").append(itemElement);
+  plugin["do"](itemElement, item);
+  beforeElement = itemElement.prev('.item');
+  before = wiki.getItem(beforeElement);
+  return pageHandler.put($page, {
+    item: item,
+    id: item.id,
+    type: "add",
+    after: before != null ? before.id : void 0
+  });
+};
+
+buildPageHeader = function(_arg) {
+  var favicon_src, header_href, page, tooltip;
+  page = _arg.page, tooltip = _arg.tooltip, header_href = _arg.header_href, favicon_src = _arg.favicon_src;
+  if (page.plugin) {
+    tooltip += "\n" + page.plugin + " plugin";
+  }
+  return "<h1 title=\"" + tooltip + "\"><a href=\"" + header_href + "\"><img src=\"" + favicon_src + "\" height=\"32px\" class=\"favicon\"></a> " + page.title + "</h1>";
+};
+
+emitHeader = function($header, $page, page) {
+  var date, header, isRemotePage, pageHeader, rev, site, viewHere;
+  site = $page.data('site');
+  isRemotePage = (site != null) && site !== 'local' && site !== 'origin' && site !== 'view';
+  header = '';
+  viewHere = wiki.asSlug(page.title) === 'welcome-visitors' ? "" : "/view/" + (wiki.asSlug(page.title));
+  pageHeader = isRemotePage ? buildPageHeader({
+    tooltip: site,
+    header_href: "//" + site + "/view/welcome-visitors" + viewHere,
+    favicon_src: "http://" + site + "/favicon.png",
+    page: page
+  }) : buildPageHeader({
+    tooltip: location.host,
+    header_href: "/view/welcome-visitors" + viewHere,
+    favicon_src: "/favicon.png",
+    page: page
+  });
+  $header.append(pageHeader);
+  if (!isRemotePage) {
+    $('img.favicon', $page).error(function(e) {
+      return plugin.get('favicon', function(favicon) {
+        return favicon.create();
+      });
+    });
+  }
+  if ($page.attr('id').match(/_rev/)) {
+    rev = page.journal.length - 1;
+    date = page.journal[rev].date;
+    $page.addClass('ghost').data('rev', rev);
+    return $header.append($("<h2 class=\"revision\">\n  <span>\n    " + (date != null ? util.formatDate(date) : "Revision " + rev) + "\n  </span>\n</h2>"));
+  }
+};
+
+emitTwins = wiki.emitTwins = function($page) {
+  var actions, bin, bins, flags, i, info, item, legend, page, remoteSite, site, slug, twins, viewing, _i, _len, _ref, _ref1, _ref2, _ref3;
+  page = $page.data('data');
+  site = $page.data('site') || window.location.host;
+  if (site === 'view' || site === 'origin') {
+    site = window.location.host;
+  }
+  slug = wiki.asSlug(page.title);
+  if (((actions = (_ref = page.journal) != null ? _ref.length : void 0) != null) && ((viewing = (_ref1 = page.journal[actions - 1]) != null ? _ref1.date : void 0) != null)) {
+    viewing = Math.floor(viewing / 1000) * 1000;
+    bins = {
+      newer: [],
+      same: [],
+      older: []
+    };
+    _ref2 = wiki.neighborhood;
+    for (remoteSite in _ref2) {
+      info = _ref2[remoteSite];
+      if (remoteSite !== site && (info.sitemap != null)) {
+        _ref3 = info.sitemap;
+        for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
+          item = _ref3[_i];
+          if (item.slug === slug) {
+            bin = item.date > viewing ? bins.newer : item.date < viewing ? bins.older : bins.same;
+            bin.push({
+              remoteSite: remoteSite,
+              item: item
+            });
+          }
+        }
       }
-      return _results;
-    })()).join('');
-    if (url !== $(location).attr('pathname')) {
-      return history.pushState(null, null, url);
     }
-  }
-};
-
-state.show = function(e) {
-  var idx, name, newLocs, newPages, old, oldLocs, oldPages, previous, _i, _len, _ref;
-  oldPages = state.pagesInDom();
-  newPages = state.urlPages();
-  oldLocs = state.locsInDom();
-  newLocs = state.urlLocs();
-  if (!location.pathname || location.pathname === '/') {
-    return;
-  }
-  previous = $('.page').eq(0);
-  for (idx = _i = 0, _len = newPages.length; _i < _len; idx = ++_i) {
-    name = newPages[idx];
-    if (name !== oldPages[idx]) {
-      old = $('.page').eq(idx);
-      if (old) {
-        old.remove();
+    twins = [];
+    for (legend in bins) {
+      bin = bins[legend];
+      if (!bin.length) {
+        continue;
       }
-      wiki.createPage(name, newLocs[idx]).insertAfter(previous).each(wiki.refresh);
+      bin.sort(function(a, b) {
+        return a.item.date < b.item.date;
+      });
+      flags = (function() {
+        var _j, _len1, _ref4, _results;
+        _results = [];
+        for (i = _j = 0, _len1 = bin.length; _j < _len1; i = ++_j) {
+          _ref4 = bin[i], remoteSite = _ref4.remoteSite, item = _ref4.item;
+          if (i >= 8) {
+            break;
+          }
+          _results.push("<img class=\"remote\"\nsrc=\"http://" + remoteSite + "/favicon.png\"\ndata-slug=\"" + slug + "\"\ndata-site=\"" + remoteSite + "\"\ntitle=\"" + remoteSite + "\">");
+        }
+        return _results;
+      })();
+      twins.push("" + (flags.join('&nbsp;')) + " " + legend);
     }
-    previous = $('.page').eq(idx);
+    if (twins) {
+      return $page.find('.twins').html("<p>" + (twins.join(", ")) + "</p>");
+    }
   }
-  previous.nextAll().remove();
-  active.set($('.page').last());
-  return document.title = (_ref = $('.page:last').data('data')) != null ? _ref.title : void 0;
 };
 
-state.first = function() {
-  var firstUrlLocs, firstUrlPages, idx, oldPages, urlPage, _i, _len, _results;
+renderPageIntoPageElement = function(pageData, $page, siteFound) {
+  var $footer, $header, $journal, $story, $twins, action, addContext, context, emitItem, page, site, slug, _i, _j, _len, _len1, _ref, _ref1, _ref2;
+  page = $.extend(util.emptyPage(), pageData);
+  $page.data("data", page);
+  slug = $page.attr('id');
+  site = $page.data('site');
+  context = ['view'];
+  if (site != null) {
+    context.push(site);
+  }
+  addContext = function(site) {
+    if ((site != null) && !_.include(context, site)) {
+      return context.push(site);
+    }
+  };
+  _ref = page.journal.slice(0).reverse();
+  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+    action = _ref[_i];
+    addContext(action.site);
+  }
+  wiki.resolutionContext = context;
+  $page.empty();
+  _ref1 = ['twins', 'header', 'story', 'journal', 'footer'].map(function(className) {
+    return $("<div />").addClass(className).appendTo($page);
+  }), $twins = _ref1[0], $header = _ref1[1], $story = _ref1[2], $journal = _ref1[3], $footer = _ref1[4];
+  emitHeader($header, $page, page);
+  emitItem = function(i) {
+    var $item, item;
+    if (i >= page.story.length) {
+      return;
+    }
+    item = page.story[i];
+    if ((item != null ? item.type : void 0) && (item != null ? item.id : void 0)) {
+      $item = $("<div class=\"item " + item.type + "\" data-id=\"" + item.id + "\">");
+      $story.append($item);
+      return plugin["do"]($item, item, function() {
+        return emitItem(i + 1);
+      });
+    } else {
+      $story.append($("<div><p class=\"error\">Can't make sense of story[" + i + "]</p></div>"));
+      return emitItem(i + 1);
+    }
+  };
+  emitItem(0);
+  _ref2 = page.journal;
+  for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+    action = _ref2[_j];
+    addToJournal($journal, action);
+  }
+  emitTwins($page);
+  $journal.append("<div class=\"control-buttons\">\n  <a href=\"#\" class=\"button fork-page\" title=\"fork this page\">" + util.symbols['fork'] + "</a>\n  <a href=\"#\" class=\"button add-factory\" title=\"add paragraph\">" + util.symbols['add'] + "</a>\n</div>");
+  return $footer.append("<a id=\"license\" href=\"http://creativecommons.org/licenses/by-sa/3.0/\">CC BY-SA 3.0</a> .\n<a class=\"show-page-source\" href=\"/" + slug + ".json?random=" + (util.randomBytes(4)) + "\" title=\"source\">JSON</a> .\n<a href= \"//" + (siteFound || location.host) + "/" + slug + ".html\">" + (siteFound || location.host) + "</a>");
+};
+
+wiki.buildPage = function(data, siteFound, $page) {
+  if (siteFound === 'local') {
+    $page.addClass('local');
+  } else if (siteFound) {
+    if (siteFound === window.location.host) {
+      siteFound = 'origin';
+    }
+    if (siteFound !== 'view' && siteFound !== 'origin') {
+      $page.addClass('remote');
+    }
+    $page.data('site', siteFound);
+  }
+  if (data.plugin != null) {
+    $page.addClass('plugin');
+  }
+  renderPageIntoPageElement(data, $page, siteFound);
   state.setUrl();
-  firstUrlPages = state.urlPages();
-  firstUrlLocs = state.urlLocs();
-  oldPages = state.pagesInDom();
-  _results = [];
-  for (idx = _i = 0, _len = firstUrlPages.length; _i < _len; idx = ++_i) {
-    urlPage = firstUrlPages[idx];
-    if (__indexOf.call(oldPages, urlPage) < 0) {
-      if (urlPage !== '') {
-        _results.push(wiki.createPage(urlPage, firstUrlLocs[idx]).appendTo('.main'));
+  initDragging($page);
+  initAddButton($page);
+  return $page;
+};
+
+module.exports = refresh = wiki.refresh = function() {
+  var $page, createGhostPage, pageInformation, registerNeighbors, rev, slug, whenGotten, _ref;
+  $page = $(this);
+  _ref = $page.attr('id').split('_rev'), slug = _ref[0], rev = _ref[1];
+  pageInformation = {
+    slug: slug,
+    rev: rev,
+    site: $page.data('site')
+  };
+  createGhostPage = function() {
+    var heading, hits, info, page, result, site, title, _ref1, _ref2;
+    title = $("a[href=\"/" + slug + ".html\"]:last").text() || slug;
+    page = {
+      'title': title,
+      'story': [
+        {
+          'id': util.randomBytes(8),
+          'type': 'future',
+          'text': 'We could not find this page.',
+          'title': title
+        }
+      ]
+    };
+    heading = {
+      'type': 'paragraph',
+      'id': util.randomBytes(8),
+      'text': "We did find the page in your current neighborhood."
+    };
+    hits = [];
+    _ref1 = wiki.neighborhood;
+    for (site in _ref1) {
+      info = _ref1[site];
+      if (info.sitemap != null) {
+        result = _.find(info.sitemap, function(each) {
+          return each.slug === slug;
+        });
+        if (result != null) {
+          hits.push({
+            "type": "reference",
+            "id": util.randomBytes(8),
+            "site": site,
+            "slug": slug,
+            "title": result.title || slug,
+            "text": result.synopsis || ''
+          });
+        }
+      }
+    }
+    if (hits.length > 0) {
+      (_ref2 = page.story).push.apply(_ref2, [heading].concat(__slice.call(hits)));
+      page.story[0].text = 'We could not find this page in the expected context.';
+    }
+    return wiki.buildPage(page, void 0, $page).addClass('ghost');
+  };
+  registerNeighbors = function(data, site) {
+    var action, item, _i, _j, _len, _len1, _ref1, _ref2, _results;
+    if (_.include(['local', 'origin', 'view', null, void 0], site)) {
+      neighborhood.registerNeighbor(location.host);
+    } else {
+      neighborhood.registerNeighbor(site);
+    }
+    _ref1 = data.story || [];
+    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+      item = _ref1[_i];
+      if (item.site != null) {
+        neighborhood.registerNeighbor(item.site);
+      }
+    }
+    _ref2 = data.journal || [];
+    _results = [];
+    for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+      action = _ref2[_j];
+      if (action.site != null) {
+        _results.push(neighborhood.registerNeighbor(action.site));
       } else {
         _results.push(void 0);
       }
     }
-  }
-  return _results;
+    return _results;
+  };
+  whenGotten = function(data, siteFound) {
+    wiki.buildPage(data, siteFound, $page);
+    return registerNeighbors(data, siteFound);
+  };
+  return pageHandler.get({
+    whenGotten: whenGotten,
+    whenNotGotten: createGhostPage,
+    pageInformation: pageInformation
+  });
 };
 
 
-},{"./wiki.coffee":2,"./active.coffee":9}],13:[function(require,module,exports){
+},{"./util.coffee":5,"./pageHandler.coffee":6,"./plugin.coffee":7,"./state.coffee":8,"./neighborhood.coffee":14,"./addToJournal.coffee":12,"./wiki.coffee":2,"underscore":13}],13:[function(require,module,exports){
 (function(){//     Underscore.js 1.4.4
 //     http://underscorejs.org
 //     (c) 2009-2013 Jeremy Ashkenas, DocumentCloud Inc.
@@ -2488,373 +2852,7 @@ module.exports = function(journalElement, action) {
 };
 
 
-},{"./util.coffee":5}],10:[function(require,module,exports){
-var addToJournal, buildPageHeader, createFactory, emitHeader, emitTwins, handleDragging, initAddButton, initDragging, neighborhood, pageHandler, plugin, refresh, renderPageIntoPageElement, state, util, wiki, _,
-  __slice = [].slice;
-
-_ = require('underscore');
-
-util = require('./util.coffee');
-
-pageHandler = require('./pageHandler.coffee');
-
-plugin = require('./plugin.coffee');
-
-state = require('./state.coffee');
-
-neighborhood = require('./neighborhood.coffee');
-
-addToJournal = require('./addToJournal.coffee');
-
-wiki = require('./wiki.coffee');
-
-handleDragging = function(evt, ui) {
-  var action, before, beforeElement, destinationPageElement, equals, item, itemElement, moveFromPage, moveToPage, moveWithinPage, order, sourcePageElement, sourceSite, thisPageElement;
-  itemElement = ui.item;
-  item = wiki.getItem(itemElement);
-  thisPageElement = $(this).parents('.page:first');
-  sourcePageElement = itemElement.data('pageElement');
-  sourceSite = sourcePageElement.data('site');
-  destinationPageElement = itemElement.parents('.page:first');
-  equals = function(a, b) {
-    return a && b && a.get(0) === b.get(0);
-  };
-  moveWithinPage = !sourcePageElement || equals(sourcePageElement, destinationPageElement);
-  moveFromPage = !moveWithinPage && equals(thisPageElement, sourcePageElement);
-  moveToPage = !moveWithinPage && equals(thisPageElement, destinationPageElement);
-  if (moveFromPage) {
-    if (sourcePageElement.hasClass('ghost') || sourcePageElement.attr('id') === destinationPageElement.attr('id')) {
-      return;
-    }
-  }
-  action = moveWithinPage ? (order = $(this).children().map(function(_, value) {
-    return $(value).attr('data-id');
-  }).get(), {
-    type: 'move',
-    order: order
-  }) : moveFromPage ? (wiki.log('drag from', sourcePageElement.find('h1').text()), {
-    type: 'remove'
-  }) : moveToPage ? (itemElement.data('pageElement', thisPageElement), beforeElement = itemElement.prev('.item'), before = wiki.getItem(beforeElement), {
-    type: 'add',
-    item: item,
-    after: before != null ? before.id : void 0
-  }) : void 0;
-  action.id = item.id;
-  return pageHandler.put(thisPageElement, action);
-};
-
-initDragging = function($page) {
-  var $story;
-  $story = $page.find('.story');
-  return $story.sortable({
-    connectWith: '.page .story'
-  }).on("sortupdate", handleDragging);
-};
-
-initAddButton = function($page) {
-  return $page.find(".add-factory").live("click", function(evt) {
-    if ($page.hasClass('ghost')) {
-      return;
-    }
-    evt.preventDefault();
-    return createFactory($page);
-  });
-};
-
-createFactory = function($page) {
-  var before, beforeElement, item, itemElement;
-  item = {
-    type: "factory",
-    id: util.randomBytes(8)
-  };
-  itemElement = $("<div />", {
-    "class": "item factory"
-  }).data('item', item).attr('data-id', item.id);
-  itemElement.data('pageElement', $page);
-  $page.find(".story").append(itemElement);
-  plugin["do"](itemElement, item);
-  beforeElement = itemElement.prev('.item');
-  before = wiki.getItem(beforeElement);
-  return pageHandler.put($page, {
-    item: item,
-    id: item.id,
-    type: "add",
-    after: before != null ? before.id : void 0
-  });
-};
-
-buildPageHeader = function(_arg) {
-  var favicon_src, header_href, page, tooltip;
-  page = _arg.page, tooltip = _arg.tooltip, header_href = _arg.header_href, favicon_src = _arg.favicon_src;
-  if (page.plugin) {
-    tooltip += "\n" + page.plugin + " plugin";
-  }
-  return "<h1 title=\"" + tooltip + "\"><a href=\"" + header_href + "\"><img src=\"" + favicon_src + "\" height=\"32px\" class=\"favicon\"></a> " + page.title + "</h1>";
-};
-
-emitHeader = function($header, $page, page) {
-  var date, header, isRemotePage, pageHeader, rev, site, viewHere;
-  site = $page.data('site');
-  isRemotePage = (site != null) && site !== 'local' && site !== 'origin' && site !== 'view';
-  header = '';
-  viewHere = wiki.asSlug(page.title) === 'welcome-visitors' ? "" : "/view/" + (wiki.asSlug(page.title));
-  pageHeader = isRemotePage ? buildPageHeader({
-    tooltip: site,
-    header_href: "//" + site + "/view/welcome-visitors" + viewHere,
-    favicon_src: "http://" + site + "/favicon.png",
-    page: page
-  }) : buildPageHeader({
-    tooltip: location.host,
-    header_href: "/view/welcome-visitors" + viewHere,
-    favicon_src: "/favicon.png",
-    page: page
-  });
-  $header.append(pageHeader);
-  if (!isRemotePage) {
-    $('img.favicon', $page).error(function(e) {
-      return plugin.get('favicon', function(favicon) {
-        return favicon.create();
-      });
-    });
-  }
-  if ($page.attr('id').match(/_rev/)) {
-    rev = page.journal.length - 1;
-    date = page.journal[rev].date;
-    $page.addClass('ghost').data('rev', rev);
-    return $header.append($("<h2 class=\"revision\">\n  <span>\n    " + (date != null ? util.formatDate(date) : "Revision " + rev) + "\n  </span>\n</h2>"));
-  }
-};
-
-emitTwins = wiki.emitTwins = function($page) {
-  var actions, bin, bins, flags, i, info, item, legend, page, remoteSite, site, slug, twins, viewing, _i, _len, _ref, _ref1, _ref2, _ref3;
-  page = $page.data('data');
-  site = $page.data('site') || window.location.host;
-  if (site === 'view' || site === 'origin') {
-    site = window.location.host;
-  }
-  slug = wiki.asSlug(page.title);
-  if (((actions = (_ref = page.journal) != null ? _ref.length : void 0) != null) && ((viewing = (_ref1 = page.journal[actions - 1]) != null ? _ref1.date : void 0) != null)) {
-    viewing = Math.floor(viewing / 1000) * 1000;
-    bins = {
-      newer: [],
-      same: [],
-      older: []
-    };
-    _ref2 = wiki.neighborhood;
-    for (remoteSite in _ref2) {
-      info = _ref2[remoteSite];
-      if (remoteSite !== site && (info.sitemap != null)) {
-        _ref3 = info.sitemap;
-        for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
-          item = _ref3[_i];
-          if (item.slug === slug) {
-            bin = item.date > viewing ? bins.newer : item.date < viewing ? bins.older : bins.same;
-            bin.push({
-              remoteSite: remoteSite,
-              item: item
-            });
-          }
-        }
-      }
-    }
-    twins = [];
-    for (legend in bins) {
-      bin = bins[legend];
-      if (!bin.length) {
-        continue;
-      }
-      bin.sort(function(a, b) {
-        return a.item.date < b.item.date;
-      });
-      flags = (function() {
-        var _j, _len1, _ref4, _results;
-        _results = [];
-        for (i = _j = 0, _len1 = bin.length; _j < _len1; i = ++_j) {
-          _ref4 = bin[i], remoteSite = _ref4.remoteSite, item = _ref4.item;
-          if (i >= 8) {
-            break;
-          }
-          _results.push("<img class=\"remote\"\nsrc=\"http://" + remoteSite + "/favicon.png\"\ndata-slug=\"" + slug + "\"\ndata-site=\"" + remoteSite + "\"\ntitle=\"" + remoteSite + "\">");
-        }
-        return _results;
-      })();
-      twins.push("" + (flags.join('&nbsp;')) + " " + legend);
-    }
-    if (twins) {
-      return $page.find('.twins').html("<p>" + (twins.join(", ")) + "</p>");
-    }
-  }
-};
-
-renderPageIntoPageElement = function(pageData, $page, siteFound) {
-  var $footer, $header, $journal, $story, $twins, action, addContext, context, emitItem, page, site, slug, _i, _j, _len, _len1, _ref, _ref1, _ref2;
-  page = $.extend(util.emptyPage(), pageData);
-  $page.data("data", page);
-  slug = $page.attr('id');
-  site = $page.data('site');
-  context = ['view'];
-  if (site != null) {
-    context.push(site);
-  }
-  addContext = function(site) {
-    if ((site != null) && !_.include(context, site)) {
-      return context.push(site);
-    }
-  };
-  _ref = page.journal.slice(0).reverse();
-  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-    action = _ref[_i];
-    addContext(action.site);
-  }
-  wiki.resolutionContext = context;
-  $page.empty();
-  _ref1 = ['twins', 'header', 'story', 'journal', 'footer'].map(function(className) {
-    return $("<div />").addClass(className).appendTo($page);
-  }), $twins = _ref1[0], $header = _ref1[1], $story = _ref1[2], $journal = _ref1[3], $footer = _ref1[4];
-  emitHeader($header, $page, page);
-  emitItem = function(i) {
-    var $item, item;
-    if (i >= page.story.length) {
-      return;
-    }
-    item = page.story[i];
-    if ((item != null ? item.type : void 0) && (item != null ? item.id : void 0)) {
-      $item = $("<div class=\"item " + item.type + "\" data-id=\"" + item.id + "\">");
-      $story.append($item);
-      return plugin["do"]($item, item, function() {
-        return emitItem(i + 1);
-      });
-    } else {
-      $story.append($("<div><p class=\"error\">Can't make sense of story[" + i + "]</p></div>"));
-      return emitItem(i + 1);
-    }
-  };
-  emitItem(0);
-  _ref2 = page.journal;
-  for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
-    action = _ref2[_j];
-    addToJournal($journal, action);
-  }
-  emitTwins($page);
-  $journal.append("<div class=\"control-buttons\">\n  <a href=\"#\" class=\"button fork-page\" title=\"fork this page\">" + util.symbols['fork'] + "</a>\n  <a href=\"#\" class=\"button add-factory\" title=\"add paragraph\">" + util.symbols['add'] + "</a>\n</div>");
-  return $footer.append("<a id=\"license\" href=\"http://creativecommons.org/licenses/by-sa/3.0/\">CC BY-SA 3.0</a> .\n<a class=\"show-page-source\" href=\"/" + slug + ".json?random=" + (util.randomBytes(4)) + "\" title=\"source\">JSON</a> .\n<a href= \"//" + (siteFound || location.host) + "/" + slug + ".html\">" + (siteFound || location.host) + "</a>");
-};
-
-wiki.buildPage = function(data, siteFound, $page) {
-  if (siteFound === 'local') {
-    $page.addClass('local');
-  } else if (siteFound) {
-    if (siteFound === window.location.host) {
-      siteFound = 'origin';
-    }
-    if (siteFound !== 'view' && siteFound !== 'origin') {
-      $page.addClass('remote');
-    }
-    $page.data('site', siteFound);
-  }
-  if (data.plugin != null) {
-    $page.addClass('plugin');
-  }
-  renderPageIntoPageElement(data, $page, siteFound);
-  state.setUrl();
-  initDragging($page);
-  initAddButton($page);
-  return $page;
-};
-
-module.exports = refresh = wiki.refresh = function() {
-  var $page, createGhostPage, pageInformation, registerNeighbors, rev, slug, whenGotten, _ref;
-  $page = $(this);
-  _ref = $page.attr('id').split('_rev'), slug = _ref[0], rev = _ref[1];
-  pageInformation = {
-    slug: slug,
-    rev: rev,
-    site: $page.data('site')
-  };
-  createGhostPage = function() {
-    var heading, hits, info, page, result, site, title, _ref1, _ref2;
-    title = $("a[href=\"/" + slug + ".html\"]:last").text() || slug;
-    page = {
-      'title': title,
-      'story': [
-        {
-          'id': util.randomBytes(8),
-          'type': 'future',
-          'text': 'We could not find this page.',
-          'title': title
-        }
-      ]
-    };
-    heading = {
-      'type': 'paragraph',
-      'id': util.randomBytes(8),
-      'text': "We did find the page in your current neighborhood."
-    };
-    hits = [];
-    _ref1 = wiki.neighborhood;
-    for (site in _ref1) {
-      info = _ref1[site];
-      if (info.sitemap != null) {
-        result = _.find(info.sitemap, function(each) {
-          return each.slug === slug;
-        });
-        if (result != null) {
-          hits.push({
-            "type": "reference",
-            "id": util.randomBytes(8),
-            "site": site,
-            "slug": slug,
-            "title": result.title || slug,
-            "text": result.synopsis || ''
-          });
-        }
-      }
-    }
-    if (hits.length > 0) {
-      (_ref2 = page.story).push.apply(_ref2, [heading].concat(__slice.call(hits)));
-      page.story[0].text = 'We could not find this page in the expected context.';
-    }
-    return wiki.buildPage(page, void 0, $page).addClass('ghost');
-  };
-  registerNeighbors = function(data, site) {
-    var action, item, _i, _j, _len, _len1, _ref1, _ref2, _results;
-    if (_.include(['local', 'origin', 'view', null, void 0], site)) {
-      neighborhood.registerNeighbor(location.host);
-    } else {
-      neighborhood.registerNeighbor(site);
-    }
-    _ref1 = data.story || [];
-    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-      item = _ref1[_i];
-      if (item.site != null) {
-        neighborhood.registerNeighbor(item.site);
-      }
-    }
-    _ref2 = data.journal || [];
-    _results = [];
-    for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
-      action = _ref2[_j];
-      if (action.site != null) {
-        _results.push(neighborhood.registerNeighbor(action.site));
-      } else {
-        _results.push(void 0);
-      }
-    }
-    return _results;
-  };
-  whenGotten = function(data, siteFound) {
-    wiki.buildPage(data, siteFound, $page);
-    return registerNeighbors(data, siteFound);
-  };
-  return pageHandler.get({
-    whenGotten: whenGotten,
-    whenNotGotten: createGhostPage,
-    pageInformation: pageInformation
-  });
-};
-
-
-},{"./util.coffee":5,"./pageHandler.coffee":6,"./plugin.coffee":7,"./state.coffee":8,"./neighborhood.coffee":14,"./addToJournal.coffee":12,"./wiki.coffee":2,"underscore":13}],14:[function(require,module,exports){
+},{"./util.coffee":5}],14:[function(require,module,exports){
 var active, createSearch, neighborhood, nextAvailableFetch, nextFetchInterval, populateSiteInfoFor, util, wiki, _,
   __hasProp = {}.hasOwnProperty;
 
