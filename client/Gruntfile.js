@@ -1,9 +1,7 @@
-require('coffee-script');
-
 module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-coffee');
-  
+  grunt.loadNpmTasks('grunt-contrib-watch');
 
   grunt.initConfig({
     browserify: {
@@ -25,12 +23,27 @@ module.exports = function (grunt) {
     },
 
     coffee: {
-      experiment: {
+      plugins: {
         expand: true,
-        src: ['plugins/*/*.coffee'],
+        src: ['plugins/**/*.coffee'],
         ext: '.js'
       } 
+    },
+
+    watch: {
+      all: {
+        files: [
+          '<%= browserify.testClient.src %>',
+          '<%= browserify.client.src %>',
+          '<%= coffee.plugins.src %>',
+          'lib/**/*.coffee'
+        ],
+        tasks: ['browserify', 'coffee']
+      }
     }
   });
+
+  grunt.registerTask('build', ['browserify', 'coffee']);
+  grunt.registerTask('default', ['build']);
 
 };
