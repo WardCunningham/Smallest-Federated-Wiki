@@ -2,6 +2,6 @@ www:
     type: nodejs
     approot: server/express
     processes:
-        app: npm start
+        app: node bin/server.js -p 8080 >> /var/log/supervisor/app.log
     config:
         node_version: v0.8.x
