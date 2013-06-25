@@ -21,7 +21,7 @@ module.exports = exports = (log, loga, argv) ->
 
       postBody = qs.stringify(
         assertion: req.body.assertion
-        audience: argv.u
+        audience: 'http://aokwiki-ozten.dotcloud.com'
       )
 
       opts =
@@ -64,11 +64,12 @@ module.exports = exports = (log, loga, argv) ->
                 email: verified.email
               }
             else
+              console.log verified
               fail()
 
         else
-          log "STATUS: " + res.statusCode
-          log "HEADERS: " + JSON.stringify(res.headers)
+          loga "STATUS: " + res.statusCode
+          loga "HEADERS: " + JSON.stringify(res.headers)
           fail()
 
       verifier.write postBody
