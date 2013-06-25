@@ -5,33 +5,30 @@ module.exports = (owner) ->
   navigator.id.watch
     loggedInUser: owner
     onlogin: (assertion) ->
-      console.log "assertion=", assertion
       $.post "/persona_login",
         assertion: assertion
       , (verified) ->
         verified = JSON.parse(verified)
-        console.log verified
         if "okay" is verified.status
-          console.log('Setting email to ' + verified.email)
           $("#user-email").text(verified.email).show()
           $("#persona-login-btn").hide()
           $("#persona-logout-btn").show()
         else
-          
+
           # Verification failed
           navigator.id.logout()
           window.location = "/oops"  if "wrong-address" is verified.status
 
 
     onlogout: ->
-      console.log "logging out"
       $.post "/persona_logout"
       $("#user-email").hide()
       $("#persona-login-btn").show()
       $("#persona-logout-btn").hide()
 
     onmatch: ->
-      console.log "It is safe to render the UI"
+      # It's safe to render the UI now, Persona and
+      # the Wiki's notion of a session agree
       if owner
         $("#user-email").text(owner).show()
         $("#persona-login-btn").hide()
