@@ -21,7 +21,7 @@ module.exports = exports = (log, loga, argv) ->
 
       postBody = qs.stringify(
         assertion: req.body.assertion
-        audience: 'http://aokwiki-ozten.dotcloud.com'
+        audience: argv.u
       )
 
       opts =
