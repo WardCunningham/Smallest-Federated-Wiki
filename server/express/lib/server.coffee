@@ -79,6 +79,7 @@ module.exports = exports = (argv) ->
   loga = (stuff...) ->
     console.log stuff
 
+
   errorHandler = (req, res, next) ->
     fired = false
     res.e = (error, status) ->
@@ -286,7 +287,7 @@ module.exports = exports = (argv) ->
   # and sends it to the client.  TODO: consider caching remote pages locally.
   app.get ///^/remote/([a-zA-Z0-9:\.-]+)/([a-z0-9-]+)\.json$///, (req, res) ->
     remoteGet req.params[0], req.params[1], (e, page, status) ->
-      if e 
+      if e
         log "remoteGet error:", e
         return res.e e
       res.send(status or 200, page)
@@ -298,12 +299,8 @@ module.exports = exports = (argv) ->
   app.get '/favicon.png', cors, (req,res) ->
     res.sendfile(favLoc)
 
-  # AOK
   authenticated = (req, res, next) ->
-    # console.log 'authenticated middleware running'
-    # console.log req.session
     if req.isAuthenticated()
-      console.log 'authorized'
       next()
     else
       console.log 'rejecting', req.path
@@ -349,7 +346,10 @@ module.exports = exports = (argv) ->
       return res.e(e) if e
       res.json(sitemap)
 
-  app.post '/persona_login', cors, persona.verify_assertion(getOwner)
+
+  app.post '/persona_login',
+           cors,
+           persona.verify_assertion(getOwner, setOwner)
 
 
   app.post '/persona_logout', cors, (req, res) ->
@@ -446,6 +446,7 @@ module.exports = exports = (argv) ->
   # Traditional request to / redirects to index :)
   app.get '/', (req, res) ->
     res.redirect(index)
+
 
   #### Start the server ####
   # Wait to make sure owner is known before listening.
