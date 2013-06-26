@@ -353,7 +353,8 @@ module.exports = exports = (argv) ->
 
 
   app.post '/persona_logout', cors, (req, res) ->
-    delete req.session.email
+    req.session.destroy (err) ->
+      res.send(err || "OK")
 
   ##### Put routes #####
 
