@@ -9,10 +9,10 @@ module.exports = exports = (log, loga, argv) ->
     (req, res, next) ->
       req.isAuthenticated = ->
         log 'isAuthenticated? owner=', getOwner(), req.session, req.session.email and getOwner() is req.session.email
-        req.session.email and getOwner() is req.session.email
+        !! req.session.email and getOwner() is req.session.email
       next()
 
-  persona.verify_assertion = (getOwner) ->
+  persona.verify_assertion = (getOwner, setOwner) ->
     (req, res) ->
       sent = false
       fail = ->
@@ -21,7 +21,7 @@ module.exports = exports = (log, loga, argv) ->
 
       postBody = qs.stringify(
         assertion: req.body.assertion
-        audience: argv.u
+        audience: 'http://aokwiki-ozten.dotcloud.com'
       )
 
       opts =
@@ -45,30 +45,32 @@ module.exports = exports = (log, loga, argv) ->
           res.on "end", (a, b, c) ->
             verified = JSON.parse(d)
             if "okay" is verified.status and !!verified.email
+              req.session.email = verified.email
               owner = getOwner()
               if owner is ''
                 setOwner verified.email, ->
                   loga 'Owner was not claimed, setting owner'
               else if owner is verified.email
                 log 'Welcome back! Creating session'
-                req.session.email = verified.email
               else
                 log 'Expected ', owner, ' but got ', verified.email
+                delete req.session.email
                 return originalRes.send JSON.stringify {
                   status: 'wrong-address',
-                  email: verified.email 
+                  email: verified.email
                 }
-              log verified.email
+              log "Verified Email=", verified.email
               originalRes.send JSON.stringify {
                 status: 'okay',
                 email: verified.email
               }
             else
+              console.log verified
               fail()
 
         else
-          log "STATUS: " + res.statusCode
-          log "HEADERS: " + JSON.stringify(res.headers)
+          loga "STATUS: " + res.statusCode
+          loga "HEADERS: " + JSON.stringify(res.headers)
           fail()
 
       verifier.write postBody
