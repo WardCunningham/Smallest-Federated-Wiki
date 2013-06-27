@@ -5,6 +5,9 @@ wiki = { createSynopsis }
 wiki.log = (things...) ->
   console.log things... if console?.log?
 
+$(document).keypress (event) ->
+  $(".insert").toggle() if event.which == 5
+
 wiki.asSlug = (name) ->
   name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase()
 
