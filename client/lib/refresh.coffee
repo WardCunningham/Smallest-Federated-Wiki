@@ -54,14 +54,21 @@ initAddButton = ($page) ->
     return if $page.hasClass 'ghost'
     evt.preventDefault()
     createFactory($page)
+  $page.find(".insert").live "click", (evt) ->
+    return if $page.hasClass 'ghost'
+    evt.preventDefault()
+    createFactory($page, this)
 
-createFactory = ($page) ->
+createFactory = ($page, el=undefined) ->
   item =
     type: "factory"
     id: util.randomBytes(8)
   itemElement = $("<div />", class: "item factory").data('item',item).attr('data-id', item.id)
   itemElement.data 'pageElement', $page
-  $page.find(".story").append(itemElement)
+  if el == undefined
+    $page.find(".story").append(itemElement)
+  else
+    $($page.find(el)).after(itemElement)
   plugin.do itemElement, item
   beforeElement = itemElement.prev('.item')
   before = wiki.getItem(beforeElement)
@@ -168,6 +175,7 @@ renderPageIntoPageElement = (pageData,$page, siteFound) ->
     item = page.story[i]
     if item?.type and item?.id
       $item = $ """<div class="item #{item.type}" data-id="#{item.id}">"""
+      $story.append $ "<div class='insert'><a href='javascript:'>+</a></div>" if item.type == "paragraph"
       $story.append $item
       plugin.do $item, item, -> emitItem i+1
     else
