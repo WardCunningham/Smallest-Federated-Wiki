@@ -9,6 +9,8 @@ module.exports = exports = (log, loga, argv) ->
     (req, res, next) ->
       req.isAuthenticated = ->
         log 'isAuthenticated? owner=', getOwner(), req.session, req.session.email and getOwner() is req.session.email
+        if getOwner() == ''
+            return true
         !! req.session.email and getOwner() is req.session.email
       next()
 
@@ -65,7 +67,6 @@ module.exports = exports = (log, loga, argv) ->
                 email: verified.email
               }
             else
-              console.log verified
               fail()
 
         else
