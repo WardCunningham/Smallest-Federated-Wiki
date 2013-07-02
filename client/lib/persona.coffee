@@ -10,9 +10,7 @@ module.exports = (owner) ->
       , (verified) ->
         verified = JSON.parse(verified)
         if "okay" is verified.status
-          $("#user-email").text(verified.email).show()
-          $("#persona-login-btn").hide()
-          $("#persona-logout-btn").show()
+          window.location = "/";
         else
 
           # Verification failed
@@ -21,10 +19,8 @@ module.exports = (owner) ->
 
 
     onlogout: ->
-      $.post "/persona_logout"
-      $("#user-email").hide()
-      $("#persona-login-btn").show()
-      $("#persona-logout-btn").hide()
+      $.post "/persona_logout", () ->
+          window.location = "/";
 
     onmatch: ->
       # It's safe to render the UI now, Persona and

@@ -8,7 +8,7 @@ module.exports = exports = (log, loga, argv) ->
   persona.authenticate_session = (getOwner) ->
     (req, res, next) ->
       req.isAuthenticated = ->
-        log 'isAuthenticated? owner=', getOwner(), req.session, req.session.email and getOwner() is req.session.email
+        log 'isAuthenticated? owner=', getOwner(), 'req.session.email=', req.session.email, getOwner() is req.session.email
         !! req.session.email and getOwner() is req.session.email
       next()
 

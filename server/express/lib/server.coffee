@@ -217,11 +217,10 @@ module.exports = exports = (argv) ->
   app.get ///^((/[a-zA-Z0-9:.-]+/[a-z0-9-]+(_rev\d+)?)+)/?$///, (req, res) ->
     urlPages = (i for i in req.params[0].split('/') by 2)[1..]
     urlLocs = (j for j in req.params[0].split('/')[1..] by 2)
-    console.log 'req.session', req.session
     info = {
       pages: []
       authenticated: req.isAuthenticated()
-      owner: owner
+      user: req.session.email
       loginStatus: if owner
         if req.isAuthenticated()
           'logout'
@@ -251,6 +250,7 @@ module.exports = exports = (argv) ->
       	  generated: """data-server-generated=true"""
       	  story: wiki.resolveLinks(render(page))
       	]
+      	user: req.session.email
       	authenticated: req.isAuthenticated()
       	loginStatus: if owner
       	  if req.isAuthenticated()
