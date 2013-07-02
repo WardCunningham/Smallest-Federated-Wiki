@@ -14,7 +14,7 @@ argv = optimist
   .usage('Usage: $0')
   .options('u',
     alias     : 'url'
-    describe  : 'Important: Your server URL for use with openID'
+    describe  : 'Important: Your server URL, used as Persona audience during verification'
   )
   .options('p',
     alias     : 'port'
