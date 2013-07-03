@@ -194,6 +194,15 @@ module.exports = exports = (argv) ->
   app.configure 'production', ->
     app.use(express.errorHandler())
 
+  # authenticated indicates that we have a logged in user.
+  # The req.isAuthenticated returns true on an unclaimed wiki
+  # so we must also check that we have a logged in user
+  is_authenticated = (req) ->
+    if req.isAuthenticated()
+      if !! req.session.email
+        return true
+    return false
+
   #### Routes ####
   # Routes currently make up the bulk of the Express port of
   # Smallest Federated Wiki. Most routes use literal names,
@@ -219,7 +228,7 @@ module.exports = exports = (argv) ->
     urlLocs = (j for j in req.params[0].split('/')[1..] by 2)
     info = {
       pages: []
-      authenticated: req.isAuthenticated()
+      authenticated: is_authenticated(req)
       user: req.session.email
       loginStatus: if owner
         if req.isAuthenticated()
@@ -251,7 +260,7 @@ module.exports = exports = (argv) ->
       	  story: wiki.resolveLinks(render(page))
       	]
       	user: req.session.email
-      	authenticated: req.isAuthenticated()
+      	authenticated: is_authenticated(req)
       	loginStatus: if owner
       	  if req.isAuthenticated()
       	    'logout'
