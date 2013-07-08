@@ -22,7 +22,7 @@ module.exports = (owner) ->
       $.post "/persona_logout", () ->
           window.location = "/";
 
-    onmatch: ->
+    onready: ->
       # It's safe to render the UI now, Persona and
       # the Wiki's notion of a session agree
       if owner
