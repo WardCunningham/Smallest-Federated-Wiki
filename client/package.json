@@ -16,7 +16,11 @@
   "devDependencies": {
     "mocha": "*",
     "sinon": "*",
-    "expect.js": "*"
+    "expect.js": "*",
+    "grunt": "~0.4.1",
+    "grunt-browserify": "~1.1.1",
+    "grunt-contrib-coffee": "~0.7.0",
+    "grunt-contrib-watch": "~0.4.4"
   },
   "testling": {
     "harness": "mocha"
@@ -29,4 +33,3 @@
     "url": "https://github.com/WardCunningham/Smallest-Federated-Wiki"
   }
 }
-
