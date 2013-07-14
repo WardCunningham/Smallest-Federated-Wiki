@@ -100,7 +100,7 @@ bind = ($item, item) ->
 
   timer = null
   startTicking = ->
-    timer = setInterval tick, 25
+    timer = setInterval tick, 1000
     tick()
 
   setTimeout startTicking, 1000-(new Date().getMilliseconds())
