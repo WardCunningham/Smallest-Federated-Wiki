@@ -9,7 +9,8 @@ module.exports = function (grunt) {
         src: ['client.coffee'],
         dest: 'client.js',
         options: {
-          transform: ['coffeeify']
+          transform: ['coffeeify'],
+          debug: true
         }
       },
       testClient: {
