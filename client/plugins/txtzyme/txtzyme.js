@@ -1,5 +1,5 @@
 (function() {
-  var apply, bind, emit, parse, report, value;
+  var apply, bind, bits, emit, lsb, msb, parse, report, value;
 
   parse = function(text) {
     var defn, line, prev, word, words, _i, _j, _len, _len1, _ref, _ref1;
@@ -123,6 +123,25 @@
     return report.join(' ');
   };
 
+  bits = function(sequence) {
+    var bit, _i, _len;
+    for (_i = 0, _len = sequence.length; _i < _len; _i++) {
+      bit = sequence[_i];
+      if (!(bit === '0' || bit === '1')) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  msb = function(sequence) {
+    return parseInt(sequence.join(''), 2);
+  };
+
+  lsb = function(sequence) {
+    return parseInt(Array.prototype.slice.call(sequence).reverse().join(''), 2);
+  };
+
   if (typeof module !== "undefined" && module !== null) {
     module.exports = {
       parse: parse,
@@ -135,7 +154,7 @@
   };
 
   bind = function($item, item) {
-    var $page, defn, frame, host, oldresponse, progress, rcvd, response, rrept, sent, socket, srept, startTicking, tick, timer, trigger;
+    var $page, candidates, choice, defn, frame, host, oldresponse, progress, rcvd, response, rrept, sent, socket, srept, startTicking, tick, timer, trigger, who;
     defn = parse(item.text);
     $page = $item.parents('.page:first');
     host = $page.data('site') || location.host;
@@ -192,6 +211,17 @@
     $(".main").on('thumb', function(evt, thumb) {
       return trigger('THUMB', thumb);
     });
+    candidates = $(".item:lt(" + ($('.item').index($item)) + ")");
+    if ((who = candidates.filter(".sequence-source")).size()) {
+      choice = who[who.length - 1];
+      $(choice).on('sequence', function(e, sequence) {
+        trigger('SEQ', sequence);
+        if (bits(sequence)) {
+          trigger('MSB', msb(sequence));
+          return trigger('LSB', lsb(sequence));
+        }
+      });
+    }
     $item.delegate('.rcvd', 'click', function() {
       return wiki.dialog("Txtzyme Responses", "<pre>" + (response.join("\n")));
     });

@@ -823,7 +823,7 @@ window.plugins = {
 };
 
 
-},{"./util.coffee":5,"./wiki.coffee":2}],8:[function(require,module,exports){
+},{"./wiki.coffee":2,"./util.coffee":5}],8:[function(require,module,exports){
 var active, state, wiki,
   __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 

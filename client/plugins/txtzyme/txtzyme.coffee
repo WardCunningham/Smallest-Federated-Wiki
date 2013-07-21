@@ -63,6 +63,17 @@ report = (defn) ->
       report.push """<span>#{word}</span>"""
   report.join ' '
 
+bits = (sequence) ->
+  for bit in sequence
+    return false unless bit == '0' or bit == '1'
+  true
+
+msb = (sequence) ->
+  parseInt sequence.join(''), 2
+
+lsb = (sequence) ->
+  parseInt Array.prototype.slice.call(sequence).reverse().join(''), 2
+
 module.exports = {parse, apply} if module?
 
 emit = ($item, item) ->
@@ -113,6 +124,15 @@ bind = ($item, item) ->
 
   $(".main").on 'thumb', (evt, thumb) ->
     trigger 'THUMB', thumb
+  
+  candidates = $(".item:lt(#{$('.item').index($item)})")
+  if (who = candidates.filter ".sequence-source").size()
+    choice = who[who.length-1]
+    $(choice).on 'sequence', (e, sequence) ->
+      trigger 'SEQ', sequence
+      if bits(sequence)
+        trigger 'MSB', msb(sequence)
+        trigger 'LSB', lsb(sequence)
 
   $item.delegate '.rcvd', 'click', ->
     wiki.dialog "Txtzyme Responses", """<pre>#{response.join "\n"}"""
