@@ -90,7 +90,8 @@ cat <<EOF > plugins/$name/pages/about-$name-plugin
 EOF
 
 echo Plugin and documentation pages created.
-echo Build with client/builder.sh
+echo Build with client/builder.sh or grunt build
 echo View localhost:1111/about-$name-plugin.html
 echo Edit client/plugins/$name/$name.coffee
+
 echo
