@@ -14,5 +14,5 @@ module.exports = (argv) ->
   argv.db or= path.join(argv.d, 'pages')
   argv.status or= path.join(argv.d, 'status')
   argv.u or= 'http://localhost' + (':' + argv.p) unless argv.p is 80
-  argv.id or= path.join(argv.status, 'open_id.identity')
+  argv.id or= path.join(argv.status, 'persona.identity')
   argv
