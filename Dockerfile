@@ -6,5 +6,6 @@ run apt-get install -y libxml2-dev libxslt-dev build-essential git
 run gem install nokogiri -v '1.5.6'
 add . /wiki
 expose 1111
+volume /wiki/data
 run cd /wiki && bundle install --without development test
 cmd cd /wiki/server/sinatra && bundle exec rackup -s thin -p 1111
