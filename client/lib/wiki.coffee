@@ -5,6 +5,9 @@ wiki = { createSynopsis }
 wiki.log = (things...) ->
   console.log things... if console?.log?
 
+$(document).keypress (event) ->
+  $(".active .fork-page").trigger('click') if event.which == 6
+
 wiki.asSlug = (name) ->
   name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase()
 
