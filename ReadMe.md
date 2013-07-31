@@ -1,5 +1,5 @@
-Smallest Federated Wiki Goals
-=============================
+Federated Wiki Goals
+====================
 
 The original wiki was written in a week and cloned within a week after that.
 The concept was shown to be fruitful while leaving other implementors room to innovate.
@@ -76,75 +76,6 @@ When you have git. Use it to clone the repository:
 	git clone git://github.com/WardCunningham/Smallest-Federated-Wiki.git
 	cd Smallest-Federated-Wiki
 
-We have several server implementations that share the same client code.
-Our reference implementation is in Sinatra.
-We're using Ruby 1.9.2 which we manage with rvm.
-
-To install rvm: 
-
-	curl -L https://get.rvm.io | bash -s stable --ruby
-
-Then install Ruby, from one of the following versions:
-
-	Mac-Specific note: On the latest OS X versions, you first need the gcc compiler. 
-	One way is to install XCode from Apple Store. (Free)
-	The Command Line Tools must be installed. See the Downloads section of Xcode's preferences.
-
-	rvm install 1.9.2
-	rvm use 1.9.2
-	
-	Mac-Specific note: If you see an error message such as the following on latest versions of OS X,
-		"The provided compiler '/usr/bin/gcc' is LLVM based, it is not yet
-		fully supported by ruby and gems, please read `rvm requirements`."
-		try:
-			rvm install 1.9.2 --with-gcc=clang
-			rvm use 1.9.2
-
-The software has been known to run trouble-free under version 1.8.5 so long as appropriate gem versions are installed. The latest releases of OSX work better with 1.9.3.
-
-For latest versions of OS X: 
-
-	rvm install 1.9.3 --with-gcc=clang
-	rvm use 1.9.3
-
-The server is a ruby bundle. Get the bundler gem and then use it to get everything else:
-
-	gem install bundler
-	bundle install
-
-Launch the server with this bundle command:
-
-	cd server/sinatra
-	bundle exec rackup -s thin -p 1111
-
-Now go to your browser and browse your new wiki:
-
-	http://localhost:1111
-
-Running specs
-=============
-
-The acceptance test suite is written using RSpec 2 and utilizes Selenium heavily. You must have a recent version of Firefox installed to run the test suite.
-
-The spec files are kept in the /spec folder.
-
-To run an individual spec, run
-
-	bundle exec rspec spec/[spec name].rb
-	
-Where the [spec name].rb can be
-
-    spec/favicon_spec.rb 
-    spec/integration_spec.rb 
-    spec/page_spec.rb 
-    spec/server_helpers_spec.rb 
-    spec/server_spec.rb 
-    spec/stores/couch_spec.rb
-
-To run all specs, run
-
-	bundle exec rake spec
-
 Running coffeescript tests
 =============
 
@@ -167,14 +98,4 @@ License
 You may use the Smallest Federated Wiki under either the
 [MIT License](https://github.com/WardCunningham/Smallest-Federated-Wiki/blob/master/mit-license.txt) or the
 [GNU General Public License](https://github.com/WardCunningham/Smallest-Federated-Wiki/blob/master/gpl-license.txt) (GPL) Version 2.
-
-Debian Squeeze quick hints
-==========================
-for those not using Ruby much, but using Debian:
-
-    sudo apt-get install ruby1.9.1 rubygems ruby1.9.1-examples debian-keyring ri1.9.1 ruby1.9.1-dev rubygems-doc
-    sudo gem install bundle
-    sudo /var/lib/gems/1.8/bin/bundle install
-    rvm 1.9.2
-    /var/lib/gems/1.8/bin/bundle exec rackup -s thin -p 1111
 

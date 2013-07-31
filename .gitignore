@@ -6,7 +6,11 @@
 .rvmrc
 /data
 /spec/data
-/client/plugins/*/test.js
+/client/client.js
+/client/test/testclient.js
+/client/plugins/*.js
+/client/plugins/**/*.js
+/client/plugins/pushpin/**/*.js
 /client/chart/
 /client/garden/
 node_modules

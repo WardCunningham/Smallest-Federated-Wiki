@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html class="no-js">
+  <head>
+    <title>Smallest Federated Wiki</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <meta content='width=device-width, height=device-height, initial-scale=1.0, user-scalable=no' name='viewport'>
+    <link id='favicon' href='/favicon.png' rel='icon' type='image/png'>
+    <link href='/style.css' rel='stylesheet' type='text/css'>
+    <!-- <link href='/theme/granite.css' rel='stylesheet' type='text/css'> -->
+    <script src='/js/jquery-1.9.1.min.js' type='text/javascript'></script>
+    <script src='/js/jquery-migrate-1.1.1.min.js' type='text/javascript'></script>
+    <script src='/js/jquery-ui-1.10.1.custom.min.js' type='text/javascript'></script>
+    <link href='/js/jquery-ui-1.10.1.custom.min.css' rel='stylesheet' type='text/css'>
+    <script src='/js/modernizr.custom.63710.js' type='text/javascript'></script>
+    <script src='/js/underscore-min.js' type='text/javascript'></script>
+    <script src="https://login.persona.org/include.js"></script>
+    <script src='/client.js' type='text/javascript'></script>
+    <script>Modernizr.load([{test: Modernizr.cors, nope: '/js/jquery.ie.cors.js'}]);</script>
+  </head>
+  <body>
+    <section class='main'>
+      {{#pages}}
+      <div class='page' id={{page}} {{origin}} {{generated}}>{{{story}}}</div>
+      {{/pages}}
+    </section>
+    <footer class={{loginStatus}}>
+      <span>
+        Search:
+        <input class='search' name='search' type='text'>
+      </span>
+      <div id="user-email" class="footer-item"></div>
+      <img src="/images/email_sign_in_blue.png" id="persona-login-btn" alt="Sign in with your Email" />
+      <button id="persona-logout-btn" class="footer-item">Sign out</button>
+      <span class='neighborhood'></span>
+    </footer>
+  <script>
+var owner =
+  {{#authenticated}}
+    '{{user}}';
+  {{/authenticated}}
+  {{^authenticated}}
+    null;
+  {{/authenticated}}
+wiki.persona(owner);
+  </script>
+  </body>
+</html>
