@@ -13,7 +13,7 @@ body {
   right: 0;
   bottom: 0;
   position: absolute;
-  background: #eeeeee url("/crosses.png");
+  background: #eeeeee url("/images/crosses.png");
   overflow: hidden;
   padding: 0;
   margin: 0;

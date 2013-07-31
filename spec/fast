@@ -1,3 +1,0 @@
-#!/usr/bin/env ruby
-fast_tests = Dir[ "spec/**/*_spec.rb" ] - %w[ spec/integration_spec.rb ]
-system "bundle exec rspec --color --format nested #{fast_tests.join(' ')}"

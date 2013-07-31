@@ -1,1 +1,0 @@
-web: bundle exec thin start -R server/sinatra/config.ru -p $PORT

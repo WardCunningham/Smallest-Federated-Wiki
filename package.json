@@ -1,0 +1,57 @@
+{
+  "name": "wiki",
+  "version": "0.0.1",
+  "main": "index.js",
+  "bin": {
+    "sfw-noded": "./bin/server.js"
+  },
+  "dependencies": {
+    "coffee-script": "*",
+    "express": "*",
+    "mkdirp": "*",
+    "optimist": "*",
+    "passport": "*",
+    "passport-openid": "*",
+    "hbs": "*",
+    "bouncy": "*",
+    "ws": "*",
+    "event-stream": "*",
+    "JSONStream": "*",
+    "async": "*",
+    "config-chain": "*",
+    "glob": "*",
+    "flates": "0.0.5",
+    "qs": "0.6.5",
+    "browserify": ">=2.13.2",
+    "underscore": "*",
+    "coffeeify": "*"
+  },
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha",
+    "start": "./bin/server.js"
+  },
+  "devDependencies": {
+    "docco": "~0.3",
+    "mocha": "*",
+    "should": "*",
+    "sinon": "*",
+    "expect.js": "*",
+    "grunt": "~0.4.1",
+    "grunt-browserify": "~1.1.1",
+    "grunt-contrib-coffee": "~0.7.0",
+    "grunt-contrib-watch": "~0.4.4"
+  },
+  "optionalDependencies": {
+    "level": "*"
+  },
+  "engines": {
+    "node": ">0.8"
+  },
+  "testling": {
+    "harness": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WardCunningham/Smallest-Federated-Wiki"
+  }
+}
