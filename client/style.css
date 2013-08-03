@@ -43,10 +43,12 @@ footer {
   font-size: 80%;
   z-index: 1000;
   color: #ccdcd2; }
- 
-footer form {
+
+footer form, .footer-item {
   display: inline;
 }
+
+.footer-item { margin-left: 8px; }
 
 .neighbor {
   float: right;
@@ -191,6 +193,8 @@ footer {
 .button:active {
   box-shadow: inset 0 0 7px #3d3c43; }
 
+#persona-login-btn { margin-bottom: -10px; margin-left: 10px; }
+
 .target {
   background-color: #ffffcc !important; }
 
@@ -320,7 +324,7 @@ textarea {
   text-align: center;
   top: -40px;
   right: 10px;
-  -webkit-transform: rotate(-15deg); 
+  -webkit-transform: rotate(-15deg);
   -moz-transform: rotate(-15deg);
 
 }

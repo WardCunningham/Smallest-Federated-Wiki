@@ -11,7 +11,7 @@ describe 'server', ->
     before((done) ->
       runningServer = server(argv)
       runningServer.once("listening", ->
-        routeCB = runningServer.routes.routes.put[0].callbacks[1]
+        routeCB = runningServer.routes.put[0].callbacks[1]
         done()
       )
     )
@@ -24,7 +24,6 @@ describe 'server', ->
     # TODO: When race conditions are fixed in lib/page.coffee clean up function below.
     createSend = (test) ->
       (str) ->
-        console.log str
         runningServer.pagehandler.get('asdf-test-page', (e, data) ->
           if e then throw e
           test(data)
@@ -126,4 +125,4 @@ describe 'server', ->
       routeCB(req, res)
 
     after( ->
-      runningServer.close())
+      runningServer.close() if runningServer.close)
