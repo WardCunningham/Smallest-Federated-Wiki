@@ -1,15 +1,15 @@
 mocha.setup('bdd')
 
-window.wiki = require('./lib/wiki.coffee')
+window.wiki = require('wiki-client/lib/wiki')
 
-require('./test/util.coffee')
-require('./test/active.coffee')
-require('./test/pageHandler.coffee')
-require('./test/refresh.coffee')
-require('./test/plugin.coffee')
-require('./test/revision.coffee')
-require('./test/neighborhood.coffee')
-require('./test/search.coffee')
+require('wiki-client/test/util')
+require('wiki-client/test/active')
+require('wiki-client/test/pageHandler')
+require('wiki-client/test/refresh')
+require('wiki-client/test/plugin')
+require('wiki-client/test/revision')
+require('wiki-client/test/neighborhood')
+require('wiki-client/test/search')
 
 $ ->
   $('<hr><h2> Testing artifacts:</h2>').appendTo('body')
