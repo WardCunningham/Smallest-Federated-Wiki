@@ -1,3 +1,3 @@
-window.wiki = require('./lib/wiki.coffee')
-require('./lib/legacy.coffee')
+window.wiki = require('wiki-client/lib/wiki')
+require('wiki-client/lib/legacy')
 
