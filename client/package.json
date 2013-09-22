@@ -7,7 +7,8 @@
     "coffee-script": "*",
     "browserify": ">=2.13.2",
     "underscore": "*",
-    "coffeeify": "*"
+    "coffeeify": "*",
+    "wiki-client": "*"
   },
   "scripts": {
     "test": "browserify -t coffeeify testclient.coffee ./plugins/*/test.coffee --debug > test/testclient.js",
@@ -15,7 +16,7 @@
   },
   "devDependencies": {
     "mocha": "*",
-    "sinon": "*",
+    "sinon": "1.7.1",
     "expect.js": "*",
     "grunt": "~0.4.1",
     "grunt-browserify": "~1.1.1",
