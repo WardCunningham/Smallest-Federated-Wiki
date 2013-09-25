@@ -65,6 +65,10 @@ We're proud to be forked frequently. Go ahead and fork this project now. We're g
 Install and Launch
 ==================
 
+These instructions are for the ruby/sinatra version of Smallest Federated Wiki found in this repository.
+The node/express version has been moved to the [npm module wiki](https://npmjs.org/package/wiki),
+and a corresponding [github repository](https://github.com/WardCunningham/wiki).
+
 *For help installing and running on Windows, refer to the [Windows Notes](Windows.md).*
 
 The project is distributed as a GitHub repository. You will need a git client. Learn more from GitHub:
