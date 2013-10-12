@@ -1,6 +1,6 @@
 {
   "name": "sfw",
-  "version": "0.0.1a",
+  "version": "0.0.2",
   "main": "client.coffee",
   "private": true,
   "dependencies": {
@@ -8,7 +8,7 @@
     "browserify": ">=2.13.2",
     "underscore": "*",
     "coffeeify": "*",
-    "wiki-client": "*"
+    "wiki-client": ">=0.0.4"
   },
   "scripts": {
     "test": "browserify -t coffeeify testclient.coffee ./plugins/*/test.coffee --debug > test/testclient.js",
