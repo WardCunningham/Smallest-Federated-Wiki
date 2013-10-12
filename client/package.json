@@ -8,7 +8,7 @@
     "browserify": ">=2.13.2",
     "underscore": "*",
     "coffeeify": "*",
-    "wiki-client": ">=0.0.4"
+    "wiki-client": ">=0.0.2"
   },
   "scripts": {
     "test": "browserify -t coffeeify testclient.coffee ./plugins/*/test.coffee --debug > test/testclient.js",
