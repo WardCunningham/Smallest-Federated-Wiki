@@ -47,9 +47,10 @@ Code contributions are always welcome. We're developing using the `fork and pull
 
 * http://help.github.com/send-pull-requests/
 
-You are welcome to join our developer IRC channel, #fedwiki on freenode. We also meet for a google video chat every Wednesday morning at 10am Pacific time.
+You are welcome to join our developer IRC channel, #fedwiki on freenode. We also meet for a google video chat every Wednesday morning at 10am Pacific time. The URI will be announced 10 to 15 minutes before at:
 
-* http://bit.ly/SFWhangout
+* https://twitter.com/WardCunningham
+* http://fed.wiki.org/view/frequently-asked-questions
 
 If you'd like to know what we think of your programming idea before you program it, just write up an Issue here on GitHub. You'll save us all some time if you read through open issues first:
 
