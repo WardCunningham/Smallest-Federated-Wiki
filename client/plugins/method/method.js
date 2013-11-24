@@ -122,7 +122,7 @@
     show = function(list, legend) {
       var readout, value;
       value = sum(list);
-      readout = round(value);
+      readout = Number(value).toLocaleString('en');
       state.show || (state.show = []);
       state.show.push({
         readout: readout,

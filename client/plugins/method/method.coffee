@@ -78,7 +78,7 @@ dispatch = (state, done) ->
 
   show = (list, legend) ->
     value = sum list
-    readout = round value
+    readout = Number(value).toLocaleString('en')
     state.show ||= []
     state.show.push {readout, legend}
     value
