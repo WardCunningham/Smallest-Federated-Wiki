@@ -139,6 +139,10 @@ footer {
   float: left;
   width: 18px; }
 
+.action.separator {
+  background-color: #eeeeee;
+}
+
 .control-buttons {
   float: right;
   position: relative;
