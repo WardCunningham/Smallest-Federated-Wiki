@@ -123,10 +123,11 @@
       var readout, value;
       value = sum(list);
       readout = round(value);
-      state.show = {
+      state.show || (state.show = []);
+      state.show.push({
         readout: readout,
         legend: legend
-      };
+      });
       return value;
     };
     apply = function(name, list, label) {
@@ -274,9 +275,14 @@
         report: []
       };
       return dispatch(state, function(state, output) {
-        var table, text;
+        var $show, each, table, text, _j, _len1, _ref;
         if (state.show) {
-          state.div.append($("<div class=data>\n  <p class=readout>" + state.show.readout + "</p>\n  <p class=legend>" + state.show.legend + "</p>\n</div>"));
+          state.div.append($show = $("<div class=data>"));
+          _ref = state.show;
+          for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
+            each = _ref[_j];
+            $show.append($("<p class=readout>" + each.readout + "</p>\n<p class=legend>" + each.legend + "</p>"));
+          }
         } else {
           text = state.report.join("\n");
           table = $('<table style="width:100%; background:#eee; padding:.8em; margin-bottom:5px;"/>').html(text);

@@ -79,7 +79,8 @@ dispatch = (state, done) ->
   show = (list, legend) ->
     value = sum list
     readout = round value
-    state.show = {readout, legend}
+    state.show ||= []
+    state.show.push {readout, legend}
     value
 
   apply = (name, list, label) ->
@@ -183,12 +184,12 @@ window.plugins.method =
     state = {div: div, item: item, input: input, output: output, report:[]}
     dispatch state, (state, output) ->
       if state.show
-        state.div.append $ """
-          <div class=data>
-            <p class=readout>#{state.show.readout}</p>
-            <p class=legend>#{state.show.legend}</p>
-          </div>
-        """
+        state.div.append $show = $ "<div class=data>"
+        for each in state.show
+          $show.append $ """
+            <p class=readout>#{each.readout}</p>
+            <p class=legend>#{each.legend}</p>
+          """
       else
         text = state.report.join "\n"
         table = $('<table style="width:100%; background:#eee; padding:.8em; margin-bottom:5px;"/>').html text
