@@ -19,7 +19,7 @@
     {
       "type": "paragraph",
       "id": "c9742561ccc55dd5",
-      "text": "Click <b>rcvd</b> to see the full report."
+      "text": "Click <b>rcvd</b> to see the full report for the connected device."
     },
     {
       "type": "paragraph",
@@ -27,9 +27,19 @@
       "text": "<h3> What Commands are Available?"
     },
     {
+      "type": "paragraph",
+      "id": "378b6e1e3281ff94",
+      "text": "These are the commands for a typical Txtzyme interpreter. We repeat them here for reference should no live Txtzyme device be available. Txtzyme is ment to be extended but extensions are rare."
+    },
+    {
       "type": "code",
       "id": "18ece7374856e69d",
       "text": "0-9\tenter number\np\tprint number\na-f\tselect pin\ni\tinput\no\toutput\nm\tmsec delay\nu\tusec delay\n{}\trepeat\nk\tloop count\n_ _\tprint words\ns\tanalog sample\nv\tprint version\nh\tprint help\nt\tpulse width"
+    },
+    {
+      "type": "paragraph",
+      "id": "1c54a00cafed17e0",
+      "text": "These commands will be sent to the remote Txtzyme interpreter to be performed there. The Txtzyme plugin supplements these commands with scheduling and data access commands that are performed by the Txtzyme plugin. Plugin commands are always written in upper case. The remote device will not see upper case plugin commands."
     }
   ],
   "journal": [
@@ -202,6 +212,77 @@
       "type": "add",
       "after": "c9742561ccc55dd5",
       "date": 1361092903935
+    },
+    {
+      "type": "edit",
+      "id": "c9742561ccc55dd5",
+      "item": {
+        "type": "paragraph",
+        "id": "c9742561ccc55dd5",
+        "text": "Click <b>rcvd</b> to see the full report for the connected device."
+      },
+      "date": 1374375531587
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "378b6e1e3281ff94",
+        "text": ""
+      },
+      "id": "378b6e1e3281ff94",
+      "type": "add",
+      "after": "a6c9aa4565e71acd",
+      "date": 1374375630533
+    },
+    {
+      "type": "edit",
+      "id": "378b6e1e3281ff94",
+      "item": {
+        "type": "paragraph",
+        "id": "378b6e1e3281ff94",
+        "text": "These are commands available for a typical Txtzyme interpreter. We repeat them here for reference should no live Txtzyme device be available."
+      },
+      "date": 1374375710821
+    },
+    {
+      "type": "edit",
+      "id": "378b6e1e3281ff94",
+      "item": {
+        "type": "paragraph",
+        "id": "378b6e1e3281ff94",
+        "text": "These are the commands for a typical Txtzyme interpreter. We repeat them here for reference should no live Txtzyme device be available. Txtzyme is ment to be extended but extensions are rare."
+      },
+      "date": 1374375778148
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "1c54a00cafed17e0"
+      },
+      "id": "1c54a00cafed17e0",
+      "type": "add",
+      "after": "18ece7374856e69d",
+      "date": 1374375859345
+    },
+    {
+      "type": "edit",
+      "id": "1c54a00cafed17e0",
+      "item": {
+        "type": "paragraph",
+        "id": "1c54a00cafed17e0",
+        "text": "These commands will be sent to the remote Txtzyme interpreter to be performed there. The Txtzyme plugin supplements these commands with scheduling and data access commands that are performed by the Txtzyme plugin. Plugin commands are always written in upper case. The remote device will not see plugin commands."
+      },
+      "date": 1374376242381
+    },
+    {
+      "type": "edit",
+      "id": "1c54a00cafed17e0",
+      "item": {
+        "type": "paragraph",
+        "id": "1c54a00cafed17e0",
+        "text": "These commands will be sent to the remote Txtzyme interpreter to be performed there. The Txtzyme plugin supplements these commands with scheduling and data access commands that are performed by the Txtzyme plugin. Plugin commands are always written in upper case. The remote device will not see upper case plugin commands."
+      },
+      "date": 1374376271691
     }
   ]
 }

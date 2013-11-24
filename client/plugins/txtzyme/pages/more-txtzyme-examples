@@ -4,7 +4,7 @@
     {
       "type": "paragraph",
       "id": "bbe60414a5224e21",
-      "text": "We will show how features of Txtzyme work with features of the Txtzyme plugin to do some interesting things with little or no additional hardware."
+      "text": "We will show how features of Txtzyme work with features of the Txtzyme plugin to do some interesting things with little or no additional hardware. See [[Txtzyme Test Fixture]] to understand what must be connected to run these examples."
     },
     {
       "type": "paragraph",
@@ -46,7 +46,7 @@
     {
       "type": "paragraph",
       "id": "dd50254f375021f1",
-      "text": "Txtzyme was developed over a year with many projects reported as its strengths and limitations were explored. Txtzyme has its own wiki."
+      "text": "Txtzyme was developed over a year with many projects reported as its strengths and limitations were explored. Txtzyme has its own wiki. "
     },
     {
       "type": "reference",
@@ -281,6 +281,26 @@
       "after": "e6b023bfab84bc06",
       "id": "f3963a458668e8f6",
       "date": 1361661374416
+    },
+    {
+      "type": "edit",
+      "id": "dd50254f375021f1",
+      "item": {
+        "type": "paragraph",
+        "id": "dd50254f375021f1",
+        "text": "Txtzyme was developed over a year with many projects reported as its strengths and limitations were explored. Txtzyme has its own wiki. "
+      },
+      "date": 1368373578184
+    },
+    {
+      "type": "edit",
+      "id": "bbe60414a5224e21",
+      "item": {
+        "type": "paragraph",
+        "id": "bbe60414a5224e21",
+        "text": "We will show how features of Txtzyme work with features of the Txtzyme plugin to do some interesting things with little or no additional hardware. See [[Txtzyme Test Fixture]] to understand what must be connected to run these examples."
+      },
+      "date": 1374376429593
     }
   ]
-}
+  }
