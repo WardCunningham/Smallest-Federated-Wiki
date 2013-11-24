@@ -1,7 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    RubyInline (3.12.1)
+    RubyInline (3.12.2)
       ZenTest (~> 4.3)
     ZenTest (4.6.0)
     addressable (2.3.2)
