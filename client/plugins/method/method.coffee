@@ -35,7 +35,7 @@ print = (report, value, hover, line, comment, color) ->
     line = "#{line.substr 0, 20} ... #{line.substr -15}"
   report.push """
     <tr style="background:#{color};">
-      <td style="width: 20%; text-align: right;" title="#{hover||''}">
+      <td style="width: 20%; text-align: right; padding: 0 4px;" title="#{hover||''}">
         <b>#{round value}</b>
       <td title="#{long}">#{line}#{annotate comment}</td>
     """
@@ -76,6 +76,12 @@ dispatch = (state, done) ->
     result = 1 - result if asValue(row['One minus'])
     Math.min(1, Math.max(0, result))
 
+  show = (list, legend) ->
+    value = sum list
+    readout = round value
+    state.show = {readout, legend}
+    value
+
   apply = (name, list, label) ->
     switch name
       when 'SUM' then sum list
@@ -88,6 +94,7 @@ dispatch = (state, done) ->
       when 'PRODUCT' then _.reduce list, (p,n) -> p *= n
       when 'LOOKUP' then lookup list
       when 'POLYNOMIAL' then polynomial list[0], label
+      when 'SHOW' then show list, label
       else throw new Error "don't know how to #{name}"
 
   color = '#eee'
@@ -175,9 +182,17 @@ window.plugins.method =
 
     state = {div: div, item: item, input: input, output: output, report:[]}
     dispatch state, (state, output) ->
-      text = state.report.join "\n"
-      table = $('<table style="width:100%; background:#eee; padding:.8em; margin-bottom:5px;"/>').html text
-      state.div.append table
+      if state.show
+        state.div.append $ """
+          <div class=data>
+            <p class=readout>#{state.show.readout}</p>
+            <p class=legend>#{state.show.legend}</p>
+          </div>
+        """
+      else
+        text = state.report.join "\n"
+        table = $('<table style="width:100%; background:#eee; padding:.8em; margin-bottom:5px;"/>').html text
+        state.div.append table
       setTimeout done, 10  # slower is better for firefox
 
   eval: (caller, item, input, done) ->

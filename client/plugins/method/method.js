@@ -59,11 +59,11 @@
       long = line;
       line = "" + (line.substr(0, 20)) + " ... " + (line.substr(-15));
     }
-    return report.push("<tr style=\"background:" + color + ";\">\n  <td style=\"width: 20%; text-align: right;\" title=\"" + (hover || '') + "\">\n    <b>" + (round(value)) + "</b>\n  <td title=\"" + long + "\">" + line + (annotate(comment)) + "</td>");
+    return report.push("<tr style=\"background:" + color + ";\">\n  <td style=\"width: 20%; text-align: right; padding: 0 4px;\" title=\"" + (hover || '') + "\">\n    <b>" + (round(value)) + "</b>\n  <td title=\"" + long + "\">" + line + (annotate(comment)) + "</td>");
   };
 
   dispatch = function(state, done) {
-    var apply, args, attach, change, color, comment, count, err, hover, input, line, list, lookup, output, polynomial, previous, result, s, v, value, _ref, _ref1;
+    var apply, args, attach, change, color, comment, count, err, hover, input, line, list, lookup, output, polynomial, previous, result, s, show, v, value, _ref, _ref1;
     state.list || (state.list = []);
     state.lines || (state.lines = state.item.text.split("\n"));
     line = state.lines.shift();
@@ -119,6 +119,16 @@
       }
       return Math.min(1, Math.max(0, result));
     };
+    show = function(list, legend) {
+      var readout, value;
+      value = sum(list);
+      readout = round(value);
+      state.show = {
+        readout: readout,
+        legend: legend
+      };
+      return value;
+    };
     apply = function(name, list, label) {
       switch (name) {
         case 'SUM':
@@ -146,6 +156,8 @@
           return lookup(list);
         case 'POLYNOMIAL':
           return polynomial(list[0], label);
+        case 'SHOW':
+          return show(list, label);
         default:
           throw new Error("don't know how to " + name);
       }
@@ -263,9 +275,13 @@
       };
       return dispatch(state, function(state, output) {
         var table, text;
-        text = state.report.join("\n");
-        table = $('<table style="width:100%; background:#eee; padding:.8em; margin-bottom:5px;"/>').html(text);
-        state.div.append(table);
+        if (state.show) {
+          state.div.append($("<div class=data>\n  <p class=readout>" + state.show.readout + "</p>\n  <p class=legend>" + state.show.legend + "</p>\n</div>"));
+        } else {
+          text = state.report.join("\n");
+          table = $('<table style="width:100%; background:#eee; padding:.8em; margin-bottom:5px;"/>').html(text);
+          state.div.append(table);
+        }
         return setTimeout(done, 10);
       });
     },
