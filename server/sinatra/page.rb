@@ -60,6 +60,7 @@ class Page
     def put(name, page)
       assert_attributes_set
       path = File.join directory, name
+      page.delete 'plugin'
       Store.put_page(path, page, :name => name, :directory => directory)
     end
 
