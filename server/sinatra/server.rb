@@ -266,7 +266,7 @@ class Controller < Sinatra::Base
       status 501
       return "unfamiliar action"
     end
-    ( page['journal'] ||= [] ) << action # todo: journal undo, not redo
+    ( page['journal'] ||= [] ) << action
     farm_page.put name, page
     "ok"
   end

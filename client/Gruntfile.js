@@ -44,7 +44,7 @@ module.exports = function (grunt) {
     }
   });
 
-  grunt.registerTask('build', ['browserify', 'coffee']);
+  grunt.registerTask('build', ['coffee', 'browserify']);
   grunt.registerTask('default', ['build']);
 
 };
