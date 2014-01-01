@@ -13,6 +13,5 @@ require('wiki-client/test/neighborhood')
 require('wiki-client/test/search')
 
 $ ->
-  $('<hr><h2> Testing artifacts:</h2>').appendTo('body')
   mocha.run()
 
