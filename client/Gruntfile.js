@@ -39,7 +39,7 @@ module.exports = function (grunt) {
           '<%= coffee.plugins.src %>',
           'lib/**/*.coffee'
         ],
-        tasks: ['browserify', 'coffee']
+        tasks: ['coffee', 'browserify']
       }
     }
   });
