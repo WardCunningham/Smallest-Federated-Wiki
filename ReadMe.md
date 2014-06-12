@@ -30,7 +30,7 @@ Then you may want to read through the end-user how-to documentation which is its
 
 * http://fed.wiki.org/how-to-wiki.html
 
-Once you know where we are and how we got there, you could peruse the project roadmap. This and a number of other forward looking pages are kept in the project's GitHub wiki:
+Once you know where we are and how we got there, you could peruse the project roadmap. This and a number of other forward-looking pages are kept in the project's GitHub wiki:
 
 * [Project Roadmap](https://github.com/WardCunningham/Smallest-Federated-Wiki/wiki)
 * [List of Wiki Pages](https://github.com/WardCunningham/Smallest-Federated-Wiki/wiki/_pages)
@@ -47,7 +47,7 @@ Code contributions are always welcome. We're developing using the `fork and pull
 
 * http://help.github.com/send-pull-requests/
 
-You are welcome to join our developer IRC channel, #fedwiki on freenode. We also meet for a google video chat every Wednesday morning at 10am Pacific time. The URI will be announced 10 to 15 minutes before at:
+You are welcome to join our developer IRC channel, #fedwiki on freenode. We also meet for a Google video chat every Wednesday morning at 10AM Pacific time. The URI will be announced 10 to 15 minutes before at:
 
 * https://twitter.com/WardCunningham
 * http://fed.wiki.org/view/frequently-asked-questions
@@ -66,7 +66,7 @@ We're proud to be forked frequently. Go ahead and fork this project now. We're g
 Install and Launch
 ==================
 
-These instructions are for the ruby/sinatra version of Smallest Federated Wiki found in this repository.
+These instructions are for the Ruby+Sinatra version of Smallest Federated Wiki found in this repository.
 The node/express version has been moved to the [npm module wiki](https://npmjs.org/package/wiki),
 and a corresponding [github repository](https://github.com/WardCunningham/wiki).
 
@@ -74,7 +74,8 @@ and a corresponding [github repository](https://github.com/WardCunningham/wiki).
 
 The project is distributed as a GitHub repository. You will need a git client. Learn more from GitHub:
 
-* http://help.github.com/
+* [GitHub Help](https://help.github.com/)
+* [Git and GitHub Foundations on Youtube](https://www.youtube.com/playlist?list=PL0lo9MOBetEHhfG9vJzVCTiDYcbhAiEqL)
 
 When you have git. Use it to clone the repository:
 
@@ -89,7 +90,7 @@ To install rvm:
 
 	curl -L https://get.rvm.io | bash -s stable --ruby
 
-Then install Ruby, from one of the following versions:
+Then install Ruby from one of the following versions:
 
 	Mac-Specific note: On the latest OS X versions, you first need the gcc compiler. 
 	One way is to install XCode from Apple Store. (Free)
