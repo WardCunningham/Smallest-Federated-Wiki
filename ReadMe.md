@@ -1,3 +1,10 @@
+```
+This repository exists as both a historical document and 
+a community of interested parties. This is not where you
+want to find the current sourece for Federated Wiki.
+```
+
+
 Smallest Federated Wiki Goals
 =============================
 
@@ -23,37 +30,6 @@ Software development continues elsewhere within github:
 
 * https://github.com/fedwiki
 
-How to Participate
-==================
-
-First you will want to get caught up with some project history. We've been recording screencast videos for as long as we've had something to demo. You should watch them all. They're short:
-
-* http://video.fed.wiki.org
-
-Then you may want to read through the end-user how-to documentation which is itself written in a federated wiki:
-
-* http://fed.wiki.org/how-to-wiki.html
-
-
-Code contributions are always welcome. We're developing using the `fork and pull request` model supported so well by GitHub. Please read through their excellent help to make sure you know what's expected of you:
-
-* http://help.github.com/send-pull-requests/
-
-You are welcome to join our developer IRC channel, #fedwiki on freenode. We also meet for a Google video chat every Wednesday morning at 10AM Pacific time. The URI will be announced 10 to 15 minutes before at:
-
-* https://twitter.com/WardCunningham
-* http://fed.wiki.org/view/frequently-asked-questions
-
-If you'd like to know what we think of your programming idea before you program it, just write up an Issue here on GitHub. You'll save us all some time if you read through open issues first:
-
-* [Open Issues](https://github.com/WardCunningham/Smallest-Federated-Wiki/issues?sort=created&direction=desc&state=open&page=1)
-
-For that matter, there is lots of coding and project philosophy in the comment history of closed issues. Read through the issues with lots of comments. GitHub has good issue search and will sort closed issues by number of comments to make this easy:
-
-* [Closed Issues](https://github.com/WardCunningham/Smallest-Federated-Wiki/issues?sort=comments&direction=desc&state=closed&page=1)
-
-We're proud to be forked frequently. Go ahead and fork this project now. We're glad to have you.
-
 
 Install and Launch
 ==================
@@ -71,6 +47,12 @@ Launch the wiki server with this command:
 
 Your wiki will now be available as localhost:3000.
 
+If you have a public facing site with a wildcard domain name then you can launch wiki as a virtual hosting site
+we call a wiki farm. We'll use the more conventional port 80 assuming you also have root access.
+
+    wiki -p 80 -f
+
+Heavy wiki users will want a farm of their own.
 
 License
 =======
