@@ -1,7 +1,7 @@
 ```
 This repository exists as both a historical document and 
 a community of interested parties. This is not where you
-want to find the current sourece for Federated Wiki.
+want to find the current source for Federated Wiki.
 ```
 
 
